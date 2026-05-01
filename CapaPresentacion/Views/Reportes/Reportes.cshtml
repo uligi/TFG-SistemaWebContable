@@ -1,0 +1,301 @@
+﻿
+@{
+    ViewBag.Title = "Reportes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h4 class="font-weight-bold py-3 mb-0">Reportes</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Sistema</li>
+        <li class="breadcrumb-item active">Reportes</li>
+    </ol>
+</div>
+
+<div class="card mb-4">
+    <h6 class="card-header">Parámetros del reporte</h6>
+
+    <div class="card-body">
+
+        <form>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Tipo de reporte</label>
+                    <select class="custom-select" name="TipoReporte">
+                        <option value="">Seleccione el tipo de reporte</option>
+                        <option value="EstadoResultados">Estado de resultados</option>
+                        <option value="Ingresos">Reporte de ingresos</option>
+                        <option value="Gastos">Reporte de gastos</option>
+                        <option value="CuentasPorCobrar">Cuentas por cobrar</option>
+                        <option value="CuentasPorPagar">Cuentas por pagar</option>
+                        <option value="Facturacion">Facturación</option>
+                        <option value="PresupuestoMensual">Presupuesto mensual</option>
+                        <option value="InventarioProductos">Inventario de productos</option>
+                        <option value="MovimientosContables">Movimientos contables</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Período a consultar</label>
+                    <select class="custom-select" name="PeriodoConsulta">
+                        <option value="">Seleccione el período</option>
+                        <option value="Diario">Diario</option>
+                        <option value="Semanal">Semanal</option>
+                        <option value="Mensual">Mensual</option>
+                        <option value="Trimestral">Trimestral</option>
+                        <option value="Semestral">Semestral</option>
+                        <option value="Anual">Anual</option>
+                        <option value="Personalizado">Personalizado</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Estado</label>
+                    <select class="custom-select" name="Estado">
+                        <option value="">Todos los estados</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Parcial">Parcial</option>
+                        <option value="Pagada">Pagada</option>
+                        <option value="Vencida">Vencida</option>
+                        <option value="Anulada">Anulada</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-3">
+                    <label class="form-label">Fecha inicial</label>
+                    <input type="date"
+                           class="form-control"
+                           name="FechaInicial" />
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label class="form-label">Fecha final</label>
+                    <input type="date"
+                           class="form-control"
+                           name="FechaFinal" />
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label class="form-label">Mes</label>
+                    <select class="custom-select" name="Mes">
+                        <option value="">Todos los meses</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label class="form-label">Año</label>
+                    <input type="number"
+                           class="form-control"
+                           name="Anio"
+                           placeholder="Ejemplo: 2026"
+                           min="2020"
+                           max="2100" />
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Criterio de filtrado</label>
+                    <select class="custom-select" name="CriterioFiltrado">
+                        <option value="">Seleccione un criterio</option>
+                        <option value="Cliente">Cliente</option>
+                        <option value="Proveedor">Proveedor</option>
+                        <option value="Producto">Producto</option>
+                        <option value="CuentaContable">Cuenta contable</option>
+                        <option value="Categoria">Categoría</option>
+                        <option value="TipoPago">Tipo de pago</option>
+                        <option value="Estado">Estado</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Valor del filtro</label>
+                    <input type="text"
+                           class="form-control"
+                           name="ValorFiltro"
+                           placeholder="Ingrese el valor a filtrar" />
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Formato de salida</label>
+                    <select class="custom-select" name="FormatoSalida">
+                        <option value="">Seleccione el formato</option>
+                        <option value="Pantalla">Ver en pantalla</option>
+                        <option value="PDF">Exportar PDF</option>
+                        <option value="Excel">Exportar Excel</option>
+                        <option value="Impresion">Imprimir</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Ordenar por</label>
+                    <select class="custom-select" name="OrdenarPor">
+                        <option value="">Seleccione el orden</option>
+                        <option value="Fecha">Fecha</option>
+                        <option value="Monto">Monto</option>
+                        <option value="Cliente">Cliente</option>
+                        <option value="Proveedor">Proveedor</option>
+                        <option value="Estado">Estado</option>
+                        <option value="Categoria">Categoría</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Tipo de orden</label>
+                    <select class="custom-select" name="TipoOrden">
+                        <option value="Ascendente">Ascendente</option>
+                        <option value="Descendente">Descendente</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label d-block">Opciones adicionales</label>
+
+                    <label class="custom-control custom-checkbox mt-2">
+                        <input type="checkbox"
+                               class="custom-control-input"
+                               name="IncluirTotales" />
+                        <span class="custom-control-label">
+                            Incluir totales en el reporte
+                        </span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="button" class="btn btn-primary">
+                    Generar reporte
+                </button>
+
+                <button type="button" class="btn btn-secondary">
+                    Exportar
+                </button>
+
+                <button type="button" class="btn btn-outline-secondary">
+                    Imprimir
+                </button>
+
+                <button type="reset" class="btn btn-outline-danger">
+                    Limpiar parámetros
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card mb-4">
+    <h6 class="card-header">Vista previa del reporte</h6>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Reporte</th>
+                        <th>Período</th>
+                        <th>Fecha inicial</th>
+                        <th>Fecha final</th>
+                        <th>Criterio</th>
+                        <th>Valor filtro</th>
+                        <th>Total registros</th>
+                        <th>Total monto</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Reporte de ingresos</td>
+                        <td>Mensual</td>
+                        <td>2026-04-01</td>
+                        <td>2026-04-30</td>
+                        <td>Categoría</td>
+                        <td>Ventas</td>
+                        <td>25</td>
+                        <td>₡1,250,000.00</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                Ver detalle
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Reporte de gastos</td>
+                        <td>Mensual</td>
+                        <td>2026-04-01</td>
+                        <td>2026-04-30</td>
+                        <td>Categoría</td>
+                        <td>Servicios públicos</td>
+                        <td>8</td>
+                        <td>₡180,000.00</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                Ver detalle
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Cuentas por cobrar</td>
+                        <td>Personalizado</td>
+                        <td>2026-04-01</td>
+                        <td>2026-04-15</td>
+                        <td>Estado</td>
+                        <td>Pendiente</td>
+                        <td>12</td>
+                        <td>₡640,000.00</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                Ver detalle
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+

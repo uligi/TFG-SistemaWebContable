@@ -1,0 +1,9 @@
+C:\Users\ul13m\source\repos\test1\CapaDatos\bin\Debug\CapaDatos.dll
+C:\Users\ul13m\source\repos\test1\CapaDatos\bin\Debug\CapaDatos.pdb
+C:\Users\ul13m\source\repos\test1\CapaDatos\bin\Debug\CapaEntidad.dll
+C:\Users\ul13m\source\repos\test1\CapaDatos\bin\Debug\CapaEntidad.pdb
+C:\Users\ul13m\source\repos\test1\CapaDatos\obj\Debug\CapaDatos.csproj.AssemblyReference.cache
+C:\Users\ul13m\source\repos\test1\CapaDatos\obj\Debug\CapaDatos.csproj.CoreCompileInputs.cache
+C:\Users\ul13m\source\repos\test1\CapaDatos\obj\Debug\CapaDatos.csproj.Up2Date
+C:\Users\ul13m\source\repos\test1\CapaDatos\obj\Debug\CapaDatos.dll
+C:\Users\ul13m\source\repos\test1\CapaDatos\obj\Debug\CapaDatos.pdb

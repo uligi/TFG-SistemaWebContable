@@ -1,0 +1,235 @@
+﻿
+@{
+    ViewBag.Title = "Gestionar Ingresos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h4 class="font-weight-bold py-3 mb-0">Gestionar Ingresos</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Operación</li>
+        <li class="breadcrumb-item active">Ingresos</li>
+    </ol>
+</div>
+
+<div class="card mb-4">
+    <h6 class="card-header">Registro de ingreso</h6>
+
+    <div class="card-body">
+
+        <form>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Tipo de ingreso</label>
+                    <select class="custom-select" name="TipoIngreso">
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Venta">Venta</option>
+                        <option value="AbonoCliente">Abono de cliente</option>
+                        <option value="IngresoManual">Ingreso manual</option>
+                        <option value="Otro">Otro ingreso</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Categoría del ingreso</label>
+                    <select class="custom-select" name="CategoriaIngreso">
+                        <option value="">Seleccione una categoría</option>
+                        <option value="Ventas">Ventas</option>
+                        <option value="Servicios">Servicios</option>
+                        <option value="RecuperacionCredito">Recuperación de crédito</option>
+                        <option value="Ajuste">Ajuste</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Fecha del ingreso</label>
+                    <input type="date"
+                           class="form-control"
+                           name="FechaIngreso" />
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Monto</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">₡</span>
+                        </div>
+                        <input type="number"
+                               class="form-control"
+                               name="MontoIngreso"
+                               placeholder="0.00"
+                               step="0.01" />
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Origen del ingreso</label>
+                    <select class="custom-select" name="OrigenIngreso">
+                        <option value="">Seleccione el origen</option>
+                        <option value="Facturacion">Facturación</option>
+                        <option value="CuentaPorCobrar">Cuenta por cobrar</option>
+                        <option value="RegistroManual">Registro manual</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label class="form-label">Número de documento</label>
+                    <input type="text"
+                           class="form-control"
+                           name="NumeroDocumento"
+                           placeholder="Ejemplo: ING-0001" />
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea class="form-control"
+                          name="Descripcion"
+                          rows="3"
+                          placeholder="Ingrese la descripción del ingreso"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Cuenta contable asociada</label>
+                <select class="custom-select" name="IdCuentaContable">
+                    <option value="">Seleccione una cuenta contable</option>
+                    <option value="4.1.01">4.1.01 - Ingresos por ventas</option>
+                    <option value="4.1.02">4.1.02 - Otros ingresos</option>
+                    <option value="1.1.01">1.1.01 - Caja general</option>
+                    <option value="1.1.02">1.1.02 - Bancos</option>
+                </select>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="button" class="btn btn-primary">
+                    Guardar
+                </button>
+
+                <button type="button" class="btn btn-secondary">
+                    Modificar
+                </button>
+
+                <button type="button" class="btn btn-danger">
+                    Eliminar
+                </button>
+
+                <button type="reset" class="btn btn-outline-secondary">
+                    Limpiar
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card mb-4">
+    <h6 class="card-header">Listado de ingresos</h6>
+
+    <div class="card-body">
+
+        <div class="form-group">
+            <label class="form-label">Buscar ingreso</label>
+            <div class="input-group">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Buscar por tipo, categoría, descripción o fecha" />
+
+                <span class="input-group-append">
+                    <button class="btn btn-secondary" type="button">
+                        Buscar
+                    </button>
+                </span>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Monto</th>
+                        <th>Origen</th>
+                        <th>Documento</th>
+                        <th>Cuenta contable</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Venta</td>
+                        <td>Ventas</td>
+                        <td>Ingreso por venta diaria</td>
+                        <td>2026-04-01</td>
+                        <td>₡125,000.00</td>
+                        <td>Facturación</td>
+                        <td>FAC-0001</td>
+                        <td>4.1.01 - Ingresos por ventas</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                Seleccionar
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Abono de cliente</td>
+                        <td>Recuperación de crédito</td>
+                        <td>Abono recibido de cliente</td>
+                        <td>2026-04-05</td>
+                        <td>₡50,000.00</td>
+                        <td>Cuenta por cobrar</td>
+                        <td>ABO-0001</td>
+                        <td>1.1.01 - Caja general</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                Seleccionar
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Ingreso manual</td>
+                        <td>Otros</td>
+                        <td>Ingreso adicional registrado manualmente</td>
+                        <td>2026-04-10</td>
+                        <td>₡15,000.00</td>
+                        <td>Registro manual</td>
+                        <td>ING-0001</td>
+                        <td>4.1.02 - Otros ingresos</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                Seleccionar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+

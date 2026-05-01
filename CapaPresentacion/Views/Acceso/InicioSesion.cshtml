@@ -1,0 +1,104 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Inicio de Sesión";
+}
+
+<!DOCTYPE html>
+
+<html lang="es" class="material-style layout-fixed">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <title>Inicio de Sesión - Sistema Web Contable</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+
+<body>
+
+    <div class="page-loader">
+        <div class="bg-primary"></div>
+    </div>
+
+    <div class="authentication-wrapper authentication-1 px-4">
+        <div class="authentication-inner py-5">
+
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="ui-w-60">
+                    <div class="w-100 position-relative text-center">
+                        <img src="~/Content/assets/img/logo.png"
+                             alt="Sistema Web Contable"
+                             class="img-fluid"
+                             style="max-width: 80px; height: auto;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <h4 class="font-weight-bold">Sistema Web Contable</h4>
+                <p class="text-muted">Abastecedor Las Graditas</p>
+            </div>
+
+            @using (Html.BeginForm("InicioSesion", "Acceso", FormMethod.Post, new { @class = "my-5" }))
+            {
+                @Html.AntiForgeryToken()
+
+                if (ViewBag.Mensaje != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.Mensaje
+                    </div>
+                }
+
+                <div class="form-group">
+                    <label class="form-label">Nombre de usuario</label>
+                    <input type="text"
+                           name="NombreUsuario"
+                           class="form-control"
+                           placeholder="Ingrese su usuario"
+                           autocomplete="username"
+                           required />
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label d-flex justify-content-between align-items-end">
+                        <span>Contraseña</span>
+                    </label>
+
+                    <input type="password"
+                           name="Clave"
+                           class="form-control"
+                           placeholder="Ingrese su contraseña"
+                           autocomplete="current-password"
+                           required />
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Iniciar sesión
+                    </button>
+                </div>
+
+                <div class="form-group mb-0">
+                    <button type="button" class="btn btn-outline-secondary btn-block">
+                        Solicitar nueva contraseña
+                    </button>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    
+
+</body>
+</html>
