@@ -12,6 +12,7 @@ namespace CapaEntidad.Inventario
         public string CodigoProducto { get; set; }
         public string NombreProducto { get; set; }
         public int IdTipoProducto { get; set; }
+        public string TipoProductoNombre { get; set; }
         public string Descripcion { get; set; }
         public decimal PrecioVenta { get; set; }
         public decimal StockActual { get; set; }

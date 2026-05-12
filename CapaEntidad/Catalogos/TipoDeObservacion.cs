@@ -9,7 +9,7 @@ namespace CapaEntidad.Catalogos
     public class TipoDeObservacion
     {
         public int IdTipoDeObservacion { get; set; }
-        public string TipoObservacion { get; set; }
+        public string Tipo_Observacion { get; set; }
         public string Descripcion { get; set; }
         public bool Activo { get; set; }
     }

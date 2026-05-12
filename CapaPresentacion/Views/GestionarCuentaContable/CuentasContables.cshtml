@@ -1,0 +1,521 @@
+﻿@{
+    ViewBag.Title = "Cuentas Contables";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="font-weight-bold py-3 mb-0">Gestionar Cuentas Contables</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Cuentas</li>
+        <li class="breadcrumb-item active">Cuentas Contables</li>
+    </ol>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Lista de cuentas contables</h6>
+
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+            Nueva cuenta contable
+        </button>
+    </div>
+
+    <div class="card-body">
+
+        <div class="form-row mb-3">
+            <div class="col-md-5">
+                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por código, nombre, tipo o naturaleza...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="tablaCuentasContables">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre cuenta</th>
+                        <th>Tipo</th>
+                        <th>Naturaleza</th>
+                        <th>Cuenta padre</th>
+                        <th>Acepta movimientos</th>
+                        <th>Estado</th>
+                        <th style="width:170px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="tituloModal">Nueva cuenta contable</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="txtIdCuentaContable" value="0" />
+
+                <h6 class="font-weight-bold">Datos de la cuenta</h6>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-4">
+                        <label for="txtCodigoCuenta">Código de cuenta</label>
+                        <input type="text" id="txtCodigoCuenta" class="form-control" maxlength="45" autocomplete="off" />
+                        <small class="form-text text-muted" id="ayudaCodigoCuenta">
+                            Para cuentas principales, digite el código manualmente. Para cuentas hijas, seleccione una cuenta padre.
+                        </small>
+                    </div>
+
+                    <div class="form-group col-md-8">
+                        <label for="txtNombreCuenta">Nombre de cuenta</label>
+                        <input type="text" id="txtNombreCuenta" class="form-control" maxlength="100" autocomplete="off" />
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-6">
+                        <label for="cboTipoCuentaContable">Tipo de cuenta contable</label>
+                        <select id="cboTipoCuentaContable" class="form-control">
+                            <option value="0">Seleccione un tipo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="cboNaturalezaCuentaContable">Naturaleza de cuenta contable</label>
+                        <select id="cboNaturalezaCuentaContable" class="form-control">
+                            <option value="0">Seleccione una naturaleza</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-6">
+                        <label for="cboCuentaPadre">Cuenta padre</label>
+                        <select id="cboCuentaPadre" class="form-control">
+                            <option value="0">Sin cuenta padre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label for="cboAceptaMovimientos">Acepta movimientos</label>
+                        <select id="cboAceptaMovimientos" class="form-control">
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label for="cboActivo">Estado</label>
+                        <select id="cboActivo" class="form-control">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="alert alert-danger mt-3" id="mensajeError" style="display:none;"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarCuentaContable()">
+                    Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var listaCuentasContables = [];
+        var listaCuentasActivas = [];
+
+        $(document).ready(function () {
+            cargarCuentasContables();
+            cargarTiposCuentaContable();
+            cargarNaturalezasCuentaContable();
+            cargarCuentasPadre();
+
+            $("#txtBuscar").on("keyup", function () {
+                pintarTabla();
+            });
+
+            configurarEventoCuentaPadre();
+        });
+
+        function configurarEventoCuentaPadre() {
+            $("#cboCuentaPadre").off("change");
+
+            $("#cboCuentaPadre").on("change", function () {
+                var idCuentaPadre = parseInt($(this).val());
+                var idCuentaActual = parseInt($("#txtIdCuentaContable").val());
+
+                if (idCuentaActual > 0) {
+                    return;
+                }
+
+                if (idCuentaPadre === 0 || isNaN(idCuentaPadre)) {
+                    $("#txtCodigoCuenta").prop("readonly", false);
+                    $("#txtCodigoCuenta").val("");
+                    $("#ayudaCodigoCuenta").text("Cuenta principal: digite el código manualmente. Ejemplo: 1, 2, 3, 4 o 5.");
+                    return;
+                }
+
+                generarCodigoCuenta(idCuentaPadre);
+            });
+        }
+
+        function cargarCuentasContables() {
+            $.ajax({
+                url: '@Url.Action("ListarCuentasContables", "GestionarCuentaContable")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaCuentasContables = respuesta.data;
+                    pintarTabla();
+                },
+                error: function () {
+                    alert("Error al cargar las cuentas contables.");
+                }
+            });
+        }
+
+        function pintarTabla() {
+            var filtro = $("#txtBuscar").val().toLowerCase();
+            var tbody = $("#tablaCuentasContables tbody");
+
+            tbody.empty();
+
+            if (listaCuentasContables.length === 0) {
+                tbody.append(`
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            No hay cuentas contables registradas.
+                        </td>
+                    </tr>
+                `);
+                return;
+            }
+
+            $.each(listaCuentasContables, function (i, item) {
+                var codigo = item.CodigoCuenta || "";
+                var nombre = item.NombreCuenta || "";
+                var tipo = item.TipoCuentaContableNombre || "";
+                var naturaleza = item.NaturalezaCuentaContableNombre || "";
+
+                var cuentaPadre = "-";
+
+                if (item.CodigoCuentaPadre && item.NombreCuentaPadre) {
+                    cuentaPadre = item.CodigoCuentaPadre + " - " + item.NombreCuentaPadre;
+                }
+
+                var texto = (codigo + " " + nombre + " " + tipo + " " + naturaleza + " " + cuentaPadre).toLowerCase();
+
+                if (texto.indexOf(filtro) === -1) {
+                    return;
+                }
+
+                var aceptaMovimientos = item.AceptaMovimientos
+                    ? '<span class="badge badge-info">Sí</span>'
+                    : '<span class="badge badge-light">No</span>';
+
+                var estado = item.Activo
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var fila = `
+                    <tr>
+                        <td>${codigo}</td>
+                        <td>${nombre}</td>
+                        <td>${tipo}</td>
+                        <td>${naturaleza}</td>
+                        <td>${cuentaPadre}</td>
+                        <td>${aceptaMovimientos}</td>
+                        <td>${estado}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
+                                Editar
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarCuentaContable(${item.IdCuentaContable})">
+                                Inactivar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                tbody.append(fila);
+            });
+        }
+
+        function abrirModal(json) {
+            $("#mensajeError").hide().text("");
+
+            $("#txtIdCuentaContable").val(0);
+            $("#txtCodigoCuenta").val("");
+            $("#txtNombreCuenta").val("");
+            $("#cboTipoCuentaContable").val(0);
+            $("#cboNaturalezaCuentaContable").val(0);
+            $("#cboCuentaPadre").val(0);
+            $("#cboAceptaMovimientos").val("true");
+            $("#cboActivo").val("true");
+            $("#tituloModal").text("Nueva cuenta contable");
+
+            $("#txtCodigoCuenta").prop("readonly", false);
+            $("#ayudaCodigoCuenta").text("Para cuentas principales, digite el código manualmente. Para cuentas hijas, seleccione una cuenta padre.");
+
+            cargarCuentasPadre(0);
+
+            if (json != null) {
+                $("#txtIdCuentaContable").val(json.IdCuentaContable);
+                $("#txtCodigoCuenta").val(json.CodigoCuenta || "");
+                $("#txtCodigoCuenta").prop("readonly", true);
+                $("#ayudaCodigoCuenta").text("El código de una cuenta existente no debería modificarse.");
+
+                $("#txtNombreCuenta").val(json.NombreCuenta || "");
+                $("#cboTipoCuentaContable").val(json.IdTipoCuentaContable);
+                $("#cboNaturalezaCuentaContable").val(json.IdNaturalezaCuentaContable);
+                $("#cboAceptaMovimientos").val(json.AceptaMovimientos ? "true" : "false");
+                $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#tituloModal").text("Editar cuenta contable");
+
+                cargarCuentasPadre(json.IdCuentaContable);
+
+                setTimeout(function () {
+                    $("#cboCuentaPadre").off("change");
+                    $("#cboCuentaPadre").val(json.IdCuentaPadre == null ? 0 : json.IdCuentaPadre);
+                    configurarEventoCuentaPadre();
+                }, 300);
+            } else {
+                setTimeout(function () {
+                    configurarEventoCuentaPadre();
+                }, 300);
+            }
+
+            $("#FormModal").modal("show");
+        }
+
+        function guardarCuentaContable() {
+            var idCuentaPadre = parseInt($("#cboCuentaPadre").val());
+
+            var obj = {
+                IdCuentaContable: parseInt($("#txtIdCuentaContable").val()),
+                CodigoCuenta: $("#txtCodigoCuenta").val().trim(),
+                NombreCuenta: $("#txtNombreCuenta").val().trim(),
+                IdTipoCuentaContable: parseInt($("#cboTipoCuentaContable").val()),
+                IdNaturalezaCuentaContable: parseInt($("#cboNaturalezaCuentaContable").val()),
+                AceptaMovimientos: $("#cboAceptaMovimientos").val() === "true",
+                Activo: $("#cboActivo").val() === "true",
+                IdCuentaPadre: idCuentaPadre === 0 || isNaN(idCuentaPadre) ? null : idCuentaPadre
+            };
+
+            if (obj.CodigoCuenta === "") {
+                $("#mensajeError").text("Debe ingresar o generar el código de cuenta.").show();
+                return;
+            }
+
+            if (obj.CodigoCuenta.length > 45) {
+                $("#mensajeError").text("El código de cuenta no puede superar los 45 caracteres.").show();
+                return;
+            }
+
+            if (obj.NombreCuenta === "") {
+                $("#mensajeError").text("Debe ingresar el nombre de la cuenta.").show();
+                return;
+            }
+
+            if (obj.NombreCuenta.length > 100) {
+                $("#mensajeError").text("El nombre de la cuenta no puede superar los 100 caracteres.").show();
+                return;
+            }
+
+            if (obj.IdTipoCuentaContable === 0 || isNaN(obj.IdTipoCuentaContable)) {
+                $("#mensajeError").text("Debe seleccionar un tipo de cuenta contable.").show();
+                return;
+            }
+
+            if (obj.IdNaturalezaCuentaContable === 0 || isNaN(obj.IdNaturalezaCuentaContable)) {
+                $("#mensajeError").text("Debe seleccionar una naturaleza de cuenta contable.").show();
+                return;
+            }
+
+            if (obj.IdCuentaPadre != null && obj.IdCuentaPadre === obj.IdCuentaContable) {
+                $("#mensajeError").text("Una cuenta no puede ser su propia cuenta padre.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarCuentaContable", "GestionarCuentaContable")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        $("#FormModal").modal("hide");
+                        cargarCuentasContables();
+                        cargarCuentasPadre();
+                    } else {
+                        $("#mensajeError").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al guardar la cuenta contable.").show();
+                }
+            });
+        }
+
+        function inactivarCuentaContable(idCuentaContable) {
+            if (!confirm("¿Desea inactivar esta cuenta contable?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarCuentaContable", "GestionarCuentaContable")',
+                type: "POST",
+                data: JSON.stringify({ idCuentaContable: idCuentaContable }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarCuentasContables();
+                        cargarCuentasPadre();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+                },
+                error: function () {
+                    alert("Error al inactivar la cuenta contable.");
+                }
+            });
+        }
+
+        function cargarTiposCuentaContable() {
+            $.ajax({
+                url: '@Url.Action("ListarTiposCuentaContableActivos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoCuentaContable").empty();
+                    $("#cboTipoCuentaContable").append('<option value="0">Seleccione un tipo</option>');
+
+                    $.each(respuesta.data, function (i, item) {
+                        $("#cboTipoCuentaContable").append(
+                            $("<option>", {
+                                value: item.IdTipoCuentaContable,
+                                text: item.Nombre
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de cuenta contable.");
+                }
+            });
+        }
+
+        function cargarNaturalezasCuentaContable() {
+            $.ajax({
+                url: '@Url.Action("ListarNaturalezasCuentaContableActivas", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboNaturalezaCuentaContable").empty();
+                    $("#cboNaturalezaCuentaContable").append('<option value="0">Seleccione una naturaleza</option>');
+
+                    $.each(respuesta.data, function (i, item) {
+                        $("#cboNaturalezaCuentaContable").append(
+                            $("<option>", {
+                                value: item.IdNaturalezaCuentaContable,
+                                text: item.Naturaleza
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar las naturalezas de cuenta contable.");
+                }
+            });
+        }
+
+        function cargarCuentasPadre(idCuentaActual) {
+            $("#cboCuentaPadre").empty();
+            $("#cboCuentaPadre").append('<option value="0">Sin cuenta padre</option>');
+
+            $.ajax({
+                url: '@Url.Action("ListarCuentasContablesActivas", "GestionarCuentaContable")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaCuentasActivas = respuesta.data;
+
+                    $.each(listaCuentasActivas, function (i, item) {
+                        if (idCuentaActual != null && item.IdCuentaContable === idCuentaActual) {
+                            return;
+                        }
+
+                        $("#cboCuentaPadre").append(
+                            $("<option>", {
+                                value: item.IdCuentaContable,
+                                text: item.CodigoCuenta + " - " + item.NombreCuenta
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar las cuentas padre.");
+                }
+            });
+        }
+
+        function generarCodigoCuenta(idCuentaPadre) {
+            $.ajax({
+                url: '@Url.Action("GenerarCodigoCuentaContable", "GestionarCuentaContable")',
+                type: "GET",
+                data: { idCuentaPadre: idCuentaPadre },
+                dataType: "json",
+                success: function (respuesta) {
+                    if (respuesta.codigo && respuesta.codigo !== "") {
+                        $("#txtCodigoCuenta").val(respuesta.codigo);
+                        $("#txtCodigoCuenta").prop("readonly", true);
+                        $("#ayudaCodigoCuenta").text("Código generado automáticamente según la cuenta padre seleccionada.");
+                    } else {
+                        $("#txtCodigoCuenta").val("");
+                        $("#txtCodigoCuenta").prop("readonly", false);
+                        $("#ayudaCodigoCuenta").text(respuesta.mensaje || "No se pudo generar el código automáticamente.");
+                    }
+                },
+                error: function () {
+                    $("#txtCodigoCuenta").val("");
+                    $("#txtCodigoCuenta").prop("readonly", false);
+                    $("#ayudaCodigoCuenta").text("Error al generar el código de cuenta.");
+                }
+            });
+        }
+    </script>
+}

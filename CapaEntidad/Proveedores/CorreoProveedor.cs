@@ -9,8 +9,12 @@ namespace CapaEntidad.Proveedores
     public class CorreoProveedor
     {
         public string IdentificacionProveedor { get; set; }
+        public string RazonSocial { get; set; }
+
         public string DireccionCorreo { get; set; }
         public int IdTipoCorreo { get; set; }
+        public string TipoCorreoNombre { get; set; }
+
         public bool EsPrincipal { get; set; }
         public bool Activo { get; set; }
     }

@@ -41,9 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Catalogos\NaturalezaCuentaContable.cs" />
+    <Compile Include="Catalogos\Puesto.cs" />
     <Compile Include="Catalogos\TipoCorreo.cs" />
+    <Compile Include="Catalogos\TipoCuentaContable.cs" />
     <Compile Include="Catalogos\TipoDeObservacion.cs" />
     <Compile Include="Catalogos\TipoFactura.cs" />
+    <Compile Include="Catalogos\TipoGasto.cs" />
+    <Compile Include="Catalogos\TipoIngreso.cs" />
     <Compile Include="Catalogos\TipoPago.cs" />
     <Compile Include="Catalogos\TipoProducto.cs" />
     <Compile Include="Catalogos\TipoTelefono.cs" />

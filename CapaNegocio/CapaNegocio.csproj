@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,8 +42,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Catalogos\CN_NaturalezaCuentaContable.cs" />
+    <Compile Include="Catalogos\CN_Puesto.cs" />
+    <Compile Include="Catalogos\CN_TipoCorreo.cs" />
+    <Compile Include="Catalogos\CN_TipoCuentaContable.cs" />
+    <Compile Include="Catalogos\CN_TipoDeObservacion.cs" />
+    <Compile Include="Catalogos\CN_TipoFactura.cs" />
+    <Compile Include="Catalogos\CN_TipoGasto.cs" />
+    <Compile Include="Catalogos\CN_TipoIngreso.cs" />
+    <Compile Include="Catalogos\CN_TipoPago.cs" />
+    <Compile Include="Catalogos\CN_TipoProducto.cs" />
+    <Compile Include="Catalogos\CN_TipoTelefono.cs" />
+    <Compile Include="Contabilidad\CN_CuentaContable.cs" />
+    <Compile Include="Inventario\CN_Producto.cs" />
+    <Compile Include="Personas\CN_Cliente.cs" />
+    <Compile Include="Personas\CN_Correo.cs" />
+    <Compile Include="Personas\CN_Empleado.cs" />
+    <Compile Include="Personas\CN_Telefono.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proveedores\CN_CorreoProveedor.cs" />
+    <Compile Include="Proveedores\CN_Proveedor.cs" />
+    <Compile Include="Proveedores\CN_TelefonoProveedor.cs" />
+    <Compile Include="Recursos\CN_Recursos.cs" />
+    <Compile Include="Seguridad\CN_Rol.cs" />
     <Compile Include="Ubicacion\CN_Canton.cs" />
+    <Compile Include="Ubicacion\CN_Distrito.cs" />
+    <Compile Include="Ubicacion\CN_Provincia.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CapaDatos\CapaDatos.csproj">

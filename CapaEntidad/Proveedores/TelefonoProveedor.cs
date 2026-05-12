@@ -9,8 +9,12 @@ namespace CapaEntidad.Proveedores
     public class TelefonoProveedor
     {
         public string IdentificacionProveedor { get; set; }
+        public string RazonSocial { get; set; }
+
         public string NumeroTelefono { get; set; }
         public int IdTipoTelefono { get; set; }
+        public string TipoTelefonoNombre { get; set; }
+
         public bool EsPrincipal { get; set; }
         public bool Activo { get; set; }
     }

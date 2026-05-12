@@ -1,0 +1,275 @@
+﻿
+@{
+    ViewBag.Title = "TipoProducto";
+    Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
+}
+
+
+
+<h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Tipos de Producto</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Mantenimientos")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Catálogos</li>
+        <li class="breadcrumb-item active">Tipos de producto</li>
+    </ol>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Lista de tipos de producto</h6>
+
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+            Nuevo tipo
+        </button>
+    </div>
+
+    <div class="card-body">
+
+        <div class="form-row mb-3">
+            <div class="col-md-5">
+                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar tipo de producto o descripción...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="tablaTipoProductos">
+                <thead>
+                    <tr>
+                        <th>Tipo de producto</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th style="width:170px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="tituloModal">Nuevo tipo de producto</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="txtIdTipoProducto" value="0" />
+
+                <div class="form-group">
+                    <label for="txtNombre">Nombre del tipo de producto</label>
+                    <input type="text" id="txtNombre" class="form-control" maxlength="100" autocomplete="off" />
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescripcion">Descripción</label>
+                    <textarea id="txtDescripcion" class="form-control" maxlength="150" rows="3"></textarea>
+                    <small class="form-text text-muted">Máximo 150 caracteres.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="cboActivo">Estado</label>
+                    <select id="cboActivo" class="form-control">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-danger mt-3" id="mensajeError" style="display:none;"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarTipoProducto()">
+                    Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var listaTipoProductos = [];
+
+        $(document).ready(function () {
+            cargarTipoProductos();
+
+            $("#txtBuscar").on("keyup", function () {
+                pintarTabla();
+            });
+        });
+
+        function cargarTipoProductos() {
+            $.ajax({
+                url: '@Url.Action("ListarTipoProductos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaTipoProductos = respuesta.data;
+                    pintarTabla();
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de producto.");
+                }
+            });
+        }
+
+        function pintarTabla() {
+            var filtro = $("#txtBuscar").val().toLowerCase();
+            var tbody = $("#tablaTipoProductos tbody");
+
+            tbody.empty();
+
+            $.each(listaTipoProductos, function (i, item) {
+
+                var nombre = item.Nombre || "";
+                var descripcion = item.Descripcion || "";
+                var texto = (nombre + " " + descripcion).toLowerCase();
+
+                if (texto.indexOf(filtro) === -1) {
+                    return;
+                }
+
+                var estado = item.Activo
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var descripcionMostrar = descripcion === "" ? "-" : descripcion;
+
+                var fila = `
+                    <tr>
+                        <td>${nombre}</td>
+                        <td>${descripcionMostrar}</td>
+                        <td>${estado}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
+                                Editar
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarTipoProducto(${item.IdTipoProducto})">
+                                Inactivar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                tbody.append(fila);
+            });
+        }
+
+        function abrirModal(json) {
+            $("#mensajeError").hide().text("");
+
+            $("#txtIdTipoProducto").val(0);
+            $("#txtNombre").val("");
+            $("#txtDescripcion").val("");
+            $("#cboActivo").val("true");
+            $("#tituloModal").text("Nuevo tipo de producto");
+
+            if (json != null) {
+                $("#txtIdTipoProducto").val(json.IdTipoProducto);
+                $("#txtNombre").val(json.Nombre);
+                $("#txtDescripcion").val(json.Descripcion || "");
+                $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#tituloModal").text("Editar tipo de producto");
+            }
+
+            $("#FormModal").modal("show");
+        }
+
+        function guardarTipoProducto() {
+            var obj = {
+                IdTipoProducto: parseInt($("#txtIdTipoProducto").val()),
+                Nombre: $("#txtNombre").val().trim(),
+                Descripcion: $("#txtDescripcion").val().trim(),
+                Activo: $("#cboActivo").val() === "true"
+            };
+
+            if (obj.Nombre === "") {
+                $("#mensajeError").text("Debe ingresar el nombre del tipo de producto.").show();
+                return;
+            }
+
+            if (obj.Nombre.length > 100) {
+                $("#mensajeError").text("El nombre no puede superar los 100 caracteres.").show();
+                return;
+            }
+
+            if (obj.Descripcion.length > 150) {
+                $("#mensajeError").text("La descripción no puede superar los 150 caracteres.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarTipoProducto", "Catalogos")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+
+                    if (obj.IdTipoProducto === 0) {
+                        if (respuesta.resultado != 0) {
+                            $("#FormModal").modal("hide");
+                            cargarTipoProductos();
+                        } else {
+                            $("#mensajeError").text(respuesta.mensaje).show();
+                        }
+                    } else {
+                        if (respuesta.resultado) {
+                            $("#FormModal").modal("hide");
+                            cargarTipoProductos();
+                        } else {
+                            $("#mensajeError").text(respuesta.mensaje).show();
+                        }
+                    }
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al guardar el tipo de producto.").show();
+                }
+            });
+        }
+
+        function inactivarTipoProducto(id) {
+            if (!confirm("¿Desea inactivar este tipo de producto?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarTipoProducto", "Catalogos")',
+                type: "POST",
+                data: JSON.stringify({ id: id }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarTipoProductos();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+                },
+                error: function () {
+                    alert("Error al inactivar el tipo de producto.");
+                }
+            });
+        }
+    </script>
+}

@@ -4,3 +4,9 @@ C:\Users\ul13m\source\repos\test1\CapaEntidad\obj\Debug\CapaEntidad.csproj.Assem
 C:\Users\ul13m\source\repos\test1\CapaEntidad\obj\Debug\CapaEntidad.csproj.CoreCompileInputs.cache
 C:\Users\ul13m\source\repos\test1\CapaEntidad\obj\Debug\CapaEntidad.dll
 C:\Users\ul13m\source\repos\test1\CapaEntidad\obj\Debug\CapaEntidad.pdb
+C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaEntidad\bin\Debug\CapaEntidad.dll
+C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaEntidad\bin\Debug\CapaEntidad.pdb
+C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaEntidad\obj\Debug\CapaEntidad.csproj.AssemblyReference.cache
+C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaEntidad\obj\Debug\CapaEntidad.csproj.CoreCompileInputs.cache
+C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaEntidad\obj\Debug\CapaEntidad.dll
+C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaEntidad\obj\Debug\CapaEntidad.pdb

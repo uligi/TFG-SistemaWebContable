@@ -1,11 +1,7 @@
 @font-face {
 	font-family: 'Linearicons-Free';
-	src:url('linearicons/Linearicons-Free.eot?w118d');
-	src:url('linearicons/Linearicons-Free.eot?#iefixw118d') format('embedded-opentype'),
-		url('linearicons/Linearicons-Free.woff2?w118d') format('woff2'),
-		url('linearicons/Linearicons-Free.woff?w118d') format('woff'),
-		url('linearicons/Linearicons-Free.ttf?w118d') format('truetype'),
-		url('linearicons/Linearicons-Free.svg?w118d#Linearicons-Free') format('svg');
+	src: url('/Content/assets/img/linearicons/Linearicons-Free.eot?w118d');
+	src: url('/Content/assets/img/linearicons/Linearicons-Free.eot?#iefixw118d') format('embedded-opentype'), url('/Content/assets/img/linearicons/Linearicons-Free.woff2?w118d') format('woff2'), url('/Content/assets/img/linearicons/Linearicons-Free.woff?w118d') format('woff'), url('/Content/assets/img/linearicons/Linearicons-Free.ttf?w118d') format('truetype'), url('/Content/assets/img/linearicons/Linearicons-Free.svg?w118d#Linearicons-Free') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }

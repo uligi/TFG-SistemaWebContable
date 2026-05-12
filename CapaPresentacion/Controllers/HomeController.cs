@@ -15,6 +15,10 @@ namespace CapaPresentacion.Controllers
         {
             return View();
         }
+        public ActionResult Mantenimientos()
+        {
+            return View();
+        }
 
         public ActionResult About()
         {
@@ -37,14 +41,7 @@ namespace CapaPresentacion.Controllers
             return View();
         }
 
-        public JsonResult ListarCanton()
-        {
-            List<Canton> olista = new List<Canton>();
 
-            olista = new CN_Canton().Listar();
-
-            return Json(olista, JsonRequestBehavior.AllowGet);
-        }
 
     }
 }

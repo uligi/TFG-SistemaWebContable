@@ -1,0 +1,275 @@
+﻿
+@{
+    ViewBag.Title = "TipoDeObservacion";
+    Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
+}
+
+
+
+<h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Tipos de Observación</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Mantenimientos")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Catálogos</li>
+        <li class="breadcrumb-item active">Tipos de observación</li>
+    </ol>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Lista de tipos de observación</h6>
+
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+            Nuevo tipo
+        </button>
+    </div>
+
+    <div class="card-body">
+
+        <div class="form-row mb-3">
+            <div class="col-md-5">
+                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar tipo de observación o descripción...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="tablaTipoDeObservaciones">
+                <thead>
+                    <tr>
+                        <th>Tipo de observación</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th style="width:170px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="tituloModal">Nuevo tipo de observación</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="txtIdTipoDeObservacion" value="0" />
+
+                <div class="form-group">
+                    <label for="txtTipoDeObservacion">Nombre del tipo de observación</label>
+                    <input type="text" id="txtTipoDeObservacion" class="form-control" maxlength="45" autocomplete="off" />
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescripcion">Descripción</label>
+                    <textarea id="txtDescripcion" class="form-control" maxlength="150" rows="3"></textarea>
+                    <small class="form-text text-muted">Máximo 150 caracteres.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="cboActivo">Estado</label>
+                    <select id="cboActivo" class="form-control">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-danger mt-3" id="mensajeError" style="display:none;"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarTipoDeObservacion()">
+                    Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var listaTipoDeObservaciones = [];
+
+        $(document).ready(function () {
+            cargarTipoDeObservaciones();
+
+            $("#txtBuscar").on("keyup", function () {
+                pintarTabla();
+            });
+        });
+
+        function cargarTipoDeObservaciones() {
+            $.ajax({
+                url: '@Url.Action("ListarTipoDeObservaciones", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaTipoDeObservaciones = respuesta.data;
+                    pintarTabla();
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de observación.");
+                }
+            });
+        }
+
+        function pintarTabla() {
+            var filtro = $("#txtBuscar").val().toLowerCase();
+            var tbody = $("#tablaTipoDeObservaciones tbody");
+
+            tbody.empty();
+
+            $.each(listaTipoDeObservaciones, function (i, item) {
+
+                var nombre = item.Tipo_Observacion || "";
+                var descripcion = item.Descripcion || "";
+                var texto = (nombre + " " + descripcion).toLowerCase();
+
+                if (texto.indexOf(filtro) === -1) {
+                    return;
+                }
+
+                var estado = item.Activo
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var descripcionMostrar = descripcion === "" ? "-" : descripcion;
+
+                var fila = `
+                    <tr>
+                        <td>${nombre}</td>
+                        <td>${descripcionMostrar}</td>
+                        <td>${estado}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
+                                Editar
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarTipoDeObservacion(${item.IdTipoDeObservacion})">
+                                Inactivar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                tbody.append(fila);
+            });
+        }
+
+        function abrirModal(json) {
+            $("#mensajeError").hide().text("");
+
+            $("#txtIdTipoDeObservacion").val(0);
+            $("#txtTipoDeObservacion").val("");
+            $("#txtDescripcion").val("");
+            $("#cboActivo").val("true");
+            $("#tituloModal").text("Nuevo tipo de observación");
+
+            if (json != null) {
+                $("#txtIdTipoDeObservacion").val(json.IdTipoDeObservacion);
+                $("#txtTipoDeObservacion").val(json.Tipo_Observacion);
+                $("#txtDescripcion").val(json.Descripcion || "");
+                $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#tituloModal").text("Editar tipo de observación");
+            }
+
+            $("#FormModal").modal("show");
+        }
+
+        function guardarTipoDeObservacion() {
+            var obj = {
+                IdTipoDeObservacion: parseInt($("#txtIdTipoDeObservacion").val()),
+                Tipo_Observacion: $("#txtTipoDeObservacion").val().trim(),
+                Descripcion: $("#txtDescripcion").val().trim(),
+                Activo: $("#cboActivo").val() === "true"
+            };
+
+            if (obj.Tipo_Observacion === "") {
+                $("#mensajeError").text("Debe ingresar el nombre del tipo de observación.").show();
+                return;
+            }
+
+            if (obj.Tipo_Observacion.length > 45) {
+                $("#mensajeError").text("El nombre no puede superar los 45 caracteres.").show();
+                return;
+            }
+
+            if (obj.Descripcion.length > 150) {
+                $("#mensajeError").text("La descripción no puede superar los 150 caracteres.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarTipoDeObservacion", "Catalogos")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+
+                    if (obj.IdTipoDeObservacion === 0) {
+                        if (respuesta.resultado != 0) {
+                            $("#FormModal").modal("hide");
+                            cargarTipoDeObservaciones();
+                        } else {
+                            $("#mensajeError").text(respuesta.mensaje).show();
+                        }
+                    } else {
+                        if (respuesta.resultado) {
+                            $("#FormModal").modal("hide");
+                            cargarTipoDeObservaciones();
+                        } else {
+                            $("#mensajeError").text(respuesta.mensaje).show();
+                        }
+                    }
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al guardar el tipo de observación.").show();
+                }
+            });
+        }
+
+        function inactivarTipoDeObservacion(id) {
+            if (!confirm("¿Desea inactivar este tipo de observación?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarTipoDeObservacion", "Catalogos")',
+                type: "POST",
+                data: JSON.stringify({ id: id }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarTipoDeObservaciones();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+                },
+                error: function () {
+                    alert("Error al inactivar el tipo de observación.");
+                }
+            });
+        }
+    </script>
+}

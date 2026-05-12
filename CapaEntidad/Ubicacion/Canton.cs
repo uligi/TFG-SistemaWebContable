@@ -12,5 +12,7 @@ namespace CapaEntidad.Ubicacion
         public int IdProvincia { get; set; }
         public string Nombre { get; set; }
         public bool Activo { get; set; }
+
+        public string ProvinciaNombre { get; set; }
     }
 }
