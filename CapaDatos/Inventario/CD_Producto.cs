@@ -31,8 +31,14 @@ namespace CapaDatos.Inventario
                                 IdProducto = Convert.ToInt32(dr["IdProducto"]),
                                 CodigoProducto = dr["CodigoProducto"].ToString(),
                                 NombreProducto = dr["NombreProducto"].ToString(),
+
                                 IdTipoProducto = Convert.ToInt32(dr["IdTipoProducto"]),
                                 TipoProductoNombre = dr["TipoProductoNombre"].ToString(),
+
+                                IdImpuesto = Convert.ToInt32(dr["IdImpuesto"]),
+                                ImpuestoNombre = dr["ImpuestoNombre"].ToString(),
+                                PorcentajeImpuesto = Convert.ToDecimal(dr["PorcentajeImpuesto"]),
+
                                 Descripcion = dr["Descripcion"] == DBNull.Value ? "" : dr["Descripcion"].ToString(),
                                 PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]),
                                 StockActual = Convert.ToDecimal(dr["StockActual"]),
@@ -100,13 +106,14 @@ namespace CapaDatos.Inventario
                     SqlCommand cmd = new SqlCommand("Inventario.sp_Producto_Registrar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    
                     cmd.Parameters.AddWithValue("@NombreProducto", obj.NombreProducto);
                     cmd.Parameters.AddWithValue("@IdTipoProducto", obj.IdTipoProducto);
+                    cmd.Parameters.AddWithValue("@IdImpuesto", obj.IdImpuesto);
                     cmd.Parameters.AddWithValue("@Descripcion", string.IsNullOrWhiteSpace(obj.Descripcion) ? (object)DBNull.Value : obj.Descripcion);
                     cmd.Parameters.AddWithValue("@PrecioVenta", obj.PrecioVenta);
                     cmd.Parameters.AddWithValue("@StockActual", obj.StockActual);
 
+                    cmd.Parameters.Add("@CodigoProductoGenerado", SqlDbType.VarChar, 45).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
 
@@ -115,6 +122,10 @@ namespace CapaDatos.Inventario
 
                     resultado = Convert.ToInt32(cmd.Parameters["@Resultado"].Value);
                     Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+
+                    obj.CodigoProducto = cmd.Parameters["@CodigoProductoGenerado"].Value == DBNull.Value
+                        ? string.Empty
+                        : cmd.Parameters["@CodigoProductoGenerado"].Value.ToString();
                 }
             }
             catch (Exception ex)
@@ -143,6 +154,7 @@ namespace CapaDatos.Inventario
                     cmd.Parameters.AddWithValue("@NombreProducto", obj.NombreProducto);
                     cmd.Parameters.AddWithValue("@IdTipoProducto", obj.IdTipoProducto);
                     cmd.Parameters.AddWithValue("@Descripcion", string.IsNullOrWhiteSpace(obj.Descripcion) ? (object)DBNull.Value : obj.Descripcion);
+                    cmd.Parameters.AddWithValue("@IdImpuesto", obj.IdImpuesto);
                     cmd.Parameters.AddWithValue("@PrecioVenta", obj.PrecioVenta);
                     cmd.Parameters.AddWithValue("@StockActual", obj.StockActual);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);

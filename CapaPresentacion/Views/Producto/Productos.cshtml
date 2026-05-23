@@ -3,6 +3,19 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Productos</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -21,16 +34,22 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h6 class="mb-0">Lista de productos</h6>
 
-        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
-            Nuevo producto
-        </button>
+        <div>
+            <button type="button" class="btn btn-outline-success btn-sm mr-2" data-toggle="modal" data-target="#ModalImportarCsv">
+                Importar CSV
+            </button>
+
+            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+                Nuevo producto
+            </button>
+        </div>
     </div>
 
     <div class="card-body">
 
         <div class="form-row mb-3">
             <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por código, producto o tipo...">
+                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por código, producto, tipo o impuesto...">
             </div>
         </div>
 
@@ -41,14 +60,14 @@
                         <th>Código</th>
                         <th>Producto</th>
                         <th>Tipo</th>
+                        <th>Impuesto</th>
                         <th>Precio venta</th>
                         <th>Stock</th>
                         <th>Estado</th>
                         <th style="width:170px;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
 
@@ -93,12 +112,23 @@
                         </select>
                     </div>
 
-                    <div class="form-group col-md-3">
-                        <label for="txtPrecioVenta">Precio venta</label>
+                    <div class="form-group col-md-6">
+                        <label for="cboImpuesto">Impuesto</label>
+                        <select id="cboImpuesto" class="form-control">
+                            <option value="0">Seleccione un impuesto</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-6">
+                        <label for="txtPrecioVenta">Precio venta con IVA incluido</label>
                         <input type="number" id="txtPrecioVenta" class="form-control" min="0" step="0.01" />
                     </div>
 
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-6">
                         <label for="txtStockActual">Stock actual</label>
                         <input type="number" id="txtStockActual" class="form-control" min="0" step="0.01" />
                     </div>
@@ -136,16 +166,99 @@
     </div>
 </div>
 
+<div class="modal fade" id="ModalImportarCsv" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Importar productos desde CSV</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="alert alert-info">
+                    El archivo debe tener las columnas:
+                    <strong>NombreProducto, TipoProducto, Impuesto, Descripcion, PrecioVenta, StockActual</strong>.
+                    El código del producto se genera automáticamente.
+                </div>
+
+                <div class="form-group">
+                    <label for="archivoCsv">Archivo CSV</label>
+                    <input type="file" id="archivoCsv" class="form-control-file" accept=".csv" />
+                </div>
+
+                <div class="border rounded p-3 bg-light">
+                    <strong>Ejemplo:</strong>
+<pre class="mb-0">NombreProducto,TipoProducto,Impuesto,Descripcion,PrecioVenta,StockActual
+Arroz 1kg,Granos,IVA general 13%,Arroz empacado 1 kilogramo,1200,50
+Leche 1L,Lácteos,IVA general 13%,Leche líquida 1 litro,950,35</pre>
+                </div>
+
+                <div class="alert alert-danger mt-3" id="mensajeErrorCsv" style="display:none;"></div>
+                <div class="alert alert-success mt-3" id="mensajeExitoCsv" style="display:none;"></div>
+
+                <ul id="listaErroresCsv" class="mt-3"></ul>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-success" onclick="importarProductosCsv()">
+                    Importar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         var listaProductos = [];
 
         $(document).ready(function () {
             cargarTipoProductosActivos();
+            cargarImpuestos();
             cargarProductos();
 
             $("#txtBuscar").on("keyup", function () {
                 pintarTabla();
+            });
+
+            $("#txtCodigoProducto").on("input", function () {
+                limpiarCodigoProducto("txtCodigoProducto", "Solo se permiten letras, números, guiones y guion bajo.");
+            });
+
+            $("#txtNombreProducto").on("input", function () {
+                limpiarTextoProducto("txtNombreProducto", "Solo se permiten letras, números, espacios y caracteres básicos.");
+            });
+
+            $("#txtPrecioVenta").on("input", function () {
+                limpiarNoDecimal("txtPrecioVenta", "Solo se permiten números y punto decimal en el precio de venta.");
+            });
+
+            $("#txtStockActual").on("input", function () {
+                limpiarNoDecimal("txtStockActual", "Solo se permiten números y punto decimal en el stock.");
+            });
+
+            $("#txtDescripcion").on("input", function () {
+                if ($(this).val().length > 250) {
+                    $(this).val($(this).val().substring(0, 250));
+                    mostrarAyudaCampo("txtDescripcion", "La descripción no puede superar los 250 caracteres.");
+                } else {
+                    ocultarAyudaCampo("txtDescripcion");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
             });
         });
 
@@ -155,7 +268,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaProductos = respuesta.data;
+                    listaProductos = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -170,13 +283,11 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-
                     $("#cboTipoProducto").empty();
                     $("#cboTipoProducto").append('<option value="0">Seleccione un tipo de producto</option>');
 
-                    $.each(respuesta.data, function (i, item) {
-
-                        var nombre = item.Nombre || item.TipoProductoNombre || "";
+                    $.each(respuesta.data || [], function (i, item) {
+                        var nombre = item.TipoProductoNombre || item.Descripcion || "";
 
                         $("#cboTipoProducto").append(
                             $("<option>", {
@@ -185,11 +296,33 @@
                             })
                         );
                     });
-
-                    $("#cboTipoProducto").trigger("change");
                 },
                 error: function () {
                     alert("Error al cargar los tipos de producto.");
+                }
+            });
+        }
+
+        function cargarImpuestos() {
+            $.ajax({
+                url: '@Url.Action("ListarImpuestosActivos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboImpuesto").empty();
+                    $("#cboImpuesto").append('<option value="0">Seleccione un impuesto</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboImpuesto").append(
+                            $("<option>", {
+                                value: item.IdImpuesto,
+                                text: item.Nombre + " (" + parseFloat(item.Porcentaje || 0).toFixed(2) + "%)"
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los impuestos.");
                 }
             });
         }
@@ -200,14 +333,26 @@
 
             tbody.empty();
 
-            $.each(listaProductos, function (i, item) {
+            if (listaProductos.length === 0) {
+                tbody.append(
+                    '<tr>' +
+                        '<td colspan="8" class="text-center text-muted">' +
+                            'No hay productos registrados.' +
+                        '</td>' +
+                    '</tr>'
+                );
+                return;
+            }
 
+            $.each(listaProductos, function (i, item) {
                 var codigo = item.CodigoProducto || "";
                 var nombre = item.NombreProducto || "";
                 var tipo = item.TipoProductoNombre || "";
+                var impuestoNombre = item.ImpuestoNombre || "";
+                var porcentajeImpuesto = parseFloat(item.PorcentajeImpuesto || 0);
                 var descripcion = item.Descripcion || "";
 
-                var texto = (codigo + " " + nombre + " " + tipo + " " + descripcion).toLowerCase();
+                var texto = (codigo + " " + nombre + " " + tipo + " " + impuestoNombre + " " + descripcion).toLowerCase();
 
                 if (texto.indexOf(filtro) === -1) {
                     return;
@@ -219,26 +364,40 @@
 
                 var precio = parseFloat(item.PrecioVenta || 0).toFixed(2);
                 var stock = parseFloat(item.StockActual || 0).toFixed(2);
+                var impuestoTexto = impuestoNombre === ""
+                    ? ""
+                    : impuestoNombre + " (" + porcentajeImpuesto.toFixed(2) + "%)";
 
-                var fila = `
-                    <tr>
-                        <td>${codigo}</td>
-                        <td>${nombre}</td>
-                        <td>${tipo}</td>
-                        <td>₡${precio}</td>
-                        <td>${stock}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarProducto(${item.IdProducto})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
 
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarProducto(item.IdProducto);
+                });
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(codigo));
+                fila.append($("<td>").text(nombre));
+                fila.append($("<td>").text(tipo));
+                fila.append($("<td>").text(impuestoTexto));
+                fila.append($("<td>").text("₡" + precio));
+                fila.append($("<td>").text(stock));
+                fila.append($("<td>").html(estado));
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                fila.append(acciones);
                 tbody.append(fila);
             });
         }
@@ -250,6 +409,7 @@
             $("#txtCodigoProducto").val("");
             $("#txtNombreProducto").val("");
             $("#cboTipoProducto").val(0);
+            $("#cboImpuesto").val(0);
             $("#txtPrecioVenta").val("0.00");
             $("#txtStockActual").val("0.00");
             $("#txtDescripcion").val("");
@@ -258,9 +418,10 @@
 
             if (json != null) {
                 $("#txtIdProducto").val(json.IdProducto);
-                $("#txtCodigoProducto").val(json.CodigoProducto);
-                $("#txtNombreProducto").val(json.NombreProducto);
+                $("#txtCodigoProducto").val(json.CodigoProducto || "");
+                $("#txtNombreProducto").val(json.NombreProducto || "");
                 $("#cboTipoProducto").val(json.IdTipoProducto);
+                $("#cboImpuesto").val(json.IdImpuesto);
                 $("#txtPrecioVenta").val(parseFloat(json.PrecioVenta || 0).toFixed(2));
                 $("#txtStockActual").val(parseFloat(json.StockActual || 0).toFixed(2));
                 $("#txtDescripcion").val(json.Descripcion || "");
@@ -272,96 +433,108 @@
         }
 
         function guardarProducto() {
-            var obj = {
-                IdProducto: parseInt($("#txtIdProducto").val()),
-                CodigoProducto: $("#txtCodigoProducto").val().trim(),
-                NombreProducto: $("#txtNombreProducto").val().trim(),
-                IdTipoProducto: parseInt($("#cboTipoProducto").val()),
-                Descripcion: $("#txtDescripcion").val().trim(),
-                PrecioVenta: parseFloat($("#txtPrecioVenta").val()),
-                StockActual: parseFloat($("#txtStockActual").val()),
-                Activo: $("#cboActivo").val() === "true"
-            };
+    $("#mensajeError").hide().text("");
 
-            if (obj.IdProducto !== 0 && obj.CodigoProducto === "") {
-                $("#mensajeError").text("El código del producto no puede estar vacío.").show();
-                return;
+    var precioTexto = $("#txtPrecioVenta").val().trim();
+    var stockTexto = $("#txtStockActual").val().trim();
+
+    var obj = {
+        IdProducto: parseInt($("#txtIdProducto").val()),
+        CodigoProducto: $("#txtCodigoProducto").val().trim(),
+        NombreProducto: $("#txtNombreProducto").val().trim(),
+        IdTipoProducto: parseInt($("#cboTipoProducto").val()),
+        IdImpuesto: parseInt($("#cboImpuesto").val()),
+        Descripcion: $("#txtDescripcion").val().trim(),
+        PrecioVenta: precioTexto === "" ? 0 : parseFloat(precioTexto),
+        StockActual: stockTexto === "" ? 0 : parseFloat(stockTexto),
+        Activo: $("#cboActivo").val() === "true"
+    };
+
+    if (isNaN(obj.IdProducto)) {
+        obj.IdProducto = 0;
+    }
+
+    if (obj.IdProducto !== 0 && obj.CodigoProducto === "") {
+        mostrarError("El código del producto no puede estar vacío.", "txtCodigoProducto");
+        return;
+    }
+
+    if (obj.CodigoProducto !== "" && !validarCodigoProducto(obj.CodigoProducto)) {
+        mostrarError("El código solo puede contener letras, números, guiones y guion bajo.", "txtCodigoProducto");
+        return;
+    }
+
+    if (obj.CodigoProducto.length > 45) {
+        mostrarError("El código no puede superar los 45 caracteres.", "txtCodigoProducto");
+        return;
+    }
+
+    if (obj.NombreProducto === "") {
+        mostrarError("Debe ingresar el nombre del producto.", "txtNombreProducto");
+        return;
+    }
+
+    if (!validarTextoProducto(obj.NombreProducto)) {
+        mostrarError("El nombre solo puede contener letras, números, espacios y caracteres básicos.", "txtNombreProducto");
+        return;
+    }
+
+    if (obj.NombreProducto.length > 150) {
+        mostrarError("El nombre no puede superar los 150 caracteres.", "txtNombreProducto");
+        return;
+    }
+
+    if (obj.IdTipoProducto === 0 || isNaN(obj.IdTipoProducto)) {
+        mostrarError("Debe seleccionar un tipo de producto.", "cboTipoProducto");
+        return;
+    }
+
+    if (obj.IdImpuesto === 0 || isNaN(obj.IdImpuesto)) {
+        mostrarError("Debe seleccionar un impuesto.", "cboImpuesto");
+        return;
+    }
+
+    if (obj.Descripcion.length > 250) {
+        mostrarError("La descripción no puede superar los 250 caracteres.", "txtDescripcion");
+        return;
+    }
+
+    var mensajePrecio = validarDecimalNoNegativo(precioTexto, "el precio de venta");
+    if (mensajePrecio !== "") {
+        mostrarError(mensajePrecio, "txtPrecioVenta");
+        return;
+    }
+
+    if (obj.PrecioVenta <= 0) {
+        mostrarError("El precio de venta debe ser mayor a 0.", "txtPrecioVenta");
+        return;
+    }
+
+    var mensajeStock = validarDecimalNoNegativo(stockTexto, "el stock actual");
+    if (mensajeStock !== "") {
+        mostrarError(mensajeStock, "txtStockActual");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarProducto", "Producto")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#FormModal").modal("hide");
+                cargarProductos();
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
             }
-
-            if (obj.IdProducto !== 0 && obj.CodigoProducto.length > 45) {
-                $("#mensajeError").text("El código no puede superar los 45 caracteres.").show();
-                return;
-            }
-
-            if (obj.NombreProducto === "") {
-                $("#mensajeError").text("Debe ingresar el nombre del producto.").show();
-                return;
-            }
-
-            if (obj.NombreProducto.length > 150) {
-                $("#mensajeError").text("El nombre no puede superar los 150 caracteres.").show();
-                return;
-            }
-
-            if (obj.IdTipoProducto === 0) {
-                $("#mensajeError").text("Debe seleccionar un tipo de producto.").show();
-                return;
-            }
-
-            if (obj.Descripcion.length > 250) {
-                $("#mensajeError").text("La descripción no puede superar los 250 caracteres.").show();
-                return;
-            }
-
-            if (isNaN(obj.PrecioVenta)) {
-                $("#mensajeError").text("Debe ingresar un precio de venta válido.").show();
-                return;
-            }
-
-            if (obj.PrecioVenta < 0) {
-                $("#mensajeError").text("El precio de venta no puede ser negativo.").show();
-                return;
-            }
-
-            if (isNaN(obj.StockActual)) {
-                $("#mensajeError").text("Debe ingresar un stock válido.").show();
-                return;
-            }
-
-            if (obj.StockActual < 0) {
-                $("#mensajeError").text("El stock actual no puede ser negativo.").show();
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("GuardarProducto", "Producto")',
-                type: "POST",
-                data: JSON.stringify({ obj: obj }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-
-                    if (obj.IdProducto === 0) {
-                        if (respuesta.resultado != 0) {
-                            $("#FormModal").modal("hide");
-                            cargarProductos();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
-                    } else {
-                        if (respuesta.resultado) {
-                            $("#FormModal").modal("hide");
-                            cargarProductos();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el producto.").show();
-                }
-            });
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el producto.").show();
         }
+    });
+}
 
         function inactivarProducto(id) {
             if (!confirm("¿Desea inactivar este producto?")) {
@@ -385,6 +558,161 @@
                     alert("Error al inactivar el producto.");
                 }
             });
+        }
+
+        function importarProductosCsv() {
+            var archivo = $("#archivoCsv")[0].files[0];
+
+            $("#mensajeErrorCsv").hide().text("");
+            $("#mensajeExitoCsv").hide().text("");
+            $("#listaErroresCsv").empty();
+
+            if (!archivo) {
+                $("#mensajeErrorCsv").text("Debe seleccionar un archivo CSV.").show();
+                return;
+            }
+
+            var extension = archivo.name.split(".").pop().toLowerCase();
+
+            if (extension !== "csv") {
+                $("#mensajeErrorCsv").text("El archivo debe tener extensión .csv.").show();
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("archivoCsv", archivo);
+
+            $.ajax({
+                url: '@Url.Action("ImportarProductosCsv", "Producto")',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        $("#mensajeExitoCsv").text(respuesta.mensaje).show();
+
+                        if (respuesta.detalle && respuesta.detalle.length > 0) {
+                            $.each(respuesta.detalle, function (i, item) {
+                                $("#listaErroresCsv").append(
+                                    $("<li>").text(item)
+                                );
+                            });
+                        }
+
+                        cargarProductos();
+                    } else {
+                        $("#mensajeErrorCsv").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorCsv").text("Error al importar el archivo CSV.").show();
+                }
+            });
+        }
+
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarCodigoProducto(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-Z0-9\-_]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarTextoProducto(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarNoDecimal(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9.]/g, "");
+
+            var partes = valorLimpio.split(".");
+            if (partes.length > 2) {
+                valorLimpio = partes[0] + "." + partes.slice(1).join("");
+            }
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarCodigoProducto(valor) {
+            return /^[a-zA-Z0-9\-_]+$/.test(valor);
+        }
+
+        function validarTextoProducto(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-&()]+$/.test(valor);
+        }
+
+        function validarDecimalNoNegativo(texto, nombreCampo) {
+            if (texto === "") {
+                return "Debe ingresar " + nombreCampo + ".";
+            }
+
+            if (!/^[0-9]+(\.[0-9]+)?$/.test(texto)) {
+                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+            }
+
+            var numero = parseFloat(texto);
+
+            if (isNaN(numero)) {
+                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+            }
+
+            if (numero < 0) {
+                return nombreCampo + " no puede ser negativo.";
+            }
+
+            return "";
         }
     </script>
 }

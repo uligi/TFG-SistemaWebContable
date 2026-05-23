@@ -3,6 +3,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+
+</style>
 <h4 class="font-weight-bold py-3 mb-0">Gestionar Cuentas Contables</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -21,9 +34,15 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h6 class="mb-0">Lista de cuentas contables</h6>
 
-        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
-            Nueva cuenta contable
-        </button>
+        <div>
+            <button type="button" class="btn btn-outline-info btn-sm mr-2" data-toggle="modal" data-target="#ModalAyudaCodigos">
+                Ver guía de códigos
+            </button>
+
+            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+                Nueva cuenta contable
+            </button>
+        </div>
     </div>
 
     <div class="card-body">
@@ -78,7 +97,7 @@
                         <label for="txtCodigoCuenta">Código de cuenta</label>
                         <input type="text" id="txtCodigoCuenta" class="form-control" maxlength="45" autocomplete="off" />
                         <small class="form-text text-muted" id="ayudaCodigoCuenta">
-                            Para cuentas principales, digite el código manualmente. Para cuentas hijas, seleccione una cuenta padre.
+                            Use “Ver guía de códigos” si necesita ayuda. Para subcuentas, seleccione una cuenta padre.
                         </small>
                     </div>
 
@@ -151,6 +170,122 @@
     </div>
 </div>
 
+<div class="modal fade" id="ModalAyudaCodigos" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Guía rápida de códigos contables</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <p class="mb-3">
+                    Para crear una cuenta principal, use uno de estos códigos.
+                    Para crear una subcuenta, seleccione una cuenta padre y el sistema generará el código automáticamente.
+                </p>
+
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:90px;">Código</th>
+                            <th>Cuenta principal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>1</code></td>
+                            <td>Activos</td>
+                        </tr>
+                        <tr>
+                            <td><code>2</code></td>
+                            <td>Pasivos</td>
+                        </tr>
+                        <tr>
+                            <td><code>3</code></td>
+                            <td>Patrimonio</td>
+                        </tr>
+                        <tr>
+                            <td><code>4</code></td>
+                            <td>Ingresos</td>
+                        </tr>
+                        <tr>
+                            <td><code>5</code></td>
+                            <td>Gastos</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr />
+
+                <h6 class="font-weight-bold">Ejemplos comunes</h6>
+
+                <table class="table table-sm table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:90px;">Código</th>
+                            <th>Cuenta sugerida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>1.01</code></td>
+                            <td>Activo corriente</td>
+                        </tr>
+                        <tr>
+                            <td><code>1.01.01</code></td>
+                            <td>Caja</td>
+                        </tr>
+                        <tr>
+                            <td><code>1.01.02</code></td>
+                            <td>Bancos</td>
+                        </tr>
+                        <tr>
+                            <td><code>1.01.03</code></td>
+                            <td>Cuentas por cobrar</td>
+                        </tr>
+                        <tr>
+                            <td><code>1.01.04</code></td>
+                            <td>Inventario</td>
+                        </tr>
+                        <tr>
+                            <td><code>2.01.01</code></td>
+                            <td>Cuentas por pagar proveedores</td>
+                        </tr>
+                        <tr>
+                            <td><code>4.01.01</code></td>
+                            <td>Ventas</td>
+                        </tr>
+                        <tr>
+                            <td><code>5.01.01</code></td>
+                            <td>Compras de mercadería</td>
+                        </tr>
+                        <tr>
+                            <td><code>5.01.02</code></td>
+                            <td>Servicios públicos</td>
+                        </tr>
+                        <tr>
+                            <td><code>5.01.03</code></td>
+                            <td>Salarios</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         var listaCuentasContables = [];
@@ -167,6 +302,25 @@
             });
 
             configurarEventoCuentaPadre();
+
+            $("#txtCodigoCuenta").on("input", function () {
+                limpiarCodigoCuenta("txtCodigoCuenta", "Solo se permiten números y puntos en el código contable.");
+            });
+
+            $("#txtNombreCuenta").on("input", function () {
+                limpiarTextoCuenta("txtNombreCuenta", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 100) {
+                    $(this).val($(this).val().substring(0, 100));
+                    mostrarAyudaCampo("txtNombreCuenta", "El nombre de la cuenta no puede superar los 100 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
         });
 
         function configurarEventoCuentaPadre() {
@@ -175,6 +329,8 @@
             $("#cboCuentaPadre").on("change", function () {
                 var idCuentaPadre = parseInt($(this).val());
                 var idCuentaActual = parseInt($("#txtIdCuentaContable").val());
+                ocultarAyudaCampo("cboCuentaPadre");
+                ocultarAyudaCampo("txtCodigoCuenta");
 
                 if (idCuentaActual > 0) {
                     return;
@@ -287,7 +443,7 @@
             $("#tituloModal").text("Nueva cuenta contable");
 
             $("#txtCodigoCuenta").prop("readonly", false);
-            $("#ayudaCodigoCuenta").text("Para cuentas principales, digite el código manualmente. Para cuentas hijas, seleccione una cuenta padre.");
+            $("#ayudaCodigoCuenta").text("Use “Ver guía de códigos” si necesita ayuda. Para subcuentas, seleccione una cuenta padre.");
 
             cargarCuentasPadre(0);
 
@@ -321,74 +477,100 @@
         }
 
         function guardarCuentaContable() {
-            var idCuentaPadre = parseInt($("#cboCuentaPadre").val());
+    $("#mensajeError").hide().text("");
 
-            var obj = {
-                IdCuentaContable: parseInt($("#txtIdCuentaContable").val()),
-                CodigoCuenta: $("#txtCodigoCuenta").val().trim(),
-                NombreCuenta: $("#txtNombreCuenta").val().trim(),
-                IdTipoCuentaContable: parseInt($("#cboTipoCuentaContable").val()),
-                IdNaturalezaCuentaContable: parseInt($("#cboNaturalezaCuentaContable").val()),
-                AceptaMovimientos: $("#cboAceptaMovimientos").val() === "true",
-                Activo: $("#cboActivo").val() === "true",
-                IdCuentaPadre: idCuentaPadre === 0 || isNaN(idCuentaPadre) ? null : idCuentaPadre
-            };
+    var idCuentaPadre = parseInt($("#cboCuentaPadre").val());
 
-            if (obj.CodigoCuenta === "") {
-                $("#mensajeError").text("Debe ingresar o generar el código de cuenta.").show();
-                return;
+    var obj = {
+        IdCuentaContable: parseInt($("#txtIdCuentaContable").val()),
+        CodigoCuenta: $("#txtCodigoCuenta").val().trim(),
+        NombreCuenta: $("#txtNombreCuenta").val().trim(),
+        IdTipoCuentaContable: parseInt($("#cboTipoCuentaContable").val()),
+        IdNaturalezaCuentaContable: parseInt($("#cboNaturalezaCuentaContable").val()),
+        AceptaMovimientos: $("#cboAceptaMovimientos").val() === "true",
+        Activo: $("#cboActivo").val() === "true",
+        IdCuentaPadre: idCuentaPadre === 0 || isNaN(idCuentaPadre) ? null : idCuentaPadre
+    };
+
+    if (isNaN(obj.IdCuentaContable)) {
+        obj.IdCuentaContable = 0;
+    }
+
+    if (obj.CodigoCuenta === "") {
+        mostrarError("Debe ingresar o generar el código de cuenta.", "txtCodigoCuenta");
+        return;
+    }
+
+    if (!validarCodigoCuenta(obj.CodigoCuenta)) {
+        mostrarError("El código contable solo puede contener números separados por puntos. Ejemplo: 1.01.01", "txtCodigoCuenta");
+        return;
+    }
+
+    if (obj.CodigoCuenta.length > 45) {
+        mostrarError("El código de cuenta no puede superar los 45 caracteres.", "txtCodigoCuenta");
+        return;
+    }
+
+    if (obj.NombreCuenta === "") {
+        mostrarError("Debe ingresar el nombre de la cuenta.", "txtNombreCuenta");
+        return;
+    }
+
+    if (!validarTextoCuenta(obj.NombreCuenta)) {
+        mostrarError("El nombre de la cuenta solo puede contener letras, números, espacios y caracteres básicos.", "txtNombreCuenta");
+        return;
+    }
+
+    if (obj.NombreCuenta.length > 100) {
+        mostrarError("El nombre de la cuenta no puede superar los 100 caracteres.", "txtNombreCuenta");
+        return;
+    }
+
+    if (obj.IdTipoCuentaContable === 0 || isNaN(obj.IdTipoCuentaContable)) {
+        mostrarError("Debe seleccionar un tipo de cuenta contable.", "cboTipoCuentaContable");
+        return;
+    }
+
+    if (obj.IdNaturalezaCuentaContable === 0 || isNaN(obj.IdNaturalezaCuentaContable)) {
+        mostrarError("Debe seleccionar una naturaleza de cuenta contable.", "cboNaturalezaCuentaContable");
+        return;
+    }
+
+    if (obj.IdCuentaPadre != null && obj.IdCuentaPadre === obj.IdCuentaContable) {
+        mostrarError("Una cuenta no puede ser su propia cuenta padre.", "cboCuentaPadre");
+        return;
+    }
+
+    if (obj.IdCuentaPadre == null && obj.CodigoCuenta.indexOf(".") !== -1) {
+        mostrarError("Si el código tiene puntos, debe seleccionar una cuenta padre.", "cboCuentaPadre");
+        return;
+    }
+
+    if (obj.IdCuentaPadre != null && obj.CodigoCuenta.indexOf(".") === -1) {
+        mostrarError("Si selecciona una cuenta padre, el código debe ser una subcuenta. Ejemplo: 1.01", "txtCodigoCuenta");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarCuentaContable", "GestionarCuentaContable")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#FormModal").modal("hide");
+                cargarCuentasContables();
+                cargarCuentasPadre();
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
             }
-
-            if (obj.CodigoCuenta.length > 45) {
-                $("#mensajeError").text("El código de cuenta no puede superar los 45 caracteres.").show();
-                return;
-            }
-
-            if (obj.NombreCuenta === "") {
-                $("#mensajeError").text("Debe ingresar el nombre de la cuenta.").show();
-                return;
-            }
-
-            if (obj.NombreCuenta.length > 100) {
-                $("#mensajeError").text("El nombre de la cuenta no puede superar los 100 caracteres.").show();
-                return;
-            }
-
-            if (obj.IdTipoCuentaContable === 0 || isNaN(obj.IdTipoCuentaContable)) {
-                $("#mensajeError").text("Debe seleccionar un tipo de cuenta contable.").show();
-                return;
-            }
-
-            if (obj.IdNaturalezaCuentaContable === 0 || isNaN(obj.IdNaturalezaCuentaContable)) {
-                $("#mensajeError").text("Debe seleccionar una naturaleza de cuenta contable.").show();
-                return;
-            }
-
-            if (obj.IdCuentaPadre != null && obj.IdCuentaPadre === obj.IdCuentaContable) {
-                $("#mensajeError").text("Una cuenta no puede ser su propia cuenta padre.").show();
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("GuardarCuentaContable", "GestionarCuentaContable")',
-                type: "POST",
-                data: JSON.stringify({ obj: obj }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#FormModal").modal("hide");
-                        cargarCuentasContables();
-                        cargarCuentasPadre();
-                    } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar la cuenta contable.").show();
-                }
-            });
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar la cuenta contable.").show();
         }
+    });
+}
 
         function inactivarCuentaContable(idCuentaContable) {
             if (!confirm("¿Desea inactivar esta cuenta contable?")) {
@@ -516,6 +698,75 @@
                     $("#ayudaCodigoCuenta").text("Error al generar el código de cuenta.");
                 }
             });
+        }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarCodigoCuenta(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9.]/g, "");
+
+            valorLimpio = valorLimpio.replace(/\.{2,}/g, ".");
+
+            if (valorLimpio.startsWith(".")) {
+                valorLimpio = valorLimpio.substring(1);
+            }
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarTextoCuenta(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarCodigoCuenta(codigo) {
+            return /^[0-9]+(\.[0-9]+)*$/.test(codigo);
+        }
+
+        function validarTextoCuenta(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
         }
     </script>
 }

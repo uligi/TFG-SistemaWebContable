@@ -17,6 +17,305 @@
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%);
+            overflow-x: hidden;
+        }
+
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 35px 18px;
+            position: relative;
+        }
+
+            .login-page::before,
+            .login-page::after {
+                content: "";
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.08);
+                z-index: 0;
+            }
+
+            .login-page::before {
+                width: 340px;
+                height: 340px;
+                top: -90px;
+                right: -90px;
+            }
+
+            .login-page::after {
+                width: 260px;
+                height: 260px;
+                bottom: -80px;
+                left: -70px;
+            }
+
+        .login-container {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 620px;
+            background: #ffffff;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(15, 23, 42, 0.35);
+            display: flex;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-info {
+            width: 50%;
+            background: linear-gradient(160deg, #0f172a, #1d4ed8);
+            color: white;
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+            .login-info::after {
+                content: "";
+                position: absolute;
+                width: 280px;
+                height: 280px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.08);
+                right: -90px;
+                bottom: -90px;
+            }
+
+        .login-brand {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-box {
+            width: 76px;
+            height: 76px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 22px;
+        }
+
+            .logo-box img {
+                max-width: 58px;
+                height: auto;
+            }
+
+        .login-info h1 {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            line-height: 1.2;
+        }
+
+        .login-info p {
+            color: #dbeafe;
+            font-size: 16px;
+            max-width: 420px;
+            margin-bottom: 0;
+        }
+
+        .login-features {
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-top: 18px;
+            color: #e0f2fe;
+        }
+
+        .feature-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            font-size: 17px;
+        }
+
+        .feature-item strong {
+            display: block;
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .feature-item span {
+            font-size: 13px;
+            color: #bfdbfe;
+        }
+
+        .login-form-area {
+            width: 50%;
+            padding: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .login-form-box {
+            width: 100%;
+            max-width: 390px;
+        }
+
+        .mobile-logo {
+            display: none;
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+            .mobile-logo img {
+                max-width: 75px;
+                height: auto;
+            }
+
+        .form-title {
+            color: #0f172a;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: #64748b;
+            margin-bottom: 28px;
+            font-size: 14px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 7px;
+        }
+
+        .form-control {
+            border-radius: 14px;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            min-height: 46px;
+        }
+
+            .form-control:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+            }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+            .password-wrapper .form-control {
+                padding-right: 48px;
+            }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 8px;
+        }
+
+            .toggle-password:hover {
+                color: #1d4ed8;
+            }
+
+        .btn-login {
+            min-height: 46px;
+            border-radius: 14px;
+            font-weight: 700;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-password {
+            min-height: 44px;
+            border-radius: 14px;
+            font-weight: 600;
+        }
+
+        .security-note {
+            margin-top: 22px;
+            padding: 14px;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .alert {
+            border-radius: 14px;
+            font-size: 14px;
+        }
+
+        @@media (max-width: 900px) {
+            .login-container {
+                max-width: 520px;
+                min-height: auto;
+                display: block;
+            }
+
+            .login-info {
+                display: none;
+            }
+
+            .login-form-area {
+                width: 100%;
+                padding: 38px 28px;
+            }
+
+            .mobile-logo {
+                display: block;
+            }
+
+            .form-title,
+            .form-subtitle {
+                text-align: center;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .login-page {
+                padding: 18px 12px;
+            }
+
+            .login-form-area {
+                padding: 32px 22px;
+            }
+
+            .form-title {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -25,80 +324,146 @@
         <div class="bg-primary"></div>
     </div>
 
-    <div class="authentication-wrapper authentication-1 px-4">
-        <div class="authentication-inner py-5">
+    <main class="login-page">
 
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="ui-w-60">
-                    <div class="w-100 position-relative text-center">
+        <section class="login-container">
+
+            <div class="login-info">
+                <div class="login-brand">
+                    <div class="logo-box">
                         <img src="~/Content/assets/img/logo.png"
-                             alt="Sistema Web Contable"
-                             class="img-fluid"
-                             style="max-width: 80px; height: auto;">
+                             alt="Sistema Web Contable" />
+                    </div>
+
+                    <h1>Sistema Web Contable</h1>
+
+                    <p>
+                        Plataforma diseñada para apoyar la administración financiera
+                        del Abastecedor Las Graditas.
+                    </p>
+                </div>
+
+                <div class="login-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">₡</div>
+                        <div>
+                            <strong>Control financiero</strong>
+                            <span>Gestión de ingresos, gastos y presupuesto mensual.</span>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">📄</div>
+                        <div>
+                            <strong>Procesos contables</strong>
+                            <span>Facturación, cuentas por cobrar y cuentas por pagar.</span>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">🔒</div>
+                        <div>
+                            <strong>Acceso seguro</strong>
+                            <span>Ingreso mediante usuario y contraseña autorizados.</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4">
-                <h4 class="font-weight-bold">Sistema Web Contable</h4>
-                <p class="text-muted">Abastecedor Las Graditas</p>
+            <div class="login-form-area">
+                <div class="login-form-box">
+
+                    <div class="mobile-logo">
+                        <img src="~/Content/assets/img/logo.png"
+                             alt="Sistema Web Contable" />
+                    </div>
+
+                    <h2 class="form-title">Inicio de sesión</h2>
+                    <p class="form-subtitle">
+                        Ingrese sus credenciales para acceder al sistema.
+                    </p>
+
+                    @using (Html.BeginForm("InicioSesion", "Acceso", FormMethod.Post, new { @class = "login-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        if (ViewBag.Mensaje != null)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Acceso no autorizado.</strong><br />
+                                @ViewBag.Mensaje
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <label class="form-label">Nombre de usuario</label>
+                            <input type="text"
+                                   name="NombreUsuario"
+                                   class="form-control"
+                                   placeholder="Ingrese su usuario"
+                                   autocomplete="username"
+                                   required />
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Contraseña</label>
+
+                            <div class="password-wrapper">
+                                <input type="password"
+                                       id="txtClave"
+                                       name="Clave"
+                                       class="form-control"
+                                       placeholder="Ingrese su contraseña"
+                                       autocomplete="current-password"
+                                       required />
+
+                                <button type="button"
+                                        class="toggle-password"
+                                        onclick="mostrarOcultarClave()"
+                                        title="Mostrar u ocultar contraseña">
+                                    👁
+                                </button>
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <button type="submit" class="btn btn-primary btn-block btn-login">
+                                Iniciar sesión
+                            </button>
+                        </div>
+
+
+
+                        <div class="security-note">
+                            Por seguridad, no comparta sus credenciales. El acceso está reservado
+                            para usuarios autorizados del sistema.
+                        </div>
+                    }
+
+                </div>
             </div>
 
-            @using (Html.BeginForm("InicioSesion", "Acceso", FormMethod.Post, new { @class = "my-5" }))
-            {
-                @Html.AntiForgeryToken()
+        </section>
 
-                if (ViewBag.Mensaje != null)
-                {
-                    <div class="alert alert-danger" role="alert">
-                        @ViewBag.Mensaje
-                    </div>
-                }
-
-                <div class="form-group">
-                    <label class="form-label">Nombre de usuario</label>
-                    <input type="text"
-                           name="NombreUsuario"
-                           class="form-control"
-                           placeholder="Ingrese su usuario"
-                           autocomplete="username"
-                           required />
-                    <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label d-flex justify-content-between align-items-end">
-                        <span>Contraseña</span>
-                    </label>
-
-                    <input type="password"
-                           name="Clave"
-                           class="form-control"
-                           placeholder="Ingrese su contraseña"
-                           autocomplete="current-password"
-                           required />
-                    <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group mb-3">
-                    <button type="submit" class="btn btn-primary btn-block">
-                        Iniciar sesión
-                    </button>
-                </div>
-
-                <div class="form-group mb-0">
-                    <button type="button" class="btn btn-outline-secondary btn-block">
-                        Solicitar nueva contraseña
-                    </button>
-                </div>
-            }
-
-        </div>
-    </div>
+    </main>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    
+
+    <script>
+        function mostrarOcultarClave() {
+            const input = document.getElementById("txtClave");
+
+            if (input.type === "password") {
+                input.type = "text";
+            } else {
+                input.type = "password";
+            }
+        }
+    </script>
 
 </body>
 </html>

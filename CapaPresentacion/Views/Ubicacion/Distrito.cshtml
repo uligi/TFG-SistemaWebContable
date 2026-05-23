@@ -1,10 +1,21 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Distrito";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
 
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Distritos</h4>
 
@@ -39,14 +50,8 @@
 
     <div class="card-body">
 
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar distrito, cantón o provincia...">
-            </div>
-        </div>
-
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaDistritos">
+            <table class="table table-striped table-bordered nowrap" id="tablaDistritos" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Distrito</th>
@@ -56,8 +61,7 @@
                         <th style="width:170px;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
 
@@ -70,6 +74,7 @@
 
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title" id="tituloModal">Nuevo distrito</h5>
+
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -95,7 +100,11 @@
 
                 <div class="form-group">
                     <label for="txtNombre">Nombre del distrito</label>
-                    <input type="text" id="txtNombre" class="form-control" maxlength="45" autocomplete="off" />
+                    <input type="text"
+                           id="txtNombre"
+                           class="form-control"
+                           maxlength="45"
+                           autocomplete="off" />
                 </div>
 
                 <div class="form-group">
@@ -114,6 +123,7 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
                 </button>
+
                 <button type="button" class="btn btn-primary" onclick="guardarDistrito()">
                     Guardar
                 </button>
@@ -126,22 +136,49 @@
 @section scripts {
     <script>
         var listaDistritos = [];
+        var tablaDistritos = null;
 
         $(document).ready(function () {
             cargarProvinciasActivas();
             cargarDistritos();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
-            });
-
             $("#cboProvincia").on("change", function () {
                 var idProvincia = parseInt($(this).val());
+
+                ocultarAyudaCampo("cboProvincia");
+                ocultarAyudaCampo("cboCanton");
+
                 cargarCantonesPorProvincia(idProvincia, 0);
             });
+
             $("#archivoCsvDistrito").on("change", function () {
                 cargarCsvDistrito();
             });
+
+            $("#txtNombre").on("input", function () {
+                limpiarTextoUbicacion("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo("txtNombre", "El nombre del distrito no puede superar los 45 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("cboProvincia");
+                ocultarAyudaCampo("cboCanton");
+                ocultarAyudaCampo("txtNombre");
+            });
+
+
+
         });
 
         function cargarDistritos() {
@@ -150,7 +187,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaDistritos = respuesta.data;
+                    listaDistritos = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -158,39 +195,105 @@
                 }
             });
         }
-        function cargarCsvDistrito() {
-    var archivo = $("#archivoCsvDistrito")[0].files[0];
 
-    if (archivo == null) {
-        alert("Debe seleccionar un archivo CSV.");
-        return;
-    }
+        function pintarTabla() {
 
-    var formData = new FormData();
-    formData.append("archivo", archivo);
-
-    $.ajax({
-        url: '@Url.Action("CargarCsvDistritos", "Ubicacion")',
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                alert("Insertados: " + respuesta.data.insertados + "\nErrores: " + respuesta.data.errores);
-                cargarDistritos();
-            } else {
-                alert(respuesta.mensaje);
+            if ($.fn.DataTable.isDataTable("#tablaDistritos")) {
+                $("#tablaDistritos").DataTable().destroy();
             }
 
-            $("#archivoCsvDistrito").val("");
-        },
-        error: function () {
-            alert("Error al cargar el archivo CSV.");
-            $("#archivoCsvDistrito").val("");
+            var tbody = $("#tablaDistritos tbody");
+            tbody.empty();
+
+            $.each(listaDistritos, function (i, item) {
+
+                var estado = item.Activo
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var itemJson = JSON.stringify(item).replace(/'/g, "&#39;");
+
+                var fila = `
+                    <tr>
+                        <td>${item.Nombre}</td>
+                        <td>${item.CantonNombre}</td>
+                        <td>${item.ProvinciaNombre}</td>
+                        <td>${estado}</td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary"
+                                    onclick='abrirModal(${itemJson})'>
+                                Editar
+                            </button>
+
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger"
+                                    onclick="inactivarDistrito(${item.IdDistrito})">
+                                Inactivar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                tbody.append(fila);
+            });
+
+            tablaDistritos = $("#tablaDistritos").DataTable({
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50],
+                ordering: true,
+                searching: true,
+                responsive: true,
+                language: {
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    zeroRecords: "No se encontraron registros",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "No hay registros disponibles",
+                    infoFiltered: "(filtrado de _MAX_ registros totales)",
+                    search: "Buscar:",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    }
+                }
+            });
         }
-    });
-}
+
+        function cargarCsvDistrito() {
+            var archivo = $("#archivoCsvDistrito")[0].files[0];
+
+            if (archivo == null) {
+                alert("Debe seleccionar un archivo CSV.");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("archivo", archivo);
+
+            $.ajax({
+                url: '@Url.Action("CargarCsvDistritos", "Ubicacion")',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        alert("Insertados: " + respuesta.data.insertados + "\nErrores: " + respuesta.data.errores);
+                        cargarDistritos();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+
+                    $("#archivoCsvDistrito").val("");
+                },
+                error: function () {
+                    alert("Error al cargar el archivo CSV.");
+                    $("#archivoCsvDistrito").val("");
+                }
+            });
+        }
 
         function cargarProvinciasActivas() {
             $.ajax({
@@ -249,46 +352,11 @@
             });
         }
 
-        function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaDistritos tbody");
-
-            tbody.empty();
-
-            $.each(listaDistritos, function (i, item) {
-                var texto = (item.Nombre + " " + item.CantonNombre + " " + item.ProvinciaNombre).toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
-
-                var estado = item.Activo
-                    ? '<span class="badge badge-success">Activo</span>'
-                    : '<span class="badge badge-secondary">Inactivo</span>';
-
-                var fila = `
-                    <tr>
-                        <td>${item.Nombre}</td>
-                        <td>${item.CantonNombre}</td>
-                        <td>${item.ProvinciaNombre}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarDistrito(${item.IdDistrito})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
-
-                tbody.append(fila);
-            });
-        }
-
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("cboProvincia");
+            ocultarAyudaCampo("cboCanton");
+            ocultarAyudaCampo("txtNombre");
 
             $("#txtIdDistrito").val(0);
             $("#cboProvincia").val(0);
@@ -311,62 +379,75 @@
         }
 
         function guardarDistrito() {
-            var obj = {
-                IdDistrito: parseInt($("#txtIdDistrito").val()),
-                IdCanton: parseInt($("#cboCanton").val()),
-                Nombre: $("#txtNombre").val().trim(),
-                Activo: $("#cboActivo").val() === "true"
-            };
+    $("#mensajeError").hide().text("");
 
-            if (parseInt($("#cboProvincia").val()) === 0) {
-                $("#mensajeError").text("Debe seleccionar una provincia.").show();
-                return;
-            }
+    var idProvincia = parseInt($("#cboProvincia").val());
 
-            if (obj.IdCanton === 0) {
-                $("#mensajeError").text("Debe seleccionar un cantón.").show();
-                return;
-            }
+    var obj = {
+        IdDistrito: parseInt($("#txtIdDistrito").val()),
+        IdCanton: parseInt($("#cboCanton").val()),
+        Nombre: $("#txtNombre").val().trim(),
+        Activo: $("#cboActivo").val() === "true"
+    };
 
-            if (obj.Nombre === "") {
-                $("#mensajeError").text("Debe ingresar el nombre del distrito.").show();
-                return;
-            }
+    if (isNaN(obj.IdDistrito)) {
+        obj.IdDistrito = 0;
+    }
 
-            if (obj.Nombre.length > 45) {
-                $("#mensajeError").text("El nombre no puede superar los 45 caracteres.").show();
-                return;
-            }
+    if (idProvincia === 0 || isNaN(idProvincia)) {
+        mostrarError("Debe seleccionar una provincia.", "cboProvincia");
+        return;
+    }
 
-            $.ajax({
-                url: '@Url.Action("GuardarDistrito", "Ubicacion")',
-                type: "POST",
-                data: JSON.stringify({ obj: obj }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
+    if (obj.IdCanton === 0 || isNaN(obj.IdCanton)) {
+        mostrarError("Debe seleccionar un cantón.", "cboCanton");
+        return;
+    }
 
-                    if (obj.IdDistrito === 0) {
-                        if (respuesta.resultado != 0) {
-                            $("#FormModal").modal("hide");
-                            cargarDistritos();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
-                    } else {
-                        if (respuesta.resultado) {
-                            $("#FormModal").modal("hide");
-                            cargarDistritos();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el distrito.").show();
+    if (obj.Nombre === "") {
+        mostrarError("Debe ingresar el nombre del distrito.", "txtNombre");
+        return;
+    }
+
+    if (!validarTextoUbicacion(obj.Nombre)) {
+        mostrarError("El nombre del distrito solo puede contener letras, números, espacios y caracteres básicos.", "txtNombre");
+        return;
+    }
+
+    if (obj.Nombre.length > 45) {
+        mostrarError("El nombre del distrito no puede superar los 45 caracteres.", "txtNombre");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarDistrito", "Ubicacion")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+
+            if (obj.IdDistrito === 0) {
+                if (respuesta.resultado != 0) {
+                    $("#FormModal").modal("hide");
+                    cargarDistritos();
+                } else {
+                    $("#mensajeError").text(respuesta.mensaje).show();
                 }
-            });
+            } else {
+                if (respuesta.resultado) {
+                    $("#FormModal").modal("hide");
+                    cargarDistritos();
+                } else {
+                    $("#mensajeError").text(respuesta.mensaje).show();
+                }
+            }
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el distrito.").show();
         }
+    });
+}
 
         function inactivarDistrito(id) {
             if (!confirm("¿Desea inactivar este distrito?")) {
@@ -391,6 +472,51 @@
                 }
             });
         }
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarTextoUbicacion(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoUbicacion(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
+        }
+
     </script>
 }
-

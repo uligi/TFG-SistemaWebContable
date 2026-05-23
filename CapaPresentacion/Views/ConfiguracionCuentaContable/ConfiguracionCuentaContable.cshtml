@@ -1,0 +1,287 @@
+﻿
+
+
+@{
+    ViewBag.Title = "Configuración Cuenta Contable";
+    Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
+}
+
+<h4 class="font-weight-bold py-3 mb-0">Configuración de Cuentas Contables</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Contabilidad</li>
+        <li class="breadcrumb-item active">Configuración Cuenta Contable</li>
+    </ol>
+</div>
+
+<div class="alert alert-info">
+    Configure aquí las cuentas contables que utilizará el sistema para registrar movimientos automáticos.
+    Esto evita dejar cuentas quemadas en el código o en los procedimientos almacenados.
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h6 class="mb-0">Operaciones automáticas configuradas</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered nowrap" id="tablaConfiguraciones" style="width:100%;">     <thead>
+                    <tr>
+                        <th>Operación</th>
+                        <th>Código</th>
+                        <th>Cuenta contable</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th style="width:120px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Editar configuración contable</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="txtIdConfiguracionCuentaContable" value="0" />
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-6">
+                        <label>Código de operación</label>
+                        <input type="text" id="txtCodigoOperacion" class="form-control" readonly />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Nombre de operación</label>
+                        <input type="text" id="txtNombreOperacion" class="form-control" readonly />
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="cboCuentaContable">Cuenta contable</label>
+                    <select id="cboCuentaContable" class="form-control">
+                        <option value="0">Seleccione una cuenta contable</option>
+                    </select>
+                    <small class="form-text text-muted">
+                        Esta cuenta será utilizada automáticamente por el sistema para esta operación.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescripcion">Descripción</label>
+                    <textarea id="txtDescripcion" class="form-control" maxlength="200" rows="3"></textarea>
+                    <small class="form-text text-muted">Máximo 200 caracteres.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="cboActivo">Estado</label>
+                    <select id="cboActivo" class="form-control">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-danger mt-2" id="mensajeError" style="display:none;"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarConfiguracion()">
+                    Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var tablaConfiguraciones = null;
+        var listaConfiguraciones = [];
+        var listaCuentasContables = [];
+
+        $(document).ready(function () {
+            cargarConfiguraciones();
+            cargarCuentasContables();
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+            });
+        });
+
+        function cargarConfiguraciones() {
+            $.ajax({
+                url: '@Url.Action("ListarConfiguraciones", "ConfiguracionCuentaContable")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaConfiguraciones = respuesta.data || [];
+                    pintarTablaConfiguraciones();
+                },
+                error: function () {
+                    alert("Error al cargar las configuraciones contables.");
+                }
+            });
+        }
+
+        function cargarCuentasContables() {
+            $.ajax({
+                url: '@Url.Action("ListarCuentasContablesMovimiento", "ConfiguracionCuentaContable")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaCuentasContables = respuesta.data || [];
+                    pintarComboCuentasContables();
+                },
+                error: function () {
+                    alert("Error al cargar las cuentas contables.");
+                }
+            });
+        }
+
+        function pintarComboCuentasContables() {
+            $("#cboCuentaContable").empty();
+            $("#cboCuentaContable").append('<option value="0">Seleccione una cuenta contable</option>');
+
+            $.each(listaCuentasContables, function (i, item) {
+                $("#cboCuentaContable").append(
+                    $("<option>", {
+                        value: item.IdCuentaContable,
+                        text: (item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "")
+                    })
+                );
+            });
+        }
+
+        function pintarTablaConfiguraciones() {
+            if (tablaConfiguraciones != null) {
+                tablaConfiguraciones.clear().destroy();
+                tablaConfiguraciones = null;
+            }
+
+            var tbody = $("#tablaConfiguraciones tbody");
+            tbody.empty();
+
+            $.each(listaConfiguraciones, function (i, item) {
+                var estado = item.Activo
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var cuenta = (item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "");
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.NombreOperacion || ""));
+                fila.append($("<td>").text(item.CodigoOperacion || ""));
+                fila.append($("<td>").text(cuenta));
+                fila.append($("<td>").text(item.Descripcion || ""));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
+
+                tbody.append(fila);
+            });
+
+            tablaConfiguraciones = $("#tablaConfiguraciones").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function abrirModal(json) {
+            $("#mensajeError").hide().text("");
+
+            $("#txtIdConfiguracionCuentaContable").val(json.IdConfiguracionCuentaContable);
+            $("#txtCodigoOperacion").val(json.CodigoOperacion || "");
+            $("#txtNombreOperacion").val(json.NombreOperacion || "");
+            $("#cboCuentaContable").val(json.IdCuentaContable);
+            $("#txtDescripcion").val(json.Descripcion || "");
+            $("#cboActivo").val(json.Activo ? "true" : "false");
+
+            $("#FormModal").modal("show");
+        }
+
+        function guardarConfiguracion() {
+            var obj = {
+                IdConfiguracionCuentaContable: parseInt($("#txtIdConfiguracionCuentaContable").val()),
+                CodigoOperacion: $("#txtCodigoOperacion").val(),
+                NombreOperacion: $("#txtNombreOperacion").val(),
+                Descripcion: $("#txtDescripcion").val().trim(),
+                IdCuentaContable: parseInt($("#cboCuentaContable").val()),
+                Activo: $("#cboActivo").val() === "true"
+            };
+
+            if (obj.IdConfiguracionCuentaContable === 0 || isNaN(obj.IdConfiguracionCuentaContable)) {
+                $("#mensajeError").text("Debe seleccionar una configuración válida.").show();
+                return;
+            }
+
+            if (obj.IdCuentaContable === 0 || isNaN(obj.IdCuentaContable)) {
+                $("#mensajeError").text("Debe seleccionar una cuenta contable.").show();
+                return;
+            }
+
+            if (obj.Descripcion.length > 200) {
+                $("#mensajeError").text("La descripción no puede superar los 200 caracteres.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarConfiguracion", "ConfiguracionCuentaContable")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        $("#FormModal").modal("hide");
+                        cargarConfiguraciones();
+                    } else {
+                        $("#mensajeError").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al guardar la configuración contable.").show();
+                }
+            });
+        }
+    </script>
+}

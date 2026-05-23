@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Catalogos\Descuento.cs" />
+    <Compile Include="Catalogos\Impuesto.cs" />
     <Compile Include="Catalogos\NaturalezaCuentaContable.cs" />
     <Compile Include="Catalogos\Puesto.cs" />
     <Compile Include="Catalogos\TipoCorreo.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="Catalogos\TipoProducto.cs" />
     <Compile Include="Catalogos\TipoTelefono.cs" />
     <Compile Include="Contabilidad\AsientoContable.cs" />
+    <Compile Include="Contabilidad\ConfiguracionCuentaContable.cs" />
     <Compile Include="Contabilidad\CuentaContable.cs" />
     <Compile Include="Contabilidad\DetalleAsientoContable.cs" />
     <Compile Include="Contabilidad\PeriodoContable.cs" />
@@ -64,6 +67,8 @@
     <Compile Include="Facturacion\Factura.cs" />
     <Compile Include="Facturacion\NotaCredito.cs" />
     <Compile Include="Inventario\Producto.cs" />
+    <Compile Include="Movimientos\AbonoPendienteIngreso.cs" />
+    <Compile Include="Movimientos\FacturaContadoPendiente.cs" />
     <Compile Include="Movimientos\Gasto.cs" />
     <Compile Include="Movimientos\Ingreso.cs" />
     <Compile Include="Personas\Cliente.cs" />
@@ -73,9 +78,15 @@
     <Compile Include="Personas\Telefono.cs" />
     <Compile Include="Presupuesto\DetallePresupuestoMensual.cs" />
     <Compile Include="Presupuesto\PresupuestoMensual.cs" />
+    <Compile Include="Presupuesto\ResumenPresupuestoMensual.cs" />
     <Compile Include="Proveedores\CorreoProveedor.cs" />
     <Compile Include="Proveedores\Proveedor.cs" />
     <Compile Include="Proveedores\TelefonoProveedor.cs" />
+    <Compile Include="Reportes\ReporteCuentaPorCobrar.cs" />
+    <Compile Include="Reportes\ReporteCuentaPorPagar.cs" />
+    <Compile Include="Reportes\ReporteGasto.cs" />
+    <Compile Include="Reportes\ReporteIngreso.cs" />
+    <Compile Include="Reportes\ReporteResumenFinanciero.cs" />
     <Compile Include="Seguridad\HistorialCambio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Seguridad\IntentoAcceso.cs" />

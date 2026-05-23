@@ -254,5 +254,49 @@ namespace CapaDatos.Contabilidad
 
             return codigoGenerado;
         }
+
+
+        public List<CuentaContable> ListarParaMovimientos()
+        {
+            List<CuentaContable> lista = new List<CuentaContable>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Contabilidad.sp_CuentaContable_ListarParaMovimientos", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new CuentaContable()
+                            {
+                                IdCuentaContable = Convert.ToInt32(dr["IdCuentaContable"]),
+                                CodigoCuenta = dr["CodigoCuenta"].ToString(),
+                                NombreCuenta = dr["NombreCuenta"].ToString(),
+
+                                IdTipoCuentaContable = Convert.ToInt32(dr["IdTipoCuentaContable"]),
+                                IdNaturalezaCuentaContable = Convert.ToInt32(dr["IdNaturalezaCuentaContable"]),
+
+                                AceptaMovimientos = Convert.ToBoolean(dr["AceptaMovimientos"]),
+                                Activo = Convert.ToBoolean(dr["Activo"]),
+
+                                IdCuentaPadre = dr["IdCuentaPadre"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdCuentaPadre"])
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<CuentaContable>();
+            }
+
+            return lista;
+        }
     }
 }

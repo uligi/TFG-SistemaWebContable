@@ -3,6 +3,19 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Proveedores</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -308,6 +321,28 @@
                 var idCanton = parseInt($(this).val());
                 cargarDistritosPorCanton(idCanton, 0);
             });
+
+            $("#txtRazonSocial").on("input", function () {
+                limpiarTextoProveedor("txtRazonSocial", "Solo se permiten letras, números, espacios y caracteres básicos.");
+            });
+
+            $("#txtNombreContacto").on("input", function () {
+                limpiarNoLetras("txtNombreContacto", "Solo se permiten letras y espacios en el nombre de contacto.");
+            });
+
+            $("#txtNumeroTelefonoProveedor").on("input", function () {
+                limpiarNoNumeros("txtNumeroTelefonoProveedor", "Solo se permiten números en el teléfono.");
+            });
+
+            $("#txtDiasCredito").on("input", function () {
+                limpiarNoNumeros("txtDiasCredito", "Solo se permiten números enteros en los días de crédito.");
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
         });
 
         function cargarProveedores() {
@@ -442,79 +477,85 @@
             $("#FormModal").modal("show");
         }
 
-        function guardarProveedor() {
-            var diasCreditoTexto = $("#txtDiasCredito").val();
+       function guardarProveedor() {
+    $("#mensajeError").hide().text("");
 
-            var obj = {
-                IdentificacionProveedor: $("#txtIdentificacionProveedor").val().trim(),
-                RazonSocial: $("#txtRazonSocial").val().trim(),
-                NombreContacto: $("#txtNombreContacto").val().trim(),
-                IdDistrito: parseInt($("#cboDistrito").val()) === 0 ? null : parseInt($("#cboDistrito").val()),
-                DireccionExacta: $("#txtDireccionExacta").val().trim(),
-                DiasCredito: diasCreditoTexto === "" ? null : parseInt(diasCreditoTexto),
-                Activo: $("#cboActivo").val() === "true"
-            };
+    var diasCreditoTexto = $("#txtDiasCredito").val().trim();
 
-            var esNuevo = $("#txtEsNuevo").val() === "true";
+    var obj = {
+        IdentificacionProveedor: $("#txtIdentificacionProveedor").val().trim(),
+        RazonSocial: $("#txtRazonSocial").val().trim(),
+        NombreContacto: $("#txtNombreContacto").val().trim(),
+        IdDistrito: parseInt($("#cboDistrito").val()) === 0 ? null : parseInt($("#cboDistrito").val()),
+        DireccionExacta: $("#txtDireccionExacta").val().trim(),
+        DiasCredito: diasCreditoTexto === "" ? null : parseInt(diasCreditoTexto),
+        Activo: $("#cboActivo").val() === "true"
+    };
 
-            
+    var esNuevo = $("#txtEsNuevo").val() === "true";
 
-            if (obj.RazonSocial === "") {
-                $("#mensajeError").text("Debe ingresar la razón social.").show();
-                return;
-            }
+    if (obj.RazonSocial === "") {
+        mostrarError("Debe ingresar la razón social.", "txtRazonSocial");
+        return;
+    }
 
-            if (obj.RazonSocial.length > 200) {
-                $("#mensajeError").text("La razón social no puede superar los 200 caracteres.").show();
-                return;
-            }
+    if (!validarTextoProveedor(obj.RazonSocial)) {
+        mostrarError("La razón social solo puede contener letras, números, espacios y caracteres básicos.", "txtRazonSocial");
+        return;
+    }
 
-            if (obj.NombreContacto.length > 100) {
-                $("#mensajeError").text("El nombre de contacto no puede superar los 100 caracteres.").show();
-                return;
-            }
+    if (obj.RazonSocial.length > 200) {
+        mostrarError("La razón social no puede superar los 200 caracteres.", "txtRazonSocial");
+        return;
+    }
 
-            if (obj.DireccionExacta.length > 250) {
-                $("#mensajeError").text("La dirección exacta no puede superar los 250 caracteres.").show();
-                return;
-            }
+    if (obj.NombreContacto !== "" && !soloTextoNombre(obj.NombreContacto)) {
+        mostrarError("El nombre de contacto solo puede contener letras y espacios.", "txtNombreContacto");
+        return;
+    }
 
-            if (diasCreditoTexto !== "" && isNaN(obj.DiasCredito)) {
-                $("#mensajeError").text("Debe ingresar días de crédito válidos.").show();
-                return;
-            }
+    if (obj.NombreContacto.length > 100) {
+        mostrarError("El nombre de contacto no puede superar los 100 caracteres.", "txtNombreContacto");
+        return;
+    }
 
-            if (obj.DiasCredito != null && obj.DiasCredito < 0) {
-                $("#mensajeError").text("Los días de crédito no pueden ser negativos.").show();
-                return;
-            }
+    if (obj.DireccionExacta.length > 250) {
+        mostrarError("La dirección exacta no puede superar los 250 caracteres.", "txtDireccionExacta");
+        return;
+    }
 
-            $.ajax({
-                url: '@Url.Action("GuardarProveedor", "Proveedor")',
-                type: "POST",
-                data: JSON.stringify({
-                    obj: obj,
-                    esNuevo: esNuevo
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#FormModal").modal("hide");
-                        cargarProveedores();
+    var mensajeDias = validarEnteroNoNegativo(diasCreditoTexto, "los días de crédito");
+    if (mensajeDias !== "") {
+        mostrarError(mensajeDias, "txtDiasCredito");
+        return;
+    }
 
-                        if (esNuevo && respuesta.identificacionProveedorGenerada !== "") {
-                            alert("Proveedor registrado correctamente.\nCódigo generado: " + respuesta.identificacionProveedorGenerada);
-                        }
-                    } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el proveedor.").show();
+    $.ajax({
+        url: '@Url.Action("GuardarProveedor", "Proveedor")',
+        type: "POST",
+        data: JSON.stringify({
+            obj: obj,
+            esNuevo: esNuevo
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#FormModal").modal("hide");
+                cargarProveedores();
+
+                if (esNuevo && respuesta.identificacionProveedorGenerada !== "") {
+                    alert("Proveedor registrado correctamente.\nCódigo generado: " + respuesta.identificacionProveedorGenerada);
                 }
-            });
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
+            }
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el proveedor.").show();
         }
+    });
+}
 
          function inactivarProveedor(identificacionProveedor) {
             if (!confirm("¿Desea inactivar este proveedor?")) {
@@ -758,69 +799,67 @@
             $("#cboTelefonoPrincipalProveedor").val(item.EsPrincipal ? "true" : "false");
         }
 
-        function guardarTelefonoProveedor() {
-            var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
+       function guardarTelefonoProveedor() {
+    $("#mensajeError").hide().text("");
 
-            var obj = {
-                IdentificacionProveedor: identificacionProveedor,
-                NumeroTelefono: $("#txtNumeroTelefonoProveedor").val().trim(),
-                IdTipoTelefono: parseInt($("#cboTipoTelefonoProveedor").val()),
-                EsPrincipal: $("#cboTelefonoPrincipalProveedor").val() === "true",
-                Activo: true
-            };
+    var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
 
-            var esNuevo = $("#txtTelefonoEsNuevo").val() === "true";
-            var numeroAnterior = $("#txtNumeroTelefonoAnterior").val().trim();
+    var obj = {
+        IdentificacionProveedor: identificacionProveedor,
+        NumeroTelefono: $("#txtNumeroTelefonoProveedor").val().trim(),
+        IdTipoTelefono: parseInt($("#cboTipoTelefonoProveedor").val()),
+        EsPrincipal: $("#cboTelefonoPrincipalProveedor").val() === "true",
+        Activo: true
+    };
 
-            if (obj.IdentificacionProveedor === "") {
-                $("#mensajeError").text("Primero debe ingresar la identificación del proveedor.").show();
-                return;
+    var esNuevo = $("#txtTelefonoEsNuevo").val() === "true";
+    var numeroAnterior = $("#txtNumeroTelefonoAnterior").val().trim();
+
+    if (obj.IdentificacionProveedor === "") {
+        mostrarError("Primero debe guardar el proveedor para poder agregar teléfonos.", "txtIdentificacionProveedor");
+        return;
+    }
+
+    var mensajeTelefono = validarTelefonoCostaRica(obj.NumeroTelefono);
+    if (mensajeTelefono !== "") {
+        mostrarError(mensajeTelefono, "txtNumeroTelefonoProveedor");
+        return;
+    }
+
+    if (obj.IdTipoTelefono === 0 || isNaN(obj.IdTipoTelefono)) {
+        mostrarError("Debe seleccionar un tipo de teléfono.", "cboTipoTelefonoProveedor");
+        return;
+    }
+
+    if (!esNuevo && numeroAnterior === "") {
+        mostrarError("Debe seleccionar un teléfono válido para editar.", "txtNumeroTelefonoProveedor");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarTelefonoProveedor", "Proveedor")',
+        type: "POST",
+        data: JSON.stringify({
+            obj: obj,
+            esNuevo: esNuevo,
+            numeroAnterior: numeroAnterior
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#mensajeError").hide().text("");
+                limpiarFormularioTelefonoProveedor();
+                cargarTelefonosProveedor(identificacionProveedor);
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
             }
-
-            if (obj.NumeroTelefono === "") {
-                $("#mensajeError").text("Debe ingresar el número de teléfono.").show();
-                return;
-            }
-
-            if (obj.NumeroTelefono.length > 45) {
-                $("#mensajeError").text("El número de teléfono no puede superar los 45 caracteres.").show();
-                return;
-            }
-
-            if (obj.IdTipoTelefono === 0 || isNaN(obj.IdTipoTelefono)) {
-                $("#mensajeError").text("Debe seleccionar un tipo de teléfono.").show();
-                return;
-            }
-
-            if (!esNuevo && numeroAnterior === "") {
-                $("#mensajeError").text("Debe seleccionar un teléfono válido para editar.").show();
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("GuardarTelefonoProveedor", "Proveedor")',
-                type: "POST",
-                data: JSON.stringify({
-                    obj: obj,
-                    esNuevo: esNuevo,
-                    numeroAnterior: numeroAnterior
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#mensajeError").hide().text("");
-                        limpiarFormularioTelefonoProveedor();
-                        cargarTelefonosProveedor(identificacionProveedor);
-                    } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el teléfono del proveedor.").show();
-                }
-            });
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el teléfono del proveedor.").show();
         }
+    });
+}
 
         function inactivarTelefonoProveedor(numeroTelefono, identificacionProveedor) {
             if (!confirm("¿Desea inactivar este teléfono?")) {
@@ -974,74 +1013,76 @@
             $("#cboCorreoPrincipalProveedor").val(item.EsPrincipal ? "true" : "false");
         }
 
-        function guardarCorreoProveedor() {
-            var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
+       function guardarCorreoProveedor() {
+    $("#mensajeError").hide().text("");
 
-            var obj = {
-                IdentificacionProveedor: identificacionProveedor,
-                DireccionCorreo: $("#txtDireccionCorreoProveedor").val().trim(),
-                IdTipoCorreo: parseInt($("#cboTipoCorreoProveedor").val()),
-                EsPrincipal: $("#cboCorreoPrincipalProveedor").val() === "true",
-                Activo: true
-            };
+    var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
 
-            var esNuevo = $("#txtCorreoEsNuevo").val() === "true";
-            var correoAnterior = $("#txtCorreoAnterior").val().trim();
+    var obj = {
+        IdentificacionProveedor: identificacionProveedor,
+        DireccionCorreo: $("#txtDireccionCorreoProveedor").val().trim(),
+        IdTipoCorreo: parseInt($("#cboTipoCorreoProveedor").val()),
+        EsPrincipal: $("#cboCorreoPrincipalProveedor").val() === "true",
+        Activo: true
+    };
 
-            if (obj.IdentificacionProveedor === "") {
-                $("#mensajeError").text("Primero debe ingresar la identificación del proveedor.").show();
-                return;
+    var esNuevo = $("#txtCorreoEsNuevo").val() === "true";
+    var correoAnterior = $("#txtCorreoAnterior").val().trim();
+
+    if (obj.IdentificacionProveedor === "") {
+        mostrarError("Primero debe guardar el proveedor para poder agregar correos.", "txtIdentificacionProveedor");
+        return;
+    }
+
+    if (obj.DireccionCorreo === "") {
+        mostrarError("Debe ingresar la dirección de correo.", "txtDireccionCorreoProveedor");
+        return;
+    }
+
+    if (obj.DireccionCorreo.length > 150) {
+        mostrarError("La dirección de correo no puede superar los 150 caracteres.", "txtDireccionCorreoProveedor");
+        return;
+    }
+
+    if (!validarFormatoCorreo(obj.DireccionCorreo)) {
+        mostrarError("Debe ingresar un correo electrónico válido.", "txtDireccionCorreoProveedor");
+        return;
+    }
+
+    if (obj.IdTipoCorreo === 0 || isNaN(obj.IdTipoCorreo)) {
+        mostrarError("Debe seleccionar un tipo de correo.", "cboTipoCorreoProveedor");
+        return;
+    }
+
+    if (!esNuevo && correoAnterior === "") {
+        mostrarError("Debe seleccionar un correo válido para editar.", "txtDireccionCorreoProveedor");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarCorreoProveedor", "Proveedor")',
+        type: "POST",
+        data: JSON.stringify({
+            obj: obj,
+            esNuevo: esNuevo,
+            correoAnterior: correoAnterior
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#mensajeError").hide().text("");
+                limpiarFormularioCorreoProveedor();
+                cargarCorreosProveedor(identificacionProveedor);
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
             }
-
-            if (obj.DireccionCorreo === "") {
-                $("#mensajeError").text("Debe ingresar la dirección de correo.").show();
-                return;
-            }
-
-            if (obj.DireccionCorreo.length > 150) {
-                $("#mensajeError").text("La dirección de correo no puede superar los 150 caracteres.").show();
-                return;
-            }
-
-            if (!validarFormatoCorreo(obj.DireccionCorreo)) {
-                $("#mensajeError").text("Debe ingresar un correo electrónico válido.").show();
-                return;
-            }
-
-            if (obj.IdTipoCorreo === 0 || isNaN(obj.IdTipoCorreo)) {
-                $("#mensajeError").text("Debe seleccionar un tipo de correo.").show();
-                return;
-            }
-
-            if (!esNuevo && correoAnterior === "") {
-                $("#mensajeError").text("Debe seleccionar un correo válido para editar.").show();
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("GuardarCorreoProveedor", "Proveedor")',
-                type: "POST",
-                data: JSON.stringify({
-                    obj: obj,
-                    esNuevo: esNuevo,
-                    correoAnterior: correoAnterior
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#mensajeError").hide().text("");
-                        limpiarFormularioCorreoProveedor();
-                        cargarCorreosProveedor(identificacionProveedor);
-                    } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el correo del proveedor.").show();
-                }
-            });
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el correo del proveedor.").show();
         }
+    });
+}
 
         function inactivarCorreoProveedor(direccionCorreo, identificacionProveedor) {
             if (!confirm("¿Desea inactivar este correo?")) {
@@ -1110,6 +1151,120 @@
             }
 
             return true;
+        }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarNoNumeros(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarNoLetras(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarTextoProveedor(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-&]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function soloNumeros(valor) {
+            return /^[0-9]+$/.test(valor);
+        }
+
+        function soloTextoNombre(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(valor);
+        }
+
+        function validarTextoProveedor(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-&]+$/.test(valor);
+        }
+
+        function validarEnteroNoNegativo(texto, nombreCampo) {
+            if (texto === "") {
+                return "";
+            }
+
+            if (!/^[0-9]+$/.test(texto)) {
+                return "Debe ingresar un número entero válido para " + nombreCampo + ".";
+            }
+
+            var numero = parseInt(texto);
+
+            if (numero < 0) {
+                return nombreCampo + " no puede ser negativo.";
+            }
+
+            return "";
+        }
+
+        function validarTelefonoCostaRica(numero) {
+            if (numero === "") {
+                return "Debe ingresar el número de teléfono.";
+            }
+
+            if (!soloNumeros(numero)) {
+                return "El teléfono debe contener solo números.";
+            }
+
+            if (numero.length !== 8) {
+                return "El teléfono debe tener 8 dígitos.";
+            }
+
+            return "";
         }
     </script>
 }

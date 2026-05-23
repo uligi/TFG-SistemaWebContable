@@ -1,8 +1,425 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Mantenimientos";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
-<h2>Mantenimientos</h2>
+<style>
+    .mant-header {
+        background: linear-gradient(135deg, #111827, #1d4ed8);
+        color: white;
+        border-radius: 22px;
+        padding: 34px;
+        margin-bottom: 28px;
+        box-shadow: 0 14px 34px rgba(15, 23, 42, 0.22);
+        position: relative;
+        overflow: hidden;
+    }
 
+        .mant-header::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            right: -70px;
+            top: -80px;
+        }
+
+    .mant-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .mant-badge {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.14);
+        border: 1px solid rgba(255,255,255,0.25);
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .mant-title {
+        font-size: 34px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .mant-subtitle {
+        max-width: 780px;
+        font-size: 16px;
+        opacity: .95;
+        margin-bottom: 0;
+    }
+
+    .summary-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 22px;
+        height: 100%;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .summary-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        margin-bottom: 14px;
+    }
+
+    .summary-card h5 {
+        color: #0f172a;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .summary-card p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .section-title {
+        margin-top: 32px;
+        margin-bottom: 16px;
+        color: #0f172a;
+        font-weight: 700;
+        font-size: 22px;
+    }
+
+    .maintenance-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        transition: all .22s ease;
+    }
+
+        .maintenance-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+            border-color: #bfdbfe;
+        }
+
+        .maintenance-card h5 {
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .maintenance-card p {
+            color: #64748b;
+            font-size: 14px;
+            min-height: 42px;
+        }
+
+        .maintenance-card a {
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+    .category-label {
+        font-size: 13px;
+        color: #2563eb;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        margin-bottom: 8px;
+    }
+
+    @@media (max-width: 768px) {
+        .mant-header {
+            padding: 26px;
+        }
+
+        .mant-title {
+            font-size: 27px;
+        }
+
+        .maintenance-card p {
+            min-height: auto;
+        }
+    }
+</style>
+
+<div class="mant-header">
+    <div class="mant-header-content">
+        <span class="mant-badge">Panel administrativo</span>
+        <h1 class="mant-title">Mantenimientos del sistema</h1>
+        <p class="mant-subtitle">
+            Desde esta sección se administran los datos base que utiliza el sistema contable,
+            como clientes, proveedores, productos, ubicaciones, catálogos, roles y configuraciones.
+        </p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="summary-card">
+            <div class="summary-icon">
+                <i class="feather icon-database"></i>
+            </div>
+            <h5>Datos centralizados</h5>
+            <p>
+                Mantiene organizada la información necesaria para los procesos del sistema.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="summary-card">
+            <div class="summary-icon">
+                <i class="feather icon-edit-3"></i>
+            </div>
+            <h5>Actualización controlada</h5>
+            <p>
+                Permite registrar, modificar, consultar y desactivar información según corresponda.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="summary-card">
+            <div class="summary-icon">
+                <i class="feather icon-shield"></i>
+            </div>
+            <h5>Soporte operativo</h5>
+            <p>
+                Los catálogos alimentan módulos como facturación, gastos, ingresos y cuentas.
+            </p>
+        </div>
+    </div>
+</div>
+
+<h3 class="section-title">Accesos principales</h3>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <div class="maintenance-card">
+            <div class="category-label">Personas</div>
+            <h5>Clientes</h5>
+            <p>
+                Registro y administración de clientes utilizados en facturación y cuentas por cobrar.
+            </p>
+            <a href="@Url.Action("Clientes", "Persona")" class="btn btn-primary btn-sm">
+                Abrir clientes
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="maintenance-card">
+            <div class="category-label">Personas</div>
+            <h5>Empleados</h5>
+            <p>
+                Administración de colaboradores que tendrán participación dentro del sistema.
+            </p>
+            <a href="@Url.Action("Empleados", "Persona")" class="btn btn-primary btn-sm">
+                Abrir empleados
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="maintenance-card">
+            <div class="category-label">Personas</div>
+            <h5>Proveedores</h5>
+            <p>
+                Control de proveedores relacionados con compras, gastos y cuentas por pagar.
+            </p>
+            <a href="@Url.Action("Proveedores", "Proveedor")" class="btn btn-primary btn-sm">
+                Abrir proveedores
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="maintenance-card">
+            <div class="category-label">Productos</div>
+            <h5>Productos</h5>
+            <p>
+                Registro de productos disponibles para ventas, facturación y control interno.
+            </p>
+            <a href="@Url.Action("Productos", "Producto")" class="btn btn-primary btn-sm">
+                Abrir productos
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="maintenance-card">
+            <div class="category-label">Ubicación</div>
+            <h5>Ubicaciones</h5>
+            <p>
+                Administración de provincias, cantones y distritos utilizados en registros generales.
+            </p>
+            <a href="@Url.Action("Provincia", "Ubicacion")" class="btn btn-primary btn-sm">
+                Abrir ubicaciones
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="maintenance-card">
+            <div class="category-label">Seguridad</div>
+            <h5>Roles</h5>
+            <p>
+                Gestión de perfiles de acceso para controlar permisos dentro del sistema.
+            </p>
+            <a href="@Url.Action("Rol", "Seguridad")" class="btn btn-primary btn-sm">
+                Abrir roles
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<h3 class="section-title">Catálogos del sistema</h3>
+
+<div class="row g-4">
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Contacto</div>
+            <h5>Tipos de teléfono</h5>
+            <p>Catálogo para clasificar números telefónicos.</p>
+            <a href="@Url.Action("TipoTelefono", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Contacto</div>
+            <h5>Tipos de correo</h5>
+            <p>Clasificación de correos registrados.</p>
+            <a href="@Url.Action("TipoCorreo", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Productos</div>
+            <h5>Tipos de producto</h5>
+            <p>Categorías usadas para organizar productos.</p>
+            <a href="@Url.Action("TipoProducto", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Facturación</div>
+            <h5>Tipos de pago</h5>
+            <p>Métodos de pago disponibles en el sistema.</p>
+            <a href="@Url.Action("TipoPago", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Facturación</div>
+            <h5>Tipos de factura</h5>
+            <p>Clasificación de documentos de facturación.</p>
+            <a href="@Url.Action("TipoFactura", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Facturación</div>
+            <h5>Impuestos</h5>
+            <p>Configuración de impuestos aplicables.</p>
+            <a href="@Url.Action("Impuestos", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Facturación</div>
+            <h5>Descuentos</h5>
+            <p>Registro de descuentos disponibles.</p>
+            <a href="@Url.Action("Descuento", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Contabilidad</div>
+            <h5>Tipos de ingreso</h5>
+            <p>Catálogo para clasificar ingresos.</p>
+            <a href="@Url.Action("TiposIngreso", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Contabilidad</div>
+            <h5>Tipos de gasto</h5>
+            <p>Catálogo para clasificar egresos.</p>
+            <a href="@Url.Action("TiposGasto", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Contabilidad</div>
+            <h5>Naturalezas de cuenta</h5>
+            <p>Define si una cuenta es deudora o acreedora.</p>
+            <a href="@Url.Action("NaturalezasCuentaContable", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Contabilidad</div>
+            <h5>Tipos de cuenta contable</h5>
+            <p>Clasificación de cuentas contables.</p>
+            <a href="@Url.Action("TiposCuentaContable", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="maintenance-card">
+            <div class="category-label">Administración</div>
+            <h5>Puestos</h5>
+            <p>Catálogo de cargos o funciones del personal.</p>
+            <a href="@Url.Action("Puestos", "Catalogos")" class="btn btn-outline-primary btn-sm">
+                Abrir
+            </a>
+        </div>
+    </div>
+
+</div>

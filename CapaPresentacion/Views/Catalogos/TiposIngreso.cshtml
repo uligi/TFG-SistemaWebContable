@@ -1,9 +1,21 @@
 ﻿@{
-    ViewBag.Title = "Tipos de Gasto";
+    ViewBag.Title = "Tipos de Ingreso";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
 
-<h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Tipos de Gasto</h4>
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
+<h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Tipos de Ingreso</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
     <ol class="breadcrumb">
@@ -13,32 +25,25 @@
             </a>
         </li>
         <li class="breadcrumb-item">Catálogos</li>
-        <li class="breadcrumb-item active">Tipos de Gasto</li>
+        <li class="breadcrumb-item active">Tipos de Ingreso</li>
     </ol>
 </div>
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h6 class="mb-0">Lista de tipos de gasto</h6>
+        <h6 class="mb-0">Lista de tipos de ingreso</h6>
 
         <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
-            Nuevo tipo de gasto
+            Nuevo tipo de ingreso
         </button>
     </div>
 
     <div class="card-body">
-
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por tipo de gasto o descripción...">
-            </div>
-        </div>
-
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaTiposGasto">
+            <table class="table table-striped table-bordered" id="tablaTiposIngreso" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Tipo de gasto</th>
+                        <th>Tipo de ingreso</th>
                         <th>Descripción</th>
                         <th>Estado</th>
                         <th style="width:170px;">Acciones</th>
@@ -47,7 +52,6 @@
                 <tbody></tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -56,7 +60,7 @@
         <div class="modal-content">
 
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="tituloModal">Nuevo tipo de gasto</h5>
+                <h5 class="modal-title" id="tituloModal">Nuevo tipo de ingreso</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -64,10 +68,10 @@
 
             <div class="modal-body">
 
-                <input type="hidden" id="txtIdTipoGasto" value="0" />
+                <input type="hidden" id="txtIdTipoIngreso" value="0" />
 
                 <div class="form-group">
-                    <label for="txtNombre">Tipo de gasto</label>
+                    <label for="txtNombre">Tipo de ingreso</label>
                     <input type="text" id="txtNombre" class="form-control" maxlength="45" autocomplete="off" />
                 </div>
 
@@ -93,7 +97,7 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
                 </button>
-                <button type="button" class="btn btn-primary" onclick="guardarTipoGasto()">
+                <button type="button" class="btn btn-primary" onclick="guardarTipoIngreso()">
                     Guardar
                 </button>
             </div>
@@ -104,50 +108,77 @@
 
 @section scripts {
     <script>
-        var listaTiposGasto = [];
+        var tablaData;
+        var listaTiposIngreso = [];
 
         $(document).ready(function () {
-            cargarTiposGasto();
+            cargarTiposIngreso();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
+            $("#txtNombre").on("input", function () {
+                limpiarTextoCatalogo("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo("txtNombre", "El tipo de ingreso no puede superar los 45 caracteres.");
+                }
+            });
+
+            $("#txtDescripcion").on("input", function () {
+                limpiarTextoCatalogo("txtDescripcion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 255) {
+                    $(this).val($(this).val().substring(0, 255));
+                    mostrarAyudaCampo("txtDescripcion", "La descripción no puede superar los 255 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("txtNombre");
+                ocultarAyudaCampo("txtDescripcion");
             });
         });
 
-        function cargarTiposGasto() {
+        function cargarTiposIngreso() {
             $.ajax({
-                url: '@Url.Action("ListarTiposGasto", "Catalogos")',
+                url: '@Url.Action("ListarTiposIngreso", "Catalogos")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaTiposGasto = respuesta.data;
+                    listaTiposIngreso = respuesta.data;
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de gasto.");
+                    alert("Error al cargar los tipos de ingreso.");
                 }
             });
         }
 
         function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaTiposGasto tbody");
+            if ($.fn.DataTable.isDataTable("#tablaTiposIngreso")) {
+                $("#tablaTiposIngreso").DataTable().destroy();
+            }
 
+            var tbody = $("#tablaTiposIngreso tbody");
             tbody.empty();
 
-            $.each(listaTiposGasto, function (i, item) {
+            $.each(listaTiposIngreso, function (i, item) {
                 var nombre = item.Nombre || "";
                 var descripcion = item.Descripcion || "";
-
-                var texto = (nombre + " " + descripcion).toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
 
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var botonInactivar = item.Activo
+                    ? `<button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarTipoIngreso(${item.IdTipoIngreso})">Inactivar</button>`
+                    : `<button type="button" class="btn btn-sm btn-outline-secondary" disabled>Inactivo</button>`;
 
                 var fila = `
                     <tr>
@@ -155,110 +186,184 @@
                         <td>${descripcion}</td>
                         <td>${estado}</td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="abrirModal(${i})">
                                 Editar
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarTipoGasto(${item.IdTipoGasto})">
-                                Inactivar
-                            </button>
+                            ${botonInactivar}
                         </td>
                     </tr>
                 `;
 
                 tbody.append(fila);
             });
+
+            tablaData = $("#tablaTiposIngreso").DataTable({
+                responsive: true,
+                ordering: true,
+                pageLength: 10,
+                lengthChange: true,
+                searching: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
         }
 
-        function abrirModal(json) {
+        function abrirModal(index) {
             $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("txtNombre");
+            ocultarAyudaCampo("txtDescripcion");
 
-            $("#txtIdTipoGasto").val(0);
+            $("#txtIdTipoIngreso").val(0);
             $("#txtNombre").val("");
             $("#txtDescripcion").val("");
             $("#cboActivo").val("true");
-            $("#tituloModal").text("Nuevo tipo de gasto");
+            $("#tituloModal").text("Nuevo tipo de ingreso");
 
-            if (json != null) {
-                $("#txtIdTipoGasto").val(json.IdTipoGasto);
+            if (index != null) {
+                var json = listaTiposIngreso[index];
+
+                $("#txtIdTipoIngreso").val(json.IdTipoIngreso);
                 $("#txtNombre").val(json.Nombre || "");
                 $("#txtDescripcion").val(json.Descripcion || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
-                $("#tituloModal").text("Editar tipo de gasto");
+                $("#tituloModal").text("Editar tipo de ingreso");
             }
 
             $("#FormModal").modal("show");
         }
 
-        function guardarTipoGasto() {
-            var obj = {
-                IdTipoGasto: parseInt($("#txtIdTipoGasto").val()),
-                Nombre: $("#txtNombre").val().trim(),
-                Descripcion: $("#txtDescripcion").val().trim(),
-                Activo: $("#cboActivo").val() === "true"
-            };
+        function guardarTipoIngreso() {
+    $("#mensajeError").hide().text("");
 
-            if (obj.Nombre === "") {
-                $("#mensajeError").text("Debe ingresar el tipo de gasto.").show();
-                return;
+    var obj = {
+        IdTipoIngreso: parseInt($("#txtIdTipoIngreso").val()),
+        Nombre: $("#txtNombre").val().trim(),
+        Descripcion: $("#txtDescripcion").val().trim(),
+        Activo: $("#cboActivo").val() === "true"
+    };
+
+    if (isNaN(obj.IdTipoIngreso)) {
+        obj.IdTipoIngreso = 0;
+    }
+
+    if (obj.Nombre === "") {
+        mostrarError("Debe ingresar el tipo de ingreso.", "txtNombre");
+        return;
+    }
+
+    if (!validarTextoCatalogo(obj.Nombre)) {
+        mostrarError("El tipo de ingreso solo puede contener letras, números, espacios y caracteres básicos.", "txtNombre");
+        return;
+    }
+
+    if (obj.Nombre.length > 45) {
+        mostrarError("El tipo de ingreso no puede superar los 45 caracteres.", "txtNombre");
+        return;
+    }
+
+    if (obj.Descripcion === "") {
+        mostrarError("Debe ingresar la descripción.", "txtDescripcion");
+        return;
+    }
+
+    if (!validarTextoCatalogo(obj.Descripcion)) {
+        mostrarError("La descripción solo puede contener letras, números, espacios y caracteres básicos.", "txtDescripcion");
+        return;
+    }
+
+    if (obj.Descripcion.length > 255) {
+        mostrarError("La descripción no puede superar los 255 caracteres.", "txtDescripcion");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarTipoIngreso", "Catalogos")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#FormModal").modal("hide");
+                cargarTiposIngreso();
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
             }
-
-            if (obj.Nombre.length > 45) {
-                $("#mensajeError").text("El tipo de gasto no puede superar los 45 caracteres.").show();
-                return;
-            }
-
-            if (obj.Descripcion === "") {
-                $("#mensajeError").text("Debe ingresar la descripción.").show();
-                return;
-            }
-
-            if (obj.Descripcion.length > 255) {
-                $("#mensajeError").text("La descripción no puede superar los 255 caracteres.").show();
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("GuardarTipoGasto", "Catalogos")',
-                type: "POST",
-                data: JSON.stringify({ obj: obj }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#FormModal").modal("hide");
-                        cargarTiposGasto();
-                    } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el tipo de gasto.").show();
-                }
-            });
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el tipo de ingreso.").show();
         }
+    });
+}
 
-        function inactivarTipoGasto(id) {
-            if (!confirm("¿Desea inactivar este tipo de gasto?")) {
+        function inactivarTipoIngreso(id) {
+            if (!confirm("¿Desea inactivar este tipo de ingreso?")) {
                 return;
             }
 
             $.ajax({
-                url: '@Url.Action("InactivarTipoGasto", "Catalogos")',
+                url: '@Url.Action("InactivarTipoIngreso", "Catalogos")',
                 type: "POST",
                 data: JSON.stringify({ id: id }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        cargarTiposGasto();
+                        cargarTiposIngreso();
                     } else {
                         alert(respuesta.mensaje);
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el tipo de gasto.");
+                    alert("Error al inactivar el tipo de ingreso.");
                 }
             });
+        }
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarTextoCatalogo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoCatalogo(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
         }
     </script>
 }

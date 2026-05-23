@@ -3,6 +3,19 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Empleados</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -396,6 +409,32 @@
                 var idCanton = parseInt($(this).val());
                 cargarDistritosPorCanton(idCanton, 0);
             });
+
+            $("#txtIdentificacion").on("input", function () {
+                limpiarNoNumeros("txtIdentificacion", "Solo se permiten números en la identificación.");
+            });
+
+            $("#txtNumeroTelefonoEmpleado").on("input", function () {
+                limpiarNoNumeros("txtNumeroTelefonoEmpleado", "Solo se permiten números en el teléfono.");
+            });
+
+            $("#txtNombre").on("input", function () {
+                limpiarNoLetras("txtNombre", "Solo se permiten letras y espacios en el nombre.");
+            });
+
+            $("#txtPrimerApellido").on("input", function () {
+                limpiarNoLetras("txtPrimerApellido", "Solo se permiten letras y espacios en el primer apellido.");
+            });
+
+            $("#txtSegundoApellido").on("input", function () {
+                limpiarNoLetras("txtSegundoApellido", "Solo se permiten letras y espacios en el segundo apellido.");
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
         });
 
         function cargarEmpleados() {
@@ -600,75 +639,130 @@
         }
 
         function guardarEmpleado() {
-            var obj = {
-                Identificacion: $("#txtIdentificacion").val().trim(),
-                CodigoEmpleado: $("#txtCodigoEmpleado").val().trim(),
+    $("#mensajeError").hide().text("");
 
-                Nombre: $("#txtNombre").val().trim(),
-                PrimerApellido: $("#txtPrimerApellido").val().trim(),
-                SegundoApellido: $("#txtSegundoApellido").val().trim(),
-                FechaNacimiento: $("#txtFechaNacimiento").val() === "" ? null : $("#txtFechaNacimiento").val(),
-                IdDistrito: parseInt($("#cboDistrito").val()) === 0 ? null : parseInt($("#cboDistrito").val()),
-                Direccion: $("#txtDireccion").val().trim(),
+    var obj = {
+        Identificacion: $("#txtIdentificacion").val().trim(),
+        CodigoEmpleado: $("#txtCodigoEmpleado").val().trim(),
 
-                IdPuesto: parseInt($("#cboPuesto").val()) === 0 ? null : parseInt($("#cboPuesto").val()),
-                FechaIngreso: $("#txtFechaIngreso").val() === "" ? null : $("#txtFechaIngreso").val(),
-                IdRol: parseInt($("#cboRol").val()),
-                Activo: $("#cboActivo").val() === "true"
-            };
+        Nombre: $("#txtNombre").val().trim(),
+        PrimerApellido: $("#txtPrimerApellido").val().trim(),
+        SegundoApellido: $("#txtSegundoApellido").val().trim(),
+        FechaNacimiento: $("#txtFechaNacimiento").val() === "" ? null : $("#txtFechaNacimiento").val(),
+        IdDistrito: parseInt($("#cboDistrito").val()) === 0 ? null : parseInt($("#cboDistrito").val()),
+        Direccion: $("#txtDireccion").val().trim(),
 
-            if (obj.Identificacion === "") {
-                $("#mensajeError").text("Debe ingresar la identificación.").show();
-                return;
-            }
+        IdPuesto: parseInt($("#cboPuesto").val()) === 0 ? null : parseInt($("#cboPuesto").val()),
+        FechaIngreso: $("#txtFechaIngreso").val() === "" ? null : $("#txtFechaIngreso").val(),
+        IdRol: parseInt($("#cboRol").val()),
+        Activo: $("#cboActivo").val() === "true"
+    };
 
-            if (obj.Nombre === "") {
-                $("#mensajeError").text("Debe ingresar el nombre.").show();
-                return;
-            }
+    var mensajeIdentificacion = validarIdentificacionCostaRica(obj.Identificacion);
+    if (mensajeIdentificacion !== "") {
+        mostrarError(mensajeIdentificacion, "txtIdentificacion");
+        return;
+    }
 
-            if (obj.PrimerApellido === "") {
-                $("#mensajeError").text("Debe ingresar el primer apellido.").show();
-                return;
-            }
+    if (obj.Nombre === "") {
+        mostrarError("Debe ingresar el nombre.", "txtNombre");
+        return;
+    }
 
-            if (obj.IdRol === 0 || isNaN(obj.IdRol)) {
-                $("#mensajeError").text("Debe seleccionar un rol.").show();
-                return;
-            }
+    if (!soloTextoNombre(obj.Nombre)) {
+        mostrarError("El nombre solo puede contener letras y espacios.", "txtNombre");
+        return;
+    }
 
-            $.ajax({
-                url: '@Url.Action("GuardarEmpleado", "Persona")',
-                type: "POST",
-                data: JSON.stringify({ obj: obj }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (obj.CodigoEmpleado === "") {
-                        if (respuesta.resultado != 0) {
-                            $("#FormModal").modal("hide");
-                            cargarEmpleados();
+    if (obj.Nombre.length > 45) {
+        mostrarError("El nombre no puede superar los 45 caracteres.", "txtNombre");
+        return;
+    }
 
-                            $("#txtCredencialUsuario").val(respuesta.nombreUsuario);
-                            $("#txtCredencialClave").val(respuesta.claveTemporal);
-                            $("#ModalCredenciales").modal("show");
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
-                    } else {
-                        if (respuesta.resultado) {
-                            $("#FormModal").modal("hide");
-                            cargarEmpleados();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el empleado.").show();
+    if (obj.PrimerApellido === "") {
+        mostrarError("Debe ingresar el primer apellido.", "txtPrimerApellido");
+        return;
+    }
+
+    if (!soloTextoNombre(obj.PrimerApellido)) {
+        mostrarError("El primer apellido solo puede contener letras y espacios.", "txtPrimerApellido");
+        return;
+    }
+
+    if (obj.PrimerApellido.length > 45) {
+        mostrarError("El primer apellido no puede superar los 45 caracteres.", "txtPrimerApellido");
+        return;
+    }
+
+    if (obj.SegundoApellido !== "" && !soloTextoNombre(obj.SegundoApellido)) {
+        mostrarError("El segundo apellido solo puede contener letras y espacios.", "txtSegundoApellido");
+        return;
+    }
+
+    if (obj.SegundoApellido.length > 45) {
+        mostrarError("El segundo apellido no puede superar los 45 caracteres.", "txtSegundoApellido");
+        return;
+    }
+
+    var mensajeFechaNacimiento = validarFechaNacimiento($("#txtFechaNacimiento").val());
+    if (mensajeFechaNacimiento !== "") {
+        mostrarError(mensajeFechaNacimiento, "txtFechaNacimiento");
+        return;
+    }
+
+    var mensajeFechaIngreso = validarFechaIngreso($("#txtFechaIngreso").val(), $("#txtFechaNacimiento").val());
+    if (mensajeFechaIngreso !== "") {
+        mostrarError(mensajeFechaIngreso, "txtFechaIngreso");
+        return;
+    }
+
+    if (obj.Direccion.length > 250) {
+        mostrarError("La dirección no puede superar los 250 caracteres.", "txtDireccion");
+        return;
+    }
+
+    if (obj.IdPuesto === null || obj.IdPuesto === 0 || isNaN(obj.IdPuesto)) {
+        mostrarError("Debe seleccionar un puesto.", "cboPuesto");
+        return;
+    }
+
+    if (obj.IdRol === 0 || isNaN(obj.IdRol)) {
+        mostrarError("Debe seleccionar un rol.", "cboRol");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarEmpleado", "Persona")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (obj.CodigoEmpleado === "") {
+                if (respuesta.resultado != 0) {
+                    $("#FormModal").modal("hide");
+                    cargarEmpleados();
+
+                    $("#txtCredencialUsuario").val(respuesta.nombreUsuario);
+                    $("#txtCredencialClave").val(respuesta.claveTemporal);
+                    $("#ModalCredenciales").modal("show");
+                } else {
+                    $("#mensajeError").text(respuesta.mensaje).show();
                 }
-            });
+            } else {
+                if (respuesta.resultado) {
+                    $("#FormModal").modal("hide");
+                    cargarEmpleados();
+                } else {
+                    $("#mensajeError").text(respuesta.mensaje).show();
+                }
+            }
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el empleado.").show();
         }
+    });
+}
 
         function inactivarEmpleado(identificacion) {
             if (!confirm("¿Desea inactivar este empleado?")) {
@@ -956,69 +1050,67 @@
             $("#cboTelefonoPrincipalEmpleado").val(item.EsPrincipal ? "true" : "false");
         }
 
-        function guardarTelefonoEmpleado() {
-            var identificacion = $("#txtIdentificacion").val().trim();
+ function guardarTelefonoEmpleado() {
+    $("#mensajeError").hide().text("");
 
-            if (identificacion === "") {
-                $("#mensajeError").text("Primero debe ingresar la identificación del empleado.").show();
-                return;
+    var identificacion = $("#txtIdentificacion").val().trim();
+
+    if (identificacion === "") {
+        mostrarError("Primero debe ingresar la identificación del empleado.", "txtIdentificacion");
+        return;
+    }
+
+    var obj = {
+        NumeroTelefono: $("#txtNumeroTelefonoEmpleado").val().trim(),
+        Identificacion: identificacion,
+        IdTipoTelefono: parseInt($("#cboTipoTelefonoEmpleado").val()),
+        EsPrincipal: $("#cboTelefonoPrincipalEmpleado").val() === "true",
+        Activo: true
+    };
+
+    var esNuevo = $("#txtTelefonoEsNuevo").val() === "true";
+    var numeroAnterior = $("#txtNumeroTelefonoAnterior").val().trim();
+
+    var mensajeTelefono = validarTelefonoCostaRica(obj.NumeroTelefono);
+    if (mensajeTelefono !== "") {
+        mostrarError(mensajeTelefono, "txtNumeroTelefonoEmpleado");
+        return;
+    }
+
+    if (obj.IdTipoTelefono === 0 || isNaN(obj.IdTipoTelefono)) {
+        mostrarError("Debe seleccionar un tipo de teléfono.", "cboTipoTelefonoEmpleado");
+        return;
+    }
+
+    if (!esNuevo && numeroAnterior === "") {
+        mostrarError("Debe seleccionar un teléfono válido para editar.", "txtNumeroTelefonoEmpleado");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarTelefonoDesdeCliente", "Persona")',
+        type: "POST",
+        data: JSON.stringify({
+            obj: obj,
+            esNuevo: esNuevo,
+            numeroAnterior: numeroAnterior
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#mensajeError").hide().text("");
+                limpiarFormularioTelefonoEmpleado();
+                cargarTelefonosEmpleado(identificacion);
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
             }
-
-            var obj = {
-                NumeroTelefono: $("#txtNumeroTelefonoEmpleado").val().trim(),
-                Identificacion: identificacion,
-                IdTipoTelefono: parseInt($("#cboTipoTelefonoEmpleado").val()),
-                EsPrincipal: $("#cboTelefonoPrincipalEmpleado").val() === "true",
-                Activo: true
-            };
-
-            var esNuevo = $("#txtTelefonoEsNuevo").val() === "true";
-            var numeroAnterior = $("#txtNumeroTelefonoAnterior").val().trim();
-
-            if (obj.NumeroTelefono === "") {
-                $("#mensajeError").text("Debe ingresar el número de teléfono.").show();
-                return;
-            }
-
-            if (obj.NumeroTelefono.length > 45) {
-                $("#mensajeError").text("El número de teléfono no puede superar los 45 caracteres.").show();
-                return;
-            }
-
-            if (obj.IdTipoTelefono === 0 || isNaN(obj.IdTipoTelefono)) {
-                $("#mensajeError").text("Debe seleccionar un tipo de teléfono.").show();
-                return;
-            }
-
-            if (!esNuevo && numeroAnterior === "") {
-                $("#mensajeError").text("Debe seleccionar un teléfono válido para editar.").show();
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("GuardarTelefonoDesdeCliente", "Persona")',
-                type: "POST",
-                data: JSON.stringify({
-                    obj: obj,
-                    esNuevo: esNuevo,
-                    numeroAnterior: numeroAnterior
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#mensajeError").hide().text("");
-                        limpiarFormularioTelefonoEmpleado();
-                        cargarTelefonosEmpleado(identificacion);
-                    } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el teléfono del empleado.").show();
-                }
-            });
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el teléfono del empleado.").show();
         }
+    });
+}
 
         function inactivarTelefonoEmpleado(numeroTelefono, identificacion) {
             if (!confirm("¿Desea inactivar este teléfono?")) {
@@ -1172,74 +1264,76 @@
             $("#cboCorreoPrincipalEmpleado").val(item.EsPrincipal ? "true" : "false");
         }
 
-        function guardarCorreoEmpleado() {
-            var identificacion = $("#txtIdentificacion").val().trim();
+function guardarCorreoEmpleado() {
+    $("#mensajeError").hide().text("");
 
-            if (identificacion === "") {
-                $("#mensajeError").text("Primero debe ingresar la identificación del empleado.").show();
-                return;
+    var identificacion = $("#txtIdentificacion").val().trim();
+
+    if (identificacion === "") {
+        mostrarError("Primero debe ingresar la identificación del empleado.", "txtIdentificacion");
+        return;
+    }
+
+    var obj = {
+        Identificacion: identificacion,
+        DireccionCorreo: $("#txtDireccionCorreoEmpleado").val().trim(),
+        IdTipoCorreo: parseInt($("#cboTipoCorreoEmpleado").val()),
+        EsPrincipal: $("#cboCorreoPrincipalEmpleado").val() === "true",
+        Activo: true
+    };
+
+    var esNuevo = $("#txtCorreoEsNuevo").val() === "true";
+    var correoAnterior = $("#txtCorreoAnterior").val().trim();
+
+    if (obj.DireccionCorreo === "") {
+        mostrarError("Debe ingresar la dirección de correo.", "txtDireccionCorreoEmpleado");
+        return;
+    }
+
+    if (obj.DireccionCorreo.length > 255) {
+        mostrarError("La dirección de correo no puede superar los 255 caracteres.", "txtDireccionCorreoEmpleado");
+        return;
+    }
+
+    if (!validarFormatoCorreo(obj.DireccionCorreo)) {
+        mostrarError("Debe ingresar un correo electrónico válido.", "txtDireccionCorreoEmpleado");
+        return;
+    }
+
+    if (obj.IdTipoCorreo === 0 || isNaN(obj.IdTipoCorreo)) {
+        mostrarError("Debe seleccionar un tipo de correo.", "cboTipoCorreoEmpleado");
+        return;
+    }
+
+    if (!esNuevo && correoAnterior === "") {
+        mostrarError("Debe seleccionar un correo válido para editar.", "txtDireccionCorreoEmpleado");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarCorreoDesdeCliente", "Persona")',
+        type: "POST",
+        data: JSON.stringify({
+            obj: obj,
+            esNuevo: esNuevo,
+            correoAnterior: correoAnterior
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#mensajeError").hide().text("");
+                limpiarFormularioCorreoEmpleado();
+                cargarCorreosEmpleado(identificacion);
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
             }
-
-            var obj = {
-                Identificacion: identificacion,
-                DireccionCorreo: $("#txtDireccionCorreoEmpleado").val().trim(),
-                IdTipoCorreo: parseInt($("#cboTipoCorreoEmpleado").val()),
-                EsPrincipal: $("#cboCorreoPrincipalEmpleado").val() === "true",
-                Activo: true
-            };
-
-            var esNuevo = $("#txtCorreoEsNuevo").val() === "true";
-            var correoAnterior = $("#txtCorreoAnterior").val().trim();
-
-            if (obj.DireccionCorreo === "") {
-                $("#mensajeError").text("Debe ingresar la dirección de correo.").show();
-                return;
-            }
-
-            if (obj.DireccionCorreo.length > 255) {
-                $("#mensajeError").text("La dirección de correo no puede superar los 255 caracteres.").show();
-                return;
-            }
-
-            if (!validarFormatoCorreo(obj.DireccionCorreo)) {
-                $("#mensajeError").text("Debe ingresar un correo electrónico válido.").show();
-                return;
-            }
-
-            if (obj.IdTipoCorreo === 0 || isNaN(obj.IdTipoCorreo)) {
-                $("#mensajeError").text("Debe seleccionar un tipo de correo.").show();
-                return;
-            }
-
-            if (!esNuevo && correoAnterior === "") {
-                $("#mensajeError").text("Debe seleccionar un correo válido para editar.").show();
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("GuardarCorreoDesdeCliente", "Persona")',
-                type: "POST",
-                data: JSON.stringify({
-                    obj: obj,
-                    esNuevo: esNuevo,
-                    correoAnterior: correoAnterior
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#mensajeError").hide().text("");
-                        limpiarFormularioCorreoEmpleado();
-                        cargarCorreosEmpleado(identificacion);
-                    } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el correo del empleado.").show();
-                }
-            });
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el correo del empleado.").show();
         }
+    });
+}
 
         function inactivarCorreoEmpleado(direccionCorreo, identificacion) {
             if (!confirm("¿Desea inactivar este correo?")) {
@@ -1308,6 +1402,159 @@
             }
 
             return true;
+        }
+
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarNoNumeros(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarNoLetras(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function soloNumeros(valor) {
+            return /^[0-9]+$/.test(valor);
+        }
+
+        function soloTextoNombre(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(valor);
+        }
+
+        function validarIdentificacionCostaRica(identificacion) {
+            if (identificacion === "") {
+                return "Debe ingresar la identificación.";
+            }
+
+            if (!soloNumeros(identificacion)) {
+                return "La identificación debe contener solo números.";
+            }
+
+            if (identificacion.length < 9 || identificacion.length > 12) {
+                return "La identificación debe tener entre 9 y 12 dígitos.";
+            }
+
+            return "";
+        }
+
+        function validarFechaNacimiento(fechaTexto) {
+            if (fechaTexto === "") {
+                return "";
+            }
+
+            var fecha = new Date(fechaTexto + "T00:00:00");
+            var hoy = new Date();
+
+            if (isNaN(fecha.getTime())) {
+                return "Debe ingresar una fecha de nacimiento válida.";
+            }
+
+            if (fecha > hoy) {
+                return "La fecha de nacimiento no puede ser futura.";
+            }
+
+            var edad = hoy.getFullYear() - fecha.getFullYear();
+            var mes = hoy.getMonth() - fecha.getMonth();
+
+            if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
+                edad--;
+            }
+
+            if (edad > 120) {
+                return "La fecha de nacimiento no es válida.";
+            }
+
+            return "";
+        }
+
+        function validarFechaIngreso(fechaIngresoTexto, fechaNacimientoTexto) {
+            if (fechaIngresoTexto === "") {
+                return "Debe ingresar la fecha de ingreso.";
+            }
+
+            var fechaIngreso = new Date(fechaIngresoTexto + "T00:00:00");
+            var hoy = new Date();
+
+            if (isNaN(fechaIngreso.getTime())) {
+                return "Debe ingresar una fecha de ingreso válida.";
+            }
+
+            if (fechaIngreso > hoy) {
+                return "La fecha de ingreso no puede ser futura.";
+            }
+
+            if (fechaNacimientoTexto !== "") {
+                var fechaNacimiento = new Date(fechaNacimientoTexto + "T00:00:00");
+
+                if (!isNaN(fechaNacimiento.getTime()) && fechaIngreso < fechaNacimiento) {
+                    return "La fecha de ingreso no puede ser menor que la fecha de nacimiento.";
+                }
+            }
+
+            return "";
+        }
+
+        function validarTelefonoCostaRica(numero) {
+            if (numero === "") {
+                return "Debe ingresar el número de teléfono.";
+            }
+
+            if (!soloNumeros(numero)) {
+                return "El teléfono debe contener solo números.";
+            }
+
+            if (numero.length !== 8) {
+                return "El teléfono debe tener 8 dígitos.";
+            }
+
+            return "";
         }
     </script>
 }

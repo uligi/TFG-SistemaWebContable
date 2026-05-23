@@ -3,6 +3,19 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Tipos de Factura</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -28,14 +41,10 @@
 
     <div class="card-body">
 
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar tipo de factura o descripción...">
-            </div>
-        </div>
+
 
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaTipoFacturas">
+            <table class="table table-striped table-bordered nowrap" id="tablaTipoFacturas" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Tipo de factura</th>
@@ -106,12 +115,39 @@
 @section scripts {
     <script>
         var listaTipoFacturas = [];
+        var tablaTipoFacturas = null;
 
         $(document).ready(function () {
             cargarTipoFacturas();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
+            $("#txtTipoFactura").on("input", function () {
+                limpiarTextoCatalogo("txtTipoFactura", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo("txtTipoFactura", "El tipo de factura no puede superar los 45 caracteres.");
+                }
+            });
+
+            $("#txtDescripcion").on("input", function () {
+                limpiarTextoCatalogo("txtDescripcion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 150) {
+                    $(this).val($(this).val().substring(0, 150));
+                    mostrarAyudaCampo("txtDescripcion", "La descripción no puede superar los 150 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("txtTipoFactura");
+                ocultarAyudaCampo("txtDescripcion");
             });
         });
 
@@ -121,7 +157,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaTipoFacturas = respuesta.data;
+                    listaTipoFacturas = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -131,20 +167,17 @@
         }
 
         function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaTipoFacturas tbody");
+            if (tablaTipoFacturas != null) {
+                tablaTipoFacturas.clear().destroy();
+                tablaTipoFacturas = null;
+            }
 
+            var tbody = $("#tablaTipoFacturas tbody");
             tbody.empty();
 
             $.each(listaTipoFacturas, function (i, item) {
-
                 var nombre = item.Tipo_Factura || "";
                 var descripcion = item.Descripcion || "";
-                var texto = (nombre + " " + descripcion).toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
 
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
@@ -152,28 +185,50 @@
 
                 var descripcionMostrar = descripcion === "" ? "-" : descripcion;
 
-                var fila = `
-                    <tr>
-                        <td>${nombre}</td>
-                        <td>${descripcionMostrar}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarTipoFactura(${item.IdTipoFactura})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarTipoFactura(item.IdTipoFactura);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(nombre));
+                fila.append($("<td>").text(descripcionMostrar));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
+            });
+
+            tablaTipoFacturas = $("#tablaTipoFacturas").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
             });
         }
 
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("txtTipoFactura");
+            ocultarAyudaCampo("txtDescripcion");
 
             $("#txtIdTipoFactura").val(0);
             $("#txtTipoFactura").val("");
@@ -183,7 +238,7 @@
 
             if (json != null) {
                 $("#txtIdTipoFactura").val(json.IdTipoFactura);
-                $("#txtTipoFactura").val(json.Tipo_Factura);
+                $("#txtTipoFactura").val(json.Tipo_Factura || "");
                 $("#txtDescripcion").val(json.Descripcion || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
                 $("#tituloModal").text("Editar tipo de factura");
@@ -193,6 +248,8 @@
         }
 
         function guardarTipoFactura() {
+            $("#mensajeError").hide().text("");
+
             var obj = {
                 IdTipoFactura: parseInt($("#txtIdTipoFactura").val()),
                 Tipo_Factura: $("#txtTipoFactura").val().trim(),
@@ -200,18 +257,37 @@
                 Activo: $("#cboActivo").val() === "true"
             };
 
+            if (isNaN(obj.IdTipoFactura)) {
+                obj.IdTipoFactura = 0;
+            }
+
             if (obj.Tipo_Factura === "") {
-                $("#mensajeError").text("Debe ingresar el nombre del tipo de factura.").show();
+                mostrarError("Debe ingresar el nombre del tipo de factura.", "txtTipoFactura");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Tipo_Factura)) {
+                mostrarError("El tipo de factura solo puede contener letras, números, espacios y caracteres básicos.", "txtTipoFactura");
                 return;
             }
 
             if (obj.Tipo_Factura.length > 45) {
-                $("#mensajeError").text("El nombre no puede superar los 45 caracteres.").show();
+                mostrarError("El tipo de factura no puede superar los 45 caracteres.", "txtTipoFactura");
+                return;
+            }
+
+            if (obj.Descripcion === "") {
+                mostrarError("Debe ingresar la descripción.", "txtDescripcion");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Descripcion)) {
+                mostrarError("La descripción solo puede contener letras, números, espacios y caracteres básicos.", "txtDescripcion");
                 return;
             }
 
             if (obj.Descripcion.length > 150) {
-                $("#mensajeError").text("La descripción no puede superar los 150 caracteres.").show();
+                mostrarError("La descripción no puede superar los 150 caracteres.", "txtDescripcion");
                 return;
             }
 
@@ -222,7 +298,6 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-
                     if (obj.IdTipoFactura === 0) {
                         if (respuesta.resultado != 0) {
                             $("#FormModal").modal("hide");
@@ -267,6 +342,52 @@
                     alert("Error al inactivar el tipo de factura.");
                 }
             });
+        }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarTextoCatalogo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoCatalogo(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
         }
     </script>
 }

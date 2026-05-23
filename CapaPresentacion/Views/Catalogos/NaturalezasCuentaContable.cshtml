@@ -4,6 +4,20 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Naturalezas de Cuenta Contable</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -29,14 +43,10 @@
 
     <div class="card-body">
 
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por naturaleza o descripción...">
-            </div>
-        </div>
+
 
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaNaturalezas">
+            <table class="table table-striped table-bordered nowrap" id="tablaNaturalezas" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Naturaleza</th>
@@ -106,12 +116,39 @@
 @section scripts {
     <script>
         var listaNaturalezas = [];
+        var tablaNaturalezas = null;
 
         $(document).ready(function () {
             cargarNaturalezas();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
+            $("#txtNaturaleza").on("input", function () {
+                limpiarTextoCatalogo("txtNaturaleza", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo("txtNaturaleza", "La naturaleza no puede superar los 45 caracteres.");
+                }
+            });
+
+            $("#txtDescripcion").on("input", function () {
+                limpiarTextoCatalogo("txtDescripcion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 255) {
+                    $(this).val($(this).val().substring(0, 255));
+                    mostrarAyudaCampo("txtDescripcion", "La descripción no puede superar los 255 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("txtNaturaleza");
+                ocultarAyudaCampo("txtDescripcion");
             });
         });
 
@@ -121,7 +158,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaNaturalezas = respuesta.data;
+                    listaNaturalezas = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -131,47 +168,68 @@
         }
 
         function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaNaturalezas tbody");
+            if (tablaNaturalezas != null) {
+                tablaNaturalezas.clear().destroy();
+                tablaNaturalezas = null;
+            }
 
+            var tbody = $("#tablaNaturalezas tbody");
             tbody.empty();
 
             $.each(listaNaturalezas, function (i, item) {
                 var naturaleza = item.Naturaleza || "";
                 var descripcion = item.Descripcion || "";
 
-                var texto = (naturaleza + " " + descripcion).toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
-
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var fila = `
-                    <tr>
-                        <td>${naturaleza}</td>
-                        <td>${descripcion}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarNaturaleza(${item.IdNaturalezaCuentaContable})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var descripcionMostrar = descripcion === "" ? "-" : descripcion;
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarNaturaleza(item.IdNaturalezaCuentaContable);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(naturaleza));
+                fila.append($("<td>").text(descripcionMostrar));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
+            });
+
+            tablaNaturalezas = $("#tablaNaturalezas").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
             });
         }
 
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("txtNaturaleza");
+            ocultarAyudaCampo("txtDescripcion");
 
             $("#txtIdNaturalezaCuentaContable").val(0);
             $("#txtNaturaleza").val("");
@@ -191,6 +249,8 @@
         }
 
         function guardarNaturaleza() {
+            $("#mensajeError").hide().text("");
+
             var obj = {
                 IdNaturalezaCuentaContable: parseInt($("#txtIdNaturalezaCuentaContable").val()),
                 Naturaleza: $("#txtNaturaleza").val().trim(),
@@ -198,23 +258,37 @@
                 Activo: $("#cboActivo").val() === "true"
             };
 
+            if (isNaN(obj.IdNaturalezaCuentaContable)) {
+                obj.IdNaturalezaCuentaContable = 0;
+            }
+
             if (obj.Naturaleza === "") {
-                $("#mensajeError").text("Debe ingresar la naturaleza.").show();
+                mostrarError("Debe ingresar la naturaleza.", "txtNaturaleza");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Naturaleza)) {
+                mostrarError("La naturaleza solo puede contener letras, números, espacios y caracteres básicos.", "txtNaturaleza");
                 return;
             }
 
             if (obj.Naturaleza.length > 45) {
-                $("#mensajeError").text("La naturaleza no puede superar los 45 caracteres.").show();
+                mostrarError("La naturaleza no puede superar los 45 caracteres.", "txtNaturaleza");
                 return;
             }
 
             if (obj.Descripcion === "") {
-                $("#mensajeError").text("Debe ingresar la descripción.").show();
+                mostrarError("Debe ingresar la descripción.", "txtDescripcion");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Descripcion)) {
+                mostrarError("La descripción solo puede contener letras, números, espacios y caracteres básicos.", "txtDescripcion");
                 return;
             }
 
             if (obj.Descripcion.length > 255) {
-                $("#mensajeError").text("La descripción no puede superar los 255 caracteres.").show();
+                mostrarError("La descripción no puede superar los 255 caracteres.", "txtDescripcion");
                 return;
             }
 
@@ -260,6 +334,52 @@
                     alert("Error al inactivar la naturaleza.");
                 }
             });
+        }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarTextoCatalogo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoCatalogo(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
         }
     </script>
 }

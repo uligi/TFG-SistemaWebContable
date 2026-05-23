@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Catalogos\CD_Descuento.cs" />
+    <Compile Include="Catalogos\CD_Impuesto.cs" />
     <Compile Include="Catalogos\CD_NaturalezaCuentaContable.cs" />
     <Compile Include="Catalogos\CD_Puesto.cs" />
     <Compile Include="Catalogos\CD_TipoCorreo.cs" />
@@ -54,16 +56,31 @@
     <Compile Include="Catalogos\CD_TipoProducto.cs" />
     <Compile Include="Catalogos\CD_TipoTelefono.cs" />
     <Compile Include="Conexion\Conexion.cs" />
+    <Compile Include="Contabilidad\CD_AsientoContable.cs" />
+    <Compile Include="Contabilidad\CD_ConfiguracionCuentaContable.cs" />
     <Compile Include="Contabilidad\CD_CuentaContable.cs" />
+    <Compile Include="Contabilidad\CD_DetalleAsientoContable.cs" />
+    <Compile Include="Contabilidad\CD_PeriodoContable.cs" />
+    <Compile Include="CuentasPorCobrar\CD_AbonoCuentaPorCobrar.cs" />
+    <Compile Include="CuentasPorCobrar\CD_CuentaPorCobrar.cs" />
+    <Compile Include="CuentasPorPagar\CD_AbonoCuentaPorPagar.cs" />
+    <Compile Include="CuentasPorPagar\CD_CuentaPorPagar.cs" />
+    <Compile Include="Facturacion\CD_DetalleFactura.cs" />
+    <Compile Include="Facturacion\CD_Factura.cs" />
     <Compile Include="Inventario\CD_Producto.cs" />
+    <Compile Include="Movimientos\CD_Gasto.cs" />
+    <Compile Include="Movimientos\CD_Ingreso.cs" />
     <Compile Include="Personas\CD_Cliente.cs" />
     <Compile Include="Personas\CD_Correo.cs" />
     <Compile Include="Personas\CD_Empleado.cs" />
     <Compile Include="Personas\CD_Telefono.cs" />
+    <Compile Include="Presupuesto\CD_DetallePresupuestoMensual.cs" />
+    <Compile Include="Presupuesto\CD_PresupuestoMensual.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proveedores\CD_CorreoProveedor.cs" />
     <Compile Include="Proveedores\CD_Proveedor.cs" />
     <Compile Include="Proveedores\CD_TelefonoProveedor.cs" />
+    <Compile Include="Reportes\CD_Reportes.cs" />
     <Compile Include="Seguridad\CD_Rol.cs" />
     <Compile Include="Ubicacion\CD_Canton.cs" />
     <Compile Include="Ubicacion\CD_Distrito.cs" />

@@ -1,11 +1,9 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Reportes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-<h4 class="font-weight-bold py-3 mb-0">Reportes</h4>
+<h4 class="font-weight-bold py-3 mb-0">Reportes Financieros</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
     <ol class="breadcrumb">
@@ -14,288 +12,1135 @@
                 <i class="feather icon-home"></i>
             </a>
         </li>
-        <li class="breadcrumb-item">Sistema</li>
-        <li class="breadcrumb-item active">Reportes</li>
+        <li class="breadcrumb-item">Reportes</li>
+        <li class="breadcrumb-item active">Reportes financieros</li>
     </ol>
 </div>
 
 <div class="card mb-4">
-    <h6 class="card-header">Parámetros del reporte</h6>
+    <div class="card-header">
+        <h6 class="mb-0">Filtros de reporte</h6>
+    </div>
 
     <div class="card-body">
+        <div class="form-row">
 
-        <form>
-
-            <div class="form-row">
-
-                <div class="form-group col-md-4">
-                    <label class="form-label">Tipo de reporte</label>
-                    <select class="custom-select" name="TipoReporte">
-                        <option value="">Seleccione el tipo de reporte</option>
-                        <option value="EstadoResultados">Estado de resultados</option>
-                        <option value="Ingresos">Reporte de ingresos</option>
-                        <option value="Gastos">Reporte de gastos</option>
-                        <option value="CuentasPorCobrar">Cuentas por cobrar</option>
-                        <option value="CuentasPorPagar">Cuentas por pagar</option>
-                        <option value="Facturacion">Facturación</option>
-                        <option value="PresupuestoMensual">Presupuesto mensual</option>
-                        <option value="InventarioProductos">Inventario de productos</option>
-                        <option value="MovimientosContables">Movimientos contables</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label class="form-label">Período a consultar</label>
-                    <select class="custom-select" name="PeriodoConsulta">
-                        <option value="">Seleccione el período</option>
-                        <option value="Diario">Diario</option>
-                        <option value="Semanal">Semanal</option>
-                        <option value="Mensual">Mensual</option>
-                        <option value="Trimestral">Trimestral</option>
-                        <option value="Semestral">Semestral</option>
-                        <option value="Anual">Anual</option>
-                        <option value="Personalizado">Personalizado</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label class="form-label">Estado</label>
-                    <select class="custom-select" name="Estado">
-                        <option value="">Todos los estados</option>
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Parcial">Parcial</option>
-                        <option value="Pagada">Pagada</option>
-                        <option value="Vencida">Vencida</option>
-                        <option value="Anulada">Anulada</option>
-                    </select>
-                </div>
-
+            <div class="form-group col-md-4">
+                <label for="txtFechaInicio">Fecha inicio</label>
+                <input type="date" id="txtFechaInicio" class="form-control" />
             </div>
 
-            <div class="form-row">
-
-                <div class="form-group col-md-3">
-                    <label class="form-label">Fecha inicial</label>
-                    <input type="date"
-                           class="form-control"
-                           name="FechaInicial" />
-                    <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group col-md-3">
-                    <label class="form-label">Fecha final</label>
-                    <input type="date"
-                           class="form-control"
-                           name="FechaFinal" />
-                    <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group col-md-3">
-                    <label class="form-label">Mes</label>
-                    <select class="custom-select" name="Mes">
-                        <option value="">Todos los meses</option>
-                        <option value="1">Enero</option>
-                        <option value="2">Febrero</option>
-                        <option value="3">Marzo</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Mayo</option>
-                        <option value="6">Junio</option>
-                        <option value="7">Julio</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Septiembre</option>
-                        <option value="10">Octubre</option>
-                        <option value="11">Noviembre</option>
-                        <option value="12">Diciembre</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-3">
-                    <label class="form-label">Año</label>
-                    <input type="number"
-                           class="form-control"
-                           name="Anio"
-                           placeholder="Ejemplo: 2026"
-                           min="2020"
-                           max="2100" />
-                    <div class="clearfix"></div>
-                </div>
-
+            <div class="form-group col-md-4">
+                <label for="txtFechaFin">Fecha final</label>
+                <input type="date" id="txtFechaFin" class="form-control" />
             </div>
 
-            <div class="form-row">
-
-                <div class="form-group col-md-4">
-                    <label class="form-label">Criterio de filtrado</label>
-                    <select class="custom-select" name="CriterioFiltrado">
-                        <option value="">Seleccione un criterio</option>
-                        <option value="Cliente">Cliente</option>
-                        <option value="Proveedor">Proveedor</option>
-                        <option value="Producto">Producto</option>
-                        <option value="CuentaContable">Cuenta contable</option>
-                        <option value="Categoria">Categoría</option>
-                        <option value="TipoPago">Tipo de pago</option>
-                        <option value="Estado">Estado</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label class="form-label">Valor del filtro</label>
-                    <input type="text"
-                           class="form-control"
-                           name="ValorFiltro"
-                           placeholder="Ingrese el valor a filtrar" />
-                    <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label class="form-label">Formato de salida</label>
-                    <select class="custom-select" name="FormatoSalida">
-                        <option value="">Seleccione el formato</option>
-                        <option value="Pantalla">Ver en pantalla</option>
-                        <option value="PDF">Exportar PDF</option>
-                        <option value="Excel">Exportar Excel</option>
-                        <option value="Impresion">Imprimir</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <div class="form-row">
-
-                <div class="form-group col-md-4">
-                    <label class="form-label">Ordenar por</label>
-                    <select class="custom-select" name="OrdenarPor">
-                        <option value="">Seleccione el orden</option>
-                        <option value="Fecha">Fecha</option>
-                        <option value="Monto">Monto</option>
-                        <option value="Cliente">Cliente</option>
-                        <option value="Proveedor">Proveedor</option>
-                        <option value="Estado">Estado</option>
-                        <option value="Categoria">Categoría</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label class="form-label">Tipo de orden</label>
-                    <select class="custom-select" name="TipoOrden">
-                        <option value="Ascendente">Ascendente</option>
-                        <option value="Descendente">Descendente</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label class="form-label d-block">Opciones adicionales</label>
-
-                    <label class="custom-control custom-checkbox mt-2">
-                        <input type="checkbox"
-                               class="custom-control-input"
-                               name="IncluirTotales" />
-                        <span class="custom-control-label">
-                            Incluir totales en el reporte
-                        </span>
-                    </label>
-                </div>
-
-            </div>
-
-            <div class="form-group mt-4">
-                <button type="button" class="btn btn-primary">
-                    Generar reporte
-                </button>
-
-                <button type="button" class="btn btn-secondary">
-                    Exportar
-                </button>
-
-                <button type="button" class="btn btn-outline-secondary">
-                    Imprimir
-                </button>
-
-                <button type="reset" class="btn btn-outline-danger">
-                    Limpiar parámetros
+            <div class="form-group col-md-4 d-flex align-items-end">
+                <button type="button" class="btn btn-primary btn-block" onclick="cargarReportes()">
+                    Generar reportes
                 </button>
             </div>
 
-        </form>
+        </div>
 
+        <div class="alert alert-danger mt-2" id="mensajeError" style="display:none;"></div>
     </div>
 </div>
 
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <small class="text-muted">Total ingresos</small>
+                <h5 class="mb-0" id="lblTotalIngresos">₡0.00</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <small class="text-muted">Total gastos</small>
+                <h5 class="mb-0" id="lblTotalGastos">₡0.00</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <small class="text-muted">Utilidad estimada</small>
+                <h5 class="mb-0" id="lblUtilidadEstimada">₡0.00</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <small class="text-muted">CxC / CxP pendientes</small>
+                <h5 class="mb-0">
+                    <span id="lblTotalCxC">₡0.00</span> /
+                    <span id="lblTotalCxP">₡0.00</span>
+                </h5>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mb-4">
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0" id="tituloGraficoPrincipal">Gráfico principal</h6>
+            </div>
+            <div class="card-body">
+                <div id="graficoPrincipal" style="height:300px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0" id="tituloGraficoResumen">Resumen gráfico</h6>
+            </div>
+            <div class="card-body">
+                <div id="graficoResumen" style="height:300px;"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 <div class="card mb-4">
-    <h6 class="card-header">Vista previa del reporte</h6>
+    <div class="card-header">
+        <h6 class="mb-0">Acciones del reporte actual</h6>
+    </div>
 
     <div class="card-body">
+        <button type="button" class="btn btn-success mr-2" onclick="exportarReporteActualCSV()">
+            <i class="feather icon-download"></i> Exportar CSV
+        </button>
 
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Reporte</th>
-                        <th>Período</th>
-                        <th>Fecha inicial</th>
-                        <th>Fecha final</th>
-                        <th>Criterio</th>
-                        <th>Valor filtro</th>
-                        <th>Total registros</th>
-                        <th>Total monto</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
+        <button type="button" class="btn btn-info mr-2" onclick="imprimirReporteActual()">
+            <i class="feather icon-printer"></i> Imprimir
+        </button>
 
-                <tbody>
-                    <tr>
-                        <td>Reporte de ingresos</td>
-                        <td>Mensual</td>
-                        <td>2026-04-01</td>
-                        <td>2026-04-30</td>
-                        <td>Categoría</td>
-                        <td>Ventas</td>
-                        <td>25</td>
-                        <td>₡1,250,000.00</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary">
-                                Ver detalle
-                            </button>
-                        </td>
-                    </tr>
+        <span class="text-muted small">
+            Las acciones se aplican a la pestaña activa.
+        </span>
+    </div>
+</div>
 
-                    <tr>
-                        <td>Reporte de gastos</td>
-                        <td>Mensual</td>
-                        <td>2026-04-01</td>
-                        <td>2026-04-30</td>
-                        <td>Categoría</td>
-                        <td>Servicios públicos</td>
-                        <td>8</td>
-                        <td>₡180,000.00</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary">
-                                Ver detalle
-                            </button>
-                        </td>
-                    </tr>
+<div class="nav-tabs-top mb-4">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#tabIngresos">Ingresos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabGastos">Gastos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabCxC">Cuentas por cobrar</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabCxP">Cuentas por pagar</a>
+        </li>
+    </ul>
 
-                    <tr>
-                        <td>Cuentas por cobrar</td>
-                        <td>Personalizado</td>
-                        <td>2026-04-01</td>
-                        <td>2026-04-15</td>
-                        <td>Estado</td>
-                        <td>Pendiente</td>
-                        <td>12</td>
-                        <td>₡640,000.00</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary">
-                                Ver detalle
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="tab-content">
+
+        <div class="tab-pane fade show active" id="tabIngresos">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Reporte de ingresos</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaIngresos" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Origen</th>
+                                    <th>Factura</th>
+                                    <th>Cuenta</th>
+                                    <th>Descripción</th>
+                                    <th>Monto</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabGastos">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Reporte de gastos</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaGastos" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Cuenta</th>
+                                    <th>Proveedor</th>
+                                    <th>Documento</th>
+                                    <th>Descripción</th>
+                                    <th>Monto</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabCxC">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Cuentas por cobrar pendientes</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaCxC" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Factura</th>
+                                    <th>Cliente</th>
+                                    <th>Emisión</th>
+                                    <th>Vencimiento</th>
+                                    <th>Monto original</th>
+                                    <th>Saldo actual</th>
+                                    <th>Estado</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabCxP">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Cuentas por pagar pendientes</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaCxP" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Documento</th>
+                                    <th>Proveedor</th>
+                                    <th>Emisión</th>
+                                    <th>Vencimiento</th>
+                                    <th>Concepto</th>
+                                    <th>Monto original</th>
+                                    <th>Saldo actual</th>
+                                    <th>Estado</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
 </div>
 
+<div class="modal fade" id="ModalDetalleReporte" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="tituloDetalleReporte">Detalle del reporte</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div id="contenidoDetalleReporte"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="imprimirDetalleReporte()">
+                    Imprimir detalle
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var tablaIngresos = null;
+        var tablaGastos = null;
+        var tablaCxC = null;
+        var tablaCxP = null;
+
+        var listaIngresosGlobal = [];
+        var listaGastosGlobal = [];
+        var listaCxCGlobal = [];
+        var listaCxPGlobal = [];
+        var resumenGlobal = {};
+
+        $(document).ready(function () {
+            var hoy = new Date();
+            var primerDia = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+
+            $("#txtFechaInicio").val(convertirDateAInput(primerDia));
+            $("#txtFechaFin").val(convertirDateAInput(hoy));
+
+            cargarReportes();
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+                setTimeout(function () {
+                    ajustarTablas();
+                    pintarGraficosPorReporteActivo();
+                }, 200);
+            });
+        });
+
+        function cargarReportes() {
+            var fechaInicio = $("#txtFechaInicio").val();
+            var fechaFin = $("#txtFechaFin").val();
+
+            if (fechaInicio === "") {
+                $("#mensajeError").text("Debe ingresar la fecha de inicio.").show();
+                return;
+            }
+
+            if (fechaFin === "") {
+                $("#mensajeError").text("Debe ingresar la fecha final.").show();
+                return;
+            }
+
+            if (fechaFin < fechaInicio) {
+                $("#mensajeError").text("La fecha final no puede ser menor que la fecha de inicio.").show();
+                return;
+            }
+
+            $("#mensajeError").hide().text("");
+
+            cargarResumenFinanciero(fechaInicio, fechaFin);
+            cargarIngresos(fechaInicio, fechaFin);
+            cargarGastos(fechaInicio, fechaFin);
+            cargarCuentasPorCobrar();
+            cargarCuentasPorPagar();
+        }
+
+        function cargarResumenFinanciero(fechaInicio, fechaFin) {
+            $.ajax({
+                url: '@Url.Action("ResumenFinanciero", "Reportes")',
+                type: "GET",
+                data: {
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin
+                },
+                dataType: "json",
+                success: function (respuesta) {
+                    var item = respuesta.data || {};
+                    resumenGlobal = item;
+
+                    $("#lblTotalIngresos").text(formatearMoneda(item.TotalIngresos));
+                    $("#lblTotalGastos").text(formatearMoneda(item.TotalGastos));
+                    $("#lblUtilidadEstimada").text(formatearMoneda(item.UtilidadEstimada));
+                    $("#lblTotalCxC").text(formatearMoneda(item.TotalCuentasPorCobrar));
+                    $("#lblTotalCxP").text(formatearMoneda(item.TotalCuentasPorPagar));
+
+                    pintarGraficosPorReporteActivo();
+                },
+                error: function () {
+                    alert("Error al cargar el resumen financiero.");
+                }
+            });
+        }
+
+        function cargarIngresos(fechaInicio, fechaFin) {
+            $.ajax({
+                url: '@Url.Action("ReporteIngresos", "Reportes")',
+                type: "GET",
+                data: {
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin
+                },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaIngresosGlobal = respuesta.data || [];
+                    pintarTablaIngresos(listaIngresosGlobal);
+                    pintarGraficosPorReporteActivo();
+                },
+                error: function () {
+                    alert("Error al cargar el reporte de ingresos.");
+                }
+            });
+        }
+
+        function cargarGastos(fechaInicio, fechaFin) {
+            $.ajax({
+                url: '@Url.Action("ReporteGastos", "Reportes")',
+                type: "GET",
+                data: {
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin
+                },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaGastosGlobal = respuesta.data || [];
+                    pintarTablaGastos(listaGastosGlobal);
+                    pintarGraficosPorReporteActivo();
+                },
+                error: function () {
+                    alert("Error al cargar el reporte de gastos.");
+                }
+            });
+        }
+
+        function cargarCuentasPorCobrar() {
+            $.ajax({
+                url: '@Url.Action("ReporteCuentasPorCobrar", "Reportes")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaCxCGlobal = respuesta.data || [];
+                    pintarTablaCxC(listaCxCGlobal);
+                    pintarGraficosPorReporteActivo();
+                },
+                error: function () {
+                    alert("Error al cargar cuentas por cobrar.");
+                }
+            });
+        }
+
+        function cargarCuentasPorPagar() {
+            $.ajax({
+                url: '@Url.Action("ReporteCuentasPorPagar", "Reportes")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaCxPGlobal = respuesta.data || [];
+                    pintarTablaCxP(listaCxPGlobal);
+                    pintarGraficosPorReporteActivo();
+                },
+                error: function () {
+                    alert("Error al cargar cuentas por pagar.");
+                }
+            });
+        }
+
+        function pintarTablaIngresos(lista) {
+            if (tablaIngresos != null) {
+                tablaIngresos.clear().destroy();
+                tablaIngresos = null;
+            }
+
+            var tbody = $("#tablaIngresos tbody");
+            tbody.empty();
+
+            $.each(lista, function (i, item) {
+                var cuenta = (item.CodigoCuenta || "-") + " - " + (item.NombreCuenta || "-");
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(formatearFecha(item.FechaIngreso)));
+                fila.append($("<td>").text(item.TipoIngreso || ""));
+                fila.append($("<td>").text(item.OrigenIngreso || ""));
+                fila.append($("<td>").text(item.NumeroFactura || "-"));
+                fila.append($("<td>").text(cuenta));
+                fila.append($("<td>").text(item.Descripcion || ""));
+                fila.append($("<td>").text(formatearMoneda(item.Monto)));
+                fila.append($("<td>").html(
+                    '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleIngreso(' + i + ')">Ver</button>'
+                ));
+
+                tbody.append(fila);
+            });
+
+            tablaIngresos = $("#tablaIngresos").DataTable({
+                responsive: false,
+                scrollX: true,
+                autoWidth: false,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "desc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function pintarTablaGastos(lista) {
+            if (tablaGastos != null) {
+                tablaGastos.clear().destroy();
+                tablaGastos = null;
+            }
+
+            var tbody = $("#tablaGastos tbody");
+            tbody.empty();
+
+            $.each(lista, function (i, item) {
+                var cuenta = (item.CodigoCuenta || "-") + " - " + (item.NombreCuenta || "-");
+                var proveedor = (item.IdentificacionProveedor || "-") + " - " + (item.ProveedorNombre || "-");
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(formatearFecha(item.FechaGasto)));
+                fila.append($("<td>").text(item.TipoGasto || ""));
+                fila.append($("<td>").text(cuenta));
+                fila.append($("<td>").text(proveedor));
+                fila.append($("<td>").text(item.NumeroDocumento || "-"));
+                fila.append($("<td>").text(item.Descripcion || ""));
+                fila.append($("<td>").text(formatearMoneda(item.Monto)));
+                fila.append($("<td>").html(
+                    '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleGasto(' + i + ')">Ver</button>'
+                ));
+                tbody.append(fila);
+            });
+
+            tablaGastos = $("#tablaGastos").DataTable({
+                responsive: false,
+                scrollX: true,
+                autoWidth: false,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "desc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function pintarTablaCxC(lista) {
+            if (tablaCxC != null) {
+                tablaCxC.clear().destroy();
+                tablaCxC = null;
+            }
+
+            var tbody = $("#tablaCxC tbody");
+            tbody.empty();
+
+            $.each(lista, function (i, item) {
+                var cliente = (item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "");
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.NumeroFactura || ""));
+                fila.append($("<td>").text(cliente));
+                fila.append($("<td>").text(formatearFecha(item.FechaEmision)));
+                fila.append($("<td>").text(formatearFecha(item.FechaVencimiento)));
+                fila.append($("<td>").text(formatearMoneda(item.MontoOriginal)));
+                fila.append($("<td>").text(formatearMoneda(item.SaldoActual)));
+                fila.append($("<td>").html(obtenerBadgeEstadoCuenta(item.Estado)));
+                fila.append($("<td>").html(
+                    '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleCxC(' + i + ')">Ver</button>'
+                ));
+
+                tbody.append(fila);
+            });
+
+            tablaCxC = $("#tablaCxC").DataTable({
+                responsive: false,
+                scrollX: true,
+                autoWidth: false,
+                pageLength: 10,
+                destroy: true,
+                order: [[3, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function pintarTablaCxP(lista) {
+            if (tablaCxP != null) {
+                tablaCxP.clear().destroy();
+                tablaCxP = null;
+            }
+
+            var tbody = $("#tablaCxP tbody");
+            tbody.empty();
+
+            $.each(lista, function (i, item) {
+                var proveedor = (item.IdentificacionProveedor || "") + " - " + (item.ProveedorNombre || "");
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.NumeroDocumento || ""));
+                fila.append($("<td>").text(proveedor));
+                fila.append($("<td>").text(formatearFecha(item.FechaEmision)));
+                fila.append($("<td>").text(formatearFecha(item.FechaVencimiento)));
+                fila.append($("<td>").text(item.Concepto || ""));
+                fila.append($("<td>").text(formatearMoneda(item.MontoOriginal)));
+                fila.append($("<td>").text(formatearMoneda(item.SaldoActual)));
+                fila.append($("<td>").html(obtenerBadgeEstadoCuenta(item.Estado)));
+                fila.append($("<td>").html(
+                    '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleCxP(' + i + ')">Ver</button>'
+                ));
+
+                tbody.append(fila);
+            });
+
+            tablaCxP = $("#tablaCxP").DataTable({
+                responsive: false,
+                scrollX: true,
+                autoWidth: false,
+                pageLength: 10,
+                destroy: true,
+                order: [[3, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function pintarGraficosPorReporteActivo() {
+            var tabActivo = $(".nav-tabs .nav-link.active").attr("href");
+
+            limpiarGrafico("graficoPrincipal");
+            limpiarGrafico("graficoResumen");
+
+            if (typeof Morris === "undefined") {
+                $("#graficoPrincipal").html('<div class="text-center text-danger pt-5">No se cargó Morris.js.</div>');
+                $("#graficoResumen").html('<div class="text-center text-danger pt-5">No se cargó Morris.js.</div>');
+                return;
+            }
+
+            if (tabActivo === "#tabIngresos") {
+                $("#tituloGraficoPrincipal").text("Ingresos por tipo");
+                $("#tituloGraficoResumen").text("Ingresos vs gastos");
+
+                pintarBarraPorCampo("graficoPrincipal", listaIngresosGlobal, "TipoIngreso", "Monto", "Monto");
+                pintarIngresosVsGastos("graficoResumen");
+                return;
+            }
+
+            if (tabActivo === "#tabGastos") {
+                $("#tituloGraficoPrincipal").text("Gastos por tipo");
+                $("#tituloGraficoResumen").text("Ingresos vs gastos");
+
+                pintarBarraPorCampo("graficoPrincipal", listaGastosGlobal, "TipoGasto", "Monto", "Monto");
+                pintarIngresosVsGastos("graficoResumen");
+                return;
+            }
+
+            if (tabActivo === "#tabCxC") {
+                $("#tituloGraficoPrincipal").text("Cuentas por cobrar por estado");
+                $("#tituloGraficoResumen").text("Saldo pendiente CxC");
+
+                pintarBarraPorCampo("graficoPrincipal", listaCxCGlobal, "Estado", "SaldoActual", "Saldo");
+                pintarDonutCuentas("graficoResumen", "CxC");
+                return;
+            }
+
+            if (tabActivo === "#tabCxP") {
+                $("#tituloGraficoPrincipal").text("Cuentas por pagar por estado");
+                $("#tituloGraficoResumen").text("Saldo pendiente CxP");
+
+                pintarBarraPorCampo("graficoPrincipal", listaCxPGlobal, "Estado", "SaldoActual", "Saldo");
+                pintarDonutCuentas("graficoResumen", "CxP");
+                return;
+            }
+        }
+
+        function limpiarGrafico(idContenedor) {
+            $("#" + idContenedor).empty();
+        }
+
+        function pintarBarraPorCampo(idContenedor, lista, campoAgrupar, campoMonto, etiquetaY) {
+            limpiarGrafico(idContenedor);
+
+            var agrupado = {};
+
+            $.each(lista, function (i, item) {
+                var grupo = item[campoAgrupar] || "Sin clasificar";
+                var monto = parseFloat(item[campoMonto] || 0);
+
+                if (!agrupado[grupo]) {
+                    agrupado[grupo] = 0;
+                }
+
+                agrupado[grupo] += monto;
+            });
+
+            var data = [];
+
+            $.each(agrupado, function (grupo, monto) {
+                data.push({
+                    grupo: grupo,
+                    monto: monto
+                });
+            });
+
+            if (data.length === 0) {
+                $("#" + idContenedor).html(
+                    '<div class="text-center text-muted pt-5">No hay datos para graficar.</div>'
+                );
+                return;
+            }
+
+            Morris.Bar({
+                element: idContenedor,
+                data: data,
+                xkey: "grupo",
+                ykeys: ["monto"],
+                labels: [etiquetaY],
+                resize: true,
+                hideHover: "auto"
+            });
+        }
+
+        function pintarIngresosVsGastos(idContenedor) {
+            limpiarGrafico(idContenedor);
+
+            var ingresos = parseFloat(resumenGlobal.TotalIngresos || 0);
+            var gastos = parseFloat(resumenGlobal.TotalGastos || 0);
+
+            if (ingresos === 0 && gastos === 0) {
+                $("#" + idContenedor).html(
+                    '<div class="text-center text-muted pt-5">No hay ingresos ni gastos para graficar.</div>'
+                );
+                return;
+            }
+
+            Morris.Donut({
+                element: idContenedor,
+                data: [
+                    { label: "Ingresos", value: ingresos },
+                    { label: "Gastos", value: gastos }
+                ],
+                resize: true,
+                formatter: function (value) {
+                    return formatearMoneda(value);
+                }
+            });
+        }
+
+        function pintarDonutCuentas(idContenedor, tipo) {
+            limpiarGrafico(idContenedor);
+
+            var total = 0;
+            var label = "";
+
+            if (tipo === "CxC") {
+                total = parseFloat(resumenGlobal.TotalCuentasPorCobrar || 0);
+                label = "CxC pendiente";
+            } else {
+                total = parseFloat(resumenGlobal.TotalCuentasPorPagar || 0);
+                label = "CxP pendiente";
+            }
+
+            if (total === 0) {
+                $("#" + idContenedor).html(
+                    '<div class="text-center text-muted pt-5">No hay saldo pendiente.</div>'
+                );
+                return;
+            }
+
+            Morris.Donut({
+                element: idContenedor,
+                data: [
+                    {
+                        label: label,
+                        value: total
+                    }
+                ],
+                resize: true,
+                formatter: function (value) {
+                    return formatearMoneda(value);
+                }
+            });
+        }
+
+        function ajustarTablas() {
+            if (tablaIngresos != null) {
+                tablaIngresos.columns.adjust();
+            }
+
+            if (tablaGastos != null) {
+                tablaGastos.columns.adjust();
+            }
+
+            if (tablaCxC != null) {
+                tablaCxC.columns.adjust();
+            }
+
+            if (tablaCxP != null) {
+                tablaCxP.columns.adjust();
+            }
+        }
+
+        function obtenerBadgeEstadoCuenta(estado) {
+            if (estado === "Pagada") {
+                return '<span class="badge badge-success">Pagada</span>';
+            }
+
+            if (estado === "Parcial") {
+                return '<span class="badge badge-info">Parcial</span>';
+            }
+
+            if (estado === "Vencida") {
+                return '<span class="badge badge-danger">Vencida</span>';
+            }
+
+            if (estado === "Anulada") {
+                return '<span class="badge badge-secondary">Anulada</span>';
+            }
+
+            return '<span class="badge badge-warning">' + (estado || "Pendiente") + '</span>';
+        }
+
+        function formatearFecha(valor) {
+            if (!valor) {
+                return "";
+            }
+
+            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
+
+            if (isNaN(fecha.getTime())) {
+                fecha = new Date(valor);
+            }
+
+            return convertirDateAInput(fecha);
+        }
+
+        function convertirDateAInput(fecha) {
+            var anio = fecha.getFullYear();
+            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+            var dia = ("0" + fecha.getDate()).slice(-2);
+
+            return anio + "-" + mes + "-" + dia;
+        }
+
+        function formatearMoneda(valor) {
+            var numero = parseFloat(valor || 0);
+            return "₡" + numero.toFixed(2);
+        }
+
+        function obtenerReporteActivo() {
+            var tabActivo = $(".nav-tabs .nav-link.active").attr("href");
+
+            if (tabActivo === "#tabIngresos") {
+                return {
+                    nombre: "Ingresos",
+                    archivo: "reporte_ingresos",
+                    lista: listaIngresosGlobal,
+                    columnas: [
+                        { titulo: "Fecha", campo: "FechaIngreso", tipo: "fecha" },
+                        { titulo: "Tipo", campo: "TipoIngreso" },
+                        { titulo: "Origen", campo: "OrigenIngreso" },
+                        { titulo: "Factura", campo: "NumeroFactura" },
+                        { titulo: "Cuenta", campo: "NombreCuenta" },
+                        { titulo: "Descripción", campo: "Descripcion" },
+                        { titulo: "Monto", campo: "Monto", tipo: "moneda" }
+                    ]
+                };
+            }
+
+            if (tabActivo === "#tabGastos") {
+                return {
+                    nombre: "Gastos",
+                    archivo: "reporte_gastos",
+                    lista: listaGastosGlobal,
+                    columnas: [
+                        { titulo: "Fecha", campo: "FechaGasto", tipo: "fecha" },
+                        { titulo: "Tipo", campo: "TipoGasto" },
+                        { titulo: "Cuenta", campo: "NombreCuenta" },
+                        { titulo: "Proveedor", campo: "ProveedorNombre" },
+                        { titulo: "Documento", campo: "NumeroDocumento" },
+                        { titulo: "Descripción", campo: "Descripcion" },
+                        { titulo: "Monto", campo: "Monto", tipo: "moneda" }
+                    ]
+                };
+            }
+
+            if (tabActivo === "#tabCxC") {
+                return {
+                    nombre: "Cuentas por cobrar",
+                    archivo: "reporte_cuentas_por_cobrar",
+                    lista: listaCxCGlobal,
+                    columnas: [
+                        { titulo: "Factura", campo: "NumeroFactura" },
+                        { titulo: "Cliente", campo: "ClienteNombre" },
+                        { titulo: "Emisión", campo: "FechaEmision", tipo: "fecha" },
+                        { titulo: "Vencimiento", campo: "FechaVencimiento", tipo: "fecha" },
+                        { titulo: "Monto original", campo: "MontoOriginal", tipo: "moneda" },
+                        { titulo: "Saldo actual", campo: "SaldoActual", tipo: "moneda" },
+                        { titulo: "Estado", campo: "Estado" }
+                    ]
+                };
+            }
+
+            if (tabActivo === "#tabCxP") {
+                return {
+                    nombre: "Cuentas por pagar",
+                    archivo: "reporte_cuentas_por_pagar",
+                    lista: listaCxPGlobal,
+                    columnas: [
+                        { titulo: "Documento", campo: "NumeroDocumento" },
+                        { titulo: "Proveedor", campo: "ProveedorNombre" },
+                        { titulo: "Emisión", campo: "FechaEmision", tipo: "fecha" },
+                        { titulo: "Vencimiento", campo: "FechaVencimiento", tipo: "fecha" },
+                        { titulo: "Concepto", campo: "Concepto" },
+                        { titulo: "Monto original", campo: "MontoOriginal", tipo: "moneda" },
+                        { titulo: "Saldo actual", campo: "SaldoActual", tipo: "moneda" },
+                        { titulo: "Estado", campo: "Estado" }
+                    ]
+                };
+            }
+
+            return null;
+        }
+
+        function obtenerValorFormateado(item, columna) {
+            var valor = item[columna.campo];
+
+            if (columna.tipo === "fecha") {
+                return formatearFecha(valor);
+            }
+
+            if (columna.tipo === "moneda") {
+                return formatearMoneda(valor);
+            }
+
+            return valor || "";
+        }
+
+        function exportarReporteActualCSV() {
+            var reporte = obtenerReporteActivo();
+
+            if (reporte === null || reporte.lista.length === 0) {
+                alert("No hay datos para exportar.");
+                return;
+            }
+
+            var lineas = [];
+
+            lineas.push(reporte.columnas.map(function (c) {
+                return escaparCSV(c.titulo);
+            }).join(";"));
+
+            $.each(reporte.lista, function (i, item) {
+                var fila = reporte.columnas.map(function (columna) {
+                    return escaparCSV(obtenerValorFormateado(item, columna));
+                });
+
+                lineas.push(fila.join(";"));
+            });
+
+            var contenido = "\uFEFF" + lineas.join("\n");
+            var blob = new Blob([contenido], { type: "text/csv;charset=utf-8;" });
+
+            var enlace = document.createElement("a");
+            var url = URL.createObjectURL(blob);
+
+            enlace.setAttribute("href", url);
+            enlace.setAttribute("download", reporte.archivo + ".csv");
+            enlace.style.visibility = "hidden";
+
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+        }
+
+        function escaparCSV(valor) {
+            valor = valor === null || valor === undefined ? "" : valor.toString();
+            valor = valor.replace(/"/g, '""');
+            return '"' + valor + '"';
+        }
+
+        function imprimirReporteActual() {
+            var reporte = obtenerReporteActivo();
+
+            if (reporte === null || reporte.lista.length === 0) {
+                alert("No hay datos para imprimir.");
+                return;
+            }
+
+            var html = generarHTMLImpresion(reporte.nombre, reporte.lista, reporte.columnas);
+
+            var ventana = window.open("", "_blank");
+            ventana.document.open();
+            ventana.document.write(html);
+            ventana.document.close();
+            ventana.focus();
+            ventana.print();
+        }
+
+        function generarHTMLImpresion(titulo, lista, columnas) {
+            var fechaInicio = $("#txtFechaInicio").val();
+            var fechaFin = $("#txtFechaFin").val();
+
+            var html = '';
+
+            html += '<!DOCTYPE html>';
+            html += '<html><head><meta charset="utf-8">';
+            html += '<title>' + titulo + '</title>';
+            html += '<style>';
+            html += 'body{font-family:Arial, sans-serif; font-size:12px; margin:25px;}';
+            html += 'h2{margin-bottom:5px;}';
+            html += 'p{margin-top:0; color:#555;}';
+            html += 'table{width:100%; border-collapse:collapse; margin-top:15px;}';
+            html += 'th,td{border:1px solid #ccc; padding:6px; text-align:left;}';
+            html += 'th{background:#f2f2f2;}';
+            html += '</style>';
+            html += '</head><body>';
+
+            html += '<h2>' + titulo + '</h2>';
+            html += '<p>Período consultado: ' + fechaInicio + ' al ' + fechaFin + '</p>';
+
+            html += '<table>';
+            html += '<thead><tr>';
+
+            $.each(columnas, function (i, columna) {
+                html += '<th>' + columna.titulo + '</th>';
+            });
+
+            html += '</tr></thead><tbody>';
+
+            $.each(lista, function (i, item) {
+                html += '<tr>';
+
+                $.each(columnas, function (j, columna) {
+                    html += '<td>' + obtenerValorFormateado(item, columna) + '</td>';
+                });
+
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+
+            html += '</body></html>';
+
+            return html;
+        }
+
+        function verDetalleIngreso(index) {
+            var item = listaIngresosGlobal[index];
+
+            abrirDetalleReporte("Detalle de ingreso", [
+                ["Fecha", formatearFecha(item.FechaIngreso)],
+                ["Tipo de ingreso", item.TipoIngreso],
+                ["Origen", item.OrigenIngreso],
+                ["Número de factura", item.NumeroFactura],
+                ["Cuenta contable", (item.CodigoCuenta || "-") + " - " + (item.NombreCuenta || "-")],
+                ["Descripción", item.Descripcion],
+                ["Monto", formatearMoneda(item.Monto)]
+            ]);
+        }
+
+        function verDetalleGasto(index) {
+            var item = listaGastosGlobal[index];
+
+            abrirDetalleReporte("Detalle de gasto", [
+                ["Fecha", formatearFecha(item.FechaGasto)],
+                ["Tipo de gasto", item.TipoGasto],
+                ["Cuenta contable", (item.CodigoCuenta || "-") + " - " + (item.NombreCuenta || "-")],
+                ["Proveedor", (item.IdentificacionProveedor || "-") + " - " + (item.ProveedorNombre || "-")],
+                ["Número documento", item.NumeroDocumento],
+                ["Descripción", item.Descripcion],
+                ["Monto", formatearMoneda(item.Monto)]
+            ]);
+        }
+
+        function verDetalleCxC(index) {
+            var item = listaCxCGlobal[index];
+
+            abrirDetalleReporte("Detalle de cuenta por cobrar", [
+                ["Factura", item.NumeroFactura],
+                ["Cliente", (item.IdentificacionCliente || "-") + " - " + (item.ClienteNombre || "-")],
+                ["Fecha emisión", formatearFecha(item.FechaEmision)],
+                ["Fecha vencimiento", formatearFecha(item.FechaVencimiento)],
+                ["Monto original", formatearMoneda(item.MontoOriginal)],
+                ["Saldo actual", formatearMoneda(item.SaldoActual)],
+                ["Estado", item.Estado]
+            ]);
+        }
+
+        function verDetalleCxP(index) {
+            var item = listaCxPGlobal[index];
+
+            abrirDetalleReporte("Detalle de cuenta por pagar", [
+                ["Documento", item.NumeroDocumento],
+                ["Proveedor", (item.IdentificacionProveedor || "-") + " - " + (item.ProveedorNombre || "-")],
+                ["Fecha emisión", formatearFecha(item.FechaEmision)],
+                ["Fecha vencimiento", formatearFecha(item.FechaVencimiento)],
+                ["Concepto", item.Concepto],
+                ["Monto original", formatearMoneda(item.MontoOriginal)],
+                ["Saldo actual", formatearMoneda(item.SaldoActual)],
+                ["Estado", item.Estado]
+            ]);
+        }
+
+        function abrirDetalleReporte(titulo, datos) {
+            $("#tituloDetalleReporte").text(titulo);
+
+            var html = '<table class="table table-bordered table-striped mb-0">';
+            html += '<tbody>';
+
+            $.each(datos, function (i, fila) {
+                html += '<tr>';
+                html += '<th style="width:30%;">' + fila[0] + '</th>';
+                html += '<td>' + (fila[1] || "") + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+
+            $("#contenidoDetalleReporte").html(html);
+            $("#ModalDetalleReporte").modal("show");
+        }
+
+        function imprimirDetalleReporte() {
+            var titulo = $("#tituloDetalleReporte").text();
+            var contenido = $("#contenidoDetalleReporte").html();
+
+            var html = '';
+
+            html += '<!DOCTYPE html>';
+            html += '<html><head><meta charset="utf-8">';
+            html += '<title>' + titulo + '</title>';
+            html += '<style>';
+            html += 'body{font-family:Arial, sans-serif; font-size:12px; margin:25px;}';
+            html += 'h2{margin-bottom:15px;}';
+            html += 'table{width:100%; border-collapse:collapse;}';
+            html += 'th,td{border:1px solid #ccc; padding:8px; text-align:left;}';
+            html += 'th{background:#f2f2f2;}';
+            html += '</style>';
+            html += '</head><body>';
+            html += '<h2>' + titulo + '</h2>';
+            html += contenido;
+            html += '</body></html>';
+
+            var ventana = window.open("", "_blank");
+            ventana.document.open();
+            ventana.document.write(html);
+            ventana.document.close();
+            ventana.focus();
+            ventana.print();
+        }
+    </script>
+}

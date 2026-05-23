@@ -113,6 +113,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Acceso\AccesoController.cs" />
     <Compile Include="Controllers\Consultas\ConsultasController.cs" />
+    <Compile Include="Controllers\Contabilidad\ConfiguracionCuentaContableController.cs" />
+    <Compile Include="Controllers\Contabilidad\GestionarAsientoContableController.cs" />
+    <Compile Include="Controllers\Contabilidad\GestionarPeriodoContableController.cs" />
     <Compile Include="Controllers\Facturacion\FacturacionController.cs" />
     <Compile Include="Controllers\Cuentas\GestionarCuentaContableController.cs" />
     <Compile Include="Controllers\Cuentas\GestionarCuentasPorCobrarController.cs" />
@@ -265,6 +268,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\js\analytics.js" />
     <Content Include="Scripts\js\bootstrap.js" />
+    <Content Include="Scripts\js\dataTables\datatables.css" />
+    <Content Include="Scripts\js\dataTables\datatables.js" />
+    <Content Include="Scripts\js\dataTables\datatables.min.css" />
+    <Content Include="Scripts\js\dataTables\datatables.min.js" />
     <Content Include="Scripts\js\demo.js" />
     <Content Include="Scripts\js\dropdown-hover.js" />
     <Content Include="Scripts\js\jquery-3.2.1.min.js" />
@@ -321,10 +328,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\hola.cshtml" />
     <Content Include="Views\Acceso\InicioSesion.cshtml" />
     <Content Include="Scripts\js\libs\animate-css\animate.scss" />
     <Content Include="Scripts\js\libs\chartist\chartist.scss" />
@@ -332,12 +336,6 @@
     <Content Include="Scripts\js\libs\flow-js\flow.scss" />
     <Content Include="Scripts\js\libs\morris\morris.scss" />
     <Content Include="Scripts\js\libs\perfect-scrollbar\perfect-scrollbar.scss" />
-    <Content Include="Views\GestionarCuentasPorCobrar\CxC.cshtml" />
-    <Content Include="Views\GestionarCuentasPorPagar\CxP.cshtml" />
-    <Content Include="Views\GestionarIngresos\GI.cshtml" />
-    <Content Include="Views\GestionarGastos\GG.cshtml" />
-    <Content Include="Views\Facturacion\Facturacion.cshtml" />
-    <Content Include="Views\GestionarPresupuestoMensual\GPM.cshtml" />
     <Content Include="Views\Consultas\Consultas.cshtml" />
     <Content Include="Views\Reportes\Reportes.cshtml" />
     <Content Include="Views\Persona\Clientes.cshtml" />
@@ -363,6 +361,17 @@
     <Content Include="Views\Catalogos\TiposCuentaContable.cshtml" />
     <Content Include="Views\Proveedor\Proveedores.cshtml" />
     <Content Include="Views\GestionarCuentaContable\CuentasContables.cshtml" />
+    <Content Include="Views\GestionarPeriodoContable\PeriodosContables.cshtml" />
+    <Content Include="Views\GestionarAsientoContable\AsientosContables.cshtml" />
+    <Content Include="Views\Facturacion\Facturas.cshtml" />
+    <Content Include="Views\Catalogos\Impuestos.cshtml" />
+    <Content Include="Views\Catalogos\Descuento.cshtml" />
+    <Content Include="Views\GestionarCuentasPorCobrar\CuentasPorCobrar.cshtml" />
+    <Content Include="Views\GestionarIngresos\Ingresos.cshtml" />
+    <Content Include="Views\GestionarCuentasPorPagar\CuentasPorPagar.cshtml" />
+    <Content Include="Views\GestionarGastos\Gastos.cshtml" />
+    <Content Include="Views\GestionarPresupuestoMensual\PresupuestoMensual.cshtml" />
+    <Content Include="Views\ConfiguracionCuentaContable\ConfiguracionCuentaContable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

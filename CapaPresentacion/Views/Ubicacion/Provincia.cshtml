@@ -4,6 +4,19 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
 
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Provincias</h4>
 
@@ -39,14 +52,10 @@
 
     <div class="card-body">
 
-        <div class="form-row mb-3">
-            <div class="col-md-4">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar provincia...">
-            </div>
-        </div>
+
 
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaProvincias">
+            <table class="table table-striped table-bordered nowrap" id="tablaProvincias" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Provincia</th>
@@ -110,15 +119,33 @@
 @section scripts {
     <script>
         var listaProvincias = [];
+        var tablaProvincias = null;
 
         $(document).ready(function () {
             cargarProvincias();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
-            });
             $("#archivoCsvProvincia").on("change", function () {
                 cargarCsvProvincia();
+            });
+
+            $("#txtNombre").on("input", function () {
+                limpiarTextoUbicacion("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo("txtNombre", "El nombre de la provincia no puede superar los 45 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("txtNombre");
             });
         });
 
@@ -128,7 +155,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaProvincias = respuesta.data;
+                    listaProvincias = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -136,77 +163,100 @@
                 }
             });
         }
+
         function cargarCsvProvincia() {
-    var archivo = $("#archivoCsvProvincia")[0].files[0];
+            var archivo = $("#archivoCsvProvincia")[0].files[0];
 
-    if (archivo == null) {
-        alert("Debe seleccionar un archivo CSV.");
-        return;
-    }
-
-    var formData = new FormData();
-    formData.append("archivo", archivo);
-
-    $.ajax({
-        url: '@Url.Action("CargarCsvProvincias", "Ubicacion")',
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                alert("Insertados: " + respuesta.data.insertados + "\nErrores: " + respuesta.data.errores);
-                cargarProvincias();
-            } else {
-                alert(respuesta.mensaje);
+            if (archivo == null) {
+                alert("Debe seleccionar un archivo CSV.");
+                return;
             }
 
-            $("#archivoCsvProvincia").val("");
-        },
-        error: function () {
-            alert("Error al cargar el archivo CSV.");
-            $("#archivoCsvProvincia").val("");
-        }
-    });
-}
-        function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaProvincias tbody");
+            var formData = new FormData();
+            formData.append("archivo", archivo);
 
+            $.ajax({
+                url: '@Url.Action("CargarCsvProvincias", "Ubicacion")',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        alert("Insertados: " + respuesta.data.insertados + "\nErrores: " + respuesta.data.errores);
+                        cargarProvincias();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+
+                    $("#archivoCsvProvincia").val("");
+                },
+                error: function () {
+                    alert("Error al cargar el archivo CSV.");
+                    $("#archivoCsvProvincia").val("");
+                }
+            });
+        }
+
+        function pintarTabla() {
+            if (tablaProvincias != null) {
+                tablaProvincias.clear().destroy();
+                tablaProvincias = null;
+            }
+
+            var tbody = $("#tablaProvincias tbody");
             tbody.empty();
 
             $.each(listaProvincias, function (i, item) {
-                var texto = item.Nombre.toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
+                var nombre = item.Nombre || "";
 
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var fila = `
-                    <tr>
-                        <td>${item.Nombre}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarProvincia(${item.IdProvincia})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarProvincia(item.IdProvincia);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(nombre));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
+            });
+
+            tablaProvincias = $("#tablaProvincias").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
             });
         }
 
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("txtNombre");
+
             $("#txtIdProvincia").val(0);
             $("#txtNombre").val("");
             $("#cboActivo").val("true");
@@ -214,7 +264,7 @@
 
             if (json != null) {
                 $("#txtIdProvincia").val(json.IdProvincia);
-                $("#txtNombre").val(json.Nombre);
+                $("#txtNombre").val(json.Nombre || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
                 $("#tituloModal").text("Editar provincia");
             }
@@ -223,19 +273,30 @@
         }
 
         function guardarProvincia() {
+            $("#mensajeError").hide().text("");
+
             var obj = {
                 IdProvincia: parseInt($("#txtIdProvincia").val()),
                 Nombre: $("#txtNombre").val().trim(),
                 Activo: $("#cboActivo").val() === "true"
             };
 
+            if (isNaN(obj.IdProvincia)) {
+                obj.IdProvincia = 0;
+            }
+
             if (obj.Nombre === "") {
-                $("#mensajeError").text("Debe ingresar el nombre de la provincia.").show();
+                mostrarError("Debe ingresar el nombre de la provincia.", "txtNombre");
+                return;
+            }
+
+            if (!validarTextoUbicacion(obj.Nombre)) {
+                mostrarError("El nombre de la provincia solo puede contener letras, números, espacios y caracteres básicos.", "txtNombre");
                 return;
             }
 
             if (obj.Nombre.length > 45) {
-                $("#mensajeError").text("El nombre no puede superar los 45 caracteres.").show();
+                mostrarError("El nombre de la provincia no puede superar los 45 caracteres.", "txtNombre");
                 return;
             }
 
@@ -291,6 +352,51 @@
                 }
             });
         }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarTextoUbicacion(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoUbicacion(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
+        }
     </script>
 }
-

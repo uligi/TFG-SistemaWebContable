@@ -4,7 +4,18 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
 
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
 
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Tipos de Teléfono</h4>
 
@@ -31,14 +42,10 @@
 
     <div class="card-body">
 
-        <div class="form-row mb-3">
-            <div class="col-md-4">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar tipo de teléfono...">
-            </div>
-        </div>
+
 
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaTipoTelefonos">
+            <table class="table table-striped table-bordered nowrap" id="tablaTipoTelefonos" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Tipo de teléfono</th>
@@ -102,12 +109,29 @@
 @section scripts {
     <script>
         var listaTipoTelefonos = [];
+        var tablaTipoTelefonos = null;
 
         $(document).ready(function () {
             cargarTipoTelefonos();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
+            $("#txtNombre").on("input", function () {
+                limpiarTextoCatalogo("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo("txtNombre", "El tipo de teléfono no puede superar los 45 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("txtNombre");
             });
         });
 
@@ -117,7 +141,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaTipoTelefonos = respuesta.data;
+                    listaTipoTelefonos = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -127,43 +151,63 @@
         }
 
         function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaTipoTelefonos tbody");
+            if (tablaTipoTelefonos != null) {
+                tablaTipoTelefonos.clear().destroy();
+                tablaTipoTelefonos = null;
+            }
 
+            var tbody = $("#tablaTipoTelefonos tbody");
             tbody.empty();
 
             $.each(listaTipoTelefonos, function (i, item) {
-                var texto = item.Nombre.toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
+                var nombre = item.Nombre || "";
 
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var fila = `
-                    <tr>
-                        <td>${item.Nombre}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarTipoTelefono(${item.IdTipoTelefono})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarTipoTelefono(item.IdTipoTelefono);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(nombre));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
+            });
+
+            tablaTipoTelefonos = $("#tablaTipoTelefonos").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
             });
         }
 
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("txtNombre");
 
             $("#txtIdTipoTelefono").val(0);
             $("#txtNombre").val("");
@@ -172,7 +216,7 @@
 
             if (json != null) {
                 $("#txtIdTipoTelefono").val(json.IdTipoTelefono);
-                $("#txtNombre").val(json.Nombre);
+                $("#txtNombre").val(json.Nombre || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
                 $("#tituloModal").text("Editar tipo de teléfono");
             }
@@ -181,19 +225,30 @@
         }
 
         function guardarTipoTelefono() {
+            $("#mensajeError").hide().text("");
+
             var obj = {
                 IdTipoTelefono: parseInt($("#txtIdTipoTelefono").val()),
                 Nombre: $("#txtNombre").val().trim(),
                 Activo: $("#cboActivo").val() === "true"
             };
 
+            if (isNaN(obj.IdTipoTelefono)) {
+                obj.IdTipoTelefono = 0;
+            }
+
             if (obj.Nombre === "") {
-                $("#mensajeError").text("Debe ingresar el nombre del tipo de teléfono.").show();
+                mostrarError("Debe ingresar el nombre del tipo de teléfono.", "txtNombre");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Nombre)) {
+                mostrarError("El tipo de teléfono solo puede contener letras, números, espacios y caracteres básicos.", "txtNombre");
                 return;
             }
 
             if (obj.Nombre.length > 45) {
-                $("#mensajeError").text("El nombre no puede superar los 45 caracteres.").show();
+                mostrarError("El tipo de teléfono no puede superar los 45 caracteres.", "txtNombre");
                 return;
             }
 
@@ -204,7 +259,6 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-
                     if (obj.IdTipoTelefono === 0) {
                         if (respuesta.resultado != 0) {
                             $("#FormModal").modal("hide");
@@ -249,6 +303,52 @@
                     alert("Error al inactivar el tipo de teléfono.");
                 }
             });
+        }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarTextoCatalogo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoCatalogo(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
         }
     </script>
 }

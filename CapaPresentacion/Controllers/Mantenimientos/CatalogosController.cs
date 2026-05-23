@@ -103,6 +103,15 @@ namespace CapaPresentacion.Controllers.Mantenimientos
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult ListarTipoFacturasActivos()
+        {
+            var lista = new CN_TipoFactura().Listar()
+                .FindAll(x => x.Activo == true);
+
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public JsonResult GuardarTipoFactura(TipoFactura obj)
         {
@@ -179,6 +188,16 @@ namespace CapaPresentacion.Controllers.Mantenimientos
             var lista = new CN_TipoPago().Listar();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public JsonResult ListarTipoPagosActivos()
+        {
+            var lista = new CN_TipoPago().Listar()
+                .FindAll(x => x.Activo == true);
+
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
 
         [HttpPost]
         public JsonResult GuardarTipoPago(TipoPago obj)
@@ -500,5 +519,118 @@ namespace CapaPresentacion.Controllers.Mantenimientos
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
+        // ===============================
+        // IMPUESTOS
+        // ===============================
+
+
+        public ActionResult Impuestos()
+        {
+            return View();
+        }
+
+
+        [HttpGet]
+        public JsonResult ListarImpuestos()
+        {
+            var lista = new CN_Impuesto().Listar();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ListarImpuestosActivos()
+        {
+            var lista = new CN_Impuesto().ListarActivos();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GuardarImpuesto(Impuesto obj)
+        {
+            object resultado;
+            string mensaje = string.Empty;
+
+            if (obj.IdImpuesto == 0)
+            {
+                resultado = new CN_Impuesto().Registrar(obj, out mensaje);
+            }
+            else
+            {
+                resultado = new CN_Impuesto().Editar(obj, out mensaje);
+            }
+
+            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult InactivarImpuesto(int idImpuesto)
+        {
+            string mensaje = string.Empty;
+
+            bool resultado = new CN_Impuesto().Inactivar(
+                idImpuesto,
+                out mensaje
+            );
+
+            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        // ===============================
+        // DESCUENTOS
+        // ===============================
+
+
+        public ActionResult Descuento()
+        {
+            return View();
+        }
+
+
+        [HttpGet]
+        public JsonResult ListarDescuentos()
+        {
+            var lista = new CN_Descuento().Listar();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ListarDescuentosActivos()
+        {
+            var lista = new CN_Descuento().ListarActivos();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GuardarDescuento(Descuento obj)
+        {
+            object resultado;
+            string mensaje = string.Empty;
+
+            if (obj.IdDescuento == 0)
+            {
+                resultado = new CN_Descuento().Registrar(obj, out mensaje);
+            }
+            else
+            {
+                resultado = new CN_Descuento().Editar(obj, out mensaje);
+            }
+
+            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult InactivarDescuento(int idDescuento)
+        {
+            string mensaje = string.Empty;
+
+            bool resultado = new CN_Descuento().Inactivar(
+                idDescuento,
+                out mensaje
+            );
+
+            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

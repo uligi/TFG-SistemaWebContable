@@ -1,5 +1,8 @@
-﻿<!DOCTYPE html>
-<html lang="es">
+﻿@using System
+@using System.Linq
+
+<!DOCTYPE html>
+<html lang="es" class="material-style layout-fixed">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
@@ -8,10 +11,229 @@
     <title>@ViewBag.Title - Mantenimientos</title>
 
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/datatables")
     @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        body {
+            background: #f3f6fb;
+        }
+
+        .layout-content {
+            background: #f3f6fb;
+        }
+
+        .container-p-y {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+        }
+
+        .app-brand {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+            .brand-box:hover {
+                color: #fff;
+                text-decoration: none;
+            }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .brand-text-main {
+            display: block;
+            font-weight: 700;
+            font-size: 15px;
+            line-height: 1.1;
+        }
+
+        .brand-text-sub {
+            display: block;
+            font-size: 12px;
+            color: rgba(255,255,255,0.62);
+            margin-top: 3px;
+        }
+
+        .sidenav-header {
+            color: rgba(255,255,255,0.48) !important;
+            padding-top: 14px;
+            padding-bottom: 8px;
+            letter-spacing: .06em;
+        }
+
+        .sidenav-divider {
+            border-color: rgba(255,255,255,0.08) !important;
+        }
+
+        .layout-navbar {
+            min-height: 66px;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .navbar-page-title {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+            .navbar-page-title strong {
+                color: #0f172a;
+                font-size: 16px;
+            }
+
+            .navbar-page-title span {
+                color: #64748b;
+                font-size: 12px;
+                margin-top: 2px;
+            }
+
+        .user-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #1d4ed8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            line-height: 1.1;
+        }
+
+            .user-info strong {
+                display: block;
+                color: #0f172a;
+                font-size: 13px;
+            }
+
+            .user-info span {
+                display: block;
+                color: #64748b;
+                font-size: 11px;
+                margin-top: 2px;
+            }
+
+        .logout-link {
+            color: #dc2626 !important;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 8px 12px !important;
+        }
+
+            .logout-link:hover {
+                background: #fee2e2;
+                color: #991b1b !important;
+            }
+
+        .back-system-link {
+            color: #93c5fd !important;
+        }
+
+            .back-system-link:hover {
+                color: #ffffff !important;
+            }
+
+        .content-shell {
+            animation: fadeInContent .22s ease-in-out;
+        }
+
+        @@keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .user-info {
+                display: none;
+            }
+
+            .navbar-page-title span {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    @{
+        var controller = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
+        var action = (ViewContext.RouteData.Values["action"] ?? "").ToString();
+
+        Func<string, string, string> activo = (ctrl, act) =>
+            controller.Equals(ctrl, StringComparison.OrdinalIgnoreCase)
+            && (string.IsNullOrEmpty(act) || action.Equals(act, StringComparison.OrdinalIgnoreCase))
+                ? "active"
+                : "";
+
+        Func<string[], string> abierto = (controles) =>
+            controles.Any(c => controller.Equals(c, StringComparison.OrdinalIgnoreCase))
+                ? "open active"
+                : "";
+
+        string nombreUsuario = "Usuario";
+
+        if (Session["NombreUsuario"] != null)
+        {
+            nombreUsuario = Session["NombreUsuario"].ToString();
+        }
+        else if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            nombreUsuario = User.Identity.Name;
+        }
+
+        string inicialUsuario = !string.IsNullOrWhiteSpace(nombreUsuario)
+            ? nombreUsuario.Substring(0, 1).ToUpper()
+            : "U";
+    }
+
+    <div class="page-loader">
+        <div class="bg-primary"></div>
+    </div>
+
     <div class="layout-wrapper layout-2">
         <div class="layout-inner">
 
@@ -20,8 +242,14 @@
 
                 <!-- MARCA -->
                 <div class="app-brand">
-                    <a href="@Url.Action("Index", "Mantenimientos")" class="app-brand-text sidenav-text font-weight-normal ml-2">
-                        Mantenimientos
+                    <a href="@Url.Action("Mantenimientos", "Home")" class="brand-box">
+                        <div class="brand-logo">
+                            <i class="feather icon-settings"></i>
+                        </div>
+                        <div>
+                            <span class="brand-text-main">Mantenimientos</span>
+                            <span class="brand-text-sub">Sistema Contable</span>
+                        </div>
                     </a>
                 </div>
 
@@ -34,195 +262,258 @@
                         General
                     </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Index", "Mantenimientos")" class="sidenav-link">
+                    <li class="sidenav-item @activo("Home", "Mantenimientos")">
+                        <a href="@Url.Action("Mantenimientos", "Home")" class="sidenav-link">
                             <i class="sidenav-icon feather icon-grid"></i>
-                            <div>Panel</div>
+                            <div>Panel principal</div>
                         </a>
                     </li>
 
                     <li class="sidenav-item">
-                        <a href="@Url.Action("Index", "Home")" class="sidenav-link">
+                        <a href="@Url.Action("Index", "Home")" class="sidenav-link back-system-link">
                             <i class="sidenav-icon feather icon-arrow-left"></i>
                             <div>Volver al sistema</div>
                         </a>
                     </li>
 
-                    <!-- CATÁLOGOS -->
                     <li class="sidenav-divider mb-1"></li>
                     <li class="sidenav-header small font-weight-semibold">
-                        Catálogos
+                        Datos del negocio
                     </li>
 
+                    <!-- PERSONAS -->
+                    <li class="sidenav-item @abierto(new[] { "Persona", "Proveedor" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                            <i class="sidenav-icon feather icon-users"></i>
+                            <div>Personas</div>
+                        </a>
 
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Persona", "Clientes")">
+                                <a href="@Url.Action("Clientes", "Persona")" class="sidenav-link">
+                                    <div>Clientes</div>
+                                </a>
+                            </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TipoTelefono", "Catalogos")" class="sidenav-link">
+                            <li class="sidenav-item @activo("Persona", "Empleados")">
+                                <a href="@Url.Action("Empleados", "Persona")" class="sidenav-link">
+                                    <div>Empleados</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Proveedor", "Proveedores")">
+                                <a href="@Url.Action("Proveedores", "Proveedor")" class="sidenav-link">
+                                    <div>Proveedores</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- CONTACTO -->
+                    <li class="sidenav-item @abierto(new[] { "Persona", "Catalogos" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                             <i class="sidenav-icon feather icon-phone"></i>
-                            <div>Tipos de teléfono</div>
+                            <div>Contacto</div>
                         </a>
-                    </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TipoCorreo", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-mail"></i>
-                            <div>Tipos de correo</div>
-                        </a>
-                    </li>
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Persona", "Telefono")">
+                                <a href="@Url.Action("Telefono", "Persona")" class="sidenav-link">
+                                    <div>Teléfonos</div>
+                                </a>
+                            </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TipoProducto", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-package"></i>
-                            <div>Tipos de producto</div>
-                        </a>
-                    </li>
+                            <li class="sidenav-item @activo("Persona", "Correo")">
+                                <a href="@Url.Action("Correo", "Persona")" class="sidenav-link">
+                                    <div>Correos</div>
+                                </a>
+                            </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TipoPago", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-credit-card"></i>
-                            <div>Tipos de pago</div>
-                        </a>
-                    </li>
+                            <li class="sidenav-item @activo("Catalogos", "TipoTelefono")">
+                                <a href="@Url.Action("TipoTelefono", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de teléfono</div>
+                                </a>
+                            </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TipoFactura", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-file-text"></i>
-                            <div>Tipos de factura</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TipoDeObservacion", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-message-square"></i>
-                            <div>Tipos de observación</div>
-                        </a>
-                    </li>
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TiposGasto", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-message-square"></i>
-                            <div>Tipos de Gastos</div>
-                        </a>
-                    </li>
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TiposIngreso", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-message-square"></i>
-                            <div>Tipos de Ingresos</div>
-                        </a>
-                    </li>
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("NaturalezasCuentaContable", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-message-square"></i>
-                            <div>Tipos de Naturaleza</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("TiposCuentaContable", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-message-square"></i>
-                            <div>Tipos de Cuentas Contables</div>
-                        </a>
+                            <li class="sidenav-item @activo("Catalogos", "TipoCorreo")">
+                                <a href="@Url.Action("TipoCorreo", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de correo</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <!-- UBICACIONES -->
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">
-                        Ubicaciones
-                    </li>
-
-
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Provincia", "Ubicacion")" class="sidenav-link">
+                    <li class="sidenav-item @abierto(new[] { "Ubicacion" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                             <i class="sidenav-icon feather icon-map-pin"></i>
-                            <div>Provincias</div>
+                            <div>Ubicaciones</div>
                         </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Ubicacion", "Provincia")">
+                                <a href="@Url.Action("Provincia", "Ubicacion")" class="sidenav-link">
+                                    <div>Provincias</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Ubicacion", "Canton")">
+                                <a href="@Url.Action("Canton", "Ubicacion")" class="sidenav-link">
+                                    <div>Cantones</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Ubicacion", "Distrito")">
+                                <a href="@Url.Action("Distrito", "Ubicacion")" class="sidenav-link">
+                                    <div>Distritos</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Canton", "Ubicacion")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-map"></i>
-                            <div>Cantones</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Distrito", "Ubicacion")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-navigation"></i>
-                            <div>Distritos</div>
-                        </a>
-                    </li>
-
-                    <!-- PERSONAS Y NEGOCIO -->
                     <li class="sidenav-divider mb-1"></li>
                     <li class="sidenav-header small font-weight-semibold">
-                        Personas y negocio
+                        Productos y ventas
                     </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Clientes", "Persona")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-users"></i>
-                            <div>Clientes</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Empleados", "Persona")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-user"></i>
-                            <div>Empleados</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Telefono", "Persona")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-phone-call"></i>
-                            <div>Teléfonos</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Proveedores", "Proveedor")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-truck"></i>
-                            <div>Proveedores</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Productos", "Producto")" class="sidenav-link">
+                    <!-- PRODUCTOS -->
+                    <li class="sidenav-item @abierto(new[] { "Producto" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                             <i class="sidenav-icon feather icon-package"></i>
                             <div>Productos</div>
                         </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Producto", "Productos")">
+                                <a href="@Url.Action("Productos", "Producto")" class="sidenav-link">
+                                    <div>Productos</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <!-- CONTABILIDAD -->
+                    <!-- FACTURACIÓN Y PAGOS -->
+                    <li class="sidenav-item @abierto(new[] { "Catalogos" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                            <i class="sidenav-icon feather icon-file-text"></i>
+                            <div>Facturación y pagos</div>
+                        </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Catalogos", "TipoProducto")">
+                                <a href="@Url.Action("TipoProducto", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de producto</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "TipoPago")">
+                                <a href="@Url.Action("TipoPago", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de pago</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "TipoFactura")">
+                                <a href="@Url.Action("TipoFactura", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de factura</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "Impuestos")">
+                                <a href="@Url.Action("Impuestos", "Catalogos")" class="sidenav-link">
+                                    <div>Impuestos</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "Descuento")">
+                                <a href="@Url.Action("Descuento", "Catalogos")" class="sidenav-link">
+                                    <div>Descuentos</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li class="sidenav-divider mb-1"></li>
                     <li class="sidenav-header small font-weight-semibold">
                         Contabilidad
                     </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Index", "PeriodoContable")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-calendar"></i>
-                            <div>Periodos contables</div>
+                    <!-- CATÁLOGOS CONTABLES -->
+                    <li class="sidenav-item @abierto(new[] { "Catalogos", "PeriodoContable", "ConfiguracionCuentaContable" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                            <i class="sidenav-icon feather icon-book"></i>
+                            <div>Catálogos contables</div>
                         </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Catalogos", "TiposIngreso")">
+                                <a href="@Url.Action("TiposIngreso", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de ingreso</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "TiposGasto")">
+                                <a href="@Url.Action("TiposGasto", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de gasto</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "NaturalezasCuentaContable")">
+                                <a href="@Url.Action("NaturalezasCuentaContable", "Catalogos")" class="sidenav-link">
+                                    <div>Naturalezas de cuenta</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "TiposCuentaContable")">
+                                <a href="@Url.Action("TiposCuentaContable", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de cuenta contable</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("PeriodoContable", "Index")">
+                                <a href="@Url.Action("Index", "PeriodoContable")" class="sidenav-link">
+                                    <div>Periodos contables</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("ConfiguracionCuentaContable", "ConfiguracionCuentaContable")">
+                                <a href="@Url.Action("ConfiguracionCuentaContable", "ConfiguracionCuentaContable")" class="sidenav-link">
+                                    <div>Configuración cuenta contable</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <!-- SEGURIDAD -->
                     <li class="sidenav-divider mb-1"></li>
                     <li class="sidenav-header small font-weight-semibold">
-                        Seguridad
+                        Administración
                     </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Rol", "Seguridad")" class="sidenav-link">
+                    <!-- SEGURIDAD Y PERSONAL -->
+                    <li class="sidenav-item @abierto(new[] { "Seguridad", "Catalogos" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                             <i class="sidenav-icon feather icon-shield"></i>
-                            <div>Roles</div>
+                            <div>Seguridad y personal</div>
                         </a>
-                    </li>
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Puestos", "Catalogos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-message-square"></i>
-                            <div>Tipos de Puesto</div>
-                        </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Seguridad", "Rol")">
+                                <a href="@Url.Action("Rol", "Seguridad")" class="sidenav-link">
+                                    <div>Roles</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "Puestos")">
+                                <a href="@Url.Action("Puestos", "Catalogos")" class="sidenav-link">
+                                    <div>Puestos</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Catalogos", "TipoDeObservacion")">
+                                <a href="@Url.Action("TipoDeObservacion", "Catalogos")" class="sidenav-link">
+                                    <div>Tipos de observación</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                 </ul>
@@ -234,25 +525,33 @@
                 <!-- NAVBAR SUPERIOR -->
                 <nav class="layout-navbar navbar navbar-expand-lg align-items-lg-center bg-white container-p-x">
 
-                    <a href="javascript:" class="layout-sidenav-toggle sidenav-link text-large mr-3">
+                    <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large mr-3">
                         <i class="ion ion-md-menu align-middle"></i>
                     </a>
 
-                    <div class="navbar-nav align-items-lg-center">
-                        <span class="navbar-text font-weight-semibold">
-                            Módulo de Mantenimientos
-                        </span>
+                    <div class="navbar-nav align-items-lg-center mr-auto">
+                        <div class="nav-item navbar-text navbar-page-title">
+                            <strong>@ViewBag.Title</strong>
+                            <span>Mantenimientos - Sistema Web Contable</span>
+                        </div>
                     </div>
 
                     <div class="navbar-collapse collapse" id="layout-navbar-collapse">
                         <div class="navbar-nav align-items-lg-center ml-auto">
 
-                            <div class="nav-item navbar-text">
-                                Usuario: @User.Identity.Name
+                            <div class="nav-item user-box">
+                                <div class="user-avatar">
+                                    @inicialUsuario
+                                </div>
+
+                                <div class="user-info">
+                                    <strong>@nombreUsuario</strong>
+                                    <span>Usuario del sistema</span>
+                                </div>
                             </div>
 
                             <div class="nav-item ml-3">
-                                <a class="nav-link" href="@Url.Action("InicioSesion", "Acceso")">
+                                <a class="nav-link logout-link" href="@Url.Action("CerrarSesion", "Acceso")">
                                     <i class="feather icon-log-out mr-1"></i>
                                     Cerrar sesión
                                 </a>
@@ -266,7 +565,9 @@
                 <!-- BODY -->
                 <div class="layout-content">
                     <div class="container-fluid flex-grow-1 container-p-y">
-                        @RenderBody()
+                        <div class="content-shell">
+                            @RenderBody()
+                        </div>
                     </div>
                 </div>
 
@@ -277,6 +578,7 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/datatables")
     @RenderSection("scripts", required: false)
 </body>
 </html>

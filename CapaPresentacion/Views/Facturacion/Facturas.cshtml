@@ -1,0 +1,1370 @@
+﻿@{
+    ViewBag.Title = "Facturas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+
+</style>
+
+<h4 class="font-weight-bold py-3 mb-0">Gestionar Facturas</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Facturación</li>
+        <li class="breadcrumb-item active">Facturas</li>
+    </ol>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Lista de facturas</h6>
+
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+            Nueva factura
+        </button>
+    </div>
+
+    <div class="card-body">
+
+        <div class="form-row mb-3">
+            <div class="col-md-5">
+                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por número, cliente, empleado o estado...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="tablaFacturas">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Empleado</th>
+                        <th>Tipo factura</th>
+                        <th>Tipo pago</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Activo</th>
+                        <th style="width:250px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="tituloModal">Nueva factura</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="txtIdFactura" value="0" />
+
+                <h6 class="font-weight-bold">Encabezado de factura</h6>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-3">
+                        <label for="txtNumeroFactura">Número de factura</label>
+                        <input type="text" id="txtNumeroFactura" class="form-control" readonly placeholder="Se genera automáticamente" />
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label for="txtFechaFactura">Fecha de factura</label>
+                        <input type="date" id="txtFechaFactura" class="form-control" />
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label for="cboTipoFactura">Tipo de factura</label>
+                        <select id="cboTipoFactura" class="form-control">
+                            <option value="0">Seleccione un tipo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label for="cboTipoPago">Tipo de pago</label>
+                        <select id="cboTipoPago" class="form-control">
+                            <option value="0">Seleccione un tipo</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-4">
+                        <label for="txtBuscarCliente">Cliente</label>
+
+                        <input type="hidden" id="txtIdentificacionCliente" />
+
+                        <div class="input-group">
+                            <input type="text"
+                                   id="txtBuscarCliente"
+                                   class="form-control"
+                                   placeholder="Buscar cliente por cédula o nombre..." />
+
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-primary" onclick="buscarClientesFactura()">
+                                    Buscar
+                                </button>
+                            </div>
+                        </div>
+
+                        <small class="form-text text-muted" id="lblClienteSeleccionado">
+                            Ningún cliente seleccionado.
+                        </small>
+
+                        <div class="table-responsive mt-2" id="contenedorResultadosCliente" style="display:none;">
+                            <table class="table table-sm table-bordered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Identificación</th>
+                                        <th>Cliente</th>
+                                        <th style="width:100px;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyResultadosCliente"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="cboEmpleado">Empleado</label>
+                        <select id="cboEmpleado" class="form-control">
+                            <option value="">Seleccione un empleado</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="cboEstado">Estado</label>
+                        <select id="cboEstado" class="form-control">
+                            <option value="Borrador">Borrador</option>
+                            <option value="Emitida">Emitida</option>
+                            <option value="Anulada">Anulada</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="cboActivo">Activo</label>
+                        <select id="cboActivo" class="form-control">
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="alert alert-danger mt-2" id="mensajeError" style="display:none;"></div>
+
+                <div class="text-right mb-3">
+                    <button type="button" class="btn btn-primary" onclick="guardarFactura()">
+                        Guardar encabezado
+                    </button>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="font-weight-bold mb-0">Detalle de factura</h6>
+
+                    <div>
+                        <span class="badge badge-info mr-2" id="lblSubtotal">Subtotal: 0.00</span>
+                        <span class="badge badge-info mr-2" id="lblImpuesto">IVA incluido: 0.00</span>
+                        <span class="badge badge-info mr-2" id="lblDescuento">Descuento: 0.00</span>
+                        <span class="badge badge-success" id="lblTotal">Total: 0.00</span>
+                    </div>
+                </div>
+
+                <small class="form-text text-muted mb-3" id="textoAyudaDetalle">
+                    Para agregar productos, primero guarde el encabezado de la factura.
+                </small>
+
+                <input type="hidden" id="txtIdDetalleFactura" value="0" />
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-4">
+                        <label for="txtBuscarProducto">Producto</label>
+
+                        <input type="hidden" id="txtIdProducto" value="0" />
+
+                        <div class="input-group">
+                            <input type="text"
+                                   id="txtBuscarProducto"
+                                   class="form-control"
+                                   placeholder="Buscar producto por código o nombre..." />
+
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-primary" id="btnBuscarProducto" onclick="buscarProductosFactura()">
+                                    Buscar
+                                </button>
+                            </div>
+                        </div>
+
+                        <small class="form-text text-muted" id="lblProductoSeleccionado">
+                            Ningún producto seleccionado.
+                        </small>
+
+                        <div class="table-responsive mt-2" id="contenedorResultadosProducto" style="display:none;">
+                            <table class="table table-sm table-bordered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Producto</th>
+                                        <th>Precio</th>
+                                        <th>Stock</th>
+                                        <th>IVA</th>
+                                        <th style="width:100px;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyResultadosProducto"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="txtCantidad">Cantidad</label>
+                        <input type="number" id="txtCantidad" class="form-control" min="0" step="0.01" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="txtPrecioUnitario">Precio unitario con IVA</label>
+                        <input type="number" id="txtPrecioUnitario" class="form-control" min="0" step="0.01" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="txtPorcentajeImpuesto">IVA incluido %</label>
+                        <input type="number" id="txtPorcentajeImpuesto" class="form-control" min="0" step="0.01" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="cboDescuento">Descuento</label>
+                        <select id="cboDescuento" class="form-control">
+                            <option value="0">Sin descuento</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-8">
+                        <label for="txtDescripcionItem">Descripción del ítem</label>
+                        <input type="text" id="txtDescripcionItem" class="form-control" maxlength="150" />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>&nbsp;</label>
+                        <div class="btn-group btn-block">
+                            <button type="button" class="btn btn-secondary" id="btnLimpiarDetalle" onclick="limpiarDetalle()">
+                                Limpiar
+                            </button>
+                            <button type="button" class="btn btn-primary" id="btnGuardarDetalle" onclick="guardarDetalleFactura()">
+                                Guardar detalle
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered" id="tablaDetalles">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>IVA incluido %</th>
+                                <th>Descuento</th>
+                                <th>Subtotal</th>
+                                <th>Total línea</th>
+                                <th>Estado</th>
+                                <th style="width:170px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="emitirFactura()">
+                    Emitir factura
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var listaFacturas = [];
+        var listaDetalles = [];
+
+        $(document).ready(function () {
+            cargarFacturas();
+            cargarEmpleados();
+            cargarTiposFactura();
+            cargarTiposPago();
+            cargarDescuentos();
+
+            $("#txtBuscar").on("keyup", function () {
+                pintarTablaFacturas();
+            });
+
+            $("#txtBuscarCliente").on("keypress", function (e) {
+                if (e.which === 13) {
+                    buscarClientesFactura();
+                }
+            });
+
+            $("#txtBuscarProducto").on("keypress", function (e) {
+                if (e.which === 13) {
+                    buscarProductosFactura();
+                }
+            });
+
+            $("#txtBuscarCliente").on("input", function () {
+                limpiarTextoBusqueda("txtBuscarCliente", "Solo se permiten letras, números, espacios y caracteres básicos.");
+            });
+
+            $("#txtBuscarProducto").on("input", function () {
+                limpiarTextoBusqueda("txtBuscarProducto", "Solo se permiten letras, números, espacios y caracteres básicos.");
+            });
+
+            $("#txtCantidad").on("input", function () {
+                limpiarNoDecimal("txtCantidad", "Solo se permiten números y punto decimal en la cantidad.");
+            });
+
+            $("#txtDescripcionItem").on("input", function () {
+                limpiarTextoFactura("txtDescripcionItem", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 150) {
+                    $(this).val($(this).val().substring(0, 150));
+                    mostrarAyudaCampo("txtDescripcionItem", "La descripción del ítem no puede superar los 150 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+        });
+
+        function cargarFacturas() {
+            $.ajax({
+                url: '@Url.Action("ListarFacturas", "Facturacion")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaFacturas = respuesta.data || [];
+                    pintarTablaFacturas();
+                },
+                error: function () {
+                    alert("Error al cargar las facturas.");
+                }
+            });
+        }
+
+        function cargarEmpleados() {
+            $.ajax({
+                url: '@Url.Action("ListarEmpleados", "Persona")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboEmpleado").empty().append('<option value="">Seleccione un empleado</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        if (item.Activo !== true) {
+                            return;
+                        }
+
+                        var nombre = item.NombreCompleto
+                            || item.EmpleadoNombre
+                            || ((item.Nombre || "") + " " + (item.PrimerApellido || "") + " " + (item.SegundoApellido || "")).trim()
+                            || item.Identificacion;
+
+                        $("#cboEmpleado").append(
+                            $("<option>", {
+                                value: item.Identificacion,
+                                text: item.Identificacion + " - " + nombre
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los empleados.");
+                }
+            });
+        }
+
+        function cargarTiposFactura() {
+            $.ajax({
+                url: '@Url.Action("ListarTipoFacturasActivos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoFactura").empty().append('<option value="0">Seleccione un tipo</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboTipoFactura").append(
+                            $("<option>", {
+                                value: item.IdTipoFactura,
+                                text: item.Tipo_Factura || item.TipoFactura || item.Nombre
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de factura.");
+                }
+            });
+        }
+
+        function cargarTiposPago() {
+            $.ajax({
+                url: '@Url.Action("ListarTipoPagosActivos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoPago").empty().append('<option value="0">Seleccione un tipo</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboTipoPago").append(
+                            $("<option>", {
+                                value: item.IdTipoPago,
+                                text: item.Nombre || item.TipoPago || item.Descripcion
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de pago.");
+                }
+            });
+        }
+
+        function cargarDescuentos() {
+            $.ajax({
+                url: '@Url.Action("ListarDescuentosActivos", "Facturacion")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboDescuento").empty();
+                    $("#cboDescuento").append('<option value="0">Sin descuento</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboDescuento").append(
+                            $("<option>", {
+                                value: item.IdDescuento,
+                                text: item.Nombre + " (" + parseFloat(item.Porcentaje || 0).toFixed(2) + "%)"
+                            })
+                            .attr("data-porcentaje", item.Porcentaje)
+                            .attr("data-requiere-autorizacion", item.RequiereAutorizacion)
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los descuentos.");
+                }
+            });
+        }
+
+        function pintarTablaFacturas() {
+            var filtro = $("#txtBuscar").val().toLowerCase();
+            var tbody = $("#tablaFacturas tbody");
+
+            tbody.empty();
+
+            if (listaFacturas.length === 0) {
+                tbody.append(
+                    '<tr>' +
+                        '<td colspan="10" class="text-center text-muted">' +
+                            'No hay facturas registradas.' +
+                        '</td>' +
+                    '</tr>'
+                );
+                return;
+            }
+
+            $.each(listaFacturas, function (i, item) {
+                var numero = item.NumeroFactura || "";
+                var cliente = item.ClienteNombre || "";
+                var empleado = item.EmpleadoNombre || "";
+                var estadoTexto = item.Estado || "";
+
+                var texto = (numero + " " + cliente + " " + empleado + " " + estadoTexto).toLowerCase();
+
+                if (texto.indexOf(filtro) === -1) {
+                    return;
+                }
+
+                var estado = estadoTexto === "Emitida"
+                    ? '<span class="badge badge-success">Emitida</span>'
+                    : estadoTexto === "Anulada"
+                        ? '<span class="badge badge-danger">Anulada</span>'
+                        : '<span class="badge badge-warning">Borrador</span>';
+
+                var activo = item.Activo
+                    ? '<span class="badge badge-info">Sí</span>'
+                    : '<span class="badge badge-secondary">No</span>';
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonEmitir = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-success mr-1",
+                    text: "Emitir"
+                }).on("click", function () {
+                    emitirFacturaDesdeTabla(item.IdFactura);
+                });
+
+                var botonAnular = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Anular"
+                }).on("click", function () {
+                    inactivarFactura(item.IdFactura);
+                });
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(numero));
+                fila.append($("<td>").text(formatearFecha(item.FechaFactura)));
+                fila.append($("<td>").text(cliente));
+                fila.append($("<td>").text(empleado));
+                fila.append($("<td>").text(item.TipoFacturaNombre || ""));
+                fila.append($("<td>").text(item.TipoPagoNombre || ""));
+                fila.append($("<td>").text(parseFloat(item.TotalFactura || 0).toFixed(2)));
+                fila.append($("<td>").html(estado));
+                fila.append($("<td>").html(activo));
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonEmitir);
+                acciones.append(botonAnular);
+
+                fila.append(acciones);
+                tbody.append(fila);
+            });
+        }
+
+        function abrirModal(json) {
+            $("#mensajeError").hide().text("");
+
+            $("#txtIdFactura").val(0);
+            $("#txtNumeroFactura").val("");
+            $("#txtFechaFactura").val(convertirDateAInput(new Date()));
+            $("#cboTipoFactura").val(0);
+            $("#cboTipoPago").val(0);
+
+            $("#txtIdentificacionCliente").val("");
+            $("#txtBuscarCliente").val("");
+            $("#lblClienteSeleccionado").text("Ningún cliente seleccionado.");
+            $("#contenedorResultadosCliente").hide();
+            $("#tbodyResultadosCliente").empty();
+
+            $("#cboEmpleado").val("");
+            $("#cboEstado").val("Borrador");
+            $("#cboActivo").val("true");
+            $("#tituloModal").text("Nueva factura");
+
+            limpiarDetalle();
+            listaDetalles = [];
+            pintarDetalles();
+            bloquearDetalle(true);
+
+            if (json != null) {
+                $("#txtIdFactura").val(json.IdFactura);
+                $("#txtNumeroFactura").val(json.NumeroFactura || "");
+                $("#txtFechaFactura").val(convertirFechaInput(json.FechaFactura));
+                $("#cboTipoFactura").val(json.IdTipoFactura);
+                $("#cboTipoPago").val(json.IdTipoPago);
+
+                $("#txtIdentificacionCliente").val(json.IdentificacionCliente);
+                $("#txtBuscarCliente").val(json.IdentificacionCliente + " - " + (json.ClienteNombre || ""));
+                $("#lblClienteSeleccionado").text("Cliente seleccionado: " + json.IdentificacionCliente + " - " + (json.ClienteNombre || ""));
+
+                $("#cboEmpleado").val(json.IdentificacionEmpleado);
+                $("#cboEstado").val(json.Estado);
+                $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#tituloModal").text("Editar factura");
+
+                bloquearDetalle(false);
+                cargarDetallesFactura(json.IdFactura);
+            }
+
+            $("#FormModal").modal("show");
+        }
+
+      function guardarFactura() {
+    $("#mensajeError").hide().text("");
+
+    var obj = {
+        IdFactura: parseInt($("#txtIdFactura").val()),
+        IdentificacionCliente: $("#txtIdentificacionCliente").val(),
+        IdentificacionEmpleado: $("#cboEmpleado").val(),
+        IdTipoPago: parseInt($("#cboTipoPago").val()),
+        IdTipoFactura: parseInt($("#cboTipoFactura").val()),
+        FechaFactura: $("#txtFechaFactura").val(),
+        Estado: $("#cboEstado").val(),
+        Activo: $("#cboActivo").val() === "true"
+    };
+
+    if (isNaN(obj.IdFactura)) {
+        obj.IdFactura = 0;
+    }
+
+    if (obj.IdentificacionCliente === "") {
+        mostrarError("Debe seleccionar un cliente.", "txtBuscarCliente");
+        return;
+    }
+
+    if (obj.IdentificacionEmpleado === "") {
+        mostrarError("Debe seleccionar un empleado.", "cboEmpleado");
+        return;
+    }
+
+    if (obj.IdTipoPago === 0 || isNaN(obj.IdTipoPago)) {
+        mostrarError("Debe seleccionar un tipo de pago.", "cboTipoPago");
+        return;
+    }
+
+    if (obj.IdTipoFactura === 0 || isNaN(obj.IdTipoFactura)) {
+        mostrarError("Debe seleccionar un tipo de factura.", "cboTipoFactura");
+        return;
+    }
+
+    if (obj.FechaFactura === "") {
+        mostrarError("Debe ingresar la fecha de factura.", "txtFechaFactura");
+        return;
+    }
+
+    var mensajeFecha = validarFechaNoFutura(obj.FechaFactura, "La fecha de factura no puede ser futura.");
+    if (mensajeFecha !== "") {
+        mostrarError(mensajeFecha, "txtFechaFactura");
+        return;
+    }
+
+    if (obj.Estado === "" || obj.Estado === null) {
+        mostrarError("Debe seleccionar un estado.", "cboEstado");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarFactura", "Facturacion")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                if (obj.IdFactura === 0) {
+                    $("#txtIdFactura").val(respuesta.resultado);
+                    bloquearDetalle(false);
+                }
+
+                $("#mensajeError").hide().text("");
+                cargarFacturas();
+                mostrarAyudaCampo("txtIdFactura", respuesta.mensaje || "Encabezado guardado correctamente.");
+                setTimeout(function () {
+                    ocultarAyudaCampo("txtIdFactura");
+                }, 2500);
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
+            }
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar la factura.").show();
+        }
+    });
+}
+
+        function buscarClientesFactura() {
+            var filtro = $("#txtBuscarCliente").val().trim();
+
+            if (filtro.length < 2) {
+                mostrarError("Digite al menos 2 caracteres para buscar el cliente.", "txtBuscarCliente");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("BuscarClientesFactura", "Facturacion")',
+                type: "GET",
+                data: { filtro: filtro },
+                dataType: "json",
+                success: function (respuesta) {
+                    var tbody = $("#tbodyResultadosCliente");
+                    tbody.empty();
+
+                    if (!respuesta.data || respuesta.data.length === 0) {
+                        tbody.append(
+                            '<tr>' +
+                                '<td colspan="3" class="text-center text-muted">' +
+                                    'No se encontraron clientes.' +
+                                '</td>' +
+                            '</tr>'
+                        );
+
+                        $("#contenedorResultadosCliente").show();
+                        $("#mensajeError").hide().text("");
+                        return;
+                    }
+
+                    $.each(respuesta.data, function (i, item) {
+                        var identificacion = item.Identificacion || "";
+
+                        var nombre = (
+                            (item.Nombre || "") + " " +
+                            (item.PrimerApellido || "") + " " +
+                            (item.SegundoApellido || "")
+                        ).trim();
+
+                        if (nombre === "") {
+                            nombre = item.NombreCompleto || item.ClienteNombre || "Cliente sin nombre";
+                        }
+
+                        var boton = $("<button>", {
+                            type: "button",
+                            class: "btn btn-sm btn-primary",
+                            text: "Seleccionar"
+                        });
+
+                        boton.on("click", function () {
+                            seleccionarClienteFactura(identificacion, nombre);
+                        });
+
+                        var fila = $("<tr>");
+                        fila.append($("<td>").text(identificacion));
+                        fila.append($("<td>").text(nombre));
+
+                        var celdaAccion = $("<td>");
+                        celdaAccion.append(boton);
+
+                        fila.append(celdaAccion);
+                        tbody.append(fila);
+                    });
+
+                    $("#contenedorResultadosCliente").show();
+                    $("#mensajeError").hide().text("");
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al buscar clientes.").show();
+                }
+            });
+        }
+
+        function seleccionarClienteFactura(identificacion, nombre) {
+            $("#txtIdentificacionCliente").val(identificacion);
+            $("#txtBuscarCliente").val(identificacion + " - " + nombre);
+            $("#lblClienteSeleccionado").text("Cliente seleccionado: " + identificacion + " - " + nombre);
+            $("#contenedorResultadosCliente").hide();
+        }
+
+        function buscarProductosFactura() {
+            var filtro = $("#txtBuscarProducto").val().trim();
+
+            if (filtro.length < 2) {
+                mostrarError("Digite al menos 2 caracteres para buscar el producto.", "txtBuscarProducto");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("BuscarProductosFactura", "Facturacion")',
+                type: "GET",
+                data: { filtro: filtro },
+                dataType: "json",
+                success: function (respuesta) {
+                    var tbody = $("#tbodyResultadosProducto");
+                    tbody.empty();
+
+                    if (!respuesta.data || respuesta.data.length === 0) {
+                        tbody.append(
+                            '<tr>' +
+                                '<td colspan="6" class="text-center text-muted">' +
+                                    'No se encontraron productos.' +
+                                '</td>' +
+                            '</tr>'
+                        );
+
+                        $("#contenedorResultadosProducto").show();
+                        $("#mensajeError").hide().text("");
+                        return;
+                    }
+
+                    $.each(respuesta.data, function (i, item) {
+                        var idProducto = item.IdProducto || 0;
+                        var codigoProducto = item.CodigoProducto || "";
+                        var nombreProducto = item.NombreProducto || item.Nombre || "Producto sin nombre";
+                        var precioVenta = parseFloat(item.PrecioVenta || 0);
+                        var stockActual = parseFloat(item.StockActual || 0);
+                        var porcentajeImpuesto = parseFloat(item.PorcentajeImpuesto || 0);
+                        var impuestoNombre = item.ImpuestoNombre || "";
+
+                        var boton = $("<button>", {
+                            type: "button",
+                            class: "btn btn-sm btn-primary",
+                            text: "Seleccionar"
+                        });
+
+                        boton.on("click", function () {
+                            seleccionarProductoFactura(
+                                idProducto,
+                                codigoProducto,
+                                nombreProducto,
+                                precioVenta,
+                                porcentajeImpuesto,
+                                impuestoNombre
+                            );
+                        });
+
+                        var fila = $("<tr>");
+                        fila.append($("<td>").text(codigoProducto));
+                        fila.append($("<td>").text(nombreProducto));
+                        fila.append($("<td>").text(precioVenta.toFixed(2)));
+                        fila.append($("<td>").text(stockActual.toFixed(2)));
+                        fila.append($("<td>").text(porcentajeImpuesto.toFixed(2) + "%"));
+
+                        var celdaAccion = $("<td>");
+                        celdaAccion.append(boton);
+
+                        fila.append(celdaAccion);
+                        tbody.append(fila);
+                    });
+
+                    $("#contenedorResultadosProducto").show();
+                    $("#mensajeError").hide().text("");
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al buscar productos.").show();
+                }
+            });
+        }
+
+        function seleccionarProductoFactura(idProducto, codigoProducto, nombreProducto, precioVenta, porcentajeImpuesto, impuestoNombre) {
+            $("#txtIdProducto").val(idProducto);
+            $("#txtBuscarProducto").val(codigoProducto + " - " + nombreProducto);
+
+            $("#lblProductoSeleccionado").text(
+                "Producto seleccionado: " + codigoProducto + " - " + nombreProducto +
+                " | IVA incluido: " + parseFloat(porcentajeImpuesto || 0).toFixed(2) + "%"
+            );
+
+            $("#txtPrecioUnitario").val(parseFloat(precioVenta || 0).toFixed(2));
+            $("#txtPorcentajeImpuesto").val(parseFloat(porcentajeImpuesto || 0).toFixed(2));
+            $("#txtDescripcionItem").val(nombreProducto);
+
+            $("#contenedorResultadosProducto").hide();
+        }
+
+        function cargarDetallesFactura(idFactura) {
+            $.ajax({
+                url: '@Url.Action("ListarDetallesFactura", "Facturacion")',
+                type: "GET",
+                data: { idFactura: idFactura },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaDetalles = respuesta.data || [];
+                    pintarDetalles();
+                },
+                error: function () {
+                    alert("Error al cargar los detalles de la factura.");
+                }
+            });
+        }
+
+        function pintarDetalles() {
+            var tbody = $("#tablaDetalles tbody");
+            tbody.empty();
+
+            var subtotal = 0;
+            var impuesto = 0;
+            var descuento = 0;
+            var total = 0;
+
+            if (listaDetalles.length === 0) {
+                tbody.append(
+                    '<tr>' +
+                        '<td colspan="9" class="text-center text-muted">' +
+                            'No hay productos registrados.' +
+                        '</td>' +
+                    '</tr>'
+                );
+
+                actualizarTotales(0, 0, 0, 0);
+                return;
+            }
+
+            $.each(listaDetalles, function (i, item) {
+                var cantidad = parseFloat(item.Cantidad || 0);
+                var precio = parseFloat(item.PrecioUnitario || 0);
+                var porcentajeImpuesto = parseFloat(item.PorcentajeImpuesto || 0);
+                var porcentajeDescuento = parseFloat(item.PorcentajeDescuento || 0);
+                var subtotalLinea = parseFloat(item.SubtotalLinea || 0);
+                var totalLinea = parseFloat(item.TotalLinea || 0);
+
+                if (item.Activo) {
+                    subtotal += subtotalLinea;
+
+                    if (porcentajeImpuesto > 0) {
+                        impuesto += subtotalLinea - (subtotalLinea / (1 + (porcentajeImpuesto / 100)));
+                    }
+
+                    descuento += subtotalLinea * (porcentajeDescuento / 100);
+                    total += totalLinea;
+                }
+
+                var estado = item.Activo
+                    ? '<span class="badge badge-info">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var producto = (item.CodigoProducto || "") + " - " + (item.ProductoNombre || "");
+                var descuentoTexto = (item.DescuentoNombre || "Sin descuento") + " (" + porcentajeDescuento.toFixed(2) + "%)";
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    editarDetalle(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarDetalleFactura(item.IdDetalleFactura);
+                });
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(producto));
+                fila.append($("<td>").text(cantidad.toFixed(2)));
+                fila.append($("<td>").text(precio.toFixed(2)));
+                fila.append($("<td>").text(porcentajeImpuesto.toFixed(2) + "%"));
+                fila.append($("<td>").text(descuentoTexto));
+                fila.append($("<td>").text(subtotalLinea.toFixed(2)));
+                fila.append($("<td>").text(totalLinea.toFixed(2)));
+                fila.append($("<td>").html(estado));
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                fila.append(acciones);
+                tbody.append(fila);
+            });
+
+            actualizarTotales(subtotal, impuesto, descuento, total);
+        }
+
+        function actualizarTotales(subtotal, impuesto, descuento, total) {
+            $("#lblSubtotal").text("Subtotal: " + subtotal.toFixed(2));
+            $("#lblImpuesto").text("IVA incluido: " + impuesto.toFixed(2));
+            $("#lblDescuento").text("Descuento: " + descuento.toFixed(2));
+            $("#lblTotal").text("Total: " + total.toFixed(2));
+        }
+
+        function bloquearDetalle(bloquear) {
+            $("#txtBuscarProducto").prop("disabled", bloquear);
+            $("#btnBuscarProducto").prop("disabled", bloquear);
+            $("#txtCantidad").prop("disabled", bloquear);
+            $("#txtPrecioUnitario").prop("disabled", bloquear);
+            $("#txtPorcentajeImpuesto").prop("disabled", bloquear);
+            $("#cboDescuento").prop("disabled", bloquear);
+            $("#txtDescripcionItem").prop("disabled", bloquear);
+            $("#btnGuardarDetalle").prop("disabled", bloquear);
+            $("#btnLimpiarDetalle").prop("disabled", bloquear);
+
+            if (bloquear) {
+                $("#textoAyudaDetalle").text("Para agregar productos, primero guarde el encabezado de la factura.");
+            } else {
+                $("#textoAyudaDetalle").text("Agregue productos al detalle de la factura.");
+            }
+        }
+
+        function limpiarDetalle() {
+            $("#txtIdDetalleFactura").val(0);
+            $("#txtIdProducto").val(0);
+            $("#txtBuscarProducto").val("");
+            $("#lblProductoSeleccionado").text("Ningún producto seleccionado.");
+            $("#contenedorResultadosProducto").hide();
+            $("#tbodyResultadosProducto").empty();
+
+            $("#txtCantidad").val("");
+            $("#txtPrecioUnitario").val("");
+            $("#txtPorcentajeImpuesto").val("");
+            $("#cboDescuento").val("0");
+            $("#txtDescripcionItem").val("");
+        }
+
+        function editarDetalle(item) {
+            $("#txtIdDetalleFactura").val(item.IdDetalleFactura);
+            $("#txtIdProducto").val(item.IdProducto);
+
+            $("#txtBuscarProducto").val((item.CodigoProducto || "") + " - " + (item.ProductoNombre || ""));
+            $("#lblProductoSeleccionado").text(
+                "Producto seleccionado: " + (item.CodigoProducto || "") + " - " + (item.ProductoNombre || "") +
+                " | IVA incluido: " + parseFloat(item.PorcentajeImpuesto || 0).toFixed(2) + "%"
+            );
+
+            $("#txtCantidad").val(item.Cantidad);
+            $("#txtPrecioUnitario").val(item.PrecioUnitario);
+            $("#txtPorcentajeImpuesto").val(item.PorcentajeImpuesto);
+            $("#cboDescuento").val(item.IdDescuento == null ? "0" : item.IdDescuento);
+            $("#txtDescripcionItem").val(item.DescripcionItem || "");
+        }
+
+       function guardarDetalleFactura() {
+    $("#mensajeError").hide().text("");
+
+    var idFactura = parseInt($("#txtIdFactura").val());
+    var idDescuento = parseInt($("#cboDescuento").val());
+    var cantidadTexto = $("#txtCantidad").val().trim();
+
+    var obj = {
+        IdDetalleFactura: parseInt($("#txtIdDetalleFactura").val()),
+        IdFactura: idFactura,
+        IdProducto: parseInt($("#txtIdProducto").val()),
+        IdDescuento: idDescuento === 0 || isNaN(idDescuento) ? null : idDescuento,
+        DescripcionItem: $("#txtDescripcionItem").val().trim(),
+        Cantidad: cantidadTexto === "" ? 0 : parseFloat(cantidadTexto),
+        PrecioUnitario: $("#txtPrecioUnitario").val() === "" ? 0 : parseFloat($("#txtPrecioUnitario").val()),
+        Activo: true
+    };
+
+    if (isNaN(obj.IdDetalleFactura)) {
+        obj.IdDetalleFactura = 0;
+    }
+
+    if (obj.IdFactura === 0 || isNaN(obj.IdFactura)) {
+        mostrarError("Primero debe guardar el encabezado de la factura.", "txtIdFactura");
+        return;
+    }
+
+    if (obj.IdProducto === 0 || isNaN(obj.IdProducto)) {
+        mostrarError("Debe seleccionar un producto.", "txtBuscarProducto");
+        return;
+    }
+
+    var mensajeCantidad = validarDecimalMayorCero(cantidadTexto, "la cantidad");
+    if (mensajeCantidad !== "") {
+        mostrarError(mensajeCantidad, "txtCantidad");
+        return;
+    }
+
+    if (obj.PrecioUnitario <= 0) {
+        mostrarError("El precio unitario debe ser mayor a cero.", "txtPrecioUnitario");
+        return;
+    }
+
+    if (obj.DescripcionItem.length > 150) {
+        mostrarError("La descripción del ítem no puede superar los 150 caracteres.", "txtDescripcionItem");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarDetalleFactura", "Facturacion")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#mensajeError").hide().text("");
+                limpiarDetalle();
+                cargarDetallesFactura(idFactura);
+                cargarFacturas();
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
+            }
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el detalle de factura.").show();
+        }
+    });
+}
+
+        function inactivarDetalleFactura(idDetalleFactura) {
+            var idFactura = parseInt($("#txtIdFactura").val());
+
+            if (!confirm("¿Desea inactivar este detalle de factura?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarDetalleFactura", "Facturacion")',
+                type: "POST",
+                data: JSON.stringify({ idDetalleFactura: idDetalleFactura }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        limpiarDetalle();
+                        cargarDetallesFactura(idFactura);
+                        cargarFacturas();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+                },
+                error: function () {
+                    alert("Error al inactivar el detalle de factura.");
+                }
+            });
+        }
+
+        function emitirFactura() {
+            var idFactura = parseInt($("#txtIdFactura").val());
+
+            if (idFactura === 0 || isNaN(idFactura)) {
+                mostrarError("Primero debe guardar la factura.", "txtIdFactura");
+                return;
+            }
+
+            if (listaDetalles.length === 0) {
+                mostrarError("Debe agregar al menos un producto antes de emitir la factura.", "txtBuscarProducto");
+                return;
+            }
+
+            emitirFacturaDesdeTabla(idFactura);
+        }
+
+        function emitirFacturaDesdeTabla(idFactura) {
+            if (!confirm("¿Desea emitir esta factura?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("EmitirFactura", "Facturacion")',
+                type: "POST",
+                data: JSON.stringify({ idFactura: idFactura }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    alert(respuesta.mensaje);
+
+                    if (respuesta.resultado) {
+                        $("#FormModal").modal("hide");
+                        cargarFacturas();
+                    }
+                },
+                error: function () {
+                    alert("Error al emitir la factura.");
+                }
+            });
+        }
+
+        function inactivarFactura(idFactura) {
+            if (!confirm("¿Desea anular esta factura?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarFactura", "Facturacion")',
+                type: "POST",
+                data: JSON.stringify({ idFactura: idFactura }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarFacturas();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+                },
+                error: function () {
+                    alert("Error al anular la factura.");
+                }
+            });
+        }
+
+        function formatearFecha(valor) {
+            if (!valor) {
+                return "";
+            }
+
+            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
+
+            if (isNaN(fecha.getTime())) {
+                fecha = new Date(valor);
+            }
+
+            return convertirDateAInput(fecha);
+        }
+
+        function convertirFechaInput(valor) {
+            if (!valor) {
+                return "";
+            }
+
+            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
+
+            if (isNaN(fecha.getTime())) {
+                fecha = new Date(valor);
+            }
+
+            return convertirDateAInput(fecha);
+        }
+
+        function convertirDateAInput(fecha) {
+            var anio = fecha.getFullYear();
+            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+            var dia = ("0" + fecha.getDate()).slice(-2);
+
+            return anio + "-" + mes + "-" + dia;
+        }
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarNoDecimal(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9.]/g, "");
+
+            var partes = valorLimpio.split(".");
+            if (partes.length > 2) {
+                valorLimpio = partes[0] + "." + partes.slice(1).join("");
+            }
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarTextoBusqueda(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarTextoFactura(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarDecimalMayorCero(texto, nombreCampo) {
+            if (texto === "") {
+                return "Debe ingresar " + nombreCampo + ".";
+            }
+
+            if (!/^[0-9]+(\.[0-9]+)?$/.test(texto)) {
+                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+            }
+
+            var numero = parseFloat(texto);
+
+            if (isNaN(numero)) {
+                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+            }
+
+            if (numero <= 0) {
+                return nombreCampo + " debe ser mayor a cero.";
+            }
+
+            return "";
+        }
+
+        function validarFechaNoFutura(fechaTexto, mensaje) {
+            if (fechaTexto === "") {
+                return "";
+            }
+
+            var fecha = new Date(fechaTexto + "T00:00:00");
+            var hoy = new Date();
+
+            if (isNaN(fecha.getTime())) {
+                return "Debe ingresar una fecha válida.";
+            }
+
+            hoy.setHours(0, 0, 0, 0);
+
+            if (fecha > hoy) {
+                return mensaje;
+            }
+
+            return "";
+        }
+    </script>
+}

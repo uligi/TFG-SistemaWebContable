@@ -3,6 +3,19 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Tipos de Gasto</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -28,14 +41,10 @@
 
     <div class="card-body">
 
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por tipo de gasto o descripción...">
-            </div>
-        </div>
+
 
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaTiposGasto">
+            <table class="table table-striped table-bordered nowrap" id="tablaTiposGasto" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Tipo de gasto</th>
@@ -105,12 +114,39 @@
 @section scripts {
     <script>
         var listaTiposGasto = [];
+        var tablaTiposGasto = null;
 
         $(document).ready(function () {
             cargarTiposGasto();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
+            $("#txtNombre").on("input", function () {
+                limpiarTextoCatalogo("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo("txtNombre", "El tipo de gasto no puede superar los 45 caracteres.");
+                }
+            });
+
+            $("#txtDescripcion").on("input", function () {
+                limpiarTextoCatalogo("txtDescripcion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 255) {
+                    $(this).val($(this).val().substring(0, 255));
+                    mostrarAyudaCampo("txtDescripcion", "La descripción no puede superar los 255 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("txtNombre");
+                ocultarAyudaCampo("txtDescripcion");
             });
         });
 
@@ -120,7 +156,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaTiposGasto = respuesta.data;
+                    listaTiposGasto = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -130,47 +166,68 @@
         }
 
         function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaTiposGasto tbody");
+            if (tablaTiposGasto != null) {
+                tablaTiposGasto.clear().destroy();
+                tablaTiposGasto = null;
+            }
 
+            var tbody = $("#tablaTiposGasto tbody");
             tbody.empty();
 
             $.each(listaTiposGasto, function (i, item) {
                 var nombre = item.Nombre || "";
                 var descripcion = item.Descripcion || "";
 
-                var texto = (nombre + " " + descripcion).toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
-
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var fila = `
-                    <tr>
-                        <td>${nombre}</td>
-                        <td>${descripcion}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarTipoGasto(${item.IdTipoGasto})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var descripcionMostrar = descripcion === "" ? "-" : descripcion;
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarTipoGasto(item.IdTipoGasto);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(nombre));
+                fila.append($("<td>").text(descripcionMostrar));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
+            });
+
+            tablaTiposGasto = $("#tablaTiposGasto").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
             });
         }
 
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("txtNombre");
+            ocultarAyudaCampo("txtDescripcion");
 
             $("#txtIdTipoGasto").val(0);
             $("#txtNombre").val("");
@@ -190,6 +247,8 @@
         }
 
         function guardarTipoGasto() {
+            $("#mensajeError").hide().text("");
+
             var obj = {
                 IdTipoGasto: parseInt($("#txtIdTipoGasto").val()),
                 Nombre: $("#txtNombre").val().trim(),
@@ -197,23 +256,37 @@
                 Activo: $("#cboActivo").val() === "true"
             };
 
+            if (isNaN(obj.IdTipoGasto)) {
+                obj.IdTipoGasto = 0;
+            }
+
             if (obj.Nombre === "") {
-                $("#mensajeError").text("Debe ingresar el tipo de gasto.").show();
+                mostrarError("Debe ingresar el tipo de gasto.", "txtNombre");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Nombre)) {
+                mostrarError("El tipo de gasto solo puede contener letras, números, espacios y caracteres básicos.", "txtNombre");
                 return;
             }
 
             if (obj.Nombre.length > 45) {
-                $("#mensajeError").text("El tipo de gasto no puede superar los 45 caracteres.").show();
+                mostrarError("El tipo de gasto no puede superar los 45 caracteres.", "txtNombre");
                 return;
             }
 
             if (obj.Descripcion === "") {
-                $("#mensajeError").text("Debe ingresar la descripción.").show();
+                mostrarError("Debe ingresar la descripción.", "txtDescripcion");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Descripcion)) {
+                mostrarError("La descripción solo puede contener letras, números, espacios y caracteres básicos.", "txtDescripcion");
                 return;
             }
 
             if (obj.Descripcion.length > 255) {
-                $("#mensajeError").text("La descripción no puede superar los 255 caracteres.").show();
+                mostrarError("La descripción no puede superar los 255 caracteres.", "txtDescripcion");
                 return;
             }
 
@@ -259,6 +332,52 @@
                     alert("Error al inactivar el tipo de gasto.");
                 }
             });
+        }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarTextoCatalogo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoCatalogo(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
         }
     </script>
 }

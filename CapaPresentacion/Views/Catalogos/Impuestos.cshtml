@@ -1,0 +1,450 @@
+﻿
+@{
+    ViewBag.Title = "Impuestos";
+    Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
+}
+
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
+<h4 class="font-weight-bold py-3 mb-0">Gestionar Impuestos</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Catálogos</li>
+        <li class="breadcrumb-item active">Impuestos</li>
+    </ol>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Lista de impuestos</h6>
+
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+            Nuevo impuesto
+        </button>
+    </div>
+
+    <div class="card-body">
+
+
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered nowrap" id="tablaImpuestos" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Porcentaje</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th style="width:170px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="tituloModal">Nuevo impuesto</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="txtIdImpuesto" value="0" />
+
+                <div class="form-group">
+                    <label for="txtNombre">Nombre</label>
+                    <input type="text" id="txtNombre" class="form-control" maxlength="100" autocomplete="off" />
+                </div>
+
+                <div class="form-group">
+                    <label for="txtPorcentaje">Porcentaje</label>
+                    <input type="number" id="txtPorcentaje" class="form-control" min="0" step="0.01" />
+                    <small class="form-text text-muted">
+                        Ejemplo: 13 para IVA general, 4 para tarifa reducida o 0 para exento.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescripcion">Descripción</label>
+                    <textarea id="txtDescripcion" class="form-control" maxlength="255" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="cboActivo">Estado</label>
+                    <select id="cboActivo" class="form-control">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-danger mt-3" id="mensajeError" style="display:none;"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarImpuesto()">
+                    Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var listaImpuestos = [];
+        var tablaImpuestos = null;
+
+        $(document).ready(function () {
+            cargarImpuestos();
+
+            $("#txtNombre").on("input", function () {
+                limpiarTextoCatalogo("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 100) {
+                    $(this).val($(this).val().substring(0, 100));
+                    mostrarAyudaCampo("txtNombre", "El nombre del impuesto no puede superar los 100 caracteres.");
+                }
+            });
+
+            $("#txtPorcentaje").on("input", function () {
+                limpiarNoDecimal("txtPorcentaje", "Solo se permiten números y punto decimal en el porcentaje.");
+            });
+
+            $("#txtDescripcion").on("input", function () {
+                limpiarTextoCatalogo("txtDescripcion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 255) {
+                    $(this).val($(this).val().substring(0, 255));
+                    mostrarAyudaCampo("txtDescripcion", "La descripción no puede superar los 255 caracteres.");
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("txtNombre");
+                ocultarAyudaCampo("txtPorcentaje");
+                ocultarAyudaCampo("txtDescripcion");
+            });
+        });
+
+        function cargarImpuestos() {
+            $.ajax({
+                url: '@Url.Action("ListarImpuestos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaImpuestos = respuesta.data || [];
+                    pintarTabla();
+                },
+                error: function () {
+                    alert("Error al cargar los impuestos.");
+                }
+            });
+        }
+
+        function pintarTabla() {
+            if (tablaImpuestos != null) {
+                tablaImpuestos.clear().destroy();
+                tablaImpuestos = null;
+            }
+
+            var tbody = $("#tablaImpuestos tbody");
+            tbody.empty();
+
+            $.each(listaImpuestos, function (i, item) {
+                var nombre = item.Nombre || "";
+                var porcentaje = parseFloat(item.Porcentaje || 0);
+                var descripcion = item.Descripcion || "";
+
+                var estado = item.Activo
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var descripcionMostrar = descripcion === "" ? "-" : descripcion;
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarImpuesto(item.IdImpuesto);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(nombre));
+                fila.append($("<td>").text(porcentaje.toFixed(2) + "%"));
+                fila.append($("<td>").text(descripcionMostrar));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
+
+                tbody.append(fila);
+            });
+
+            tablaImpuestos = $("#tablaImpuestos").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function abrirModal(json) {
+            $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("txtNombre");
+            ocultarAyudaCampo("txtPorcentaje");
+            ocultarAyudaCampo("txtDescripcion");
+
+            $("#txtIdImpuesto").val(0);
+            $("#txtNombre").val("");
+            $("#txtPorcentaje").val("");
+            $("#txtDescripcion").val("");
+            $("#cboActivo").val("true");
+            $("#tituloModal").text("Nuevo impuesto");
+
+            if (json != null) {
+                $("#txtIdImpuesto").val(json.IdImpuesto);
+                $("#txtNombre").val(json.Nombre || "");
+                $("#txtPorcentaje").val(json.Porcentaje);
+                $("#txtDescripcion").val(json.Descripcion || "");
+                $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#tituloModal").text("Editar impuesto");
+            }
+
+            $("#FormModal").modal("show");
+        }
+
+        function guardarImpuesto() {
+            $("#mensajeError").hide().text("");
+
+            var porcentajeTexto = $("#txtPorcentaje").val().trim();
+
+            var obj = {
+                IdImpuesto: parseInt($("#txtIdImpuesto").val()),
+                Nombre: $("#txtNombre").val().trim(),
+                Porcentaje: porcentajeTexto === "" ? -1 : parseFloat(porcentajeTexto),
+                Descripcion: $("#txtDescripcion").val().trim(),
+                Activo: $("#cboActivo").val() === "true"
+            };
+
+            if (isNaN(obj.IdImpuesto)) {
+                obj.IdImpuesto = 0;
+            }
+
+            if (obj.Nombre === "") {
+                mostrarError("Debe ingresar el nombre del impuesto.", "txtNombre");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Nombre)) {
+                mostrarError("El nombre del impuesto solo puede contener letras, números, espacios y caracteres básicos.", "txtNombre");
+                return;
+            }
+
+            if (obj.Nombre.length > 100) {
+                mostrarError("El nombre del impuesto no puede superar los 100 caracteres.", "txtNombre");
+                return;
+            }
+
+            var mensajePorcentaje = validarPorcentajeImpuesto(porcentajeTexto);
+            if (mensajePorcentaje !== "") {
+                mostrarError(mensajePorcentaje, "txtPorcentaje");
+                return;
+            }
+
+            if (obj.Descripcion !== "" && !validarTextoCatalogo(obj.Descripcion)) {
+                mostrarError("La descripción solo puede contener letras, números, espacios y caracteres básicos.", "txtDescripcion");
+                return;
+            }
+
+            if (obj.Descripcion.length > 255) {
+                mostrarError("La descripción no puede superar los 255 caracteres.", "txtDescripcion");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarImpuesto", "Catalogos")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        $("#FormModal").modal("hide");
+                        cargarImpuestos();
+                    } else {
+                        $("#mensajeError").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al guardar el impuesto.").show();
+                }
+            });
+        }
+
+        function inactivarImpuesto(idImpuesto) {
+            if (!confirm("¿Desea inactivar este impuesto?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarImpuesto", "Catalogos")',
+                type: "POST",
+                data: JSON.stringify({ idImpuesto: idImpuesto }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarImpuestos();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+                },
+                error: function () {
+                    alert("Error al inactivar el impuesto.");
+                }
+            });
+        }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarTextoCatalogo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarNoDecimal(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9.]/g, "");
+
+            var partes = valorLimpio.split(".");
+            if (partes.length > 2) {
+                valorLimpio = partes[0] + "." + partes.slice(1).join("");
+            }
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoCatalogo(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
+        }
+
+        function validarPorcentajeImpuesto(texto) {
+            if (texto === "") {
+                return "Debe ingresar el porcentaje del impuesto.";
+            }
+
+            if (!/^[0-9]+(\.[0-9]+)?$/.test(texto)) {
+                return "Debe ingresar un porcentaje válido.";
+            }
+
+            var numero = parseFloat(texto);
+
+            if (isNaN(numero)) {
+                return "Debe ingresar un porcentaje válido.";
+            }
+
+            if (numero < 0) {
+                return "El porcentaje no puede ser negativo.";
+            }
+
+            if (numero > 100) {
+                return "El porcentaje no puede ser mayor a 100.";
+            }
+
+            return "";
+        }
+    </script>
+}

@@ -3,6 +3,19 @@
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Clientes</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -334,6 +347,40 @@
                 var idCanton = parseInt($(this).val());
                 cargarDistritosPorCanton(idCanton, 0);
             });
+
+            $("#txtIdentificacion").on("input", function () {
+                limpiarNoNumeros("txtIdentificacion", "Solo se permiten números en la identificación.");
+            });
+
+            $("#txtNumeroTelefonoCliente").on("input", function () {
+                limpiarNoNumeros("txtNumeroTelefonoCliente", "Solo se permiten números en el teléfono.");
+            });
+
+            $("#txtNombre").on("input", function () {
+                limpiarNoLetras("txtNombre", "Solo se permiten letras y espacios en el nombre.");
+            });
+
+            $("#txtPrimerApellido").on("input", function () {
+                limpiarNoLetras("txtPrimerApellido", "Solo se permiten letras y espacios en el primer apellido.");
+            });
+
+            $("#txtSegundoApellido").on("input", function () {
+                limpiarNoLetras("txtSegundoApellido", "Solo se permiten letras y espacios en el segundo apellido.");
+            });
+
+            $("#txtLimiteCredito").on("input", function () {
+                limpiarNoDecimal("txtLimiteCredito", "Solo se permiten números y punto decimal en el límite de crédito.");
+            });
+
+            $("#txtDiasCredito").on("input", function () {
+                limpiarNoNumeros("txtDiasCredito", "Solo se permiten números enteros en los días de crédito.");
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
         });
 
         function cargarClientes() {
@@ -600,114 +647,135 @@
         }
 
         function guardarCliente() {
-            var limiteCreditoTexto = $("#txtLimiteCredito").val();
-            var diasCreditoTexto = $("#txtDiasCredito").val();
+    $("#mensajeError").hide().text("");
 
-            var obj = {
-                Identificacion: $("#txtIdentificacion").val().trim(),
-                CodigoCliente: $("#txtCodigoCliente").val().trim(),
+    var limiteCreditoTexto = $("#txtLimiteCredito").val().trim();
+    var diasCreditoTexto = $("#txtDiasCredito").val().trim();
 
-                Nombre: $("#txtNombre").val().trim(),
-                PrimerApellido: $("#txtPrimerApellido").val().trim(),
-                SegundoApellido: $("#txtSegundoApellido").val().trim(),
-                FechaNacimiento: $("#txtFechaNacimiento").val() === "" ? null : $("#txtFechaNacimiento").val(),
-                IdDistrito: parseInt($("#cboDistrito").val()) === 0 ? null : parseInt($("#cboDistrito").val()),
-                Direccion: $("#txtDireccion").val().trim(),
+    var obj = {
+        Identificacion: $("#txtIdentificacion").val().trim(),
+        CodigoCliente: $("#txtCodigoCliente").val().trim(),
 
-                LimiteCredito: limiteCreditoTexto === "" ? null : parseFloat(limiteCreditoTexto),
-                DiasCredito: diasCreditoTexto === "" ? null : parseInt(diasCreditoTexto),
+        Nombre: $("#txtNombre").val().trim(),
+        PrimerApellido: $("#txtPrimerApellido").val().trim(),
+        SegundoApellido: $("#txtSegundoApellido").val().trim(),
+        FechaNacimiento: $("#txtFechaNacimiento").val() === "" ? null : $("#txtFechaNacimiento").val(),
+        IdDistrito: parseInt($("#cboDistrito").val()) === 0 ? null : parseInt($("#cboDistrito").val()),
+        Direccion: $("#txtDireccion").val().trim(),
 
-                Activo: $("#cboActivo").val() === "true"
-            };
+        LimiteCredito: limiteCreditoTexto === "" ? null : parseFloat(limiteCreditoTexto),
+        DiasCredito: diasCreditoTexto === "" ? null : parseInt(diasCreditoTexto),
 
-            if (obj.Identificacion === "") {
-                $("#mensajeError").text("Debe ingresar la identificación.").show();
-                return;
-            }
+        Activo: $("#cboActivo").val() === "true"
+    };
 
-            if (obj.Identificacion.length > 45) {
-                $("#mensajeError").text("La identificación no puede superar los 45 caracteres.").show();
-                return;
-            }
+    var mensajeIdentificacion = validarIdentificacionCostaRica(obj.Identificacion);
+    if (mensajeIdentificacion !== "") {
+        mostrarError(mensajeIdentificacion, "txtIdentificacion");
+        return;
+    }
 
-            if (obj.Nombre === "") {
-                $("#mensajeError").text("Debe ingresar el nombre.").show();
-                return;
-            }
+    if (obj.Nombre === "") {
+        mostrarError("Debe ingresar el nombre.", "txtNombre");
+        return;
+    }
 
-            if (obj.Nombre.length > 45) {
-                $("#mensajeError").text("El nombre no puede superar los 45 caracteres.").show();
-                return;
-            }
+    if (!soloTextoNombre(obj.Nombre)) {
+        mostrarError("El nombre solo puede contener letras y espacios.", "txtNombre");
+        return;
+    }
 
-            if (obj.PrimerApellido === "") {
-                $("#mensajeError").text("Debe ingresar el primer apellido.").show();
-                return;
-            }
+    if (obj.Nombre.length > 45) {
+        mostrarError("El nombre no puede superar los 45 caracteres.", "txtNombre");
+        return;
+    }
 
-            if (obj.PrimerApellido.length > 45) {
-                $("#mensajeError").text("El primer apellido no puede superar los 45 caracteres.").show();
-                return;
-            }
+    if (obj.PrimerApellido === "") {
+        mostrarError("Debe ingresar el primer apellido.", "txtPrimerApellido");
+        return;
+    }
 
-            if (obj.SegundoApellido.length > 45) {
-                $("#mensajeError").text("El segundo apellido no puede superar los 45 caracteres.").show();
-                return;
-            }
+    if (!soloTextoNombre(obj.PrimerApellido)) {
+        mostrarError("El primer apellido solo puede contener letras y espacios.", "txtPrimerApellido");
+        return;
+    }
 
-            if (obj.Direccion.length > 250) {
-                $("#mensajeError").text("La dirección no puede superar los 250 caracteres.").show();
-                return;
-            }
+    if (obj.PrimerApellido.length > 45) {
+        mostrarError("El primer apellido no puede superar los 45 caracteres.", "txtPrimerApellido");
+        return;
+    }
 
-            if (limiteCreditoTexto !== "" && isNaN(obj.LimiteCredito)) {
-                $("#mensajeError").text("Debe ingresar un límite de crédito válido.").show();
-                return;
-            }
+    if (obj.SegundoApellido !== "" && !soloTextoNombre(obj.SegundoApellido)) {
+        mostrarError("El segundo apellido solo puede contener letras y espacios.", "txtSegundoApellido");
+        return;
+    }
 
-            if (obj.LimiteCredito != null && obj.LimiteCredito < 0) {
-                $("#mensajeError").text("El límite de crédito no puede ser negativo.").show();
-                return;
-            }
+    if (obj.SegundoApellido.length > 45) {
+        mostrarError("El segundo apellido no puede superar los 45 caracteres.", "txtSegundoApellido");
+        return;
+    }
 
-            if (diasCreditoTexto !== "" && isNaN(obj.DiasCredito)) {
-                $("#mensajeError").text("Debe ingresar días de crédito válidos.").show();
-                return;
-            }
+    var mensajeFecha = validarFechaNacimiento($("#txtFechaNacimiento").val());
+    if (mensajeFecha !== "") {
+        mostrarError(mensajeFecha, "txtFechaNacimiento");
+        return;
+    }
 
-            if (obj.DiasCredito != null && obj.DiasCredito < 0) {
-                $("#mensajeError").text("Los días de crédito no pueden ser negativos.").show();
-                return;
-            }
+    if (obj.Direccion.length > 250) {
+        mostrarError("La dirección no puede superar los 250 caracteres.", "txtDireccion");
+        return;
+    }
 
-            $.ajax({
-                url: '@Url.Action("GuardarCliente", "Persona")',
-                type: "POST",
-                data: JSON.stringify({ obj: obj }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (obj.CodigoCliente === "") {
-                        if (respuesta.resultado != 0) {
-                            $("#FormModal").modal("hide");
-                            cargarClientes();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
-                    } else {
-                        if (respuesta.resultado) {
-                            $("#FormModal").modal("hide");
-                            cargarClientes();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el cliente.").show();
+    var mensajeLimite = validarMontoNoNegativo(limiteCreditoTexto, "el límite de crédito");
+    if (mensajeLimite !== "") {
+        mostrarError(mensajeLimite, "txtLimiteCredito");
+        return;
+    }
+
+    var mensajeDias = validarEnteroNoNegativo(diasCreditoTexto, "los días de crédito");
+    if (mensajeDias !== "") {
+        mostrarError(mensajeDias, "txtDiasCredito");
+        return;
+    }
+
+    if (obj.LimiteCredito != null && obj.LimiteCredito > 0 && (obj.DiasCredito == null || obj.DiasCredito === 0)) {
+        mostrarError("Si define un límite de crédito, debe indicar los días de crédito.", "txtDiasCredito");
+        return;
+    }
+
+    if (obj.DiasCredito != null && obj.DiasCredito > 0 && (obj.LimiteCredito == null || obj.LimiteCredito === 0)) {
+        mostrarError("Si define días de crédito, debe indicar un límite de crédito.", "txtLimiteCredito");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarCliente", "Persona")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (obj.CodigoCliente === "") {
+                if (respuesta.resultado != 0) {
+                    $("#FormModal").modal("hide");
+                    cargarClientes();
+                } else {
+                    $("#mensajeError").text(respuesta.mensaje).show();
                 }
-            });
+            } else {
+                if (respuesta.resultado) {
+                    $("#FormModal").modal("hide");
+                    cargarClientes();
+                } else {
+                    $("#mensajeError").text(respuesta.mensaje).show();
+                }
+            }
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el cliente.").show();
         }
+    });
+}
 
         function inactivarCliente(identificacion) {
             if (!confirm("¿Desea inactivar este cliente?")) {
@@ -858,68 +926,66 @@
         }
 
         function guardarTelefonoCliente() {
-            var identificacion = $("#txtIdentificacion").val().trim();
+    $("#mensajeError").hide().text("");
 
-            if (identificacion === "") {
-                $("#mensajeError").text("Primero debe ingresar la identificación del cliente.").show();
-                return;
+    var identificacion = $("#txtIdentificacion").val().trim();
+
+    if (identificacion === "") {
+        mostrarError("Primero debe ingresar la identificación del cliente.", "txtIdentificacion");
+        return;
+    }
+
+    var obj = {
+        NumeroTelefono: $("#txtNumeroTelefonoCliente").val().trim(),
+        Identificacion: identificacion,
+        IdTipoTelefono: parseInt($("#cboTipoTelefonoCliente").val()),
+        EsPrincipal: $("#cboTelefonoPrincipalCliente").val() === "true",
+        Activo: true
+    };
+
+    var esNuevo = $("#txtTelefonoEsNuevo").val() === "true";
+    var numeroAnterior = $("#txtNumeroTelefonoAnterior").val().trim();
+
+    var mensajeTelefono = validarTelefonoCostaRica(obj.NumeroTelefono);
+    if (mensajeTelefono !== "") {
+        mostrarError(mensajeTelefono, "txtNumeroTelefonoCliente");
+        return;
+    }
+
+    if (obj.IdTipoTelefono === 0 || isNaN(obj.IdTipoTelefono)) {
+        mostrarError("Debe seleccionar un tipo de teléfono.", "cboTipoTelefonoCliente");
+        return;
+    }
+
+    if (!esNuevo && numeroAnterior === "") {
+        mostrarError("Debe seleccionar un teléfono válido para editar.", "txtNumeroTelefonoCliente");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarTelefonoDesdeCliente", "Persona")',
+        type: "POST",
+        data: JSON.stringify({
+            obj: obj,
+            esNuevo: esNuevo,
+            numeroAnterior: numeroAnterior
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#mensajeError").hide().text("");
+                limpiarFormularioTelefonoCliente();
+                cargarTelefonosCliente(identificacion);
+            } else {
+                $("#mensajeError").text(respuesta.mensaje).show();
             }
-
-            var obj = {
-                NumeroTelefono: $("#txtNumeroTelefonoCliente").val().trim(),
-                Identificacion: identificacion,
-                IdTipoTelefono: parseInt($("#cboTipoTelefonoCliente").val()),
-                EsPrincipal: $("#cboTelefonoPrincipalCliente").val() === "true",
-                Activo: true
-            };
-
-            var esNuevo = $("#txtTelefonoEsNuevo").val() === "true";
-            var numeroAnterior = $("#txtNumeroTelefonoAnterior").val().trim();
-
-            if (obj.NumeroTelefono === "") {
-                $("#mensajeError").text("Debe ingresar el número de teléfono.").show();
-                return;
-            }
-
-            if (obj.NumeroTelefono.length > 45) {
-                $("#mensajeError").text("El número de teléfono no puede superar los 45 caracteres.").show();
-                return;
-            }
-
-            if (obj.IdTipoTelefono === 0 || isNaN(obj.IdTipoTelefono)) {
-                $("#mensajeError").text("Debe seleccionar un tipo de teléfono.").show();
-                return;
-            }
-
-            if (!esNuevo && numeroAnterior === "") {
-                $("#mensajeError").text("Debe seleccionar un teléfono válido para editar.").show();
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("GuardarTelefonoDesdeCliente", "Persona")',
-                type: "POST",
-                data: JSON.stringify({
-                    obj: obj,
-                    esNuevo: esNuevo,
-                    numeroAnterior: numeroAnterior
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#mensajeError").hide().text("");
-                        limpiarFormularioTelefonoCliente();
-                        cargarTelefonosCliente(identificacion);
-                    } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
-                    }
-                },
-                error: function () {
-                    $("#mensajeError").text("Error al guardar el teléfono del cliente.").show();
-                }
-            });
+        },
+        error: function () {
+            $("#mensajeError").text("Error al guardar el teléfono del cliente.").show();
         }
+    });
+}
 
         function inactivarTelefonoCliente(numeroTelefono, identificacion) {
             if (!confirm("¿Desea inactivar este teléfono?")) {
@@ -1209,6 +1275,184 @@
             }
 
             return true;
+        }
+
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function soloNumeros(valor) {
+            return /^[0-9]+$/.test(valor);
+        }
+
+        function soloTextoNombre(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(valor);
+        }
+
+        function validarIdentificacionCostaRica(identificacion) {
+            if (identificacion === "") {
+                return "Debe ingresar la identificación.";
+            }
+
+            if (!soloNumeros(identificacion)) {
+                return "La identificación debe contener solo números.";
+            }
+
+            if (identificacion.length < 9 || identificacion.length > 12) {
+                return "La identificación debe tener entre 9 y 12 dígitos.";
+            }
+
+            return "";
+        }
+
+        function validarFechaNacimiento(fechaTexto) {
+            if (fechaTexto === "") {
+                return "";
+            }
+
+            var fecha = new Date(fechaTexto + "T00:00:00");
+            var hoy = new Date();
+
+            if (isNaN(fecha.getTime())) {
+                return "Debe ingresar una fecha de nacimiento válida.";
+            }
+
+            if (fecha > hoy) {
+                return "La fecha de nacimiento no puede ser futura.";
+            }
+
+            var edad = hoy.getFullYear() - fecha.getFullYear();
+            var mes = hoy.getMonth() - fecha.getMonth();
+
+            if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
+                edad--;
+            }
+
+            if (edad > 120) {
+                return "La fecha de nacimiento no es válida.";
+            }
+
+            return "";
+        }
+
+        function validarMontoNoNegativo(texto, nombreCampo) {
+            if (texto === "") {
+                return "";
+            }
+
+            var numero = parseFloat(texto);
+
+            if (isNaN(numero)) {
+                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+            }
+
+            if (numero < 0) {
+                return nombreCampo + " no puede ser negativo.";
+            }
+
+            return "";
+        }
+
+        function validarEnteroNoNegativo(texto, nombreCampo) {
+            if (texto === "") {
+                return "";
+            }
+
+            var numero = parseInt(texto);
+
+            if (isNaN(numero) || numero.toString() !== texto) {
+                return "Debe ingresar un número entero válido para " + nombreCampo + ".";
+            }
+
+            if (numero < 0) {
+                return nombreCampo + " no puede ser negativo.";
+            }
+
+            return "";
+        }
+
+        function validarTelefonoCostaRica(numero) {
+            if (numero === "") {
+                return "Debe ingresar el número de teléfono.";
+            }
+
+            if (!soloNumeros(numero)) {
+                return "El teléfono debe contener solo números.";
+            }
+
+            if (numero.length !== 8) {
+                return "El teléfono debe tener 8 dígitos.";
+            }
+
+            return "";
+        }
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarNoNumeros(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarNoLetras(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarNoDecimal(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9.]/g, "");
+
+            var partes = valorLimpio.split(".");
+            if (partes.length > 2) {
+                valorLimpio = partes[0] + "." + partes.slice(1).join("");
+            }
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
         }
     </script>
 }

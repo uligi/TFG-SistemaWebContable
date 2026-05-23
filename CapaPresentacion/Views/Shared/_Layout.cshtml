@@ -1,5 +1,8 @@
-﻿<!DOCTYPE html>
-<html lang="es">
+﻿@using System
+@using System.Linq
+
+<!DOCTYPE html>
+<html lang="es" class="material-style layout-fixed">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
@@ -8,10 +11,221 @@
     <title>@ViewBag.Title - Sistema Web Contable</title>
 
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/datatables")
     @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        body {
+            background: #f3f6fb;
+        }
+
+        .layout-content {
+            background: #f3f6fb;
+        }
+
+        .container-p-y {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+        }
+
+        .app-brand {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+            .brand-box:hover {
+                color: #fff;
+                text-decoration: none;
+            }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .brand-text-main {
+            display: block;
+            font-weight: 700;
+            font-size: 15px;
+            line-height: 1.1;
+        }
+
+        .brand-text-sub {
+            display: block;
+            font-size: 12px;
+            color: rgba(255,255,255,0.62);
+            margin-top: 3px;
+        }
+
+        .sidenav-header {
+            color: rgba(255,255,255,0.48) !important;
+            padding-top: 14px;
+            padding-bottom: 8px;
+            letter-spacing: .06em;
+        }
+
+        .sidenav-divider {
+            border-color: rgba(255,255,255,0.08) !important;
+        }
+
+        .layout-navbar {
+            min-height: 66px;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .navbar-page-title {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+            .navbar-page-title strong {
+                color: #0f172a;
+                font-size: 16px;
+            }
+
+            .navbar-page-title span {
+                color: #64748b;
+                font-size: 12px;
+                margin-top: 2px;
+            }
+
+        .user-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #1d4ed8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            line-height: 1.1;
+        }
+
+            .user-info strong {
+                display: block;
+                color: #0f172a;
+                font-size: 13px;
+            }
+
+            .user-info span {
+                display: block;
+                color: #64748b;
+                font-size: 11px;
+                margin-top: 2px;
+            }
+
+        .logout-link {
+            color: #dc2626 !important;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 8px 12px !important;
+        }
+
+            .logout-link:hover {
+                background: #fee2e2;
+                color: #991b1b !important;
+            }
+
+        .content-shell {
+            animation: fadeInContent .22s ease-in-out;
+        }
+
+        @@keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .user-info {
+                display: none;
+            }
+
+            .navbar-page-title span {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    @{
+        var controller = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
+        var action = (ViewContext.RouteData.Values["action"] ?? "").ToString();
+
+        Func<string, string, string> activo = (ctrl, act) =>
+            controller.Equals(ctrl, StringComparison.OrdinalIgnoreCase)
+            && (string.IsNullOrEmpty(act) || action.Equals(act, StringComparison.OrdinalIgnoreCase))
+                ? "active"
+                : "";
+
+        Func<string[], string> abierto = (controles) =>
+            controles.Any(c => controller.Equals(c, StringComparison.OrdinalIgnoreCase))
+                ? "open active"
+                : "";
+
+        string nombreUsuario = "Usuario";
+
+        if (Session["NombreUsuario"] != null)
+        {
+            nombreUsuario = Session["NombreUsuario"].ToString();
+        }
+        else if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            nombreUsuario = User.Identity.Name;
+        }
+
+        string inicialUsuario = !string.IsNullOrWhiteSpace(nombreUsuario)
+            ? nombreUsuario.Substring(0, 1).ToUpper()
+            : "U";
+    }
+
+    <div class="page-loader">
+        <div class="bg-primary"></div>
+    </div>
+
     <div class="layout-wrapper layout-2">
         <div class="layout-inner">
 
@@ -19,8 +233,12 @@
             <div id="layout-sidenav" class="layout-sidenav sidenav sidenav-vertical bg-dark">
 
                 <div class="app-brand">
-                    <a href="@Url.Action("Index", "Home")" class="app-brand-text sidenav-text font-weight-normal ml-2">
-                        Sistema Contable
+                    <a href="@Url.Action("Index", "Home")" class="brand-box">
+                        <div class="brand-logo">₡</div>
+                        <div>
+                            <span class="brand-text-main">Sistema Contable</span>
+                            <span class="brand-text-sub">Las Graditas</span>
+                        </div>
                     </a>
                 </div>
 
@@ -28,7 +246,8 @@
 
                 <ul class="sidenav-inner py-1">
 
-                    <li class="sidenav-item">
+                    <!-- INICIO -->
+                    <li class="sidenav-item @activo("Home", "Index")">
                         <a href="@Url.Action("Index", "Home")" class="sidenav-link">
                             <i class="sidenav-icon feather icon-home"></i>
                             <div>Inicio</div>
@@ -36,98 +255,151 @@
                     </li>
 
                     <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">Módulos principales</li>
+                    <li class="sidenav-header small font-weight-semibold">Trabajo diario</li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("CuentasContables", "GestionarCuentaContable")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-book"></i>
-                            <div>Cuentas contables</div>
+                    <!-- OPERACIÓN DIARIA -->
+                    <li class="sidenav-item @abierto(new[] { "Facturacion", "GestionarIngresos", "GestionarGastos" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                            <i class="sidenav-icon feather icon-shopping-cart"></i>
+                            <div>Operación diaria</div>
                         </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Facturacion", "Facturas")">
+                                <a href="@Url.Action("Facturas", "Facturacion")" class="sidenav-link">
+                                    <div>Facturación</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("GestionarIngresos", "Ingresos")">
+                                <a href="@Url.Action("Ingresos", "GestionarIngresos")" class="sidenav-link">
+                                    <div>Ingresos</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("GestionarGastos", "Gastos")">
+                                <a href="@Url.Action("Gastos", "GestionarGastos")" class="sidenav-link">
+                                    <div>Gastos</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("CuentasContables", "GestionarCuentasPorCobrar")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-dollar-sign"></i>
-                            <div>Cuentas por cobrar</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("CxP", "GestionarCuentasPorPagar")" class="sidenav-link">
+                    <!-- COBROS Y PAGOS -->
+                    <li class="sidenav-item @abierto(new[] { "GestionarCuentasPorCobrar", "GestionarCuentasPorPagar" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                             <i class="sidenav-icon feather icon-credit-card"></i>
-                            <div>Cuentas por pagar</div>
+                            <div>Cobros y pagos</div>
                         </a>
-                    </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("GI", "GestionarIngresos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-trending-up"></i>
-                            <div>Ingresos</div>
-                        </a>
-                    </li>
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("GestionarCuentasPorCobrar", "CuentasPorCobrar")">
+                                <a href="@Url.Action("CuentasPorCobrar", "GestionarCuentasPorCobrar")" class="sidenav-link">
+                                    <div>Cuentas por cobrar</div>
+                                </a>
+                            </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("GG", "GestionarGastos")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-trending-down"></i>
-                            <div>Gastos</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Facturacion", "Facturacion")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-file-text"></i>
-                            <div>Facturación</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("GPM", "GestionarPresupuestoMensual")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-bar-chart-2"></i>
-                            <div>Presupuesto mensual</div>
-                        </a>
+                            <li class="sidenav-item @activo("GestionarCuentasPorPagar", "CuentasPorPagar")">
+                                <a href="@Url.Action("CuentasPorPagar", "GestionarCuentasPorPagar")" class="sidenav-link">
+                                    <div>Cuentas por pagar</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">Mantenimientos</li>
+                    <li class="sidenav-header small font-weight-semibold">Control contable</li>
 
-                    <li class="sidenav-item">
+                    <!-- CONTABILIDAD -->
+                    <li class="sidenav-item @abierto(new[] { "GestionarCuentaContable", "GestionarAsientoContable", "GestionarPeriodoContable", "GestionarPresupuestoMensual" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                            <i class="sidenav-icon feather icon-book"></i>
+                            <div>Contabilidad</div>
+                        </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("GestionarCuentaContable", "CuentasContables")">
+                                <a href="@Url.Action("CuentasContables", "GestionarCuentaContable")" class="sidenav-link">
+                                    <div>Cuentas contables</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("GestionarAsientoContable", "AsientosContables")">
+                                <a href="@Url.Action("AsientosContables", "GestionarAsientoContable")" class="sidenav-link">
+                                    <div>Asientos contables</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("GestionarPeriodoContable", "PeriodosContables")">
+                                <a href="@Url.Action("PeriodosContables", "GestionarPeriodoContable")" class="sidenav-link">
+                                    <div>Periodos contables</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("GestionarPresupuestoMensual", "PresupuestoMensual")">
+                                <a href="@Url.Action("PresupuestoMensual", "GestionarPresupuestoMensual")" class="sidenav-link">
+                                    <div>Presupuesto mensual</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="sidenav-divider mb-1"></li>
+                    <li class="sidenav-header small font-weight-semibold">Administración</li>
+
+                    <!-- MANTENIMIENTOS -->
+                    <li class="sidenav-item @activo("Home", "Mantenimientos")">
                         <a href="@Url.Action("Mantenimientos", "Home")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-users"></i>
+                            <i class="sidenav-icon feather icon-settings"></i>
                             <div>Mantenimientos</div>
                         </a>
                     </li>
 
-                    
+                    <!-- CONSULTAS Y REPORTES -->
+                    <li class="sidenav-item @abierto(new[] { "Consultas", "Reportes" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                            <i class="sidenav-icon feather icon-pie-chart"></i>
+                            <div>Información</div>
+                        </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("Consultas", "Consultas")">
+                                <a href="@Url.Action("Consultas", "Consultas")" class="sidenav-link">
+                                    <div>Consultas</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("Reportes", "Reportes")">
+                                <a href="@Url.Action("Reportes", "Reportes")" class="sidenav-link">
+                                    <div>Reportes</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
                     <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">Sistema</li>
+                    <li class="sidenav-header small font-weight-semibold">Seguridad</li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Reportes", "Reportes")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-printer"></i>
-                            <div>Reportes</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Consultas", "Consultas")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-search"></i>
-                            <div>Consultas</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Index", "HistorialCambio")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-clock"></i>
-                            <div>Historial de cambios</div>
-                        </a>
-                    </li>
-
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Index", "IntentoAcceso")" class="sidenav-link">
+                    <!-- SEGURIDAD -->
+                    <li class="sidenav-item @abierto(new[] { "HistorialCambio", "IntentoAcceso" })">
+                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                             <i class="sidenav-icon feather icon-shield"></i>
-                            <div>Intentos de acceso</div>
+                            <div>Auditoría y acceso</div>
                         </a>
+
+                        <ul class="sidenav-menu">
+                            <li class="sidenav-item @activo("HistorialCambio", "Index")">
+                                <a href="@Url.Action("Index", "HistorialCambio")" class="sidenav-link">
+                                    <div>Historial de cambios</div>
+                                </a>
+                            </li>
+
+                            <li class="sidenav-item @activo("IntentoAcceso", "Index")">
+                                <a href="@Url.Action("Index", "IntentoAcceso")" class="sidenav-link">
+                                    <div>Intentos de acceso</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                 </ul>
@@ -139,19 +411,34 @@
                 <!-- NAVBAR SUPERIOR -->
                 <nav class="layout-navbar navbar navbar-expand-lg align-items-lg-center bg-white container-p-x">
 
-                    <a href="javascript:" class="layout-sidenav-toggle sidenav-link text-large mr-3">
+                    <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large mr-3">
                         <i class="ion ion-md-menu align-middle"></i>
                     </a>
+
+                    <div class="navbar-nav align-items-lg-center mr-auto">
+                        <div class="nav-item navbar-text navbar-page-title">
+                            <strong>@ViewBag.Title</strong>
+                            <span>Sistema Web Contable - Abastecedor Las Graditas</span>
+                        </div>
+                    </div>
 
                     <div class="navbar-collapse collapse" id="layout-navbar-collapse">
                         <div class="navbar-nav align-items-lg-center ml-auto">
 
-                            <div class="nav-item navbar-text">
-                                Usuario: @User.Identity.Name
+                            <div class="nav-item user-box">
+                                <div class="user-avatar">
+                                    @inicialUsuario
+                                </div>
+
+                                <div class="user-info">
+                                    <strong>@nombreUsuario</strong>
+                                    <span>Usuario del sistema</span>
+                                </div>
                             </div>
 
                             <div class="nav-item ml-3">
-                                <a class="nav-link" href="@Url.Action("InicioSesion", "Acceso")">
+                                <a class="nav-link logout-link" href="@Url.Action("CerrarSesion", "Acceso")">
+                                    <i class="feather icon-log-out mr-1"></i>
                                     Cerrar sesión
                                 </a>
                             </div>
@@ -164,7 +451,9 @@
                 <!-- BODY -->
                 <div class="layout-content">
                     <div class="container-fluid flex-grow-1 container-p-y">
-                        @RenderBody()
+                        <div class="content-shell">
+                            @RenderBody()
+                        </div>
                     </div>
                 </div>
 
@@ -175,6 +464,8 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/morris")
     @RenderSection("scripts", required: false)
 </body>
 </html>

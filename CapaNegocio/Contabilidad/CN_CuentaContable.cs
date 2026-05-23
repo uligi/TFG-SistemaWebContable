@@ -153,5 +153,10 @@ namespace CapaNegocio.Contabilidad
 
             return objCapaDato.GenerarCodigo(idCuentaPadre, out Mensaje);
         }
+
+        public List<CuentaContable> ListarParaMovimientos()
+        {
+            return objCapaDato.ListarParaMovimientos();
+        }
     }
 }

@@ -49,6 +49,12 @@ namespace CapaNegocio.Inventario
                 return 0;
             }
 
+            if (obj.IdImpuesto == 0)
+            {
+                Mensaje = "Debe seleccionar un impuesto.";
+                return 0;
+            }
+
             if (obj.PrecioVenta < 0)
             {
                 Mensaje = "El precio de venta no puede ser negativo.";
@@ -107,6 +113,11 @@ namespace CapaNegocio.Inventario
             if (!string.IsNullOrWhiteSpace(obj.Descripcion) && obj.Descripcion.Length > 250)
             {
                 Mensaje = "La descripción no puede superar los 250 caracteres.";
+                return false;
+            }
+            if (obj.IdImpuesto == 0)
+            {
+                Mensaje = "Debe seleccionar un impuesto.";
                 return false;
             }
 

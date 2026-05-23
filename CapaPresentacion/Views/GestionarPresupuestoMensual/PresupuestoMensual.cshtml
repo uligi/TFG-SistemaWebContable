@@ -1,0 +1,999 @@
+﻿@{
+    ViewBag.Title = "Presupuesto Mensual";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
+<h4 class="font-weight-bold py-3 mb-0">Gestionar Presupuesto Mensual</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Contabilidad</li>
+        <li class="breadcrumb-item active">Presupuesto Mensual</li>
+    </ol>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Lista de presupuestos mensuales</h6>
+
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalPresupuesto(null)">
+            Nuevo presupuesto
+        </button>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="tablaPresupuestos" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Año</th>
+                        <th>Mes</th>
+                        <th>Estado</th>
+                        <th>Activo</th>
+                        <th style="width:280px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PRESUPUESTO -->
+<div class="modal fade" id="ModalPresupuesto" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="tituloModalPresupuesto">Nuevo presupuesto mensual</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="txtIdPresupuestoMensual" value="0" />
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-4">
+                        <label for="txtAnio">Año</label>
+                        <input type="number" id="txtAnio" class="form-control" min="2000" max="2100" />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="cboMes">Mes</label>
+                        <select id="cboMes" class="form-control">
+                            <option value="0">Seleccione un mes</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="cboEstado">Estado</label>
+                        <select id="cboEstado" class="form-control">
+                            <option value="Borrador">Borrador</option>
+                            <option value="Aprobado">Aprobado</option>
+                            <option value="Cerrado">Cerrado</option>
+                            <option value="Anulado">Anulado</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="cboActivo">Activo</label>
+                    <select id="cboActivo" class="form-control">
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-danger mt-2" id="mensajeErrorPresupuesto" style="display:none;"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarPresupuestoMensual()">
+                    Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETALLES -->
+<div class="modal fade" id="ModalDetalles" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Detalle del presupuesto mensual</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="txtIdPresupuestoDetalle" value="0" />
+                <input type="hidden" id="txtIdDetallePresupuestoMensual" value="0" />
+
+                <div class="alert alert-info">
+                    <strong>Presupuesto:</strong>
+                    <span id="lblPresupuestoDetalle"></span>
+                </div>
+
+                <h6 class="font-weight-bold">Agregar / editar detalle</h6>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-4">
+                        <label for="cboTipoMovimiento">Tipo movimiento</label>
+                        <select id="cboTipoMovimiento" class="form-control">
+                            <option value="Ingreso">Ingreso</option>
+                            <option value="Gasto">Gasto</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="cboCuentaContable">Cuenta contable</label>
+                        <select id="cboCuentaContable" class="form-control">
+                            <option value="0">Seleccione una cuenta contable</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="txtMontoPresupuestado">Monto presupuestado</label>
+                        <input type="number" id="txtMontoPresupuestado" class="form-control" min="0" step="0.01" />
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-4">
+                        <label for="cboActivoDetalle">Activo</label>
+                        <select id="cboActivoDetalle" class="form-control">
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-8 d-flex align-items-end justify-content-end">
+                        <button type="button" class="btn btn-secondary mr-2" onclick="limpiarDetalle()">
+                            Limpiar
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="guardarDetallePresupuestoMensual()">
+                            Guardar detalle
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="alert alert-danger mt-2" id="mensajeErrorDetalle" style="display:none;"></div>
+
+                <hr />
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" id="tablaDetalles" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Cuenta</th>
+                                <th>Monto presupuestado</th>
+                                <th>Activo</th>
+                                <th style="width:170px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RESUMEN -->
+<div class="modal fade" id="ModalResumen" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Resumen presupuestado vs real</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="alert alert-info">
+                    <strong>Presupuesto:</strong>
+                    <span id="lblPresupuestoResumen"></span>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="card border-info">
+                            <div class="card-body py-2">
+                                <small class="text-muted">Total presupuestado</small>
+                                <h5 class="mb-0" id="lblTotalPresupuestado">₡0.00</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card border-success">
+                            <div class="card-body py-2">
+                                <small class="text-muted">Total real</small>
+                                <h5 class="mb-0" id="lblTotalReal">₡0.00</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card border-warning">
+                            <div class="card-body py-2">
+                                <small class="text-muted">Diferencia</small>
+                                <h5 class="mb-0" id="lblTotalDiferencia">₡0.00</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" id="tablaResumen" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Cuenta</th>
+                                <th>Presupuestado</th>
+                                <th>Real</th>
+                                <th>Diferencia</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var tablaPresupuestos = null;
+        var tablaDetalles = null;
+        var tablaResumen = null;
+
+        var listaPresupuestos = [];
+        var listaDetalles = [];
+        var listaResumen = [];
+        var listaCuentasContables = [];
+
+        $(document).ready(function () {
+            cargarPresupuestosMensuales();
+            cargarCuentasContables();
+
+            $("#ModalPresupuesto").on("hidden.bs.modal", function () {
+                $("#mensajeErrorPresupuesto").hide().text("");
+            });
+
+            $("#ModalDetalles").on("hidden.bs.modal", function () {
+                limpiarDetalle();
+                $("#mensajeErrorDetalle").hide().text("");
+            });
+
+            $("#txtAnio").on("input", function () {
+                limpiarNoNumeros("txtAnio", "Solo se permiten números en el año.");
+
+                if ($(this).val().length > 4) {
+                    $(this).val($(this).val().substring(0, 4));
+                    mostrarAyudaCampo("txtAnio", "El año debe tener 4 dígitos.");
+                }
+            });
+
+            $("#txtMontoPresupuestado").on("input", function () {
+                limpiarNoDecimal("txtMontoPresupuestado", "Solo se permiten números y punto decimal en el monto presupuestado.");
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeErrorPresupuesto").is(":visible")) {
+                    $("#mensajeErrorPresupuesto").fadeOut(150);
+                }
+
+                if ($("#mensajeErrorDetalle").is(":visible")) {
+                    $("#mensajeErrorDetalle").fadeOut(150);
+                }
+            });
+
+        });
+
+        function cargarPresupuestosMensuales() {
+            $.ajax({
+                url: '@Url.Action("ListarPresupuestosMensuales", "GestionarPresupuestoMensual")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaPresupuestos = respuesta.data || [];
+                    pintarTablaPresupuestos();
+                },
+                error: function () {
+                    alert("Error al cargar los presupuestos mensuales.");
+                }
+            });
+        }
+
+        function cargarCuentasContables() {
+            $.ajax({
+                url: '@Url.Action("ListarCuentasContablesMovimiento", "GestionarPresupuestoMensual")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    listaCuentasContables = respuesta.data || [];
+                    pintarComboCuentasContables();
+                },
+                error: function () {
+                    alert("Error al cargar las cuentas contables.");
+                }
+            });
+        }
+
+        function pintarComboCuentasContables() {
+            $("#cboCuentaContable").empty();
+            $("#cboCuentaContable").append('<option value="0">Seleccione una cuenta contable</option>');
+
+            $.each(listaCuentasContables, function (i, item) {
+                $("#cboCuentaContable").append(
+                    $("<option>", {
+                        value: item.IdCuentaContable,
+                        text: (item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "")
+                    })
+                );
+            });
+        }
+
+        function pintarTablaPresupuestos() {
+            if (tablaPresupuestos != null) {
+                tablaPresupuestos.clear().destroy();
+                tablaPresupuestos = null;
+            }
+
+            var tbody = $("#tablaPresupuestos tbody");
+            tbody.empty();
+
+            $.each(listaPresupuestos, function (i, item) {
+                var estado = obtenerBadgeEstado(item.Estado);
+
+                var activo = item.Activo
+                    ? '<span class="badge badge-info">Sí</span>'
+                    : '<span class="badge badge-secondary">No</span>';
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModalPresupuesto(item);
+                });
+
+                var botonDetalles = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-success mr-1",
+                    text: "Detalles"
+                }).on("click", function () {
+                    abrirModalDetalles(item);
+                });
+
+                var botonResumen = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-info mr-1",
+                    text: "Resumen"
+                }).on("click", function () {
+                    abrirModalResumen(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarPresupuestoMensual(item.IdPresupuestoMensual);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonDetalles);
+                acciones.append(botonResumen);
+                acciones.append(botonInactivar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.Anio));
+                fila.append($("<td>").text(obtenerNombreMes(item.Mes)));
+                fila.append($("<td>").html(estado));
+                fila.append($("<td>").html(activo));
+                fila.append(acciones);
+
+                tbody.append(fila);
+            });
+
+            tablaPresupuestos = $("#tablaPresupuestos").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "desc"], [1, "desc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function abrirModalPresupuesto(json) {
+            $("#mensajeErrorPresupuesto").hide().text("");
+
+            var fechaActual = new Date();
+
+            $("#txtIdPresupuestoMensual").val(0);
+            $("#txtAnio").val(fechaActual.getFullYear());
+            $("#cboMes").val(fechaActual.getMonth() + 1);
+            $("#cboEstado").val("Borrador");
+            $("#cboActivo").val("true");
+            $("#tituloModalPresupuesto").text("Nuevo presupuesto mensual");
+
+            if (json != null) {
+                $("#txtIdPresupuestoMensual").val(json.IdPresupuestoMensual);
+                $("#txtAnio").val(json.Anio);
+                $("#cboMes").val(json.Mes);
+                $("#cboEstado").val(json.Estado);
+                $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#tituloModalPresupuesto").text("Editar presupuesto mensual");
+            }
+
+            $("#ModalPresupuesto").modal("show");
+        }
+
+       function guardarPresupuestoMensual() {
+    $("#mensajeErrorPresupuesto").hide().text("");
+
+    var anioTexto = $("#txtAnio").val().trim();
+
+    var obj = {
+        IdPresupuestoMensual: parseInt($("#txtIdPresupuestoMensual").val()),
+        Anio: anioTexto === "" ? 0 : parseInt(anioTexto),
+        Mes: parseInt($("#cboMes").val()),
+        Estado: $("#cboEstado").val(),
+        Activo: $("#cboActivo").val() === "true"
+    };
+
+    if (isNaN(obj.IdPresupuestoMensual)) {
+        obj.IdPresupuestoMensual = 0;
+    }
+
+    var mensajeAnio = validarAnioPresupuesto(anioTexto);
+    if (mensajeAnio !== "") {
+        mostrarErrorPresupuesto(mensajeAnio, "txtAnio");
+        return;
+    }
+
+    if (obj.Mes < 1 || obj.Mes > 12 || isNaN(obj.Mes)) {
+        mostrarErrorPresupuesto("Debe seleccionar un mes válido.", "cboMes");
+        return;
+    }
+
+    if (obj.Estado === "" || obj.Estado === null) {
+        mostrarErrorPresupuesto("Debe seleccionar un estado.", "cboEstado");
+        return;
+    }
+
+    if (obj.Estado !== "Borrador" && obj.Estado !== "Aprobado" && obj.Estado !== "Cerrado" && obj.Estado !== "Anulado") {
+        mostrarErrorPresupuesto("Debe seleccionar un estado válido.", "cboEstado");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarPresupuestoMensual", "GestionarPresupuestoMensual")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#ModalPresupuesto").modal("hide");
+                cargarPresupuestosMensuales();
+            } else {
+                $("#mensajeErrorPresupuesto").text(respuesta.mensaje).show();
+            }
+        },
+        error: function () {
+            $("#mensajeErrorPresupuesto").text("Error al guardar el presupuesto mensual.").show();
+        }
+    });
+}
+
+        function inactivarPresupuestoMensual(idPresupuestoMensual) {
+            if (!confirm("¿Desea inactivar este presupuesto mensual? También se inactivarán sus detalles.")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarPresupuestoMensual", "GestionarPresupuestoMensual")',
+                type: "POST",
+                data: JSON.stringify({ idPresupuestoMensual: idPresupuestoMensual }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarPresupuestosMensuales();
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+                },
+                error: function () {
+                    alert("Error al inactivar el presupuesto mensual.");
+                }
+            });
+        }
+
+        function abrirModalDetalles(item) {
+            $("#txtIdPresupuestoDetalle").val(item.IdPresupuestoMensual);
+            $("#lblPresupuestoDetalle").text(obtenerNombreMes(item.Mes) + " " + item.Anio + " - " + item.Estado);
+
+            limpiarDetalle();
+            cargarDetallesPresupuestoMensual(item.IdPresupuestoMensual);
+
+            $("#ModalDetalles").modal("show");
+        }
+
+        function cargarDetallesPresupuestoMensual(idPresupuestoMensual) {
+            $.ajax({
+                url: '@Url.Action("ListarDetallesPresupuestoMensual", "GestionarPresupuestoMensual")',
+                type: "GET",
+                data: { idPresupuestoMensual: idPresupuestoMensual },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaDetalles = respuesta.data || [];
+                    pintarTablaDetalles();
+                },
+                error: function () {
+                    alert("Error al cargar los detalles del presupuesto.");
+                }
+            });
+        }
+
+        function pintarTablaDetalles() {
+            if (tablaDetalles != null) {
+                tablaDetalles.clear().destroy();
+                tablaDetalles = null;
+            }
+
+            var tbody = $("#tablaDetalles tbody");
+            tbody.empty();
+
+            $.each(listaDetalles, function (i, item) {
+                var activo = item.Activo
+                    ? '<span class="badge badge-info">Sí</span>'
+                    : '<span class="badge badge-secondary">No</span>';
+
+                var cuenta = (item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "");
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    editarDetalle(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarDetallePresupuestoMensual(item.IdDetallePresupuestoMensual);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonInactivar);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.TipoMovimiento || ""));
+                fila.append($("<td>").text(cuenta));
+                fila.append($("<td>").text("₡" + parseFloat(item.MontoPresupuestado || 0).toFixed(2)));
+                fila.append($("<td>").html(activo));
+                fila.append(acciones);
+
+                tbody.append(fila);
+            });
+
+            tablaDetalles = $("#tablaDetalles").DataTable({
+                responsive: true,
+                pageLength: 5,
+                destroy: true,
+                order: [[0, "asc"], [1, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function limpiarDetalle() {
+            $("#txtIdDetallePresupuestoMensual").val(0);
+            $("#cboTipoMovimiento").val("Ingreso");
+            $("#cboCuentaContable").val(0);
+            $("#txtMontoPresupuestado").val("");
+            $("#cboActivoDetalle").val("true");
+            $("#mensajeErrorDetalle").hide().text("");
+        }
+
+        function editarDetalle(item) {
+            $("#txtIdDetallePresupuestoMensual").val(item.IdDetallePresupuestoMensual);
+            $("#cboTipoMovimiento").val(item.TipoMovimiento);
+            $("#cboCuentaContable").val(item.IdCuentaContable);
+            $("#txtMontoPresupuestado").val(parseFloat(item.MontoPresupuestado || 0).toFixed(2));
+            $("#cboActivoDetalle").val(item.Activo ? "true" : "false");
+        }
+
+       function guardarDetallePresupuestoMensual() {
+    $("#mensajeErrorDetalle").hide().text("");
+
+    var idPresupuestoMensual = parseInt($("#txtIdPresupuestoDetalle").val());
+    var montoTexto = $("#txtMontoPresupuestado").val().trim();
+
+    var obj = {
+        IdDetallePresupuestoMensual: parseInt($("#txtIdDetallePresupuestoMensual").val()),
+        IdPresupuestoMensual: idPresupuestoMensual,
+        IdCuentaContable: parseInt($("#cboCuentaContable").val()),
+        TipoMovimiento: $("#cboTipoMovimiento").val(),
+        MontoPresupuestado: montoTexto === "" ? 0 : parseFloat(montoTexto),
+        Activo: $("#cboActivoDetalle").val() === "true"
+    };
+
+    if (isNaN(obj.IdDetallePresupuestoMensual)) {
+        obj.IdDetallePresupuestoMensual = 0;
+    }
+
+    if (obj.IdPresupuestoMensual === 0 || isNaN(obj.IdPresupuestoMensual)) {
+        mostrarErrorDetalle("Debe seleccionar un presupuesto mensual.", "txtIdPresupuestoDetalle");
+        return;
+    }
+
+    if (obj.TipoMovimiento !== "Ingreso" && obj.TipoMovimiento !== "Gasto") {
+        mostrarErrorDetalle("Debe seleccionar un tipo de movimiento válido.", "cboTipoMovimiento");
+        return;
+    }
+
+    if (obj.IdCuentaContable === 0 || isNaN(obj.IdCuentaContable)) {
+        mostrarErrorDetalle("Debe seleccionar una cuenta contable.", "cboCuentaContable");
+        return;
+    }
+
+    var mensajeMonto = validarDecimalMayorCero(montoTexto, "el monto presupuestado");
+    if (mensajeMonto !== "") {
+        mostrarErrorDetalle(mensajeMonto, "txtMontoPresupuestado");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("GuardarDetallePresupuestoMensual", "GestionarPresupuestoMensual")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                limpiarDetalle();
+                cargarDetallesPresupuestoMensual(idPresupuestoMensual);
+            } else {
+                $("#mensajeErrorDetalle").text(respuesta.mensaje).show();
+            }
+        },
+        error: function () {
+            $("#mensajeErrorDetalle").text("Error al guardar el detalle del presupuesto.").show();
+        }
+    });
+}
+
+        function inactivarDetallePresupuestoMensual(idDetallePresupuestoMensual) {
+            var idPresupuestoMensual = parseInt($("#txtIdPresupuestoDetalle").val());
+
+            if (!confirm("¿Desea inactivar este detalle de presupuesto?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarDetallePresupuestoMensual", "GestionarPresupuestoMensual")',
+                type: "POST",
+                data: JSON.stringify({ idDetallePresupuestoMensual: idDetallePresupuestoMensual }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        limpiarDetalle();
+                        cargarDetallesPresupuestoMensual(idPresupuestoMensual);
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+                },
+                error: function () {
+                    alert("Error al inactivar el detalle del presupuesto.");
+                }
+            });
+        }
+
+        function abrirModalResumen(item) {
+            $("#lblPresupuestoResumen").text(obtenerNombreMes(item.Mes) + " " + item.Anio + " - " + item.Estado);
+            cargarResumenVsReal(item.IdPresupuestoMensual);
+            $("#ModalResumen").modal("show");
+        }
+
+        function cargarResumenVsReal(idPresupuestoMensual) {
+            $.ajax({
+                url: '@Url.Action("ResumenVsReal", "GestionarPresupuestoMensual")',
+                type: "GET",
+                data: { idPresupuestoMensual: idPresupuestoMensual },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaResumen = respuesta.data || [];
+                    pintarTablaResumen();
+                },
+                error: function () {
+                    alert("Error al cargar el resumen del presupuesto.");
+                }
+            });
+        }
+
+        function pintarTablaResumen() {
+            if (tablaResumen != null) {
+                tablaResumen.clear().destroy();
+                tablaResumen = null;
+            }
+
+            var tbody = $("#tablaResumen tbody");
+            tbody.empty();
+
+            var totalPresupuestado = 0;
+            var totalReal = 0;
+            var totalDiferencia = 0;
+
+            $.each(listaResumen, function (i, item) {
+                var presupuestado = parseFloat(item.MontoPresupuestado || 0);
+                var real = parseFloat(item.MontoReal || 0);
+                var diferencia = parseFloat(item.Diferencia || 0);
+
+                totalPresupuestado += presupuestado;
+                totalReal += real;
+                totalDiferencia += diferencia;
+
+                var cuenta = (item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "");
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.TipoMovimiento || ""));
+                fila.append($("<td>").text(cuenta));
+                fila.append($("<td>").text("₡" + presupuestado.toFixed(2)));
+                fila.append($("<td>").text("₡" + real.toFixed(2)));
+                fila.append($("<td>").text("₡" + diferencia.toFixed(2)));
+
+                tbody.append(fila);
+            });
+
+            $("#lblTotalPresupuestado").text("₡" + totalPresupuestado.toFixed(2));
+            $("#lblTotalReal").text("₡" + totalReal.toFixed(2));
+            $("#lblTotalDiferencia").text("₡" + totalDiferencia.toFixed(2));
+
+            tablaResumen = $("#tablaResumen").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"], [1, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function obtenerBadgeEstado(estado) {
+            if (estado === "Aprobado") {
+                return '<span class="badge badge-success">Aprobado</span>';
+            }
+
+            if (estado === "Cerrado") {
+                return '<span class="badge badge-info">Cerrado</span>';
+            }
+
+            if (estado === "Anulado") {
+                return '<span class="badge badge-secondary">Anulado</span>';
+            }
+
+            return '<span class="badge badge-warning">' + (estado || "Borrador") + '</span>';
+        }
+
+        function obtenerNombreMes(mes) {
+            var meses = [
+                "",
+                "Enero",
+                "Febrero",
+                "Marzo",
+                "Abril",
+                "Mayo",
+                "Junio",
+                "Julio",
+                "Agosto",
+                "Septiembre",
+                "Octubre",
+                "Noviembre",
+                "Diciembre"
+            ];
+
+            return meses[parseInt(mes)] || "";
+        }
+        function mostrarErrorPresupuesto(mensaje, idCampo) {
+            $("#mensajeErrorPresupuesto").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarErrorDetalle(mensaje, idCampo) {
+            $("#mensajeErrorDetalle").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarNoNumeros(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function limpiarNoDecimal(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^0-9.]/g, "");
+
+            var partes = valorLimpio.split(".");
+            if (partes.length > 2) {
+                valorLimpio = partes[0] + "." + partes.slice(1).join("");
+            }
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarAnioPresupuesto(anioTexto) {
+            if (anioTexto === "") {
+                return "Debe ingresar el año.";
+            }
+
+            if (!/^[0-9]+$/.test(anioTexto)) {
+                return "El año debe contener solo números.";
+            }
+
+            if (anioTexto.length !== 4) {
+                return "El año debe tener 4 dígitos.";
+            }
+
+            var anio = parseInt(anioTexto);
+
+            if (isNaN(anio)) {
+                return "Debe ingresar un año válido.";
+            }
+
+            if (anio < 2000 || anio > 2100) {
+                return "El año debe estar entre 2000 y 2100.";
+            }
+
+            return "";
+        }
+
+        function validarDecimalMayorCero(texto, nombreCampo) {
+            if (texto === "") {
+                return "Debe ingresar " + nombreCampo + ".";
+            }
+
+            if (!/^[0-9]+(\.[0-9]+)?$/.test(texto)) {
+                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+            }
+
+            var numero = parseFloat(texto);
+
+            if (isNaN(numero)) {
+                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+            }
+
+            if (numero <= 0) {
+                return nombreCampo + " debe ser mayor a cero.";
+            }
+
+            return "";
+
+        }
+    </script>
+}
