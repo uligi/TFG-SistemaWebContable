@@ -28,29 +28,31 @@ namespace CapaNegocio.Catalogos
                 return 0;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Nombre.Length > 100)
             {
                 Mensaje = "El nombre del impuesto no puede superar los 100 caracteres.";
                 return 0;
             }
 
-            if (obj.Porcentaje < 0)
+            if (string.IsNullOrWhiteSpace(obj.Descripcion))
             {
-                Mensaje = "El porcentaje del impuesto no puede ser negativo.";
+                Mensaje = "La descripción es obligatoria.";
                 return 0;
             }
 
-            if (!string.IsNullOrWhiteSpace(obj.Descripcion) && obj.Descripcion.Length > 255)
+            if (obj.Descripcion.Length > 255)
             {
                 Mensaje = "La descripción no puede superar los 255 caracteres.";
                 return 0;
             }
 
-            obj.Nombre = obj.Nombre.Trim();
-
-            if (!string.IsNullOrWhiteSpace(obj.Descripcion))
+            if (obj.Porcentaje < 0 || obj.Porcentaje > 100)
             {
-                obj.Descripcion = obj.Descripcion.Trim();
+                Mensaje = "El porcentaje del impuesto debe estar entre 0 y 100.";
+                return 0;
             }
 
             return objCapaDato.Registrar(obj, out Mensaje);
@@ -60,7 +62,7 @@ namespace CapaNegocio.Catalogos
         {
             Mensaje = string.Empty;
 
-            if (obj.IdImpuesto == 0)
+            if (obj.IdImpuesto <= 0)
             {
                 Mensaje = "Debe seleccionar un impuesto válido.";
                 return false;
@@ -72,29 +74,31 @@ namespace CapaNegocio.Catalogos
                 return false;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Nombre.Length > 100)
             {
                 Mensaje = "El nombre del impuesto no puede superar los 100 caracteres.";
                 return false;
             }
 
-            if (obj.Porcentaje < 0)
+            if (string.IsNullOrWhiteSpace(obj.Descripcion))
             {
-                Mensaje = "El porcentaje del impuesto no puede ser negativo.";
+                Mensaje = "La descripción es obligatoria.";
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(obj.Descripcion) && obj.Descripcion.Length > 255)
+            if (obj.Descripcion.Length > 255)
             {
                 Mensaje = "La descripción no puede superar los 255 caracteres.";
                 return false;
             }
 
-            obj.Nombre = obj.Nombre.Trim();
-
-            if (!string.IsNullOrWhiteSpace(obj.Descripcion))
+            if (obj.Porcentaje < 0 || obj.Porcentaje > 100)
             {
-                obj.Descripcion = obj.Descripcion.Trim();
+                Mensaje = "El porcentaje del impuesto debe estar entre 0 y 100.";
+                return false;
             }
 
             return objCapaDato.Editar(obj, out Mensaje);
@@ -104,7 +108,7 @@ namespace CapaNegocio.Catalogos
         {
             Mensaje = string.Empty;
 
-            if (idImpuesto == 0)
+            if (idImpuesto <= 0)
             {
                 Mensaje = "Debe seleccionar un impuesto válido.";
                 return false;

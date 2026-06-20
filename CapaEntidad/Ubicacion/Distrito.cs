@@ -8,14 +8,13 @@ namespace CapaEntidad.Ubicacion
 {
     public class Distrito
     {
-        public int IdDistrito { get; set; }
-        public int IdCanton { get; set; }
+        public int CodigoDistrito { get; set; }
+        public int CodigoCanton { get; set; }
         public string Nombre { get; set; }
         public bool Activo { get; set; }
 
-
         public string CantonNombre { get; set; }
-        public int IdProvincia { get; set; }
+        public int CodigoProvincia { get; set; }
         public string ProvinciaNombre { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿@using System
 @using System.Linq
+@using CapaEntidad.Seguridad
 
 <!DOCTYPE html>
 <html lang="es" class="material-style layout-fixed">
@@ -12,6 +13,7 @@
 
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/datatables")
+    @RenderSection("estilos", required: false)
     @Scripts.Render("~/bundles/modernizr")
 
     <style>
@@ -22,7 +24,127 @@
         .layout-content {
             background: #f3f6fb;
         }
+        /* ==============================
+           MENÚ LATERAL - ALTO CONTRASTE
+           ============================== */
 
+        #layout-sidenav {
+            background: #07111f !important;
+            color: #ffffff !important;
+            border-right: 1px solid #1e293b;
+        }
+
+            #layout-sidenav .app-brand {
+                background: #020617 !important;
+                border-bottom: 1px solid #1e293b;
+            }
+
+            #layout-sidenav .brand-logo {
+                background: #2563eb !important;
+                color: #ffffff !important;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, .25);
+            }
+
+            #layout-sidenav .brand-text-main {
+                color: #ffffff !important;
+                font-size: 15px;
+                font-weight: 800;
+            }
+
+            #layout-sidenav .brand-text-sub {
+                color: #cbd5e1 !important;
+                font-size: 12px;
+            }
+
+            #layout-sidenav .sidenav-header {
+                color: #93c5fd !important;
+                font-size: 11px;
+                font-weight: 800 !important;
+                text-transform: uppercase;
+                letter-spacing: .09em;
+                padding: 18px 20px 8px 20px;
+            }
+
+            #layout-sidenav .sidenav-divider {
+                border-color: #1e293b !important;
+                margin: 8px 18px !important;
+            }
+
+            #layout-sidenav .sidenav-link {
+                color: #e5e7eb !important;
+                font-weight: 600;
+                margin: 2px 10px;
+                border-radius: 10px;
+            }
+
+                #layout-sidenav .sidenav-link div {
+                    color: #e5e7eb !important;
+                }
+
+            #layout-sidenav .sidenav-icon {
+                color: #bfdbfe !important;
+                opacity: 1 !important;
+            }
+
+            #layout-sidenav .sidenav-link:hover {
+                background: #1d4ed8 !important;
+                color: #ffffff !important;
+            }
+
+                #layout-sidenav .sidenav-link:hover div,
+                #layout-sidenav .sidenav-link:hover .sidenav-icon {
+                    color: #ffffff !important;
+                }
+
+            #layout-sidenav .sidenav-item.active > .sidenav-link,
+            #layout-sidenav .sidenav-item.open > .sidenav-link {
+                background: #2563eb !important;
+                color: #ffffff !important;
+                box-shadow: inset 4px 0 0 #facc15;
+            }
+
+                #layout-sidenav .sidenav-item.active > .sidenav-link div,
+                #layout-sidenav .sidenav-item.open > .sidenav-link div,
+                #layout-sidenav .sidenav-item.active > .sidenav-link .sidenav-icon,
+                #layout-sidenav .sidenav-item.open > .sidenav-link .sidenav-icon {
+                    color: #ffffff !important;
+                }
+
+            #layout-sidenav .sidenav-menu {
+                background: #0f172a !important;
+                margin: 4px 10px 8px 10px;
+                border-radius: 10px;
+                padding: 6px 0;
+                border: 1px solid #1e293b;
+            }
+
+                #layout-sidenav .sidenav-menu .sidenav-link {
+                    color: #dbeafe !important;
+                    font-size: 13px;
+                    margin: 2px 6px;
+                    padding-left: 18px !important;
+                }
+
+                    #layout-sidenav .sidenav-menu .sidenav-link:hover {
+                        background: #334155 !important;
+                        color: #ffffff !important;
+                    }
+
+                #layout-sidenav .sidenav-menu .sidenav-item.active > .sidenav-link {
+                    background: #1d4ed8 !important;
+                    color: #ffffff !important;
+                    box-shadow: inset 4px 0 0 #facc15;
+                }
+
+        .menu-section-label {
+            display: block;
+            padding: 3px 18px 6px 18px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
         .container-p-y {
             padding-top: 1.5rem !important;
             padding-bottom: 1.5rem !important;
@@ -187,6 +309,39 @@
                 display: none;
             }
         }
+        /* ==============================
+   SCROLL EN MENÚ LATERAL
+   ============================== */
+
+        #layout-sidenav {
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+
+            #layout-sidenav .sidenav-inner {
+                height: calc(100vh - 74px) !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                padding-bottom: 30px !important;
+            }
+
+                /* Scrollbar visible y con buen contraste */
+                #layout-sidenav .sidenav-inner::-webkit-scrollbar {
+                    width: 8px;
+                }
+
+                #layout-sidenav .sidenav-inner::-webkit-scrollbar-track {
+                    background: #020617;
+                }
+
+                #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb {
+                    background: #475569;
+                    border-radius: 10px;
+                }
+
+                    #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb:hover {
+                        background: #64748b;
+                    }
     </style>
 </head>
 
@@ -194,6 +349,8 @@
     @{
         var controller = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
         var action = (ViewContext.RouteData.Values["action"] ?? "").ToString();
+
+        UsuarioSesion usuarioSesion = Session["UsuarioSesion"] as UsuarioSesion;
 
         Func<string, string, string> activo = (ctrl, act) =>
             controller.Equals(ctrl, StringComparison.OrdinalIgnoreCase)
@@ -206,9 +363,35 @@
                 ? "open active"
                 : "";
 
-        string nombreUsuario = "Usuario";
+        Func<string, bool> puedeVer = (codigoModulo) =>
+            usuarioSesion != null
+            && usuarioSesion.Permisos != null
+            && usuarioSesion.Permisos.Any(p =>
+                p.CodigoModulo == codigoModulo
+                && p.Activo
+                && p.PuedeVer
+            );
 
-        if (Session["NombreUsuario"] != null)
+        Func<string[], bool> puedeVerAlguno = (codigos) =>
+            usuarioSesion != null
+            && usuarioSesion.Permisos != null
+            && usuarioSesion.Permisos.Any(p =>
+                codigos.Contains(p.CodigoModulo)
+                && p.Activo
+                && p.PuedeVer
+            );
+
+        string nombreUsuario = "Usuario";
+        string nombreCompleto = "Usuario del sistema";
+        string nombreRol = "Sin rol";
+
+        if (usuarioSesion != null)
+        {
+            nombreUsuario = usuarioSesion.NombreUsuario;
+            nombreCompleto = usuarioSesion.NombreCompleto;
+            nombreRol = usuarioSesion.NombreRol;
+        }
+        else if (Session["NombreUsuario"] != null)
         {
             nombreUsuario = Session["NombreUsuario"].ToString();
         }
@@ -229,7 +412,6 @@
     <div class="layout-wrapper layout-2">
         <div class="layout-inner">
 
-            <!-- SIDEBAR -->
             <div id="layout-sidenav" class="layout-sidenav sidenav sidenav-vertical bg-dark">
 
                 <div class="app-brand">
@@ -246,169 +428,242 @@
 
                 <ul class="sidenav-inner py-1">
 
-                    <!-- INICIO -->
-                    <li class="sidenav-item @activo("Home", "Index")">
-                        <a href="@Url.Action("Index", "Home")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-home"></i>
-                            <div>Inicio</div>
-                        </a>
-                    </li>
+                    @if (puedeVer("HOME"))
+                    {
+                        <li class="sidenav-item @activo("Home", "Index")">
+                            <a href="@Url.Action("Index", "Home")" class="sidenav-link">
+                                <i class="sidenav-icon feather icon-home"></i>
+                                <div>Inicio</div>
+                            </a>
+                        </li>
+                    }
 
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">Trabajo diario</li>
+                    @if (puedeVerAlguno(new[] { "CUENTAS_CONTABLES", "CONFIG_CUENTA_CONTABLE", "ASIENTOS", "PERIODO_CONTABLE" }))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Gestionar cuentas contables</li>
 
-                    <!-- OPERACIÓN DIARIA -->
-                    <li class="sidenav-item @abierto(new[] { "Facturacion", "GestionarIngresos", "GestionarGastos" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-shopping-cart"></i>
-                            <div>Operación diaria</div>
-                        </a>
+                        <li class="sidenav-item @abierto(new[] { "GestionarCuentaContable", "ConfiguracionCuentaContable", "GestionarAsientoContable", "GestionarPeriodoContable" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-book-open"></i>
+                                <div>Cuentas contables</div>
+                            </a>
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Facturacion", "Facturas")">
-                                <a href="@Url.Action("Facturas", "Facturacion")" class="sidenav-link">
-                                    <div>Facturación</div>
-                                </a>
-                            </li>
+                            <ul class="sidenav-menu">
 
-                            <li class="sidenav-item @activo("GestionarIngresos", "Ingresos")">
-                                <a href="@Url.Action("Ingresos", "GestionarIngresos")" class="sidenav-link">
-                                    <div>Ingresos</div>
-                                </a>
-                            </li>
+                                @if (puedeVer("CUENTAS_CONTABLES"))
+                                {
+                                    <li class="sidenav-item @activo("GestionarCuentaContable", "CuentasContables")">
+                                        <a href="@Url.Action("CuentasContables", "GestionarCuentaContable")" class="sidenav-link">
+                                            <div>Catálogo contable</div>
+                                        </a>
+                                    </li>
+                                }
 
-                            <li class="sidenav-item @activo("GestionarGastos", "Gastos")">
-                                <a href="@Url.Action("Gastos", "GestionarGastos")" class="sidenav-link">
-                                    <div>Gastos</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                                @if (puedeVer("CONFIG_CUENTA_CONTABLE"))
+                                {
+                                    <li class="sidenav-item @activo("ConfiguracionCuentaContable", "ConfiguracionCuentaContable")">
+                                        <a href="@Url.Action("ConfiguracionCuentaContable", "ConfiguracionCuentaContable")" class="sidenav-link">
+                                            <div>Configuración contable</div>
+                                        </a>
+                                    </li>
+                                }
 
-                    <!-- COBROS Y PAGOS -->
-                    <li class="sidenav-item @abierto(new[] { "GestionarCuentasPorCobrar", "GestionarCuentasPorPagar" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-credit-card"></i>
-                            <div>Cobros y pagos</div>
-                        </a>
+                                @if (puedeVer("ASIENTOS"))
+                                {
+                                    <li class="sidenav-item @activo("GestionarAsientoContable", "AsientosContables")">
+                                        <a href="@Url.Action("AsientosContables", "GestionarAsientoContable")" class="sidenav-link">
+                                            <div>Asientos contables</div>
+                                        </a>
+                                    </li>
+                                }
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("GestionarCuentasPorCobrar", "CuentasPorCobrar")">
-                                <a href="@Url.Action("CuentasPorCobrar", "GestionarCuentasPorCobrar")" class="sidenav-link">
-                                    <div>Cuentas por cobrar</div>
-                                </a>
-                            </li>
+                                @if (puedeVer("PERIODO_CONTABLE"))
+                                {
+                                    <li class="sidenav-item @activo("GestionarPeriodoContable", "PeriodosContables")">
+                                        <a href="@Url.Action("PeriodosContables", "GestionarPeriodoContable")" class="sidenav-link">
+                                            <div>Períodos contables</div>
+                                        </a>
+                                    </li>
+                                }
 
-                            <li class="sidenav-item @activo("GestionarCuentasPorPagar", "CuentasPorPagar")">
-                                <a href="@Url.Action("CuentasPorPagar", "GestionarCuentasPorPagar")" class="sidenav-link">
-                                    <div>Cuentas por pagar</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    }
 
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">Control contable</li>
+                    @if (puedeVer("CUENTAS_COBRAR"))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Gestionar cuentas por cobrar</li>
 
-                    <!-- CONTABILIDAD -->
-                    <li class="sidenav-item @abierto(new[] { "GestionarCuentaContable", "GestionarAsientoContable", "GestionarPeriodoContable", "GestionarPresupuestoMensual" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-book"></i>
-                            <div>Contabilidad</div>
-                        </a>
+                        <li class="sidenav-item @activo("GestionarCuentasPorCobrar", "CuentasPorCobrar")">
+                            <a href="@Url.Action("CuentasPorCobrar", "GestionarCuentasPorCobrar")" class="sidenav-link">
+                                <i class="sidenav-icon feather icon-credit-card"></i>
+                                <div>Cuentas por cobrar</div>
+                            </a>
+                        </li>
+                    }
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("GestionarCuentaContable", "CuentasContables")">
-                                <a href="@Url.Action("CuentasContables", "GestionarCuentaContable")" class="sidenav-link">
-                                    <div>Cuentas contables</div>
-                                </a>
-                            </li>
+                    @if (puedeVer("CUENTAS_PAGAR"))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Gestionar cuentas por pagar</li>
 
-                            <li class="sidenav-item @activo("GestionarAsientoContable", "AsientosContables")">
-                                <a href="@Url.Action("AsientosContables", "GestionarAsientoContable")" class="sidenav-link">
-                                    <div>Asientos contables</div>
-                                </a>
-                            </li>
+                        <li class="sidenav-item @activo("GestionarCuentasPorPagar", "CuentasPorPagar")">
+                            <a href="@Url.Action("CuentasPorPagar", "GestionarCuentasPorPagar")" class="sidenav-link">
+                                <i class="sidenav-icon feather icon-file-text"></i>
+                                <div>Cuentas por pagar</div>
+                            </a>
+                        </li>
+                    }
 
-                            <li class="sidenav-item @activo("GestionarPeriodoContable", "PeriodosContables")">
-                                <a href="@Url.Action("PeriodosContables", "GestionarPeriodoContable")" class="sidenav-link">
-                                    <div>Periodos contables</div>
-                                </a>
-                            </li>
+                    @if (puedeVer("INGRESOS"))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Gestionar ingresos</li>
 
-                            <li class="sidenav-item @activo("GestionarPresupuestoMensual", "PresupuestoMensual")">
-                                <a href="@Url.Action("PresupuestoMensual", "GestionarPresupuestoMensual")" class="sidenav-link">
-                                    <div>Presupuesto mensual</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li class="sidenav-item @activo("GestionarIngresos", "Ingresos")">
+                            <a href="@Url.Action("Ingresos", "GestionarIngresos")" class="sidenav-link">
+                                <i class="sidenav-icon feather icon-trending-up"></i>
+                                <div>Ingresos</div>
+                            </a>
+                        </li>
+                    }
 
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">Administración</li>
+                    @if (puedeVer("GASTOS"))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Gestionar gastos</li>
 
-                    <!-- MANTENIMIENTOS -->
-                    <li class="sidenav-item @activo("Home", "Mantenimientos")">
-                        <a href="@Url.Action("Mantenimientos", "Home")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-settings"></i>
-                            <div>Mantenimientos</div>
-                        </a>
-                    </li>
+                        <li class="sidenav-item @activo("GestionarGastos", "Gastos")">
+                            <a href="@Url.Action("Gastos", "GestionarGastos")" class="sidenav-link">
+                                <i class="sidenav-icon feather icon-trending-down"></i>
+                                <div>Gastos</div>
+                            </a>
+                        </li>
+                    }
 
-                    <!-- CONSULTAS Y REPORTES -->
-                    <li class="sidenav-item @abierto(new[] { "Consultas", "Reportes" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-pie-chart"></i>
-                            <div>Información</div>
-                        </a>
+                    @if (puedeVerAlguno(new[] { "FACTURAS", "NOTAS_CREDITO", "PRODUCTOS", "CLIENTES" }))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Gestionar facturación</li>
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Consultas", "Consultas")">
-                                <a href="@Url.Action("Consultas", "Consultas")" class="sidenav-link">
-                                    <div>Consultas</div>
-                                </a>
-                            </li>
+                        <li class="sidenav-item @abierto(new[] { "Facturacion", "Producto", "Persona" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-shopping-cart"></i>
+                                <div>Facturación</div>
+                            </a>
 
-                            <li class="sidenav-item @activo("Reportes", "Reportes")">
-                                <a href="@Url.Action("Reportes", "Reportes")" class="sidenav-link">
-                                    <div>Reportes</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                            <ul class="sidenav-menu">
 
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">Seguridad</li>
+                                @if (puedeVer("FACTURAS"))
+                                {
+                                    <li class="sidenav-item @activo("Facturacion", "Facturas")">
+                                        <a href="@Url.Action("Facturas", "Facturacion")" class="sidenav-link">
+                                            <div>Emitir facturas</div>
+                                        </a>
+                                    </li>
+                                }
 
-                    <!-- SEGURIDAD -->
-                    <li class="sidenav-item @abierto(new[] { "HistorialCambio", "IntentoAcceso" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-shield"></i>
-                            <div>Auditoría y acceso</div>
-                        </a>
+                                @if (puedeVer("PRODUCTOS"))
+                                {
+                                    <li class="sidenav-item @activo("Producto", "Productos")">
+                                        <a href="@Url.Action("Productos", "Producto")" class="sidenav-link">
+                                            <div>Productos</div>
+                                        </a>
+                                    </li>
+                                }
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("HistorialCambio", "Index")">
-                                <a href="@Url.Action("Index", "HistorialCambio")" class="sidenav-link">
-                                    <div>Historial de cambios</div>
-                                </a>
-                            </li>
+                                @if (puedeVer("CLIENTES"))
+                                {
+                                    <li class="sidenav-item @activo("Persona", "Clientes")">
+                                        <a href="@Url.Action("Clientes", "Persona")" class="sidenav-link">
+                                            <div>Clientes</div>
+                                        </a>
+                                    </li>
+                                }
 
-                            <li class="sidenav-item @activo("IntentoAcceso", "Index")">
-                                <a href="@Url.Action("Index", "IntentoAcceso")" class="sidenav-link">
-                                    <div>Intentos de acceso</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                                @if (puedeVer("NOTAS_CREDITO"))
+                                {
+                                    <li class="sidenav-item @activo("Facturacion", "NotasCredito")">
+                                        <a href="@Url.Action("NotasCredito", "Facturacion")" class="sidenav-link">
+                                            <div>Notas de crédito</div>
+                                        </a>
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                    }
+
+                    @if (puedeVer("PRESUPUESTOS"))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Generar presupuesto mensual</li>
+
+                        <li class="sidenav-item @activo("GestionarPresupuestoMensual", "PresupuestoMensual")">
+                            <a href="@Url.Action("PresupuestoMensual", "GestionarPresupuestoMensual")" class="sidenav-link">
+                                <i class="sidenav-icon feather icon-bar-chart-2"></i>
+                                <div>Presupuesto mensual</div>
+                            </a>
+                        </li>
+                    }
+
+                    @if (puedeVerAlguno(new[] { "PROVEEDORES", "EMPLEADOS", "UBICACIONES", "CATALOGOS", "ROLES" }))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Mantenimientos</li>
+
+                        <li class="sidenav-item @activo("Home", "Mantenimientos")">
+                            <a href="@Url.Action("Mantenimientos", "Home")" class="sidenav-link">
+                                <i class="sidenav-icon feather icon-settings"></i>
+                                <div>Panel de mantenimientos</div>
+                            </a>
+                        </li>
+                    }
+                    
+                    @if (puedeVerAlguno(new[] { "CONSULTAS", "REPORTES" }))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">Consultas y reportes</li>
+
+                        <li class="sidenav-item @abierto(new[] { "Consultas", "Reportes" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-pie-chart"></i>
+                                <div>Información del sistema</div>
+                            </a>
+
+                            <ul class="sidenav-menu">
+
+                                @if (puedeVer("CONSULTAS"))
+                                {
+                                    <li class="sidenav-item @activo("Consultas", "Consultas")">
+                                        <a href="@Url.Action("Consultas", "Consultas")" class="sidenav-link">
+                                            <div>Consultas</div>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (puedeVer("REPORTES"))
+                                {
+                                    <li class="sidenav-item @activo("Reportes", "Reportes")">
+                                        <a href="@Url.Action("Reportes", "Reportes")" class="sidenav-link">
+                                            <div>Reportes</div>
+                                        </a>
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                    }
+
+
 
                 </ul>
             </div>
 
-            <!-- CONTENIDO -->
             <div class="layout-container">
 
-                <!-- NAVBAR SUPERIOR -->
                 <nav class="layout-navbar navbar navbar-expand-lg align-items-lg-center bg-white container-p-x">
 
                     <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large mr-3">
@@ -418,7 +673,7 @@
                     <div class="navbar-nav align-items-lg-center mr-auto">
                         <div class="nav-item navbar-text navbar-page-title">
                             <strong>@ViewBag.Title</strong>
-                            <span>Sistema Web Contable - Abastecedor Las Graditas</span>
+                            <span>Sistema Web Contable</span>
                         </div>
                     </div>
 
@@ -432,7 +687,7 @@
 
                                 <div class="user-info">
                                     <strong>@nombreUsuario</strong>
-                                    <span>Usuario del sistema</span>
+                                    <span>@nombreRol</span>
                                 </div>
                             </div>
 
@@ -448,7 +703,6 @@
 
                 </nav>
 
-                <!-- BODY -->
                 <div class="layout-content">
                     <div class="container-fluid flex-grow-1 container-p-y">
                         <div class="content-shell">

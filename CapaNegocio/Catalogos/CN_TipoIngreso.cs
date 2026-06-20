@@ -28,6 +28,9 @@ namespace CapaNegocio.Catalogos
                 return 0;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre del tipo de ingreso no puede superar los 45 caracteres.";
@@ -53,7 +56,7 @@ namespace CapaNegocio.Catalogos
         {
             Mensaje = string.Empty;
 
-            if (obj.IdTipoIngreso == 0)
+            if (obj.IdTipoIngreso <= 0)
             {
                 Mensaje = "Debe seleccionar un tipo de ingreso válido.";
                 return false;
@@ -64,6 +67,9 @@ namespace CapaNegocio.Catalogos
                 Mensaje = "El nombre del tipo de ingreso es obligatorio.";
                 return false;
             }
+
+            obj.Nombre = obj.Nombre.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
 
             if (obj.Nombre.Length > 45)
             {
@@ -86,17 +92,17 @@ namespace CapaNegocio.Catalogos
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idTipoIngreso, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (idTipoIngreso <= 0)
             {
                 Mensaje = "Debe seleccionar un tipo de ingreso válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(idTipoIngreso, out Mensaje);
         }
     }
 }

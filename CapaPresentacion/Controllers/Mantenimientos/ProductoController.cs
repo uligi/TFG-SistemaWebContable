@@ -1,7 +1,7 @@
 ﻿using CapaEntidad.Inventario;
-using CapaNegocio.Inventario;
 using CapaNegocio.Catalogos;
-
+using CapaNegocio.Inventario;
+using CapaPresentacion.Filtros;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,6 +13,7 @@ using System.Web.Mvc;
 
 namespace CapaPresentacion.Controllers.Mantenimientos
 {
+    [PermisoAuthorize(CodigoModulo = "PRODUCTOS")]
     public class ProductoController : Controller
     {
         public ActionResult Index()
@@ -33,9 +34,33 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpGet]
+        public JsonResult ListarProductosActivos()
+        {
+            var lista = new CN_Producto().ListarActivos();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerProducto(string codigoProducto)
+        {
+            var obj = new CN_Producto().Obtener(codigoProducto);
+            return Json(new { data = obj }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
         public JsonResult ListarTipoProductosActivos()
         {
-            var lista = new CN_Producto().ListarTipoProductosActivos();
+            var lista = new CN_TipoProducto().Listar()
+                .Where(x => x.Activo)
+                .ToList();
+
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ListarImpuestosActivos()
+        {
+            var lista = new CN_Impuesto().ListarActivos();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
@@ -45,25 +70,70 @@ namespace CapaPresentacion.Controllers.Mantenimientos
             object resultado;
             string mensaje = string.Empty;
 
-            if (obj.IdProducto == 0)
+            if (string.IsNullOrWhiteSpace(obj.CodigoProducto))
             {
-                resultado = new CN_Producto().Registrar(obj, out mensaje);
+                string codigoProductoGenerado = string.Empty;
+
+                resultado = new CN_Producto().Registrar(
+                    obj,
+                    out mensaje,
+                    out codigoProductoGenerado
+                );
+
+                return Json(new
+                {
+                    resultado = resultado,
+                    mensaje = mensaje,
+                    codigoProducto = codigoProductoGenerado
+                }, JsonRequestBehavior.AllowGet);
             }
             else
             {
                 resultado = new CN_Producto().Editar(obj, out mensaje);
-            }
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+                return Json(new
+                {
+                    resultado = resultado,
+                    mensaje = mensaje,
+                    codigoProducto = obj.CodigoProducto
+                }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
-        public JsonResult InactivarProducto(int id)
+        public JsonResult AjustarStockProducto(string codigoProducto, decimal cantidad, string tipoMovimiento)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_Producto().Inactivar(id, out mensaje);
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            bool resultado = new CN_Producto().AjustarStock(
+                codigoProducto,
+                cantidad,
+                tipoMovimiento,
+                out mensaje
+            );
+
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult InactivarProducto(string codigoProducto)
+        {
+            string mensaje = string.Empty;
+
+            bool resultado = new CN_Producto().Inactivar(
+                codigoProducto,
+                out mensaje
+            );
+
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -145,7 +215,7 @@ namespace CapaPresentacion.Controllers.Mantenimientos
                         }
 
                         var tipoProducto = tiposProducto.FirstOrDefault(x =>
-                            x.TipoProductoNombre.Trim().Equals(tipoProductoNombre, StringComparison.OrdinalIgnoreCase)
+                            x.Nombre.Trim().Equals(tipoProductoNombre, StringComparison.OrdinalIgnoreCase)
                         );
 
                         if (tipoProducto == null)
@@ -195,7 +265,7 @@ namespace CapaPresentacion.Controllers.Mantenimientos
 
                         Producto obj = new Producto()
                         {
-                            IdProducto = 0,
+                            CodigoProducto = "",
                             NombreProducto = nombreProducto,
                             IdTipoProducto = tipoProducto.IdTipoProducto,
                             IdImpuesto = impuesto.IdImpuesto,
@@ -206,7 +276,13 @@ namespace CapaPresentacion.Controllers.Mantenimientos
                         };
 
                         string mensajeRegistro;
-                        int resultado = new CN_Producto().Registrar(obj, out mensajeRegistro);
+                        string codigoProductoGenerado;
+
+                        int resultado = new CN_Producto().Registrar(
+                            obj,
+                            out mensajeRegistro,
+                            out codigoProductoGenerado
+                        );
 
                         if (resultado > 0)
                         {

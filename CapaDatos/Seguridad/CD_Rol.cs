@@ -29,6 +29,7 @@ namespace CapaDatos.Seguridad
                             {
                                 IdRol = Convert.ToInt32(dr["IdRol"]),
                                 Nombre = dr["Nombre"].ToString(),
+                                Descripcion = dr["Descripcion"].ToString(),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
                         }
@@ -56,6 +57,7 @@ namespace CapaDatos.Seguridad
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -90,6 +92,7 @@ namespace CapaDatos.Seguridad
 
                     cmd.Parameters.AddWithValue("@IdRol", obj.IdRol);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -111,7 +114,7 @@ namespace CapaDatos.Seguridad
             return resultado;
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idRol, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -123,7 +126,7 @@ namespace CapaDatos.Seguridad
                     SqlCommand cmd = new SqlCommand("Seguridad.sp_Rol_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdRol", id);
+                    cmd.Parameters.AddWithValue("@IdRol", idRol);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

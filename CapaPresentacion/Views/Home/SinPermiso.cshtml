@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Sin permiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body text-center py-5">
+        <h4 class="text-danger mb-3">Acceso denegado</h4>
+
+        <p class="text-muted mb-4">
+            No tiene permiso para ingresar a esta sección del sistema.
+        </p>
+
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+            Volver al inicio
+        </a>
+    </div>
+</div>

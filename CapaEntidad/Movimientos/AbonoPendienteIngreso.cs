@@ -1,25 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
 
 namespace CapaEntidad.Movimientos
 {
     public class AbonoPendienteIngreso
     {
-        public int IdAbonoCuentaPorCobrar { get; set; }
-        public int IdCuentaPorCobrar { get; set; }
+        public string IdentificacionCliente { get; set; }
 
-        public DateTime FechaAbono { get; set; }
-        public decimal MontoAbono { get; set; }
-
-        public int IdFactura { get; set; }
         public string NumeroFactura { get; set; }
 
-        public string IdentificacionCliente { get; set; }
+        public int NumeroAbono { get; set; }
+
+        public DateTime FechaAbono { get; set; }
+
+        public decimal MontoAbono { get; set; }
+
+        public string Observacion { get; set; }
+
         public string ClienteNombre { get; set; }
+
+        public decimal MontoOriginal { get; set; }
+
+        public decimal SaldoActual { get; set; }
+
+        public string EstadoCuenta { get; set; }
+
+        public string ClienteDescripcion
+        {
+            get
+            {
+                return (IdentificacionCliente + " - " + ClienteNombre).Trim();
+            }
+        }
+
+        public string AbonoDescripcion
+        {
+            get
+            {
+                return NumeroFactura + " / Abono #" + NumeroAbono.ToString() + " - " + ClienteDescripcion;
+            }
+        }
+
+        public string MontoAbonoTexto
+        {
+            get
+            {
+                return MontoAbono.ToString("N2");
+            }
+        }
+
+        public string SaldoActualTexto
+        {
+            get
+            {
+                return SaldoActual.ToString("N2");
+            }
+        }
+
+        public string MontoOriginalTexto
+        {
+            get
+            {
+                return MontoOriginal.ToString("N2");
+            }
+        }
     }
 }

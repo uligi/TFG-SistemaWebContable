@@ -29,22 +29,22 @@ namespace CapaDatos.Proveedores
                             {
                                 IdentificacionProveedor = dr["IdentificacionProveedor"].ToString(),
                                 RazonSocial = dr["RazonSocial"].ToString(),
-                                NombreContacto = dr["NombreContacto"] == DBNull.Value ? "" : dr["NombreContacto"].ToString(),
+                                NombreContacto = dr["NombreContacto"].ToString(),
 
-                                IdDistrito = dr["IdDistrito"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdDistrito"]),
-                                DistritoNombre = dr["DistritoNombre"] == DBNull.Value ? "" : dr["DistritoNombre"].ToString(),
+                                CodigoDistrito = Convert.ToInt32(dr["CodigoDistrito"]),
+                                DistritoNombre = dr["DistritoNombre"].ToString(),
 
-                                IdCanton = dr["IdCanton"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdCanton"]),
-                                CantonNombre = dr["CantonNombre"] == DBNull.Value ? "" : dr["CantonNombre"].ToString(),
+                                CodigoCanton = Convert.ToInt32(dr["CodigoCanton"]),
+                                CantonNombre = dr["CantonNombre"].ToString(),
 
-                                IdProvincia = dr["IdProvincia"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdProvincia"]),
-                                ProvinciaNombre = dr["ProvinciaNombre"] == DBNull.Value ? "" : dr["ProvinciaNombre"].ToString(),
+                                CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
+                                ProvinciaNombre = dr["ProvinciaNombre"].ToString(),
 
-                                DireccionExacta = dr["DireccionExacta"] == DBNull.Value ? "" : dr["DireccionExacta"].ToString(),
-                                DiasCredito = dr["DiasCredito"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["DiasCredito"]),
+                                DireccionExacta = dr["DireccionExacta"].ToString(),
+                                DiasCredito = Convert.ToInt32(dr["DiasCredito"]),
 
                                 FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
-                                FechaModificacion = dr["FechaModificacion"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaModificacion"]),
+                                FechaModificacion = Convert.ToDateTime(dr["FechaModificacion"]),
 
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
@@ -81,12 +81,23 @@ namespace CapaDatos.Proveedores
                             {
                                 IdentificacionProveedor = dr["IdentificacionProveedor"].ToString(),
                                 RazonSocial = dr["RazonSocial"].ToString(),
-                                NombreContacto = dr["NombreContacto"] == DBNull.Value ? "" : dr["NombreContacto"].ToString(),
-                                IdDistrito = dr["IdDistrito"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdDistrito"]),
-                                DireccionExacta = dr["DireccionExacta"] == DBNull.Value ? "" : dr["DireccionExacta"].ToString(),
-                                DiasCredito = dr["DiasCredito"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["DiasCredito"]),
+                                NombreContacto = dr["NombreContacto"].ToString(),
+
+                                CodigoDistrito = Convert.ToInt32(dr["CodigoDistrito"]),
+                                DistritoNombre = dr["DistritoNombre"].ToString(),
+
+                                CodigoCanton = Convert.ToInt32(dr["CodigoCanton"]),
+                                CantonNombre = dr["CantonNombre"].ToString(),
+
+                                CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
+                                ProvinciaNombre = dr["ProvinciaNombre"].ToString(),
+
+                                DireccionExacta = dr["DireccionExacta"].ToString(),
+                                DiasCredito = Convert.ToInt32(dr["DiasCredito"]),
+
                                 FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
-                                FechaModificacion = dr["FechaModificacion"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaModificacion"]),
+                                FechaModificacion = Convert.ToDateTime(dr["FechaModificacion"]),
+
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
                         }
@@ -101,11 +112,11 @@ namespace CapaDatos.Proveedores
             return lista;
         }
 
-        public int Registrar(Proveedor obj, out string Mensaje, out string identificacionProveedorGenerada)
+        public int Registrar(Proveedor obj, out string Mensaje, out string IdentificacionProveedorGenerada)
         {
             int resultado = 0;
             Mensaje = string.Empty;
-            identificacionProveedorGenerada = string.Empty;
+            IdentificacionProveedorGenerada = string.Empty;
 
             try
             {
@@ -115,10 +126,10 @@ namespace CapaDatos.Proveedores
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@RazonSocial", obj.RazonSocial);
-                    cmd.Parameters.AddWithValue("@NombreContacto", string.IsNullOrWhiteSpace(obj.NombreContacto) ? (object)DBNull.Value : obj.NombreContacto);
-                    cmd.Parameters.AddWithValue("@IdDistrito", obj.IdDistrito.HasValue ? (object)obj.IdDistrito.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@DireccionExacta", string.IsNullOrWhiteSpace(obj.DireccionExacta) ? (object)DBNull.Value : obj.DireccionExacta);
-                    cmd.Parameters.AddWithValue("@DiasCredito", obj.DiasCredito.HasValue ? (object)obj.DiasCredito.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@NombreContacto", obj.NombreContacto);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", obj.CodigoDistrito);
+                    cmd.Parameters.AddWithValue("@DireccionExacta", obj.DireccionExacta ?? "");
+                    cmd.Parameters.AddWithValue("@DiasCredito", obj.DiasCredito);
 
                     cmd.Parameters.Add("@IdentificacionProveedorGenerada", SqlDbType.VarChar, 45).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -129,14 +140,14 @@ namespace CapaDatos.Proveedores
 
                     resultado = Convert.ToInt32(cmd.Parameters["@Resultado"].Value);
                     Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-                    identificacionProveedorGenerada = cmd.Parameters["@IdentificacionProveedorGenerada"].Value.ToString();
+                    IdentificacionProveedorGenerada = cmd.Parameters["@IdentificacionProveedorGenerada"].Value.ToString();
                 }
             }
             catch (Exception ex)
             {
                 resultado = 0;
                 Mensaje = ex.Message;
-                identificacionProveedorGenerada = string.Empty;
+                IdentificacionProveedorGenerada = string.Empty;
             }
 
             return resultado;
@@ -156,10 +167,10 @@ namespace CapaDatos.Proveedores
 
                     cmd.Parameters.AddWithValue("@IdentificacionProveedor", obj.IdentificacionProveedor);
                     cmd.Parameters.AddWithValue("@RazonSocial", obj.RazonSocial);
-                    cmd.Parameters.AddWithValue("@NombreContacto", string.IsNullOrWhiteSpace(obj.NombreContacto) ? (object)DBNull.Value : obj.NombreContacto);
-                    cmd.Parameters.AddWithValue("@IdDistrito", obj.IdDistrito.HasValue ? (object)obj.IdDistrito.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@DireccionExacta", string.IsNullOrWhiteSpace(obj.DireccionExacta) ? (object)DBNull.Value : obj.DireccionExacta);
-                    cmd.Parameters.AddWithValue("@DiasCredito", obj.DiasCredito.HasValue ? (object)obj.DiasCredito.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@NombreContacto", obj.NombreContacto);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", obj.CodigoDistrito);
+                    cmd.Parameters.AddWithValue("@DireccionExacta", obj.DireccionExacta ?? "");
+                    cmd.Parameters.AddWithValue("@DiasCredito", obj.DiasCredito);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -193,7 +204,7 @@ namespace CapaDatos.Proveedores
                     SqlCommand cmd = new SqlCommand("Persona.sp_Proveedor_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdentificacionProveedor", identificacionProveedor);
+                    cmd.Parameters.AddWithValue("@IdentificacionProveedor", identificacionProveedor ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

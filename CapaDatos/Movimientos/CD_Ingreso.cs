@@ -25,33 +25,7 @@ namespace CapaDatos.Movimientos
                     {
                         while (dr.Read())
                         {
-                            lista.Add(new Ingreso()
-                            {
-                                IdIngreso = Convert.ToInt32(dr["IdIngreso"]),
-
-                                IdFactura = dr["IdFactura"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdFactura"]),
-                                NumeroFactura = dr["NumeroFactura"] == DBNull.Value ? "" : dr["NumeroFactura"].ToString(),
-
-                                IdAbonoCuentaPorCobrar = dr["IdAbonoCuentaPorCobrar"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdAbonoCuentaPorCobrar"]),
-
-                                IdCuentaContable = dr["IdCuentaContable"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdCuentaContable"]),
-                                CodigoCuenta = dr["CodigoCuenta"] == DBNull.Value ? "" : dr["CodigoCuenta"].ToString(),
-                                NombreCuenta = dr["NombreCuenta"] == DBNull.Value ? "" : dr["NombreCuenta"].ToString(),
-
-                                FechaIngreso = Convert.ToDateTime(dr["FechaIngreso"]),
-                                Descripcion = dr["Descripcion"].ToString(),
-
-                                IdTipoIngreso = Convert.ToInt32(dr["IdTipoIngreso"]),
-                                TipoIngresoNombre = dr["TipoIngresoNombre"].ToString(),
-
-                                OrigenIngreso = dr["OrigenIngreso"].ToString(),
-                                Monto = Convert.ToDecimal(dr["Monto"]),
-
-                                FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
-                                FechaModificacion = dr["FechaModificacion"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaModificacion"]),
-
-                                Activo = Convert.ToBoolean(dr["Activo"])
-                            });
+                            lista.Add(MapearIngreso(dr));
                         }
                     }
                 }
@@ -62,6 +36,191 @@ namespace CapaDatos.Movimientos
             }
 
             return lista;
+        }
+
+        public List<Ingreso> ListarActivos()
+        {
+            List<Ingreso> lista = new List<Ingreso>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Movimientos.sp_Ingreso_ListarActivos", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(MapearIngreso(dr));
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<Ingreso>();
+            }
+
+            return lista;
+        }
+
+        public Ingreso Obtener(string numeroIngreso)
+        {
+            Ingreso obj = null;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Movimientos.sp_Ingreso_Obtener", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@NumeroIngreso", numeroIngreso ?? "");
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            obj = MapearIngreso(dr);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                obj = null;
+            }
+
+            return obj;
+        }
+
+        public int Registrar(Ingreso obj, out string Mensaje, out string NumeroIngresoGenerado)
+        {
+            int resultado = 0;
+            Mensaje = string.Empty;
+            NumeroIngresoGenerado = string.Empty;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Movimientos.sp_Ingreso_Registrar", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@FechaIngreso", obj.FechaIngreso);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
+                    cmd.Parameters.AddWithValue("@IdTipoIngreso", obj.IdTipoIngreso);
+                    cmd.Parameters.AddWithValue("@CodigoCuenta", obj.CodigoCuenta ?? "");
+
+                    cmd.Parameters.AddWithValue("@IdentificacionCliente", obj.IdentificacionCliente ?? "");
+                    cmd.Parameters.AddWithValue("@NumeroFactura", obj.NumeroFactura ?? "");
+
+                    cmd.Parameters.AddWithValue("@IdentificacionClienteAbono", obj.IdentificacionClienteAbono ?? "");
+                    cmd.Parameters.AddWithValue("@NumeroFacturaAbono", obj.NumeroFacturaAbono ?? "");
+                    cmd.Parameters.AddWithValue("@NumeroAbonoCuentaPorCobrar", obj.NumeroAbonoCuentaPorCobrar);
+
+                    cmd.Parameters.AddWithValue("@OrigenIngreso", obj.OrigenIngreso ?? "");
+                    cmd.Parameters.AddWithValue("@Monto", obj.Monto);
+
+                    cmd.Parameters.Add("@NumeroIngresoGenerado", SqlDbType.VarChar, 45).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+
+                    oconexion.Open();
+                    cmd.ExecuteNonQuery();
+
+                    resultado = Convert.ToInt32(cmd.Parameters["@Resultado"].Value);
+                    NumeroIngresoGenerado = cmd.Parameters["@NumeroIngresoGenerado"].Value.ToString();
+                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = 0;
+                NumeroIngresoGenerado = string.Empty;
+                Mensaje = ex.Message;
+            }
+
+            return resultado;
+        }
+
+        public bool Editar(Ingreso obj, out string Mensaje)
+        {
+            bool resultado = false;
+            Mensaje = string.Empty;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Movimientos.sp_Ingreso_Editar", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@NumeroIngreso", obj.NumeroIngreso ?? "");
+                    cmd.Parameters.AddWithValue("@FechaIngreso", obj.FechaIngreso);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
+                    cmd.Parameters.AddWithValue("@IdTipoIngreso", obj.IdTipoIngreso);
+                    cmd.Parameters.AddWithValue("@CodigoCuenta", obj.CodigoCuenta ?? "");
+                    cmd.Parameters.AddWithValue("@OrigenIngreso", obj.OrigenIngreso ?? "");
+                    cmd.Parameters.AddWithValue("@Monto", obj.Monto);
+                    cmd.Parameters.AddWithValue("@Activo", obj.Activo);
+
+                    cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+
+                    oconexion.Open();
+                    cmd.ExecuteNonQuery();
+
+                    resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
+                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                Mensaje = ex.Message;
+            }
+
+            return resultado;
+        }
+
+        public bool Inactivar(string numeroIngreso, out string Mensaje)
+        {
+            bool resultado = false;
+            Mensaje = string.Empty;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Movimientos.sp_Ingreso_Inactivar", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@NumeroIngreso", numeroIngreso ?? "");
+
+                    cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+
+                    oconexion.Open();
+                    cmd.ExecuteNonQuery();
+
+                    resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
+                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                Mensaje = ex.Message;
+            }
+
+            return resultado;
         }
 
         public List<FacturaContadoPendiente> ListarFacturasContadoPendientes()
@@ -83,15 +242,11 @@ namespace CapaDatos.Movimientos
                         {
                             lista.Add(new FacturaContadoPendiente()
                             {
-                                IdFactura = Convert.ToInt32(dr["IdFactura"]),
-                                NumeroFactura = dr["NumeroFactura"].ToString(),
-
                                 IdentificacionCliente = dr["IdentificacionCliente"].ToString(),
+                                NumeroFactura = dr["NumeroFactura"].ToString(),
                                 ClienteNombre = dr["ClienteNombre"].ToString(),
-
                                 FechaFactura = Convert.ToDateTime(dr["FechaFactura"]),
                                 TotalFactura = Convert.ToDecimal(dr["TotalFactura"]),
-
                                 TipoFactura = dr["TipoFactura"].ToString()
                             });
                         }
@@ -125,17 +280,16 @@ namespace CapaDatos.Movimientos
                         {
                             lista.Add(new AbonoPendienteIngreso()
                             {
-                                IdAbonoCuentaPorCobrar = Convert.ToInt32(dr["IdAbonoCuentaPorCobrar"]),
-                                IdCuentaPorCobrar = Convert.ToInt32(dr["IdCuentaPorCobrar"]),
-
+                                IdentificacionCliente = dr["IdentificacionCliente"].ToString(),
+                                NumeroFactura = dr["NumeroFactura"].ToString(),
+                                NumeroAbono = Convert.ToInt32(dr["NumeroAbono"]),
                                 FechaAbono = Convert.ToDateTime(dr["FechaAbono"]),
                                 MontoAbono = Convert.ToDecimal(dr["MontoAbono"]),
-
-                                IdFactura = Convert.ToInt32(dr["IdFactura"]),
-                                NumeroFactura = dr["NumeroFactura"].ToString(),
-
-                                IdentificacionCliente = dr["IdentificacionCliente"].ToString(),
-                                ClienteNombre = dr["ClienteNombre"].ToString()
+                                Observacion = dr["Observacion"].ToString(),
+                                ClienteNombre = dr["ClienteNombre"].ToString(),
+                                MontoOriginal = Convert.ToDecimal(dr["MontoOriginal"]),
+                                SaldoActual = Convert.ToDecimal(dr["SaldoActual"]),
+                                EstadoCuenta = dr["EstadoCuenta"].ToString()
                             });
                         }
                     }
@@ -149,117 +303,48 @@ namespace CapaDatos.Movimientos
             return lista;
         }
 
-        public int Registrar(Ingreso obj, out string Mensaje)
+        private Ingreso MapearIngreso(SqlDataReader dr)
         {
-            int resultado = 0;
-            Mensaje = string.Empty;
-
-            try
+            Ingreso obj = new Ingreso()
             {
-                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
-                {
-                    SqlCommand cmd = new SqlCommand("Movimientos.sp_Ingreso_Registrar", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                NumeroIngreso = dr["NumeroIngreso"].ToString(),
+                FechaIngreso = Convert.ToDateTime(dr["FechaIngreso"]),
+                Descripcion = dr["Descripcion"].ToString(),
 
-                    cmd.Parameters.AddWithValue("@IdFactura", obj.IdFactura == null ? (object)DBNull.Value : obj.IdFactura);
-                    cmd.Parameters.AddWithValue("@IdAbonoCuentaPorCobrar", obj.IdAbonoCuentaPorCobrar == null ? (object)DBNull.Value : obj.IdAbonoCuentaPorCobrar);
-                    cmd.Parameters.AddWithValue("@IdCuentaContable", obj.IdCuentaContable);
-                    cmd.Parameters.AddWithValue("@FechaIngreso", obj.FechaIngreso);
-                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion);
-                    cmd.Parameters.AddWithValue("@IdTipoIngreso", obj.IdTipoIngreso);
-                    cmd.Parameters.AddWithValue("@OrigenIngreso", string.IsNullOrWhiteSpace(obj.OrigenIngreso) ? (object)DBNull.Value : obj.OrigenIngreso);
-                    cmd.Parameters.AddWithValue("@Monto", obj.Monto);
+                IdTipoIngreso = Convert.ToInt32(dr["IdTipoIngreso"]),
+                TipoIngresoNombre = dr["TipoIngresoNombre"].ToString(),
 
-                    cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+                CodigoCuenta = dr["CodigoCuenta"].ToString(),
+                NombreCuenta = dr["NombreCuenta"].ToString(),
 
-                    oconexion.Open();
-                    cmd.ExecuteNonQuery();
+                IdentificacionCliente = dr["IdentificacionCliente"].ToString(),
+                NumeroFactura = dr["NumeroFactura"].ToString(),
+                ClienteNombre = dr["ClienteNombre"].ToString(),
 
-                    resultado = Convert.ToInt32(cmd.Parameters["@Resultado"].Value);
-                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-                }
-            }
-            catch (Exception ex)
+                IdentificacionClienteAbono = dr["IdentificacionClienteAbono"].ToString(),
+                NumeroFacturaAbono = dr["NumeroFacturaAbono"].ToString(),
+                NumeroAbonoCuentaPorCobrar = Convert.ToInt32(dr["NumeroAbonoCuentaPorCobrar"]),
+
+                OrigenIngreso = dr["OrigenIngreso"].ToString(),
+                Monto = Convert.ToDecimal(dr["Monto"]),
+
+                FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
+                FechaModificacion = Convert.ToDateTime(dr["FechaModificacion"]),
+
+                Activo = Convert.ToBoolean(dr["Activo"])
+            };
+
+            if (dr["FechaAbono"] != DBNull.Value)
             {
-                resultado = 0;
-                Mensaje = ex.Message;
-            }
-
-            return resultado;
-        }
-
-        public bool Editar(Ingreso obj, out string Mensaje)
-        {
-            bool resultado = false;
-            Mensaje = string.Empty;
-
-            try
-            {
-                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
-                {
-                    SqlCommand cmd = new SqlCommand("Movimientos.sp_Ingreso_Editar", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@IdIngreso", obj.IdIngreso);
-                    cmd.Parameters.AddWithValue("@IdCuentaContable", obj.IdCuentaContable);
-                    cmd.Parameters.AddWithValue("@FechaIngreso", obj.FechaIngreso);
-                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion);
-                    cmd.Parameters.AddWithValue("@IdTipoIngreso", obj.IdTipoIngreso);
-                    cmd.Parameters.AddWithValue("@OrigenIngreso", obj.OrigenIngreso);
-                    cmd.Parameters.AddWithValue("@Monto", obj.Monto);
-                    cmd.Parameters.AddWithValue("@Activo", obj.Activo);
-
-                    cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
-
-                    oconexion.Open();
-                    cmd.ExecuteNonQuery();
-
-                    resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
-                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                resultado = false;
-                Mensaje = ex.Message;
+                obj.FechaAbono = Convert.ToDateTime(dr["FechaAbono"]);
             }
 
-            return resultado;
-        }
-
-        public bool Inactivar(int idIngreso, out string Mensaje)
-        {
-            bool resultado = false;
-            Mensaje = string.Empty;
-
-            try
+            if (dr["MontoAbono"] != DBNull.Value)
             {
-                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
-                {
-                    SqlCommand cmd = new SqlCommand("Movimientos.sp_Ingreso_Inactivar", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@IdIngreso", idIngreso);
-
-                    cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
-
-                    oconexion.Open();
-                    cmd.ExecuteNonQuery();
-
-                    resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
-                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                resultado = false;
-                Mensaje = ex.Message;
+                obj.MontoAbono = Convert.ToDecimal(dr["MontoAbono"]);
             }
 
-            return resultado;
+            return obj;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace CapaDatos.Reportes
 {
     public class CD_Reportes
     {
-        public ReporteResumenFinanciero ResumenFinanciero(DateTime fechaInicio, DateTime fechaFin)
+        public ReporteResumenFinanciero ObtenerResumenFinanciero(DateTime fechaInicio, DateTime fechaFin)
         {
             ReporteResumenFinanciero obj = new ReporteResumenFinanciero();
 
@@ -33,6 +33,9 @@ namespace CapaDatos.Reportes
                             obj.UtilidadEstimada = Convert.ToDecimal(dr["UtilidadEstimada"]);
                             obj.TotalCuentasPorCobrar = Convert.ToDecimal(dr["TotalCuentasPorCobrar"]);
                             obj.TotalCuentasPorPagar = Convert.ToDecimal(dr["TotalCuentasPorPagar"]);
+                            obj.MargenUtilidad = Convert.ToDecimal(dr["MargenUtilidad"]);
+                            obj.CapitalNetoPendiente = Convert.ToDecimal(dr["CapitalNetoPendiente"]);
+                            obj.EstadoFinanciero = dr["EstadoFinanciero"].ToString();
                         }
                     }
                 }
@@ -67,7 +70,7 @@ namespace CapaDatos.Reportes
                         {
                             lista.Add(new ReporteIngreso()
                             {
-                                IdIngreso = Convert.ToInt32(dr["IdIngreso"]),
+                                NumeroIngreso = dr["NumeroIngreso"].ToString(),
                                 FechaIngreso = Convert.ToDateTime(dr["FechaIngreso"]),
                                 TipoIngreso = dr["TipoIngreso"].ToString(),
                                 OrigenIngreso = dr["OrigenIngreso"].ToString(),
@@ -112,7 +115,7 @@ namespace CapaDatos.Reportes
                         {
                             lista.Add(new ReporteGasto()
                             {
-                                IdGasto = Convert.ToInt32(dr["IdGasto"]),
+                                NumeroGasto = dr["NumeroGasto"].ToString(),
                                 FechaGasto = Convert.ToDateTime(dr["FechaGasto"]),
                                 TipoGasto = dr["TipoGasto"].ToString(),
                                 CodigoCuenta = dr["CodigoCuenta"].ToString(),
@@ -122,6 +125,9 @@ namespace CapaDatos.Reportes
                                 NumeroDocumento = dr["NumeroDocumento"].ToString(),
                                 Descripcion = dr["Descripcion"].ToString(),
                                 Monto = Convert.ToDecimal(dr["Monto"]),
+                                NumeroComprobante = dr["NumeroComprobante"].ToString(),
+                                NombreArchivoComprobante = dr["NombreArchivoComprobante"].ToString(),
+                                RutaComprobante = dr["RutaComprobante"].ToString(),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
                         }
@@ -155,16 +161,17 @@ namespace CapaDatos.Reportes
                         {
                             lista.Add(new ReporteCuentaPorCobrar()
                             {
-                                IdCuentaPorCobrar = Convert.ToInt32(dr["IdCuentaPorCobrar"]),
-                                NumeroFactura = dr["NumeroFactura"].ToString(),
                                 IdentificacionCliente = dr["IdentificacionCliente"].ToString(),
+                                NumeroFactura = dr["NumeroFactura"].ToString(),
                                 ClienteNombre = dr["ClienteNombre"].ToString(),
                                 FechaEmision = Convert.ToDateTime(dr["FechaEmision"]),
                                 FechaVencimiento = Convert.ToDateTime(dr["FechaVencimiento"]),
                                 MontoOriginal = Convert.ToDecimal(dr["MontoOriginal"]),
                                 SaldoActual = Convert.ToDecimal(dr["SaldoActual"]),
                                 Estado = dr["Estado"].ToString(),
-                                Activo = Convert.ToBoolean(dr["Activo"])
+                                Activo = Convert.ToBoolean(dr["Activo"]),
+                                DiasRestantes = Convert.ToInt32(dr["DiasRestantes"]),
+                                EstadoCredito = dr["EstadoCredito"].ToString()
                             });
                         }
                     }
@@ -197,17 +204,18 @@ namespace CapaDatos.Reportes
                         {
                             lista.Add(new ReporteCuentaPorPagar()
                             {
-                                IdCuentaPorPagar = Convert.ToInt32(dr["IdCuentaPorPagar"]),
-                                NumeroDocumento = dr["NumeroDocumento"].ToString(),
                                 IdentificacionProveedor = dr["IdentificacionProveedor"].ToString(),
                                 ProveedorNombre = dr["ProveedorNombre"].ToString(),
+                                NumeroDocumento = dr["NumeroDocumento"].ToString(),
                                 FechaEmision = Convert.ToDateTime(dr["FechaEmision"]),
                                 FechaVencimiento = Convert.ToDateTime(dr["FechaVencimiento"]),
                                 Concepto = dr["Concepto"].ToString(),
                                 MontoOriginal = Convert.ToDecimal(dr["MontoOriginal"]),
                                 SaldoActual = Convert.ToDecimal(dr["SaldoActual"]),
                                 Estado = dr["Estado"].ToString(),
-                                Activo = Convert.ToBoolean(dr["Activo"])
+                                Activo = Convert.ToBoolean(dr["Activo"]),
+                                DiasRestantes = Convert.ToInt32(dr["DiasRestantes"]),
+                                EstadoCredito = dr["EstadoCredito"].ToString()
                             });
                         }
                     }
@@ -216,6 +224,133 @@ namespace CapaDatos.Reportes
             catch
             {
                 lista = new List<ReporteCuentaPorPagar>();
+            }
+
+            return lista;
+        }
+
+        public List<ReporteProductoMasVendido> ReporteProductosMasVendidos(DateTime fechaInicio, DateTime fechaFin)
+        {
+            List<ReporteProductoMasVendido> lista = new List<ReporteProductoMasVendido>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Reportes.sp_Reporte_ProductosMasVendidos", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteProductoMasVendido()
+                            {
+                                CodigoProducto = dr["CodigoProducto"].ToString(),
+                                NombreProducto = dr["NombreProducto"].ToString(),
+                                TipoProducto = dr["TipoProducto"].ToString(),
+                                CantidadVendida = Convert.ToDecimal(dr["CantidadVendida"]),
+                                TotalVendido = Convert.ToDecimal(dr["TotalVendido"]),
+                                VecesFacturado = Convert.ToInt32(dr["VecesFacturado"]),
+                                StockActual = Convert.ToDecimal(dr["StockActual"]),
+                                Recomendacion = dr["Recomendacion"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<ReporteProductoMasVendido>();
+            }
+
+            return lista;
+        }
+
+        public List<ReporteClienteMasVenta> ReporteClientesMasVentas(DateTime fechaInicio, DateTime fechaFin)
+        {
+            List<ReporteClienteMasVenta> lista = new List<ReporteClienteMasVenta>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Reportes.sp_Reporte_ClientesMasVentas", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteClienteMasVenta()
+                            {
+                                IdentificacionCliente = dr["IdentificacionCliente"].ToString(),
+                                ClienteNombre = dr["ClienteNombre"].ToString(),
+                                CantidadFacturas = Convert.ToInt32(dr["CantidadFacturas"]),
+                                TotalComprado = Convert.ToDecimal(dr["TotalComprado"]),
+                                PromedioCompra = Convert.ToDecimal(dr["PromedioCompra"]),
+                                UltimaCompra = Convert.ToDateTime(dr["UltimaCompra"]),
+                                LimiteCredito = Convert.ToDecimal(dr["LimiteCredito"]),
+                                DiasCredito = Convert.ToInt32(dr["DiasCredito"]),
+                                ClasificacionCliente = dr["ClasificacionCliente"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<ReporteClienteMasVenta>();
+            }
+
+            return lista;
+        }
+
+        public List<ReporteFlujoDiario> ReporteFlujoDiario(DateTime fechaInicio, DateTime fechaFin)
+        {
+            List<ReporteFlujoDiario> lista = new List<ReporteFlujoDiario>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Reportes.sp_Reporte_FlujoDiario", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteFlujoDiario()
+                            {
+                                Fecha = Convert.ToDateTime(dr["Fecha"]),
+                                TotalIngresos = Convert.ToDecimal(dr["TotalIngresos"]),
+                                TotalGastos = Convert.ToDecimal(dr["TotalGastos"]),
+                                ResultadoDiario = Convert.ToDecimal(dr["ResultadoDiario"]),
+                                EstadoDia = dr["EstadoDia"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<ReporteFlujoDiario>();
             }
 
             return lista;

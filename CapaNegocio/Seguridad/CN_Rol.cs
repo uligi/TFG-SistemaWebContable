@@ -23,9 +23,18 @@ namespace CapaNegocio.Seguridad
                 return 0;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre del rol no puede superar los 45 caracteres.";
+                return 0;
+            }
+
+            if (obj.Descripcion.Length > 150)
+            {
+                Mensaje = "La descripción del rol no puede superar los 150 caracteres.";
                 return 0;
             }
 
@@ -36,7 +45,7 @@ namespace CapaNegocio.Seguridad
         {
             Mensaje = string.Empty;
 
-            if (obj.IdRol == 0)
+            if (obj.IdRol <= 0)
             {
                 Mensaje = "Debe seleccionar un rol válido.";
                 return false;
@@ -48,26 +57,35 @@ namespace CapaNegocio.Seguridad
                 return false;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre del rol no puede superar los 45 caracteres.";
                 return false;
             }
 
+            if (obj.Descripcion.Length > 150)
+            {
+                Mensaje = "La descripción del rol no puede superar los 150 caracteres.";
+                return false;
+            }
+
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idRol, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (idRol <= 0)
             {
                 Mensaje = "Debe seleccionar un rol válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(idRol, out Mensaje);
         }
     }
 }

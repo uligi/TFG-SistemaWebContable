@@ -1,29 +1,20 @@
 ﻿
-using CapaEntidad.personas;
 using CapaEntidad.Personas;
+
 using CapaNegocio.personas;
+using CapaPresentacion.Filtros;
 using System.Web.Mvc;
 
 namespace CapaPresentacion.Controllers.Mantenimientos
 {
     public class PersonaController : Controller
     {
+
+
+
+        //**************Clientes**********
+        [PermisoAuthorize(CodigoModulo = "CLIENTES")]
         public ActionResult Clientes()
-        {
-            return View();
-        }
-
-        public ActionResult Empleados()
-        {
-            return View();
-        }
-
-        public ActionResult Telefono()
-        {
-            return View();
-        }
-
-        public ActionResult Correo()
         {
             return View();
         }
@@ -62,10 +53,28 @@ namespace CapaPresentacion.Controllers.Mantenimientos
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
+        // ===============================
+        // TELEFONOS
+        // ===============================
+
+        [PermisoAuthorize(CodigoModulo = "CLIENTES")]
+        public ActionResult Telefono()
+        {
+            return View();
+        }
+
+
         [HttpGet]
         public JsonResult ListarTelefonos()
         {
             var lista = new CN_Telefono().Listar();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ListarTelefonosPorPersona(string identificacion)
+        {
+            var lista = new CN_Telefono().ListarPorPersona(identificacion);
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
@@ -75,23 +84,7 @@ namespace CapaPresentacion.Controllers.Mantenimientos
             object resultado;
             string mensaje = string.Empty;
 
-            if (obj.Activo == false && string.IsNullOrWhiteSpace(obj.TipoTelefonoNombre))
-            {
-                obj.Activo = true;
-            }
-
-            if (Request.Form.Count == 0)
-            {
-                // Se usa Codigo lógico desde la vista:
-                // si viene como nuevo, Activo se envía true y se registra.
-            }
-
-            bool existe = new CN_Telefono().Listar().Exists(x =>
-                x.NumeroTelefono == obj.NumeroTelefono &&
-                x.Identificacion == obj.Identificacion
-            );
-
-            if (!existe)
+            if (string.IsNullOrWhiteSpace(obj.NumeroTelefonoAnterior))
             {
                 resultado = new CN_Telefono().Registrar(obj, out mensaje);
             }
@@ -104,79 +97,57 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTelefono(string numeroTelefono, string identificacion)
+        public JsonResult InactivarTelefono(string identificacion, string numeroTelefono)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_Telefono().Inactivar(numeroTelefono, identificacion, out mensaje);
+            bool resultado = new CN_Telefono().Inactivar(identificacion, numeroTelefono, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+        // ===============================
+        // CORREOS
+        // ===============================
+        [PermisoAuthorize(CodigoModulo = "CLIENTES")]
+        public ActionResult Correo()
+        {
+            return View();
         }
 
         [HttpGet]
-        public JsonResult ListarTelefonosPorPersona(string identificacion)
+        public JsonResult ListarCorreos()
         {
-            var lista = new CN_Telefono().Listar()
-                .FindAll(x => x.Identificacion == identificacion);
-
+            var lista = new CN_Correo().Listar();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public JsonResult GuardarTelefonoDesdeCliente(Telefono obj, bool esNuevo, string numeroAnterior)
-        {
-            object resultado;
-            string mensaje = string.Empty;
-
-            if (esNuevo)
-            {
-                resultado = new CN_Telefono().Registrar(obj, out mensaje);
-            }
-            else
-            {
-                resultado = new CN_Telefono().EditarDesdeCliente(numeroAnterior, obj, out mensaje);
-            }
-
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public JsonResult InactivarTelefonoDesdeCliente(string numeroTelefono, string identificacion)
-        {
-            string mensaje = string.Empty;
-            bool resultado = new CN_Telefono().Inactivar(numeroTelefono, identificacion, out mensaje);
-
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult ListarCorreosPorPersona(string identificacion)
         {
-            var lista = new CN_Correo().Listar()
-                .FindAll(x => x.Identificacion == identificacion);
-
+            var lista = new CN_Correo().ListarPorPersona(identificacion);
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult GuardarCorreoDesdeCliente(Correo obj, bool esNuevo, string correoAnterior)
+        public JsonResult GuardarCorreo(Correo obj)
         {
             object resultado;
             string mensaje = string.Empty;
 
-            if (esNuevo)
+            if (string.IsNullOrWhiteSpace(obj.DireccionCorreoAnterior))
             {
                 resultado = new CN_Correo().Registrar(obj, out mensaje);
             }
             else
             {
-                resultado = new CN_Correo().EditarDesdeCliente(correoAnterior, obj, out mensaje);
+                resultado = new CN_Correo().Editar(obj, out mensaje);
             }
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult InactivarCorreoDesdeCliente(string identificacion, string direccionCorreo)
+        public JsonResult InactivarCorreo(string identificacion, string direccionCorreo)
         {
             string mensaje = string.Empty;
             bool resultado = new CN_Correo().Inactivar(identificacion, direccionCorreo, out mensaje);
@@ -184,9 +155,14 @@ namespace CapaPresentacion.Controllers.Mantenimientos
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
-        //**************Empleados****************
-
-      
+        // ===============================
+        // EMPLEADOS
+        // ===============================
+        [PermisoAuthorize(CodigoModulo = "EMPLEADOS")]
+        public ActionResult Empleados()
+        {
+            return View();
+        }
 
         [HttpGet]
         public JsonResult ListarEmpleados()
@@ -201,33 +177,42 @@ namespace CapaPresentacion.Controllers.Mantenimientos
             object resultado;
             string mensaje = string.Empty;
 
-            string claveTemporal = string.Empty;
-            string nombreUsuario = string.Empty;
-            string codigoEmpleado = string.Empty;
-
             if (string.IsNullOrWhiteSpace(obj.CodigoEmpleado))
             {
+                string nombreUsuarioGenerado;
+                string codigoEmpleadoGenerado;
+                string claveTemporalGenerada;
+
                 resultado = new CN_Empleado().Registrar(
                     obj,
                     out mensaje,
-                    out claveTemporal,
-                    out nombreUsuario,
-                    out codigoEmpleado
+                    out nombreUsuarioGenerado,
+                    out codigoEmpleadoGenerado,
+                    out claveTemporalGenerada
                 );
+
+                return Json(new
+                {
+                    resultado = resultado,
+                    mensaje = mensaje,
+                    nombreUsuario = nombreUsuarioGenerado,
+                    codigoEmpleado = codigoEmpleadoGenerado,
+                    claveTemporal = claveTemporalGenerada
+                }, JsonRequestBehavior.AllowGet);
             }
             else
             {
                 resultado = new CN_Empleado().Editar(obj, out mensaje);
-            }
 
-            return Json(new
-            {
-                resultado = resultado,
-                mensaje = mensaje,
-                claveTemporal = claveTemporal,
-                nombreUsuario = nombreUsuario,
-                codigoEmpleado = codigoEmpleado
-            }, JsonRequestBehavior.AllowGet);
+                return Json(new
+                {
+                    resultado = resultado,
+                    mensaje = mensaje,
+                    nombreUsuario = obj.NombreUsuario,
+                    codigoEmpleado = obj.CodigoEmpleado,
+                    claveTemporal = ""
+                }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
@@ -243,23 +228,24 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         public JsonResult RestablecerClaveEmpleado(string identificacion)
         {
             string mensaje = string.Empty;
-            string claveTemporal = string.Empty;
             string nombreUsuario = string.Empty;
+            string claveTemporalGenerada = string.Empty;
 
             bool resultado = new CN_Empleado().RestablecerClave(
                 identificacion,
                 out mensaje,
-                out claveTemporal,
-                out nombreUsuario
+                out nombreUsuario,
+                out claveTemporalGenerada
             );
 
             return Json(new
             {
                 resultado = resultado,
                 mensaje = mensaje,
-                claveTemporal = claveTemporal,
-                nombreUsuario = nombreUsuario
+                nombreUsuario = nombreUsuario,
+                claveTemporal = claveTemporalGenerada
             }, JsonRequestBehavior.AllowGet);
         }
+
     }
-}
+    }

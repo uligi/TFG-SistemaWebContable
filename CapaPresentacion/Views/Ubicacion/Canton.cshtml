@@ -1,6 +1,5 @@
-﻿
-@{
-    ViewBag.Title = "Canton";
+﻿@{
+    ViewBag.Title = "Cantones";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
@@ -49,13 +48,11 @@
     </div>
 
     <div class="card-body">
-
-
-
         <div class="table-responsive">
             <table class="table table-striped table-bordered nowrap" id="tablaCantones" style="width:100%;">
                 <thead>
                     <tr>
+                        <th>Código</th>
                         <th>Cantón</th>
                         <th>Provincia</th>
                         <th>Estado</th>
@@ -66,7 +63,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -83,7 +79,13 @@
 
             <div class="modal-body">
 
-                <input type="hidden" id="txtIdCanton" value="0" />
+                <div class="form-group">
+                    <label for="txtCodigoCanton">Código de cantón</label>
+                    <input type="number" id="txtCodigoCanton" class="form-control" min="1" autocomplete="off" />
+                    <small class="form-text text-muted">
+                        Este código será la llave primaria del cantón.
+                    </small>
+                </div>
 
                 <div class="form-group">
                     <label for="cboProvincia">Provincia</label>
@@ -135,6 +137,17 @@
                 cargarCsvCanton();
             });
 
+            $("#txtCodigoCanton").on("input", function () {
+                var valor = $(this).val();
+                valor = valor.replace(/[^0-9]/g, "");
+
+                if (valor.length > 5) {
+                    valor = valor.substring(0, 5);
+                }
+
+                $(this).val(valor);
+            });
+
             $("#txtNombre").on("input", function () {
                 limpiarTextoUbicacion("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
 
@@ -152,6 +165,7 @@
 
             $("#FormModal").on("hidden.bs.modal", function () {
                 $("#mensajeError").hide().text("");
+                ocultarAyudaCampo("txtCodigoCanton");
                 ocultarAyudaCampo("txtNombre");
                 ocultarAyudaCampo("cboProvincia");
             });
@@ -191,7 +205,13 @@
                 contentType: false,
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        alert("Insertados: " + respuesta.data.insertados + "\nErrores: " + respuesta.data.errores);
+                        var mensaje = "Insertados: " + respuesta.data.insertados + "\nErrores: " + respuesta.data.errores;
+
+                        if (respuesta.data.detalleErrores && respuesta.data.detalleErrores.length > 0) {
+                            mensaje += "\n\nDetalle:\n" + respuesta.data.detalleErrores.join("\n");
+                        }
+
+                        alert(mensaje);
                         cargarCantones();
                     } else {
                         alert(respuesta.mensaje);
@@ -218,7 +238,7 @@
                     $.each(respuesta.data || [], function (i, item) {
                         $("#cboProvincia").append(
                             $("<option>", {
-                                value: item.IdProvincia,
+                                value: item.CodigoProvincia,
                                 text: item.Nombre
                             })
                         );
@@ -240,6 +260,7 @@
             tbody.empty();
 
             $.each(listaCantones, function (i, item) {
+                var codigo = item.CodigoCanton || 0;
                 var nombre = item.Nombre || "";
                 var provincia = item.ProvinciaNombre || "";
 
@@ -260,14 +281,18 @@
                     class: "btn btn-sm btn-outline-danger",
                     text: "Inactivar"
                 }).on("click", function () {
-                    inactivarCanton(item.IdCanton);
+                    inactivarCanton(item.CodigoCanton);
                 });
 
                 var acciones = $("<td>");
                 acciones.append(botonEditar);
-                acciones.append(botonInactivar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
 
                 var fila = $("<tr>");
+                fila.append($("<td>").text(codigo));
                 fila.append($("<td>").text(nombre));
                 fila.append($("<td>").text(provincia));
                 fila.append($("<td>").html(estado));
@@ -280,7 +305,7 @@
                 responsive: true,
                 pageLength: 10,
                 destroy: true,
-                order: [[1, "asc"], [0, "asc"]],
+                order: [[0, "asc"]],
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 }
@@ -289,18 +314,23 @@
 
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
+            ocultarAyudaCampo("txtCodigoCanton");
             ocultarAyudaCampo("txtNombre");
             ocultarAyudaCampo("cboProvincia");
 
-            $("#txtIdCanton").val(0);
+            $("#txtCodigoCanton").val("");
+            $("#txtCodigoCanton").prop("disabled", false);
+
             $("#cboProvincia").val(0);
             $("#txtNombre").val("");
             $("#cboActivo").val("true");
             $("#tituloModal").text("Nuevo cantón");
 
             if (json != null) {
-                $("#txtIdCanton").val(json.IdCanton);
-                $("#cboProvincia").val(json.IdProvincia);
+                $("#txtCodigoCanton").val(json.CodigoCanton);
+                $("#txtCodigoCanton").prop("disabled", true);
+
+                $("#cboProvincia").val(json.CodigoProvincia);
                 $("#txtNombre").val(json.Nombre || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
                 $("#tituloModal").text("Editar cantón");
@@ -313,17 +343,18 @@
             $("#mensajeError").hide().text("");
 
             var obj = {
-                IdCanton: parseInt($("#txtIdCanton").val()),
-                IdProvincia: parseInt($("#cboProvincia").val()),
+                CodigoCanton: parseInt($("#txtCodigoCanton").val()),
+                CodigoProvincia: parseInt($("#cboProvincia").val()),
                 Nombre: $("#txtNombre").val().trim(),
                 Activo: $("#cboActivo").val() === "true"
             };
 
-            if (isNaN(obj.IdCanton)) {
-                obj.IdCanton = 0;
+            if (isNaN(obj.CodigoCanton) || obj.CodigoCanton <= 0) {
+                mostrarError("Debe ingresar un código de cantón válido.", "txtCodigoCanton");
+                return;
             }
 
-            if (obj.IdProvincia === 0 || isNaN(obj.IdProvincia)) {
+            if (obj.CodigoProvincia === 0 || isNaN(obj.CodigoProvincia)) {
                 mostrarError("Debe seleccionar una provincia.", "cboProvincia");
                 return;
             }
@@ -350,20 +381,11 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (obj.IdCanton === 0) {
-                        if (respuesta.resultado != 0) {
-                            $("#FormModal").modal("hide");
-                            cargarCantones();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        $("#FormModal").modal("hide");
+                        cargarCantones();
                     } else {
-                        if (respuesta.resultado) {
-                            $("#FormModal").modal("hide");
-                            cargarCantones();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
+                        $("#mensajeError").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
@@ -372,7 +394,7 @@
             });
         }
 
-        function inactivarCanton(id) {
+        function inactivarCanton(codigoCanton) {
             if (!confirm("¿Desea inactivar este cantón?")) {
                 return;
             }
@@ -380,7 +402,7 @@
             $.ajax({
                 url: '@Url.Action("InactivarCanton", "Ubicacion")',
                 type: "POST",
-                data: JSON.stringify({ id: id }),
+                data: JSON.stringify({ codigoCanton: codigoCanton }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {

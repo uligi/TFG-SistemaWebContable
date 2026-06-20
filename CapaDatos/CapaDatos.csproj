@@ -56,17 +56,20 @@
     <Compile Include="Catalogos\CD_TipoProducto.cs" />
     <Compile Include="Catalogos\CD_TipoTelefono.cs" />
     <Compile Include="Conexion\Conexion.cs" />
+    <Compile Include="Consultas\CD_Consultas.cs" />
     <Compile Include="Contabilidad\CD_AsientoContable.cs" />
     <Compile Include="Contabilidad\CD_ConfiguracionCuentaContable.cs" />
     <Compile Include="Contabilidad\CD_CuentaContable.cs" />
     <Compile Include="Contabilidad\CD_DetalleAsientoContable.cs" />
     <Compile Include="Contabilidad\CD_PeriodoContable.cs" />
+    <Compile Include="Contabilidad\CD_ReferenciaAsientoContable.cs" />
     <Compile Include="CuentasPorCobrar\CD_AbonoCuentaPorCobrar.cs" />
     <Compile Include="CuentasPorCobrar\CD_CuentaPorCobrar.cs" />
     <Compile Include="CuentasPorPagar\CD_AbonoCuentaPorPagar.cs" />
     <Compile Include="CuentasPorPagar\CD_CuentaPorPagar.cs" />
     <Compile Include="Facturacion\CD_DetalleFactura.cs" />
     <Compile Include="Facturacion\CD_Factura.cs" />
+    <Compile Include="Facturacion\CD_NotaCredito.cs" />
     <Compile Include="Inventario\CD_Producto.cs" />
     <Compile Include="Movimientos\CD_Gasto.cs" />
     <Compile Include="Movimientos\CD_Ingreso.cs" />
@@ -82,6 +85,7 @@
     <Compile Include="Proveedores\CD_TelefonoProveedor.cs" />
     <Compile Include="Reportes\CD_Reportes.cs" />
     <Compile Include="Seguridad\CD_Rol.cs" />
+    <Compile Include="Seguridad\CD_Seguridad.cs" />
     <Compile Include="Ubicacion\CD_Canton.cs" />
     <Compile Include="Ubicacion\CD_Distrito.cs" />
     <Compile Include="Ubicacion\CD_Provincia.cs" />
@@ -92,5 +96,6 @@
       <Name>CapaEntidad</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

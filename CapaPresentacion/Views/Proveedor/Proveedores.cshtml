@@ -14,6 +14,24 @@
     .input-error-suave {
         border-color: #d9534f !important;
     }
+
+    .texto-tabla-secundario {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .bloque-contacto {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .tabla-contacto th,
+    .tabla-contacto td {
+        vertical-align: middle !important;
+    }
 </style>
 
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Proveedores</h4>
@@ -40,15 +58,8 @@
     </div>
 
     <div class="card-body">
-
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por identificación, razón social o contacto...">
-            </div>
-        </div>
-
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaProveedores">
+            <table class="table table-striped table-bordered nowrap" id="tablaProveedores" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Identificación</th>
@@ -63,7 +74,6 @@
                 <tbody></tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -80,53 +90,64 @@
 
             <div class="modal-body">
 
-                <input type="hidden" id="txtEsNuevo" value="true" />
+                <input type="hidden" id="txtIdentificacionProveedor" value="" />
 
-                <h6 class="font-weight-bold">Datos del proveedor</h6>
+                <div class="alert alert-danger mt-2" id="mensajeError" style="display:none;"></div>
 
-                <div class="form-row">
+                <h6 class="font-weight-bold mb-3">Datos del proveedor</h6>
 
-                    <div class="form-group col-md-4">
-                        <label for="txtIdentificacionProveedor">Identificación</label>
-                        <input type="text" id="txtIdentificacionProveedor" class="form-control" readonly placeholder="Se genera automáticamente" /></div>
-
-                    <div class="form-group col-md-4">
-                        <label for="txtRazonSocial">Razón social</label>
-                        <input type="text" id="txtRazonSocial" class="form-control" maxlength="200" autocomplete="off" />
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="txtRazonSocial">Razón social</label>
+                            <input type="text" id="txtRazonSocial" class="form-control" maxlength="200" autocomplete="off" />
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="txtNombreContacto">Nombre de contacto</label>
-                        <input type="text" id="txtNombreContacto" class="form-control" maxlength="100" autocomplete="off" />
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="txtDiasCredito">Días de crédito</label>
+                            <input type="number" id="txtDiasCredito" class="form-control" min="0" step="1" autocomplete="off" />
+                        </div>
                     </div>
-
                 </div>
 
-                <h6 class="font-weight-bold mt-3">Ubicación</h6>
+                <div class="form-group">
+                    <label for="txtNombreContacto">Nombre de contacto</label>
+                    <input type="text" id="txtNombreContacto" class="form-control" maxlength="100" autocomplete="off" />
+                </div>
 
-                <div class="form-row">
+                <hr />
 
-                    <div class="form-group col-md-4">
-                        <label for="cboProvincia">Provincia</label>
-                        <select id="cboProvincia" class="form-control">
-                            <option value="0">Seleccione una provincia</option>
-                        </select>
+                <h6 class="font-weight-bold mb-3">Ubicación</h6>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboProvincia">Provincia</label>
+                            <select id="cboProvincia" class="form-control">
+                                <option value="0">Seleccione una provincia</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="cboCanton">Cantón</label>
-                        <select id="cboCanton" class="form-control">
-                            <option value="0">Seleccione un cantón</option>
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboCanton">Cantón</label>
+                            <select id="cboCanton" class="form-control">
+                                <option value="0">Seleccione un cantón</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="cboDistrito">Distrito</label>
-                        <select id="cboDistrito" class="form-control">
-                            <option value="0">Seleccione un distrito</option>
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboDistrito">Distrito</label>
+                            <select id="cboDistrito" class="form-control">
+                                <option value="0">Seleccione un distrito</option>
+                            </select>
+                        </div>
                     </div>
-
                 </div>
 
                 <div class="form-group">
@@ -135,154 +156,161 @@
                     <small class="form-text text-muted">Máximo 250 caracteres.</small>
                 </div>
 
-                <h6 class="font-weight-bold mt-3">Condiciones comerciales</h6>
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-4">
-                        <label for="txtDiasCredito">Días de crédito</label>
-                        <input type="number" id="txtDiasCredito" class="form-control" min="0" step="1" />
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="cboActivo">Estado</label>
-                        <select id="cboActivo" class="form-control">
-                            <option value="true">Activo</option>
-                            <option value="false">Inactivo</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="alert alert-danger mt-3" id="mensajeError" style="display:none;"></div>
-
-                <hr />
-
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="font-weight-bold mb-0">Teléfonos del proveedor</h6>
-                    <small class="text-muted" id="textoAyudaTelefono">
-                        Para agregar teléfonos, primero guarde el proveedor.
-                    </small>
-                </div>
-
-                <div class="form-row mt-3">
-
-                    <div class="form-group col-md-4">
-                        <label for="txtNumeroTelefonoProveedor">Número de teléfono</label>
-                        <input type="text" id="txtNumeroTelefonoProveedor" class="form-control" maxlength="45" autocomplete="off" />
-                        <input type="hidden" id="txtNumeroTelefonoAnterior" value="" />
-                        <input type="hidden" id="txtTelefonoEsNuevo" value="true" />
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="cboTipoTelefonoProveedor">Tipo de teléfono</label>
-                        <select id="cboTipoTelefonoProveedor" class="form-control">
-                            <option value="0">Seleccione un tipo</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-2">
-                        <label for="cboTelefonoPrincipalProveedor">Principal</label>
-                        <select id="cboTelefonoPrincipalProveedor" class="form-control">
-                            <option value="true">Sí</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label>&nbsp;</label>
-                        <div class="btn-group btn-block">
-                            <button type="button" class="btn btn-primary" id="btnGuardarTelefono" onclick="guardarTelefonoProveedor()">
-                                Guardar teléfono
-                            </button>
-                            <button type="button" class="btn btn-secondary" id="btnLimpiarTelefono" onclick="limpiarFormularioTelefonoProveedor()">
-                                Limpiar
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered" id="tablaTelefonosProveedor">
-                        <thead>
-                            <tr>
-                                <th>Teléfono</th>
-                                <th>Tipo</th>
-                                <th>Principal</th>
-                                <th>Estado</th>
-                                <th style="width:170px;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                <div class="form-group">
+                    <label for="cboActivo">Estado</label>
+                    <select id="cboActivo" class="form-control">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
                 </div>
 
                 <hr />
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="font-weight-bold mb-0">Correos del proveedor</h6>
-                    <small class="text-muted" id="textoAyudaCorreo">
-                        Para agregar correos, primero guarde el proveedor.
-                    </small>
-                </div>
+                <h6 class="font-weight-bold mb-3">Teléfonos</h6>
 
-                <div class="form-row mt-3">
+                <div class="bloque-contacto">
+                    <input type="hidden" id="txtTelefonoAnterior" value="" />
 
-                    <div class="form-group col-md-4">
-                        <label for="txtDireccionCorreoProveedor">Correo electrónico</label>
-                        <input type="email" id="txtDireccionCorreoProveedor" class="form-control" maxlength="150" autocomplete="off" />
-                        <input type="hidden" id="txtCorreoAnterior" value="" />
-                        <input type="hidden" id="txtCorreoEsNuevo" value="true" />
-                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group mb-2">
+                                <label for="txtTelefono">Teléfono</label>
+                                <input type="text" id="txtTelefono" class="form-control" maxlength="15" autocomplete="off" />
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-3">
-                        <label for="cboTipoCorreoProveedor">Tipo de correo</label>
-                        <select id="cboTipoCorreoProveedor" class="form-control">
-                            <option value="0">Seleccione un tipo</option>
-                        </select>
-                    </div>
+                        <div class="col-md-3">
+                            <div class="form-group mb-2">
+                                <label for="cboTipoTelefono">Tipo</label>
+                                <select id="cboTipoTelefono" class="form-control">
+                                    <option value="0">Seleccione</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-2">
-                        <label for="cboCorreoPrincipalProveedor">Principal</label>
-                        <select id="cboCorreoPrincipalProveedor" class="form-control">
-                            <option value="true">Sí</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="cboTelefonoPrincipal">Principal</label>
+                                <select id="cboTelefonoPrincipal" class="form-control">
+                                    <option value="false">No</option>
+                                    <option value="true">Sí</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-3">
-                        <label>&nbsp;</label>
-                        <div class="btn-group btn-block">
-                            <button type="button" class="btn btn-primary" id="btnGuardarCorreo" onclick="guardarCorreoProveedor()">
-                                Guardar correo
-                            </button>
-                            <button type="button" class="btn btn-secondary" id="btnLimpiarCorreo" onclick="limpiarFormularioCorreoProveedor()">
-                                Limpiar
-                            </button>
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="cboTelefonoActivo">Estado</label>
+                                <select id="cboTelefonoActivo" class="form-control">
+                                    <option value="true">Activo</option>
+                                    <option value="false">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-group mb-2 w-100">
+                                <button type="button" class="btn btn-primary btn-block" onclick="guardarTelefonoProveedor()">
+                                    Agregar
+                                </button>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="alert alert-danger mt-2" id="mensajeErrorTelefono" style="display:none;"></div>
+
+                    <div class="table-responsive mt-2">
+                        <table class="table table-sm table-bordered tabla-contacto" id="tablaTelefonosProveedor" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Teléfono</th>
+                                    <th>Tipo</th>
+                                    <th>Principal</th>
+                                    <th>Estado</th>
+                                    <th style="width:160px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered" id="tablaCorreosProveedor">
-                        <thead>
-                            <tr>
-                                <th>Correo</th>
-                                <th>Tipo</th>
-                                <th>Principal</th>
-                                <th>Estado</th>
-                                <th style="width:170px;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                <h6 class="font-weight-bold mb-3">Correos</h6>
+
+                <div class="bloque-contacto">
+                    <input type="hidden" id="txtCorreoAnterior" value="" />
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-2">
+                                <label for="txtCorreo">Correo</label>
+                                <input type="email" id="txtCorreo" class="form-control" maxlength="150" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group mb-2">
+                                <label for="cboTipoCorreo">Tipo</label>
+                                <select id="cboTipoCorreo" class="form-control">
+                                    <option value="0">Seleccione</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="cboCorreoPrincipal">Principal</label>
+                                <select id="cboCorreoPrincipal" class="form-control">
+                                    <option value="false">No</option>
+                                    <option value="true">Sí</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="cboCorreoActivo">Estado</label>
+                                <select id="cboCorreoActivo" class="form-control">
+                                    <option value="true">Activo</option>
+                                    <option value="false">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1 d-flex align-items-end">
+                            <div class="form-group mb-2 w-100">
+                                <button type="button" class="btn btn-primary btn-block" onclick="guardarCorreoProveedor()">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-danger mt-2" id="mensajeErrorCorreo" style="display:none;"></div>
+
+                    <div class="table-responsive mt-2">
+                        <table class="table table-sm table-bordered tabla-contacto" id="tablaCorreosProveedor" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Correo</th>
+                                    <th>Tipo</th>
+                                    <th>Principal</th>
+                                    <th>Estado</th>
+                                    <th style="width:160px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>
 
             <div class="modal-footer">
+                <small class="text-muted mr-auto">
+                    Para agregar teléfonos o correos, primero guarde el proveedor.
+                </small>
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
                 </button>
@@ -298,50 +326,112 @@
 @section scripts {
     <script>
         var listaProveedores = [];
+        var tablaProveedores = null;
+
         var listaTelefonosProveedor = [];
         var listaCorreosProveedor = [];
 
         $(document).ready(function () {
-            cargarProveedores();
             cargarProvinciasActivas();
-            cargarTiposTelefonoProveedor();
-            cargarTiposCorreoProveedor();
-
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
-            });
+            cargarTiposTelefonoActivos();
+            cargarTiposCorreoActivos();
+            cargarProveedores();
 
             $("#cboProvincia").on("change", function () {
-                var idProvincia = parseInt($(this).val());
-                cargarCantonesPorProvincia(idProvincia, 0);
-                limpiarDistritos();
+                var codigoProvincia = parseInt($(this).val());
+
+                $("#cboCanton").empty();
+                $("#cboCanton").append('<option value="0">Seleccione un cantón</option>');
+
+                $("#cboDistrito").empty();
+                $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
+
+                if (!isNaN(codigoProvincia) && codigoProvincia > 0) {
+                    cargarCantonesPorProvincia(codigoProvincia, null);
+                }
             });
 
             $("#cboCanton").on("change", function () {
-                var idCanton = parseInt($(this).val());
-                cargarDistritosPorCanton(idCanton, 0);
+                var codigoCanton = parseInt($(this).val());
+
+                $("#cboDistrito").empty();
+                $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
+
+                if (!isNaN(codigoCanton) && codigoCanton > 0) {
+                    cargarDistritosPorCanton(codigoCanton, null);
+                }
             });
 
             $("#txtRazonSocial").on("input", function () {
-                limpiarTextoProveedor("txtRazonSocial", "Solo se permiten letras, números, espacios y caracteres básicos.");
+                limpiarTextoGeneral("txtRazonSocial", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 200) {
+                    $(this).val($(this).val().substring(0, 200));
+                    mostrarAyudaCampo("txtRazonSocial", "La razón social no puede superar los 200 caracteres.");
+                }
             });
 
             $("#txtNombreContacto").on("input", function () {
-                limpiarNoLetras("txtNombreContacto", "Solo se permiten letras y espacios en el nombre de contacto.");
+                limpiarTextoPersona("txtNombreContacto", "Solo se permiten letras y espacios.");
+
+                if ($(this).val().length > 100) {
+                    $(this).val($(this).val().substring(0, 100));
+                    mostrarAyudaCampo("txtNombreContacto", "El nombre de contacto no puede superar los 100 caracteres.");
+                }
             });
 
-            $("#txtNumeroTelefonoProveedor").on("input", function () {
-                limpiarNoNumeros("txtNumeroTelefonoProveedor", "Solo se permiten números en el teléfono.");
+            $("#txtDireccionExacta").on("input", function () {
+                limpiarTextoGeneral("txtDireccionExacta", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 250) {
+                    $(this).val($(this).val().substring(0, 250));
+                    mostrarAyudaCampo("txtDireccionExacta", "La dirección exacta no puede superar los 250 caracteres.");
+                }
             });
 
             $("#txtDiasCredito").on("input", function () {
-                limpiarNoNumeros("txtDiasCredito", "Solo se permiten números enteros en los días de crédito.");
+                var valor = $(this).val();
+                valor = valor.replace(/[^0-9]/g, "");
+                $(this).val(valor);
+            });
+
+            $("#txtTelefono").on("input", function () {
+                var valor = $(this).val();
+                valor = valor.replace(/[^0-9]/g, "");
+
+                if (valor.length > 15) {
+                    valor = valor.substring(0, 15);
+                }
+
+                $(this).val(valor);
+            });
+
+            $("#txtCorreo").on("input", function () {
+                var valor = $(this).val().trim().toLowerCase();
+
+                if (valor.length > 150) {
+                    valor = valor.substring(0, 150);
+                }
+
+                $(this).val(valor);
             });
 
             $("input, select, textarea").on("change keyup", function () {
                 if ($("#mensajeError").is(":visible")) {
                     $("#mensajeError").fadeOut(150);
                 }
+
+                if ($("#mensajeErrorTelefono").is(":visible")) {
+                    $("#mensajeErrorTelefono").fadeOut(150);
+                }
+
+                if ($("#mensajeErrorCorreo").is(":visible")) {
+                    $("#mensajeErrorCorreo").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                limpiarErrores();
             });
         });
 
@@ -351,7 +441,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaProveedores = respuesta.data;
+                    listaProveedores = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -361,203 +451,392 @@
         }
 
         function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaProveedores tbody");
+            if (tablaProveedores != null) {
+                tablaProveedores.clear().destroy();
+                tablaProveedores = null;
+            }
 
+            var tbody = $("#tablaProveedores tbody");
             tbody.empty();
 
             $.each(listaProveedores, function (i, item) {
                 var identificacion = item.IdentificacionProveedor || "";
                 var razonSocial = item.RazonSocial || "";
-                var contacto = item.NombreContacto || "";
+                var contacto = item.NombreContacto || "-";
+                var diasCredito = item.DiasCredito || 0;
 
-                var distrito = item.DistritoNombre || "";
-                var canton = item.CantonNombre || "";
-                var provincia = item.ProvinciaNombre || "";
-                var ubicacion = "-";
-
-                if (distrito !== "" || canton !== "" || provincia !== "") {
-                    ubicacion = distrito + ", " + canton + ", " + provincia;
-                }
-
-                var diasCredito = item.DiasCredito == null ? "-" : item.DiasCredito;
-
-                var texto = (identificacion + " " + razonSocial + " " + contacto + " " + ubicacion).toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
+                var ubicacion = "";
+                if (item.DistritoNombre && item.CantonNombre && item.ProvinciaNombre) {
+                    ubicacion = item.DistritoNombre + ", " + item.CantonNombre + ", " + item.ProvinciaNombre;
+                } else {
+                    ubicacion = "-";
                 }
 
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var fila = `
-                    <tr>
-                        <td>${identificacion}</td>
-                        <td>${razonSocial}</td>
-                        <td>${contacto}</td>
-                        <td>${ubicacion}</td>
-                        <td>${diasCredito}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick='inactivarProveedor(${JSON.stringify(identificacion)})'>
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarProveedor(item.IdentificacionProveedor);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var celdaProveedor = $("<td>");
+                celdaProveedor.append($("<div>").text(razonSocial));
+                celdaProveedor.append($("<div>", {
+                    class: "texto-tabla-secundario",
+                    text: "Dirección: " + (item.DireccionExacta || "-")
+                }));
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(identificacion));
+                fila.append(celdaProveedor);
+                fila.append($("<td>").text(contacto));
+                fila.append($("<td>").text(ubicacion));
+                fila.append($("<td>").text(diasCredito));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
+            });
+
+            tablaProveedores = $("#tablaProveedores").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[1, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function cargarProvinciasActivas() {
+            $.ajax({
+                url: '@Url.Action("ListarProvinciasActivas", "Ubicacion")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboProvincia").empty();
+                    $("#cboProvincia").append('<option value="0">Seleccione una provincia</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboProvincia").append(
+                            $("<option>", {
+                                value: item.CodigoProvincia,
+                                text: item.Nombre
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar las provincias.");
+                }
+            });
+        }
+
+        function cargarCantonesPorProvincia(codigoProvincia, callback) {
+            $.ajax({
+                url: '@Url.Action("ListarCantonesActivosPorProvincia", "Ubicacion")',
+                type: "GET",
+                data: { codigoProvincia: codigoProvincia },
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboCanton").empty();
+                    $("#cboCanton").append('<option value="0">Seleccione un cantón</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboCanton").append(
+                            $("<option>", {
+                                value: item.CodigoCanton,
+                                text: item.Nombre
+                            })
+                        );
+                    });
+
+                    if (callback != null) {
+                        callback();
+                    }
+                },
+                error: function () {
+                    alert("Error al cargar los cantones.");
+                }
+            });
+        }
+
+        function cargarDistritosPorCanton(codigoCanton, callback) {
+            $.ajax({
+                url: '@Url.Action("ListarDistritosActivosPorCanton", "Ubicacion")',
+                type: "GET",
+                data: { codigoCanton: codigoCanton },
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboDistrito").empty();
+                    $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboDistrito").append(
+                            $("<option>", {
+                                value: item.CodigoDistrito,
+                                text: item.Nombre
+                            })
+                        );
+                    });
+
+                    if (callback != null) {
+                        callback();
+                    }
+                },
+                error: function () {
+                    alert("Error al cargar los distritos.");
+                }
+            });
+        }
+
+        function cargarTiposTelefonoActivos() {
+            $.ajax({
+                url: '@Url.Action("ListarTipoTelefonos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoTelefono").empty();
+                    $("#cboTipoTelefono").append('<option value="0">Seleccione</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        if (item.Activo) {
+                            $("#cboTipoTelefono").append(
+                                $("<option>", {
+                                    value: item.IdTipoTelefono,
+                                    text: item.Nombre
+                                })
+                            );
+                        }
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de teléfono.");
+                }
+            });
+        }
+
+        function cargarTiposCorreoActivos() {
+            $.ajax({
+                url: '@Url.Action("ListarTipoCorreos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoCorreo").empty();
+                    $("#cboTipoCorreo").append('<option value="0">Seleccione</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        if (item.Activo) {
+                            $("#cboTipoCorreo").append(
+                                $("<option>", {
+                                    value: item.IdTipoCorreo,
+                                    text: item.Nombre
+                                })
+                            );
+                        }
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de correo.");
+                }
             });
         }
 
         function abrirModal(json) {
-            $("#mensajeError").hide().text("");
+            limpiarErrores();
 
-            $("#txtEsNuevo").val("true");
+            listaTelefonosProveedor = [];
+            listaCorreosProveedor = [];
 
             $("#txtIdentificacionProveedor").val("");
-            $("#txtIdentificacionProveedor").prop("readonly", false);
-
             $("#txtRazonSocial").val("");
             $("#txtNombreContacto").val("");
+            $("#txtDiasCredito").val("0");
 
             $("#cboProvincia").val(0);
-            $("#cboCanton").empty().append('<option value="0">Seleccione un cantón</option>');
-            $("#cboDistrito").empty().append('<option value="0">Seleccione un distrito</option>');
+
+            $("#cboCanton").empty();
+            $("#cboCanton").append('<option value="0">Seleccione un cantón</option>');
+
+            $("#cboDistrito").empty();
+            $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
 
             $("#txtDireccionExacta").val("");
-            $("#txtDiasCredito").val("");
             $("#cboActivo").val("true");
+
+            limpiarFormularioTelefono();
+            limpiarFormularioCorreo();
+            pintarTelefonosProveedor();
+            pintarCorreosProveedor();
+
             $("#tituloModal").text("Nuevo proveedor");
 
-            limpiarFormularioTelefonoProveedor();
-            listaTelefonosProveedor = [];
-            pintarTelefonosProveedor();
-            bloquearTelefonosProveedor(true);
-
-            limpiarFormularioCorreoProveedor();
-            listaCorreosProveedor = [];
-            pintarCorreosProveedor();
-            bloquearCorreosProveedor(true);
-
             if (json != null) {
-                $("#txtEsNuevo").val("false");
-
-                $("#txtIdentificacionProveedor").val(json.IdentificacionProveedor);
-                $("#txtIdentificacionProveedor").prop("readonly", true);
-
+                $("#txtIdentificacionProveedor").val(json.IdentificacionProveedor || "");
                 $("#txtRazonSocial").val(json.RazonSocial || "");
                 $("#txtNombreContacto").val(json.NombreContacto || "");
+                $("#txtDiasCredito").val(json.DiasCredito || 0);
+
+                $("#cboProvincia").val(json.CodigoProvincia);
+
+                cargarCantonesPorProvincia(json.CodigoProvincia, function () {
+                    $("#cboCanton").val(json.CodigoCanton);
+
+                    cargarDistritosPorCanton(json.CodigoCanton, function () {
+                        $("#cboDistrito").val(json.CodigoDistrito);
+                    });
+                });
+
                 $("#txtDireccionExacta").val(json.DireccionExacta || "");
-                $("#txtDiasCredito").val(json.DiasCredito == null ? "" : json.DiasCredito);
                 $("#cboActivo").val(json.Activo ? "true" : "false");
+
                 $("#tituloModal").text("Editar proveedor");
 
-                if (json.IdProvincia != null) {
-                    $("#cboProvincia").val(json.IdProvincia);
-                    cargarCantonesPorProvincia(json.IdProvincia, json.IdCanton);
-
-                    setTimeout(function () {
-                        cargarDistritosPorCanton(json.IdCanton, json.IdDistrito);
-                    }, 300);
-                }
-
-                bloquearTelefonosProveedor(false);
                 cargarTelefonosProveedor(json.IdentificacionProveedor);
-
-                bloquearCorreosProveedor(false);
                 cargarCorreosProveedor(json.IdentificacionProveedor);
             }
 
             $("#FormModal").modal("show");
         }
 
-       function guardarProveedor() {
-    $("#mensajeError").hide().text("");
+        function guardarProveedor() {
+            $("#mensajeError").hide().text("");
 
-    var diasCreditoTexto = $("#txtDiasCredito").val().trim();
+            var obj = {
+                IdentificacionProveedor: $("#txtIdentificacionProveedor").val().trim(),
+                RazonSocial: $("#txtRazonSocial").val().trim(),
+                NombreContacto: $("#txtNombreContacto").val().trim(),
+                CodigoDistrito: parseInt($("#cboDistrito").val()),
+                DireccionExacta: $("#txtDireccionExacta").val().trim(),
+                DiasCredito: parseInt($("#txtDiasCredito").val()),
+                Activo: $("#cboActivo").val() === "true"
+            };
 
-    var obj = {
-        IdentificacionProveedor: $("#txtIdentificacionProveedor").val().trim(),
-        RazonSocial: $("#txtRazonSocial").val().trim(),
-        NombreContacto: $("#txtNombreContacto").val().trim(),
-        IdDistrito: parseInt($("#cboDistrito").val()) === 0 ? null : parseInt($("#cboDistrito").val()),
-        DireccionExacta: $("#txtDireccionExacta").val().trim(),
-        DiasCredito: diasCreditoTexto === "" ? null : parseInt(diasCreditoTexto),
-        Activo: $("#cboActivo").val() === "true"
-    };
+            var codigoProvincia = parseInt($("#cboProvincia").val());
+            var codigoCanton = parseInt($("#cboCanton").val());
 
-    var esNuevo = $("#txtEsNuevo").val() === "true";
-
-    if (obj.RazonSocial === "") {
-        mostrarError("Debe ingresar la razón social.", "txtRazonSocial");
-        return;
-    }
-
-    if (!validarTextoProveedor(obj.RazonSocial)) {
-        mostrarError("La razón social solo puede contener letras, números, espacios y caracteres básicos.", "txtRazonSocial");
-        return;
-    }
-
-    if (obj.RazonSocial.length > 200) {
-        mostrarError("La razón social no puede superar los 200 caracteres.", "txtRazonSocial");
-        return;
-    }
-
-    if (obj.NombreContacto !== "" && !soloTextoNombre(obj.NombreContacto)) {
-        mostrarError("El nombre de contacto solo puede contener letras y espacios.", "txtNombreContacto");
-        return;
-    }
-
-    if (obj.NombreContacto.length > 100) {
-        mostrarError("El nombre de contacto no puede superar los 100 caracteres.", "txtNombreContacto");
-        return;
-    }
-
-    if (obj.DireccionExacta.length > 250) {
-        mostrarError("La dirección exacta no puede superar los 250 caracteres.", "txtDireccionExacta");
-        return;
-    }
-
-    var mensajeDias = validarEnteroNoNegativo(diasCreditoTexto, "los días de crédito");
-    if (mensajeDias !== "") {
-        mostrarError(mensajeDias, "txtDiasCredito");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarProveedor", "Proveedor")',
-        type: "POST",
-        data: JSON.stringify({
-            obj: obj,
-            esNuevo: esNuevo
-        }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#FormModal").modal("hide");
-                cargarProveedores();
-
-                if (esNuevo && respuesta.identificacionProveedorGenerada !== "") {
-                    alert("Proveedor registrado correctamente.\nCódigo generado: " + respuesta.identificacionProveedorGenerada);
-                }
-            } else {
-                $("#mensajeError").text(respuesta.mensaje).show();
+            if (isNaN(obj.CodigoDistrito)) {
+                obj.CodigoDistrito = 0;
             }
-        },
-        error: function () {
-            $("#mensajeError").text("Error al guardar el proveedor.").show();
-        }
-    });
-}
 
-         function inactivarProveedor(identificacionProveedor) {
+            if (isNaN(obj.DiasCredito)) {
+                obj.DiasCredito = 0;
+            }
+
+            if (obj.RazonSocial === "") {
+                mostrarError("Debe ingresar la razón social.", "txtRazonSocial");
+                return;
+            }
+
+            if (!validarTextoGeneral(obj.RazonSocial)) {
+                mostrarError("La razón social solo puede contener letras, números, espacios y caracteres básicos.", "txtRazonSocial");
+                return;
+            }
+
+            if (obj.RazonSocial.length > 200) {
+                mostrarError("La razón social no puede superar los 200 caracteres.", "txtRazonSocial");
+                return;
+            }
+
+            if (obj.NombreContacto === "") {
+                mostrarError("Debe ingresar el nombre de contacto.", "txtNombreContacto");
+                return;
+            }
+
+            if (!validarTextoPersona(obj.NombreContacto)) {
+                mostrarError("El nombre de contacto solo puede contener letras y espacios.", "txtNombreContacto");
+                return;
+            }
+
+            if (obj.NombreContacto.length > 100) {
+                mostrarError("El nombre de contacto no puede superar los 100 caracteres.", "txtNombreContacto");
+                return;
+            }
+
+            if (isNaN(codigoProvincia) || codigoProvincia <= 0) {
+                mostrarError("Debe seleccionar una provincia.", "cboProvincia");
+                return;
+            }
+
+            if (isNaN(codigoCanton) || codigoCanton <= 0) {
+                mostrarError("Debe seleccionar un cantón.", "cboCanton");
+                return;
+            }
+
+            if (obj.CodigoDistrito <= 0) {
+                mostrarError("Debe seleccionar un distrito.", "cboDistrito");
+                return;
+            }
+
+            if (obj.DireccionExacta === "") {
+                mostrarError("Debe ingresar la dirección exacta.", "txtDireccionExacta");
+                return;
+            }
+
+            if (!validarTextoGeneral(obj.DireccionExacta)) {
+                mostrarError("La dirección exacta solo puede contener letras, números, espacios y caracteres básicos.", "txtDireccionExacta");
+                return;
+            }
+
+            if (obj.DireccionExacta.length > 250) {
+                mostrarError("La dirección exacta no puede superar los 250 caracteres.", "txtDireccionExacta");
+                return;
+            }
+
+            if (obj.DiasCredito < 0) {
+                mostrarError("Los días de crédito no pueden ser negativos.", "txtDiasCredito");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarProveedor", "Proveedor")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        if (obj.IdentificacionProveedor === "") {
+                            $("#txtIdentificacionProveedor").val(respuesta.identificacionProveedor || "");
+                            $("#tituloModal").text("Editar proveedor");
+                            alert("Proveedor guardado correctamente. Ya puede agregar teléfonos y correos.");
+                        } else {
+                            alert("Proveedor actualizado correctamente.");
+                        }
+
+                        cargarProveedores();
+                    } else {
+                        $("#mensajeError").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al guardar el proveedor.").show();
+                }
+            });
+        }
+
+        function inactivarProveedor(identificacionProveedor) {
             if (!confirm("¿Desea inactivar este proveedor?")) {
                 return;
             }
@@ -581,167 +860,18 @@
             });
         }
 
-                    function cargarProvinciasActivas() {
-            $.ajax({
-                url: '@Url.Action("ListarProvinciasActivas", "Ubicacion")',
-                type: "GET",
-                dataType: "json",
-                success: function (respuesta) {
-                    $("#cboProvincia").empty();
-                    $("#cboProvincia").append('<option value="0">Seleccione una provincia</option>');
-
-                    $.each(respuesta.data, function (i, item) {
-                        $("#cboProvincia").append(
-                            $("<option>", {
-                                value: item.IdProvincia,
-                                text: item.Nombre
-                            })
-                        );
-                    });
-                },
-                error: function () {
-                    alert("Error al cargar las provincias.");
-                }
-            });
-        }
-
-        function cargarCantonesPorProvincia(idProvincia, idCantonSeleccionado) {
-            $("#cboCanton").empty();
-            $("#cboCanton").append('<option value="0">Seleccione un cantón</option>');
-
-            if (idProvincia === 0 || isNaN(idProvincia)) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("ListarCantonesActivosPorProvincia", "Ubicacion")',
-                type: "GET",
-                data: { idProvincia: idProvincia },
-                dataType: "json",
-                success: function (respuesta) {
-                    $.each(respuesta.data, function (i, item) {
-                        $("#cboCanton").append(
-                            $("<option>", {
-                                value: item.IdCanton,
-                                text: item.Nombre
-                            })
-                        );
-                    });
-
-                    if (idCantonSeleccionado !== 0 && idCantonSeleccionado != null) {
-                        $("#cboCanton").val(idCantonSeleccionado);
-                    }
-                },
-                error: function () {
-                    alert("Error al cargar los cantones.");
-                }
-            });
-        }
-
-        function cargarDistritosPorCanton(idCanton, idDistritoSeleccionado) {
-            limpiarDistritos();
-
-            if (idCanton === 0 || isNaN(idCanton)) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("ListarDistritosActivosPorCanton", "Ubicacion")',
-                type: "GET",
-                data: { idCanton: idCanton },
-                dataType: "json",
-                success: function (respuesta) {
-                    $.each(respuesta.data, function (i, item) {
-                        $("#cboDistrito").append(
-                            $("<option>", {
-                                value: item.IdDistrito,
-                                text: item.Nombre
-                            })
-                        );
-                    });
-
-                    if (idDistritoSeleccionado !== 0 && idDistritoSeleccionado != null) {
-                        $("#cboDistrito").val(idDistritoSeleccionado);
-                    }
-                },
-                error: function () {
-                    alert("Error al cargar los distritos.");
-                }
-            });
-        }
-
-        function limpiarDistritos() {
-            $("#cboDistrito").empty();
-            $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
-        }
-
-        function cargarTiposTelefonoProveedor() {
-            $.ajax({
-                url: '@Url.Action("ListarTipoTelefonos", "Catalogos")',
-                type: "GET",
-                dataType: "json",
-                success: function (respuesta) {
-                    $("#cboTipoTelefonoProveedor").empty();
-                    $("#cboTipoTelefonoProveedor").append('<option value="0">Seleccione un tipo</option>');
-
-                    $.each(respuesta.data, function (i, item) {
-                        if (item.Activo) {
-                            $("#cboTipoTelefonoProveedor").append(
-                                $("<option>", {
-                                    value: item.IdTipoTelefono,
-                                    text: item.Nombre
-                                })
-                            );
-                        }
-                    });
-                },
-                error: function () {
-                    alert("Error al cargar los tipos de teléfono.");
-                }
-            });
-        }
-
-        function bloquearTelefonosProveedor(bloquear) {
-            $("#txtNumeroTelefonoProveedor").prop("disabled", bloquear);
-            $("#cboTipoTelefonoProveedor").prop("disabled", bloquear);
-            $("#cboTelefonoPrincipalProveedor").prop("disabled", bloquear);
-            $("#btnGuardarTelefono").prop("disabled", bloquear);
-            $("#btnLimpiarTelefono").prop("disabled", bloquear);
-
-            if (bloquear) {
-                $("#textoAyudaTelefono").text("Para agregar teléfonos, primero guarde el proveedor.");
-            } else {
-                $("#textoAyudaTelefono").text("Puede agregar, editar o inactivar teléfonos del proveedor.");
-            }
-        }
-
-        function limpiarFormularioTelefonoProveedor() {
-            $("#txtNumeroTelefonoProveedor").val("");
-            $("#txtNumeroTelefonoAnterior").val("");
-            $("#txtTelefonoEsNuevo").val("true");
-            $("#cboTipoTelefonoProveedor").val(0);
-            $("#cboTelefonoPrincipalProveedor").val("true");
-        }
-
         function cargarTelefonosProveedor(identificacionProveedor) {
-            listaTelefonosProveedor = [];
-            pintarTelefonosProveedor();
-
-            if (identificacionProveedor === "") {
-                return;
-            }
-
             $.ajax({
-                url: '@Url.Action("ListarTelefonosProveedor", "Proveedor")',
+                url: '@Url.Action("ListarTelefonosProveedorPorProveedor", "Proveedor")',
                 type: "GET",
                 data: { identificacionProveedor: identificacionProveedor },
                 dataType: "json",
                 success: function (respuesta) {
-                    listaTelefonosProveedor = respuesta.data;
+                    listaTelefonosProveedor = respuesta.data || [];
                     pintarTelefonosProveedor();
                 },
                 error: function () {
-                    alert("Error al cargar los teléfonos del proveedor.");
+                    $("#mensajeErrorTelefono").text("Error al cargar los teléfonos.").show();
                 }
             });
         }
@@ -750,118 +880,113 @@
             var tbody = $("#tablaTelefonosProveedor tbody");
             tbody.empty();
 
-            if (listaTelefonosProveedor.length === 0) {
-                tbody.append(`
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">
-                            No hay teléfonos registrados.
-                        </td>
-                    </tr>
-                `);
-                return;
-            }
-
             $.each(listaTelefonosProveedor, function (i, item) {
+                var principal = item.EsPrincipal
+                    ? '<span class="badge badge-primary">Sí</span>'
+                    : '<span class="badge badge-light">No</span>';
+
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var principal = item.EsPrincipal
-                    ? '<span class="badge badge-info">Sí</span>'
-                    : '<span class="badge badge-light">No</span>';
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    editarTelefonoProveedor(item);
+                });
 
-                var fila = `
-                    <tr>
-                        <td>${item.NumeroTelefono}</td>
-                        <td>${item.TipoTelefonoNombre}</td>
-                        <td>${principal}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='editarTelefonoProveedor(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick='inactivarTelefonoProveedor(${JSON.stringify(item.NumeroTelefono)}, ${JSON.stringify(item.IdentificacionProveedor)})'>
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarTelefonoProveedor(item.NumeroTelefono);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.NumeroTelefono || ""));
+                fila.append($("<td>").text(item.TipoTelefonoNombre || ""));
+                fila.append($("<td>").html(principal));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
             });
         }
 
-        function editarTelefonoProveedor(item) {
-            $("#txtTelefonoEsNuevo").val("false");
-            $("#txtNumeroTelefonoAnterior").val(item.NumeroTelefono);
-            $("#txtNumeroTelefonoProveedor").val(item.NumeroTelefono);
-            $("#cboTipoTelefonoProveedor").val(item.IdTipoTelefono);
-            $("#cboTelefonoPrincipalProveedor").val(item.EsPrincipal ? "true" : "false");
-        }
+        function guardarTelefonoProveedor() {
+            $("#mensajeErrorTelefono").hide().text("");
 
-       function guardarTelefonoProveedor() {
-    $("#mensajeError").hide().text("");
+            var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
 
-    var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
-
-    var obj = {
-        IdentificacionProveedor: identificacionProveedor,
-        NumeroTelefono: $("#txtNumeroTelefonoProveedor").val().trim(),
-        IdTipoTelefono: parseInt($("#cboTipoTelefonoProveedor").val()),
-        EsPrincipal: $("#cboTelefonoPrincipalProveedor").val() === "true",
-        Activo: true
-    };
-
-    var esNuevo = $("#txtTelefonoEsNuevo").val() === "true";
-    var numeroAnterior = $("#txtNumeroTelefonoAnterior").val().trim();
-
-    if (obj.IdentificacionProveedor === "") {
-        mostrarError("Primero debe guardar el proveedor para poder agregar teléfonos.", "txtIdentificacionProveedor");
-        return;
-    }
-
-    var mensajeTelefono = validarTelefonoCostaRica(obj.NumeroTelefono);
-    if (mensajeTelefono !== "") {
-        mostrarError(mensajeTelefono, "txtNumeroTelefonoProveedor");
-        return;
-    }
-
-    if (obj.IdTipoTelefono === 0 || isNaN(obj.IdTipoTelefono)) {
-        mostrarError("Debe seleccionar un tipo de teléfono.", "cboTipoTelefonoProveedor");
-        return;
-    }
-
-    if (!esNuevo && numeroAnterior === "") {
-        mostrarError("Debe seleccionar un teléfono válido para editar.", "txtNumeroTelefonoProveedor");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarTelefonoProveedor", "Proveedor")',
-        type: "POST",
-        data: JSON.stringify({
-            obj: obj,
-            esNuevo: esNuevo,
-            numeroAnterior: numeroAnterior
-        }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#mensajeError").hide().text("");
-                limpiarFormularioTelefonoProveedor();
-                cargarTelefonosProveedor(identificacionProveedor);
-            } else {
-                $("#mensajeError").text(respuesta.mensaje).show();
+            if (identificacionProveedor === "") {
+                $("#mensajeErrorTelefono").text("Primero debe guardar un proveedor válido.").show();
+                return;
             }
-        },
-        error: function () {
-            $("#mensajeError").text("Error al guardar el teléfono del proveedor.").show();
-        }
-    });
-}
 
-        function inactivarTelefonoProveedor(numeroTelefono, identificacionProveedor) {
+            var obj = {
+                IdentificacionProveedor: identificacionProveedor,
+                NumeroTelefonoAnterior: $("#txtTelefonoAnterior").val().trim(),
+                NumeroTelefono: $("#txtTelefono").val().trim(),
+                IdTipoTelefono: parseInt($("#cboTipoTelefono").val()),
+                EsPrincipal: $("#cboTelefonoPrincipal").val() === "true",
+                Activo: $("#cboTelefonoActivo").val() === "true"
+            };
+
+            if (isNaN(obj.IdTipoTelefono)) {
+                obj.IdTipoTelefono = 0;
+            }
+
+            if (!validarTelefono(obj.NumeroTelefono)) {
+                $("#mensajeErrorTelefono").text("El teléfono debe contener solo números y tener entre 8 y 15 dígitos.").show();
+                return;
+            }
+
+            if (obj.IdTipoTelefono <= 0) {
+                $("#mensajeErrorTelefono").text("Debe seleccionar un tipo de teléfono.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarTelefonoProveedor", "Proveedor")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        limpiarFormularioTelefono();
+                        cargarTelefonosProveedor(identificacionProveedor);
+                    } else {
+                        $("#mensajeErrorTelefono").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorTelefono").text("Error al guardar el teléfono.").show();
+                }
+            });
+        }
+
+        function editarTelefonoProveedor(item) {
+            $("#txtTelefonoAnterior").val(item.NumeroTelefono || "");
+            $("#txtTelefono").val(item.NumeroTelefono || "");
+            $("#cboTipoTelefono").val(item.IdTipoTelefono);
+            $("#cboTelefonoPrincipal").val(item.EsPrincipal ? "true" : "false");
+            $("#cboTelefonoActivo").val(item.Activo ? "true" : "false");
+        }
+
+        function inactivarTelefonoProveedor(numeroTelefono) {
+            var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
+
             if (!confirm("¿Desea inactivar este teléfono?")) {
                 return;
             }
@@ -877,85 +1002,38 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        limpiarFormularioTelefonoProveedor();
                         cargarTelefonosProveedor(identificacionProveedor);
                     } else {
-                        alert(respuesta.mensaje);
+                        $("#mensajeErrorTelefono").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el teléfono.");
+                    $("#mensajeErrorTelefono").text("Error al inactivar el teléfono.").show();
                 }
             });
         }
 
-        function cargarTiposCorreoProveedor() {
-            $.ajax({
-                url: '@Url.Action("ListarTipoCorreos", "Catalogos")',
-                type: "GET",
-                dataType: "json",
-                success: function (respuesta) {
-                    $("#cboTipoCorreoProveedor").empty();
-                    $("#cboTipoCorreoProveedor").append('<option value="0">Seleccione un tipo</option>');
-
-                    $.each(respuesta.data, function (i, item) {
-                        if (item.Activo) {
-                            $("#cboTipoCorreoProveedor").append(
-                                $("<option>", {
-                                    value: item.IdTipoCorreo,
-                                    text: item.Nombre
-                                })
-                            );
-                        }
-                    });
-                },
-                error: function () {
-                    alert("Error al cargar los tipos de correo.");
-                }
-            });
-        }
-
-        function bloquearCorreosProveedor(bloquear) {
-            $("#txtDireccionCorreoProveedor").prop("disabled", bloquear);
-            $("#cboTipoCorreoProveedor").prop("disabled", bloquear);
-            $("#cboCorreoPrincipalProveedor").prop("disabled", bloquear);
-            $("#btnGuardarCorreo").prop("disabled", bloquear);
-            $("#btnLimpiarCorreo").prop("disabled", bloquear);
-
-            if (bloquear) {
-                $("#textoAyudaCorreo").text("Para agregar correos, primero guarde el proveedor.");
-            } else {
-                $("#textoAyudaCorreo").text("Puede agregar, editar o inactivar correos del proveedor.");
-            }
-        }
-
-        function limpiarFormularioCorreoProveedor() {
-            $("#txtDireccionCorreoProveedor").val("");
-            $("#txtCorreoAnterior").val("");
-            $("#txtCorreoEsNuevo").val("true");
-            $("#cboTipoCorreoProveedor").val(0);
-            $("#cboCorreoPrincipalProveedor").val("true");
+        function limpiarFormularioTelefono() {
+            $("#txtTelefonoAnterior").val("");
+            $("#txtTelefono").val("");
+            $("#cboTipoTelefono").val("0");
+            $("#cboTelefonoPrincipal").val("false");
+            $("#cboTelefonoActivo").val("true");
+            $("#mensajeErrorTelefono").hide().text("");
         }
 
         function cargarCorreosProveedor(identificacionProveedor) {
-            listaCorreosProveedor = [];
-            pintarCorreosProveedor();
-
-            if (identificacionProveedor === "") {
-                return;
-            }
-
             $.ajax({
-                url: '@Url.Action("ListarCorreosProveedor", "Proveedor")',
+                url: '@Url.Action("ListarCorreosProveedorPorProveedor", "Proveedor")',
                 type: "GET",
                 data: { identificacionProveedor: identificacionProveedor },
                 dataType: "json",
                 success: function (respuesta) {
-                    listaCorreosProveedor = respuesta.data;
+                    listaCorreosProveedor = respuesta.data || [];
                     pintarCorreosProveedor();
                 },
                 error: function () {
-                    alert("Error al cargar los correos del proveedor.");
+                    $("#mensajeErrorCorreo").text("Error al cargar los correos.").show();
                 }
             });
         }
@@ -964,127 +1042,113 @@
             var tbody = $("#tablaCorreosProveedor tbody");
             tbody.empty();
 
-            if (listaCorreosProveedor.length === 0) {
-                tbody.append(`
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">
-                            No hay correos registrados.
-                        </td>
-                    </tr>
-                `);
-                return;
-            }
-
             $.each(listaCorreosProveedor, function (i, item) {
+                var principal = item.EsPrincipal
+                    ? '<span class="badge badge-primary">Sí</span>'
+                    : '<span class="badge badge-light">No</span>';
+
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var principal = item.EsPrincipal
-                    ? '<span class="badge badge-info">Sí</span>'
-                    : '<span class="badge badge-light">No</span>';
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    editarCorreoProveedor(item);
+                });
 
-                var fila = `
-                    <tr>
-                        <td>${item.DireccionCorreo}</td>
-                        <td>${item.TipoCorreoNombre}</td>
-                        <td>${principal}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='editarCorreoProveedor(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick='inactivarCorreoProveedor(${JSON.stringify(item.DireccionCorreo)}, ${JSON.stringify(item.IdentificacionProveedor)})'>
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarCorreoProveedor(item.DireccionCorreo);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.DireccionCorreo || ""));
+                fila.append($("<td>").text(item.TipoCorreoNombre || ""));
+                fila.append($("<td>").html(principal));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
             });
         }
 
-        function editarCorreoProveedor(item) {
-            $("#txtCorreoEsNuevo").val("false");
-            $("#txtCorreoAnterior").val(item.DireccionCorreo);
-            $("#txtDireccionCorreoProveedor").val(item.DireccionCorreo);
-            $("#cboTipoCorreoProveedor").val(item.IdTipoCorreo);
-            $("#cboCorreoPrincipalProveedor").val(item.EsPrincipal ? "true" : "false");
-        }
+        function guardarCorreoProveedor() {
+            $("#mensajeErrorCorreo").hide().text("");
 
-       function guardarCorreoProveedor() {
-    $("#mensajeError").hide().text("");
+            var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
 
-    var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
-
-    var obj = {
-        IdentificacionProveedor: identificacionProveedor,
-        DireccionCorreo: $("#txtDireccionCorreoProveedor").val().trim(),
-        IdTipoCorreo: parseInt($("#cboTipoCorreoProveedor").val()),
-        EsPrincipal: $("#cboCorreoPrincipalProveedor").val() === "true",
-        Activo: true
-    };
-
-    var esNuevo = $("#txtCorreoEsNuevo").val() === "true";
-    var correoAnterior = $("#txtCorreoAnterior").val().trim();
-
-    if (obj.IdentificacionProveedor === "") {
-        mostrarError("Primero debe guardar el proveedor para poder agregar correos.", "txtIdentificacionProveedor");
-        return;
-    }
-
-    if (obj.DireccionCorreo === "") {
-        mostrarError("Debe ingresar la dirección de correo.", "txtDireccionCorreoProveedor");
-        return;
-    }
-
-    if (obj.DireccionCorreo.length > 150) {
-        mostrarError("La dirección de correo no puede superar los 150 caracteres.", "txtDireccionCorreoProveedor");
-        return;
-    }
-
-    if (!validarFormatoCorreo(obj.DireccionCorreo)) {
-        mostrarError("Debe ingresar un correo electrónico válido.", "txtDireccionCorreoProveedor");
-        return;
-    }
-
-    if (obj.IdTipoCorreo === 0 || isNaN(obj.IdTipoCorreo)) {
-        mostrarError("Debe seleccionar un tipo de correo.", "cboTipoCorreoProveedor");
-        return;
-    }
-
-    if (!esNuevo && correoAnterior === "") {
-        mostrarError("Debe seleccionar un correo válido para editar.", "txtDireccionCorreoProveedor");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarCorreoProveedor", "Proveedor")',
-        type: "POST",
-        data: JSON.stringify({
-            obj: obj,
-            esNuevo: esNuevo,
-            correoAnterior: correoAnterior
-        }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#mensajeError").hide().text("");
-                limpiarFormularioCorreoProveedor();
-                cargarCorreosProveedor(identificacionProveedor);
-            } else {
-                $("#mensajeError").text(respuesta.mensaje).show();
+            if (identificacionProveedor === "") {
+                $("#mensajeErrorCorreo").text("Primero debe guardar un proveedor válido.").show();
+                return;
             }
-        },
-        error: function () {
-            $("#mensajeError").text("Error al guardar el correo del proveedor.").show();
-        }
-    });
-}
 
-        function inactivarCorreoProveedor(direccionCorreo, identificacionProveedor) {
+            var obj = {
+                IdentificacionProveedor: identificacionProveedor,
+                DireccionCorreoAnterior: $("#txtCorreoAnterior").val().trim(),
+                DireccionCorreo: $("#txtCorreo").val().trim().toLowerCase(),
+                IdTipoCorreo: parseInt($("#cboTipoCorreo").val()),
+                EsPrincipal: $("#cboCorreoPrincipal").val() === "true",
+                Activo: $("#cboCorreoActivo").val() === "true"
+            };
+
+            if (isNaN(obj.IdTipoCorreo)) {
+                obj.IdTipoCorreo = 0;
+            }
+
+            if (!validarCorreo(obj.DireccionCorreo)) {
+                $("#mensajeErrorCorreo").text("Debe ingresar una dirección de correo válida.").show();
+                return;
+            }
+
+            if (obj.IdTipoCorreo <= 0) {
+                $("#mensajeErrorCorreo").text("Debe seleccionar un tipo de correo.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarCorreoProveedor", "Proveedor")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        limpiarFormularioCorreo();
+                        cargarCorreosProveedor(identificacionProveedor);
+                    } else {
+                        $("#mensajeErrorCorreo").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorCorreo").text("Error al guardar el correo.").show();
+                }
+            });
+        }
+
+        function editarCorreoProveedor(item) {
+            $("#txtCorreoAnterior").val(item.DireccionCorreo || "");
+            $("#txtCorreo").val(item.DireccionCorreo || "");
+            $("#cboTipoCorreo").val(item.IdTipoCorreo);
+            $("#cboCorreoPrincipal").val(item.EsPrincipal ? "true" : "false");
+            $("#cboCorreoActivo").val(item.Activo ? "true" : "false");
+        }
+
+        function inactivarCorreoProveedor(direccionCorreo) {
+            var identificacionProveedor = $("#txtIdentificacionProveedor").val().trim();
+
             if (!confirm("¿Desea inactivar este correo?")) {
                 return;
             }
@@ -1100,57 +1164,24 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        limpiarFormularioCorreoProveedor();
                         cargarCorreosProveedor(identificacionProveedor);
                     } else {
-                        alert(respuesta.mensaje);
+                        $("#mensajeErrorCorreo").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el correo.");
+                    $("#mensajeErrorCorreo").text("Error al inactivar el correo.").show();
                 }
             });
         }
 
-        function validarFormatoCorreo(correo) {
-            if (correo === null || correo === undefined) {
-                return false;
-            }
-
-            correo = correo.trim();
-
-            var arroba = String.fromCharCode(64);
-
-            if (correo.indexOf(arroba) === -1) {
-                return false;
-            }
-
-            if (correo.indexOf(arroba) !== correo.lastIndexOf(arroba)) {
-                return false;
-            }
-
-            var partes = correo.split(arroba);
-
-            if (partes.length !== 2) {
-                return false;
-            }
-
-            var usuario = partes[0];
-            var dominio = partes[1];
-
-            if (usuario.length === 0 || dominio.length === 0) {
-                return false;
-            }
-
-            if (dominio.indexOf(".") === -1) {
-                return false;
-            }
-
-            if (dominio.startsWith(".") || dominio.endsWith(".")) {
-                return false;
-            }
-
-            return true;
+        function limpiarFormularioCorreo() {
+            $("#txtCorreoAnterior").val("");
+            $("#txtCorreo").val("");
+            $("#cboTipoCorreo").val("0");
+            $("#cboCorreoPrincipal").val("false");
+            $("#cboCorreoActivo").val("true");
+            $("#mensajeErrorCorreo").hide().text("");
         }
 
         function mostrarError(mensaje, idCampo) {
@@ -1182,20 +1213,16 @@
             campo.removeClass("input-error-suave");
         }
 
-        function limpiarNoNumeros(idCampo, mensaje) {
-            var campo = $("#" + idCampo);
-            var valorOriginal = campo.val();
-            var valorLimpio = valorOriginal.replace(/[^0-9]/g, "");
+        function limpiarErrores() {
+            $("#mensajeError").hide().text("");
+            $("#mensajeErrorTelefono").hide().text("");
+            $("#mensajeErrorCorreo").hide().text("");
 
-            if (valorOriginal !== valorLimpio) {
-                campo.val(valorLimpio);
-                mostrarAyudaCampo(idCampo, mensaje);
-            } else {
-                ocultarAyudaCampo(idCampo);
-            }
+            $(".campo-ayuda-error").hide().text("");
+            $(".input-error-suave").removeClass("input-error-suave");
         }
 
-        function limpiarNoLetras(idCampo, mensaje) {
+        function limpiarTextoPersona(idCampo, mensaje) {
             var campo = $("#" + idCampo);
             var valorOriginal = campo.val();
             var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, "");
@@ -1208,10 +1235,10 @@
             }
         }
 
-        function limpiarTextoProveedor(idCampo, mensaje) {
+        function limpiarTextoGeneral(idCampo, mensaje) {
             var campo = $("#" + idCampo);
             var valorOriginal = campo.val();
-            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-&]/g, "");
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
 
             if (valorOriginal !== valorLimpio) {
                 campo.val(valorLimpio);
@@ -1221,51 +1248,32 @@
             }
         }
 
-        function soloNumeros(valor) {
-            return /^[0-9]+$/.test(valor);
-        }
-
-        function soloTextoNombre(valor) {
+        function validarTextoPersona(valor) {
             return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(valor);
         }
 
-        function validarTextoProveedor(valor) {
-            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-&]+$/.test(valor);
+        function validarTextoGeneral(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
         }
 
-        function validarEnteroNoNegativo(texto, nombreCampo) {
-            if (texto === "") {
-                return "";
-            }
-
-            if (!/^[0-9]+$/.test(texto)) {
-                return "Debe ingresar un número entero válido para " + nombreCampo + ".";
-            }
-
-            var numero = parseInt(texto);
-
-            if (numero < 0) {
-                return nombreCampo + " no puede ser negativo.";
-            }
-
-            return "";
+        function validarTelefono(valor) {
+            return /^[0-9]{8,15}$/.test(valor);
         }
 
-        function validarTelefonoCostaRica(numero) {
-            if (numero === "") {
-                return "Debe ingresar el número de teléfono.";
+        function validarCorreo(valor) {
+            if (valor == null) {
+                return false;
             }
 
-            if (!soloNumeros(numero)) {
-                return "El teléfono debe contener solo números.";
-            }
+            valor = valor.trim().toLowerCase();
 
-            if (numero.length !== 8) {
-                return "El teléfono debe tener 8 dígitos.";
-            }
+            var arroba = String.fromCharCode(64);
+            var patron = "^[^\\s" + arroba + "]+"
+                + arroba
+                + "[^\\s" + arroba + "]+\\.[^\\s" + arroba + "]+$";
 
-            return "";
+            var regexCorreo = new RegExp(patron);
+            return regexCorreo.test(valor);
         }
     </script>
 }
-    

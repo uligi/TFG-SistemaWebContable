@@ -1,0 +1,475 @@
+﻿@{
+    ViewBag.Title = "Historial de cambios";
+    Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
+}
+
+<h4 class="font-weight-bold py-3 mb-0">Historial de cambios</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Seguridad</li>
+        <li class="breadcrumb-item active">Historial de cambios</li>
+    </ol>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h6 class="mb-0">Filtros de búsqueda</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="alert alert-danger" id="mensajeError" style="display:none;"></div>
+
+        <div class="form-row">
+
+            <div class="form-group col-md-3">
+                <label for="txtFiltro">Buscar</label>
+                <input type="text"
+                       id="txtFiltro"
+                       class="form-control"
+                       maxlength="100"
+                       placeholder="Usuario, tabla, detalle, registro..." />
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="txtFechaInicio">Fecha inicio</label>
+                <input type="date" id="txtFechaInicio" class="form-control" />
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="txtFechaFin">Fecha final</label>
+                <input type="date" id="txtFechaFin" class="form-control" />
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="cboTipoDeObservacion">Tipo de observación</label>
+                <select id="cboTipoDeObservacion" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="Seguridad">Seguridad</option>
+                    <option value="Acceso">Acceso</option>
+                    <option value="Cambio de clave">Cambio de clave</option>
+                    <option value="General">General</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-primary btn-block" onclick="listarHistorialCambios()">
+                    Buscar
+                </button>
+            </div>
+
+        </div>
+
+        <small class="text-muted">
+            Esta pantalla muestra acciones registradas en el sistema, como cambios de permisos, accesos y cambios de clave.
+        </small>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <button type="button" class="btn btn-success mr-2" onclick="exportarCSV()">
+            <i class="feather icon-download"></i> Exportar CSV
+        </button>
+
+        <button type="button" class="btn btn-info" onclick="imprimirHistorial()">
+            <i class="feather icon-printer"></i> Imprimir
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h6 class="mb-0">Registros del historial</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered nowrap" id="tablaHistorial" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Fecha y hora</th>
+                        <th>Usuario</th>
+                        <th>Empleado</th>
+                        <th>Tipo</th>
+                        <th>Tabla</th>
+                        <th>Registro</th>
+                        <th>Detalle</th>
+                        <th>Detalle completo</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalDetalleHistorial" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Detalle del cambio</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="contenidoDetalleHistorial">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="imprimirDetalle()">
+                    Imprimir detalle
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+    var tablaHistorial = null;
+    var listaHistorialGlobal = [];
+
+    $(document).ready(function () {
+        var hoy = new Date();
+        var haceTreintaDias = new Date();
+
+        haceTreintaDias.setDate(hoy.getDate() - 30);
+
+        $("#txtFechaInicio").val(convertirDateAInput(haceTreintaDias));
+        $("#txtFechaFin").val(convertirDateAInput(hoy));
+
+        $("#txtFiltro").on("keypress", function (e) {
+            if (e.which === 13) {
+                listarHistorialCambios();
+            }
+        });
+
+        listarHistorialCambios();
+    });
+
+    function listarHistorialCambios() {
+        $("#mensajeError").hide().text("");
+
+        $.ajax({
+            url: '@Url.Action("ListarHistorialCambios", "Seguridad")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                filtro: $("#txtFiltro").val(),
+                fechaInicio: $("#txtFechaInicio").val(),
+                fechaFin: $("#txtFechaFin").val(),
+                tipoDeObservacion: $("#cboTipoDeObservacion").val()
+            },
+            success: function (respuesta) {
+                if (respuesta.resultado === false) {
+                    $("#mensajeError").text(respuesta.mensaje || "No se pudo consultar el historial.").show();
+                    return;
+                }
+
+                listaHistorialGlobal = respuesta.data || [];
+                pintarTablaHistorial(listaHistorialGlobal);
+            },
+            error: function () {
+                $("#mensajeError").text("Error al consultar el historial de cambios.").show();
+            }
+        });
+    }
+
+    function pintarTablaHistorial(lista) {
+        if (tablaHistorial != null) {
+            tablaHistorial.clear().destroy();
+            tablaHistorial = null;
+        }
+
+        var tbody = $("#tablaHistorial tbody");
+        tbody.empty();
+
+        $.each(lista, function (i, item) {
+            var fila = $("<tr>");
+
+            fila.append($("<td>").text(formatearFechaHora(item.FechaHoraCambio)));
+            fila.append($("<td>").text(item.NombreUsuario || ""));
+            fila.append($("<td>").text((item.Identificacion || "") + " - " + (item.NombreEmpleado || "")));
+            fila.append($("<td>").html(obtenerBadgeTipo(item.TipoDeObservacion)));
+            fila.append($("<td>").text(item.NombreTabla || ""));
+            fila.append($("<td>").text(item.IdRegistro || ""));
+            fila.append($("<td>").text(item.Detalle || ""));
+            fila.append($("<td>").html(
+                '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleHistorial(' + i + ')">Ver</button>'
+            ));
+
+            tbody.append(fila);
+        });
+
+        tablaHistorial = $("#tablaHistorial").DataTable({
+            responsive: false,
+            scrollX: true,
+            autoWidth: false,
+            pageLength: 10,
+            destroy: true,
+            order: [[0, "desc"]],
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+            }
+        });
+    }
+
+    function verDetalleHistorial(index) {
+        var item = listaHistorialGlobal[index];
+
+        var html = '';
+
+        html += '<table class="table table-bordered table-striped mb-0">';
+        html += '<tbody>';
+
+        html += agregarFilaDetalle("ID historial", item.IdHistorialCambio);
+        html += agregarFilaDetalle("Fecha y hora", formatearFechaHora(item.FechaHoraCambio));
+        html += agregarFilaDetalle("Identificación", item.Identificacion);
+        html += agregarFilaDetalle("Usuario", item.NombreUsuario);
+        html += agregarFilaDetalle("Empleado", item.NombreEmpleado);
+        html += agregarFilaDetalle("Tipo de observación", item.TipoDeObservacion);
+        html += agregarFilaDetalle("Tabla afectada", item.NombreTabla);
+        html += agregarFilaDetalle("Registro afectado", item.IdRegistro);
+        html += agregarFilaDetalle("Detalle", item.Detalle);
+        html += agregarFilaDetalle("Valor anterior", item.ValorAnterior);
+        html += agregarFilaDetalle("Valor nuevo", item.ValorNuevo);
+        html += agregarFilaDetalle("Activo", item.Activo ? "Sí" : "No");
+
+        html += '</tbody>';
+        html += '</table>';
+
+        $("#contenidoDetalleHistorial").html(html);
+        $("#ModalDetalleHistorial").modal("show");
+    }
+
+    function agregarFilaDetalle(titulo, valor) {
+        return '<tr>' +
+            '<th style="width:30%;">' + titulo + '</th>' +
+            '<td style="white-space:pre-wrap;">' + escaparHtml(valor || "") + '</td>' +
+            '</tr>';
+    }
+
+    function obtenerBadgeTipo(tipo) {
+        if (tipo === "Seguridad") {
+            return '<span class="badge badge-primary">Seguridad</span>';
+        }
+
+        if (tipo === "Acceso") {
+            return '<span class="badge badge-info">Acceso</span>';
+        }
+
+        if (tipo === "Cambio de clave") {
+            return '<span class="badge badge-warning">Cambio de clave</span>';
+        }
+
+        return '<span class="badge badge-secondary">' + escaparHtml(tipo || "General") + '</span>';
+    }
+
+    function exportarCSV() {
+        if (listaHistorialGlobal.length === 0) {
+            alert("No hay datos para exportar.");
+            return;
+        }
+
+        var columnas = [
+            { titulo: "Fecha y hora", campo: "FechaHoraCambio", tipo: "fechaHora" },
+            { titulo: "Identificación", campo: "Identificacion" },
+            { titulo: "Usuario", campo: "NombreUsuario" },
+            { titulo: "Empleado", campo: "NombreEmpleado" },
+            { titulo: "Tipo", campo: "TipoDeObservacion" },
+            { titulo: "Tabla", campo: "NombreTabla" },
+            { titulo: "Registro", campo: "IdRegistro" },
+            { titulo: "Detalle", campo: "Detalle" },
+            { titulo: "Valor anterior", campo: "ValorAnterior" },
+            { titulo: "Valor nuevo", campo: "ValorNuevo" }
+        ];
+
+        var lineas = [];
+
+        lineas.push(columnas.map(function (c) {
+            return escaparCSV(c.titulo);
+        }).join(";"));
+
+        $.each(listaHistorialGlobal, function (i, item) {
+            var fila = columnas.map(function (columna) {
+                var valor = item[columna.campo];
+
+                if (columna.tipo === "fechaHora") {
+                    valor = formatearFechaHora(valor);
+                }
+
+                return escaparCSV(valor);
+            });
+
+            lineas.push(fila.join(";"));
+        });
+
+        var contenido = "\uFEFF" + lineas.join("\n");
+        var blob = new Blob([contenido], { type: "text/csv;charset=utf-8;" });
+
+        var enlace = document.createElement("a");
+        var url = URL.createObjectURL(blob);
+
+        enlace.setAttribute("href", url);
+        enlace.setAttribute("download", "historial_cambios.csv");
+        enlace.style.visibility = "hidden";
+
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+    }
+
+    function imprimirHistorial() {
+        if (listaHistorialGlobal.length === 0) {
+            alert("No hay datos para imprimir.");
+            return;
+        }
+
+        var html = '';
+
+        html += '<!DOCTYPE html>';
+        html += '<html><head><meta charset="utf-8">';
+        html += '<title>Historial de cambios</title>';
+        html += '<style>';
+        html += 'body{font-family:Arial, sans-serif; font-size:12px; margin:25px;}';
+        html += 'h2{margin-bottom:5px;}';
+        html += 'table{width:100%; border-collapse:collapse; margin-top:15px;}';
+        html += 'th,td{border:1px solid #ccc; padding:6px; text-align:left;}';
+        html += 'th{background:#f2f2f2;}';
+        html += '</style>';
+        html += '</head><body>';
+
+        html += '<h2>Historial de cambios</h2>';
+        html += '<p>Consulta generada desde el sistema.</p>';
+
+        html += '<table>';
+        html += '<thead>';
+        html += '<tr>';
+        html += '<th>Fecha y hora</th>';
+        html += '<th>Usuario</th>';
+        html += '<th>Empleado</th>';
+        html += '<th>Tipo</th>';
+        html += '<th>Tabla</th>';
+        html += '<th>Registro</th>';
+        html += '<th>Detalle</th>';
+        html += '</tr>';
+        html += '</thead>';
+        html += '<tbody>';
+
+        $.each(listaHistorialGlobal, function (i, item) {
+            html += '<tr>';
+            html += '<td>' + formatearFechaHora(item.FechaHoraCambio) + '</td>';
+            html += '<td>' + escaparHtml(item.NombreUsuario || "") + '</td>';
+            html += '<td>' + escaparHtml((item.Identificacion || "") + " - " + (item.NombreEmpleado || "")) + '</td>';
+            html += '<td>' + escaparHtml(item.TipoDeObservacion || "") + '</td>';
+            html += '<td>' + escaparHtml(item.NombreTabla || "") + '</td>';
+            html += '<td>' + escaparHtml(item.IdRegistro || "") + '</td>';
+            html += '<td>' + escaparHtml(item.Detalle || "") + '</td>';
+            html += '</tr>';
+        });
+
+        html += '</tbody>';
+        html += '</table>';
+
+        html += '</body></html>';
+
+        var ventana = window.open("", "_blank");
+        ventana.document.open();
+        ventana.document.write(html);
+        ventana.document.close();
+        ventana.focus();
+        ventana.print();
+    }
+
+    function imprimirDetalle() {
+        var contenido = $("#contenidoDetalleHistorial").html();
+
+        var html = '';
+
+        html += '<!DOCTYPE html>';
+        html += '<html><head><meta charset="utf-8">';
+        html += '<title>Detalle del cambio</title>';
+        html += '<style>';
+        html += 'body{font-family:Arial, sans-serif; font-size:12px; margin:25px;}';
+        html += 'h2{margin-bottom:15px;}';
+        html += 'table{width:100%; border-collapse:collapse; margin-top:10px;}';
+        html += 'th,td{border:1px solid #ccc; padding:8px; text-align:left;}';
+        html += 'th{background:#f2f2f2;}';
+        html += '</style>';
+        html += '</head><body>';
+        html += '<h2>Detalle del cambio</h2>';
+        html += contenido;
+        html += '</body></html>';
+
+        var ventana = window.open("", "_blank");
+        ventana.document.open();
+        ventana.document.write(html);
+        ventana.document.close();
+        ventana.focus();
+        ventana.print();
+    }
+
+    function formatearFechaHora(valor) {
+        if (!valor) {
+            return "";
+        }
+
+        var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
+
+        if (isNaN(fecha.getTime())) {
+            fecha = new Date(valor);
+        }
+
+        if (isNaN(fecha.getTime())) {
+            return "";
+        }
+
+        var anio = fecha.getFullYear();
+        var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+        var dia = ("0" + fecha.getDate()).slice(-2);
+        var hora = ("0" + fecha.getHours()).slice(-2);
+        var minuto = ("0" + fecha.getMinutes()).slice(-2);
+        var segundo = ("0" + fecha.getSeconds()).slice(-2);
+
+        return anio + "-" + mes + "-" + dia + " " + hora + ":" + minuto + ":" + segundo;
+    }
+
+    function convertirDateAInput(fecha) {
+        var anio = fecha.getFullYear();
+        var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+        var dia = ("0" + fecha.getDate()).slice(-2);
+
+        return anio + "-" + mes + "-" + dia;
+    }
+
+    function escaparCSV(valor) {
+        valor = valor === null || valor === undefined ? "" : valor.toString();
+        valor = valor.replace(/"/g, '""');
+        return '"' + valor + '"';
+    }
+
+    function escaparHtml(valor) {
+        valor = valor === null || valor === undefined ? "" : valor.toString();
+
+        return valor
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+    </script>
+}

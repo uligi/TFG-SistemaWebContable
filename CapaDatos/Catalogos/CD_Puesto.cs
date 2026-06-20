@@ -93,7 +93,7 @@ namespace CapaDatos.Catalogos
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
-                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -128,7 +128,7 @@ namespace CapaDatos.Catalogos
 
                     cmd.Parameters.AddWithValue("@IdPuesto", obj.IdPuesto);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
-                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -150,7 +150,7 @@ namespace CapaDatos.Catalogos
             return resultado;
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idPuesto, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -162,7 +162,7 @@ namespace CapaDatos.Catalogos
                     SqlCommand cmd = new SqlCommand("Catalogos.sp_Puesto_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdPuesto", id);
+                    cmd.Parameters.AddWithValue("@IdPuesto", idPuesto);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

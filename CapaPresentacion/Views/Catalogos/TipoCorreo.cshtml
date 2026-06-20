@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "TipoCorreo";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
@@ -41,9 +40,6 @@
     </div>
 
     <div class="card-body">
-
-
-
         <div class="table-responsive">
             <table class="table table-striped table-bordered nowrap" id="tablaTipoCorreos" style="width:100%;">
                 <thead>
@@ -57,7 +53,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -184,7 +179,10 @@
 
                 var acciones = $("<td>");
                 acciones.append(botonEditar);
-                acciones.append(botonInactivar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
 
                 var fila = $("<tr>");
                 fila.append($("<td>").text(nombre));
@@ -259,20 +257,11 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (obj.IdTipoCorreo === 0) {
-                        if (respuesta.resultado != 0) {
-                            $("#FormModal").modal("hide");
-                            cargarTipoCorreos();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        $("#FormModal").modal("hide");
+                        cargarTipoCorreos();
                     } else {
-                        if (respuesta.resultado) {
-                            $("#FormModal").modal("hide");
-                            cargarTipoCorreos();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
+                        $("#mensajeError").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
@@ -281,7 +270,7 @@
             });
         }
 
-        function inactivarTipoCorreo(id) {
+        function inactivarTipoCorreo(idTipoCorreo) {
             if (!confirm("¿Desea inactivar este tipo de correo?")) {
                 return;
             }
@@ -289,7 +278,7 @@
             $.ajax({
                 url: '@Url.Action("InactivarTipoCorreo", "Catalogos")',
                 type: "POST",
-                data: JSON.stringify({ id: id }),
+                data: JSON.stringify({ idTipoCorreo: idTipoCorreo }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {

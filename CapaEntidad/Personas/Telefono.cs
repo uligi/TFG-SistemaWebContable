@@ -1,20 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CapaEntidad.personas
+namespace CapaEntidad.Personas
 {
     public class Telefono
     {
-        public string NumeroTelefono { get; set; }
         public string Identificacion { get; set; }
+
+        public string NumeroTelefono { get; set; }
+
+        // Se usa para editar cuando el número cambia,
+        // porque la PK es compuesta: Identificacion + NumeroTelefono
+        public string NumeroTelefonoAnterior { get; set; }
+
         public int IdTipoTelefono { get; set; }
+        public string TipoTelefonoNombre { get; set; }
+
         public bool EsPrincipal { get; set; }
         public bool Activo { get; set; }
 
-        public string TipoTelefonoNombre { get; set; }
         public string Nombre { get; set; }
         public string PrimerApellido { get; set; }
         public string SegundoApellido { get; set; }

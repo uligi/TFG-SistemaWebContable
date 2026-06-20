@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using CapaEntidad.Proveedores;
+﻿using CapaEntidad.Proveedores;
 using CapaNegocio.Proveedores;
-
+using CapaPresentacion.Filtros;
+using System.Web.Mvc;
 
 namespace CapaPresentacion.Controllers.Mantenimientos
 {
+    [PermisoAuthorize(CodigoModulo = "PROVEEDORES")]
     public class ProveedorController : Controller
     {
-        // GET: Proveedor
+        // ===============================
+        // PROVEEDORES
+        // ===============================
+
         public ActionResult Proveedores()
         {
             return View();
@@ -32,31 +32,39 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult GuardarProveedor(Proveedor obj, bool esNuevo)
+        public JsonResult GuardarProveedor(Proveedor obj)
         {
             object resultado;
             string mensaje = string.Empty;
-            string identificacionProveedorGenerada = string.Empty;
 
-            if (esNuevo)
+            if (string.IsNullOrWhiteSpace(obj.IdentificacionProveedor))
             {
+                string identificacionProveedorGenerada;
+
                 resultado = new CN_Proveedor().Registrar(
                     obj,
                     out mensaje,
                     out identificacionProveedorGenerada
                 );
+
+                return Json(new
+                {
+                    resultado = resultado,
+                    mensaje = mensaje,
+                    identificacionProveedor = identificacionProveedorGenerada
+                }, JsonRequestBehavior.AllowGet);
             }
             else
             {
                 resultado = new CN_Proveedor().Editar(obj, out mensaje);
-            }
 
-            return Json(new
-            {
-                resultado = resultado,
-                mensaje = mensaje,
-                identificacionProveedorGenerada = identificacionProveedorGenerada
-            }, JsonRequestBehavior.AllowGet);
+                return Json(new
+                {
+                    resultado = resultado,
+                    mensaje = mensaje,
+                    identificacionProveedor = obj.IdentificacionProveedor
+                }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
@@ -65,96 +73,127 @@ namespace CapaPresentacion.Controllers.Mantenimientos
             string mensaje = string.Empty;
             bool resultado = new CN_Proveedor().Inactivar(identificacionProveedor, out mensaje);
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult TelefonoProveedor()
+        // ===============================
+        // TELEFONOS PROVEEDOR
+        // ===============================
+
+        [HttpGet]
+        public JsonResult ListarTelefonosProveedor()
         {
-            return View();
+            var lista = new CN_TelefonoProveedor().Listar();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public JsonResult ListarTelefonosProveedor(string identificacionProveedor)
+        public JsonResult ListarTelefonosProveedorPorProveedor(string identificacionProveedor)
         {
-            var lista = new CN_TelefonoProveedor().Listar()
-                .FindAll(x => x.IdentificacionProveedor == identificacionProveedor);
-
+            var lista = new CN_TelefonoProveedor().ListarPorProveedor(identificacionProveedor);
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult GuardarTelefonoProveedor(TelefonoProveedor obj, bool esNuevo, string numeroAnterior)
+        public JsonResult GuardarTelefonoProveedor(TelefonoProveedor obj)
         {
             object resultado;
             string mensaje = string.Empty;
 
-            if (esNuevo)
+            if (string.IsNullOrWhiteSpace(obj.NumeroTelefonoAnterior))
             {
                 resultado = new CN_TelefonoProveedor().Registrar(obj, out mensaje);
             }
             else
             {
-                resultado = new CN_TelefonoProveedor().Editar(numeroAnterior, obj, out mensaje);
+                resultado = new CN_TelefonoProveedor().Editar(obj, out mensaje);
             }
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult InactivarTelefonoProveedor(string identificacionProveedor, string numeroTelefono)
         {
             string mensaje = string.Empty;
+
             bool resultado = new CN_TelefonoProveedor().Inactivar(
                 identificacionProveedor,
                 numeroTelefono,
                 out mensaje
             );
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CorreoProveedor()
-        {
-            return View();
-        }
+        // ===============================
+        // CORREOS PROVEEDOR
+        // ===============================
+
         [HttpGet]
-        public JsonResult ListarCorreosProveedor(string identificacionProveedor)
+        public JsonResult ListarCorreosProveedor()
         {
-            var lista = new CN_CorreoProveedor().Listar()
-                .FindAll(x => x.IdentificacionProveedor == identificacionProveedor);
+            var lista = new CN_CorreoProveedor().Listar();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
 
+        [HttpGet]
+        public JsonResult ListarCorreosProveedorPorProveedor(string identificacionProveedor)
+        {
+            var lista = new CN_CorreoProveedor().ListarPorProveedor(identificacionProveedor);
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult GuardarCorreoProveedor(CorreoProveedor obj, bool esNuevo, string correoAnterior)
+        public JsonResult GuardarCorreoProveedor(CorreoProveedor obj)
         {
             object resultado;
             string mensaje = string.Empty;
 
-            if (esNuevo)
+            if (string.IsNullOrWhiteSpace(obj.DireccionCorreoAnterior))
             {
                 resultado = new CN_CorreoProveedor().Registrar(obj, out mensaje);
             }
             else
             {
-                resultado = new CN_CorreoProveedor().Editar(correoAnterior, obj, out mensaje);
+                resultado = new CN_CorreoProveedor().Editar(obj, out mensaje);
             }
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult InactivarCorreoProveedor(string identificacionProveedor, string direccionCorreo)
         {
             string mensaje = string.Empty;
+
             bool resultado = new CN_CorreoProveedor().Inactivar(
                 identificacionProveedor,
                 direccionCorreo,
                 out mensaje
             );
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

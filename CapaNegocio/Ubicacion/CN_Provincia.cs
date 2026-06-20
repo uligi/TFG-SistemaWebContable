@@ -1,11 +1,10 @@
 ﻿using CapaDatos.Ubicacion;
 using CapaEntidad.Ubicacion;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Microsoft.VisualBasic.FileIO;
-
 
 namespace CapaNegocio.Ubicacion
 {
@@ -27,11 +26,19 @@ namespace CapaNegocio.Ubicacion
         {
             Mensaje = string.Empty;
 
+            if (obj.CodigoProvincia <= 0)
+            {
+                Mensaje = "El código de provincia debe ser mayor a cero.";
+                return 0;
+            }
+
             if (string.IsNullOrWhiteSpace(obj.Nombre))
             {
                 Mensaje = "El nombre de la provincia es obligatorio.";
                 return 0;
             }
+
+            obj.Nombre = obj.Nombre.Trim();
 
             if (obj.Nombre.Length > 45)
             {
@@ -46,7 +53,7 @@ namespace CapaNegocio.Ubicacion
         {
             Mensaje = string.Empty;
 
-            if (obj.IdProvincia == 0)
+            if (obj.CodigoProvincia <= 0)
             {
                 Mensaje = "Debe seleccionar una provincia válida.";
                 return false;
@@ -58,6 +65,8 @@ namespace CapaNegocio.Ubicacion
                 return false;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre de la provincia no puede superar los 45 caracteres.";
@@ -67,17 +76,17 @@ namespace CapaNegocio.Ubicacion
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int codigoProvincia, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (codigoProvincia <= 0)
             {
                 Mensaje = "Debe seleccionar una provincia válida.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(codigoProvincia, out Mensaje);
         }
 
         public object CargarCsv(Stream archivo, out string Mensaje)
@@ -110,17 +119,26 @@ namespace CapaNegocio.Ubicacion
                             continue;
                         }
 
-                        if (campos == null || campos.Length < 1)
+                        if (campos == null || campos.Length < 2)
                         {
                             errores++;
-                            detalleErrores.Add("Línea " + numeroLinea + ": fila vacía o formato inválido.");
+                            detalleErrores.Add("Línea " + numeroLinea + ": debe incluir CódigoProvincia y Nombre.");
                             continue;
                         }
 
-                        string nombre = campos[0].Trim();
+                        int codigoProvincia;
+                        if (!int.TryParse(campos[0].Trim(), out codigoProvincia))
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": el código de provincia debe ser numérico.");
+                            continue;
+                        }
+
+                        string nombre = campos[1].Trim();
 
                         Provincia obj = new Provincia()
                         {
+                            CodigoProvincia = codigoProvincia,
                             Nombre = nombre,
                             Activo = true
                         };

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using CapaEntidad.Ubicacion;
+﻿using CapaEntidad.Ubicacion;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,7 +27,7 @@ namespace CapaDatos.Ubicacion
                         {
                             lista.Add(new Provincia()
                             {
-                                IdProvincia = Convert.ToInt32(dr["IdProvincia"]),
+                                CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
                                 Nombre = dr["Nombre"].ToString(),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
@@ -72,7 +66,7 @@ namespace CapaDatos.Ubicacion
                             {
                                 lista.Add(new Provincia()
                                 {
-                                    IdProvincia = Convert.ToInt32(dr["IdProvincia"]),
+                                    CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
                                     Nombre = dr["Nombre"].ToString(),
                                     Activo = activo
                                 });
@@ -101,6 +95,7 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Provincia_Registrar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
+                    cmd.Parameters.AddWithValue("@CodigoProvincia", obj.CodigoProvincia);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -134,7 +129,7 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Provincia_Editar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdProvincia", obj.IdProvincia);
+                    cmd.Parameters.AddWithValue("@CodigoProvincia", obj.CodigoProvincia);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
@@ -157,7 +152,7 @@ namespace CapaDatos.Ubicacion
             return resultado;
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int codigoProvincia, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -169,7 +164,7 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Provincia_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdProvincia", id);
+                    cmd.Parameters.AddWithValue("@CodigoProvincia", codigoProvincia);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

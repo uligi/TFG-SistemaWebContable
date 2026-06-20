@@ -14,9 +14,21 @@
     .input-error-suave {
         border-color: #d9534f !important;
     }
+
+    .codigo-ingreso,
+    .codigo-factura,
+    .codigo-cuenta {
+        font-family: Consolas, monospace;
+        font-weight: bold;
+    }
+
+    .texto-tabla-secundario {
+        font-size: 12px;
+        color: #6c757d;
+    }
 </style>
 
-<h4 class="font-weight-bold py-3 mb-0">Gestionar Ingresos</h4>
+<h4 class="font-weight-bold py-3 mb-0">Gestión de Ingresos</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
     <ol class="breadcrumb">
@@ -25,7 +37,7 @@
                 <i class="feather icon-home"></i>
             </a>
         </li>
-        <li class="breadcrumb-item">Contabilidad</li>
+        <li class="breadcrumb-item">Movimientos</li>
         <li class="breadcrumb-item active">Ingresos</li>
     </ol>
 </div>
@@ -34,39 +46,63 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h6 class="mb-0">Lista de ingresos</h6>
 
-        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalIngreso(null)">
             Nuevo ingreso
         </button>
     </div>
 
     <div class="card-body">
+
+        <div class="form-row mb-3">
+            <div class="col-md-5">
+                <input type="text" id="txtBuscarIngreso" class="form-control" placeholder="Buscar por número, descripción, origen o cuenta..." />
+            </div>
+
+            <div class="col-md-3">
+                <select id="cboFiltroOrigen" class="form-control">
+                    <option value="">Todos los orígenes</option>
+                    <option value="Factura">Factura</option>
+                    <option value="Abono CxC">Abono CxC</option>
+                    <option value="Manual">Manual</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="button" class="btn btn-outline-secondary btn-block" onclick="cargarIngresos()">
+                    Actualizar
+                </button>
+            </div>
+        </div>
+
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaIngresos" style="width:100%;">
+            <table class="table table-striped table-bordered" id="tablaIngresos">
                 <thead>
                     <tr>
+                        <th>Número</th>
                         <th>Fecha</th>
-                        <th>Tipo ingreso</th>
-                        <th>Origen</th>
-                        <th>Factura</th>
-                        <th>Cuenta contable</th>
                         <th>Descripción</th>
+                        <th>Tipo</th>
+                        <th>Cuenta</th>
+                        <th>Origen</th>
+                        <th>Referencia</th>
                         <th>Monto</th>
-                        <th>Estado</th>
-                        <th style="width:170px;">Acciones</th>
+                        <th>Activo</th>
+                        <th style="width:180px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
+
     </div>
 </div>
 
-<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="FormModalIngreso" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
 
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="tituloModal">Nuevo ingreso</h5>
+                <h5 class="modal-title" id="tituloModalIngreso">Nuevo ingreso</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -74,19 +110,25 @@
 
             <div class="modal-body">
 
-                <input type="hidden" id="txtIdIngreso" value="0" />
-                <input type="hidden" id="txtIdFactura" />
-                <input type="hidden" id="txtIdAbonoCuentaPorCobrar" />
+                <input type="hidden" id="txtNumeroIngresoInterno" value="" />
+
+                <input type="hidden" id="txtIdentificacionCliente" value="" />
+                <input type="hidden" id="txtNumeroFactura" value="" />
+
+                <input type="hidden" id="txtIdentificacionClienteAbono" value="" />
+                <input type="hidden" id="txtNumeroFacturaAbono" value="" />
+                <input type="hidden" id="txtNumeroAbonoCuentaPorCobrar" value="0" />
+
+                <div class="alert alert-danger" id="mensajeErrorIngreso" style="display:none;"></div>
+                <div class="alert alert-success" id="mensajeExitoIngreso" style="display:none;"></div>
+
+                <h6 class="font-weight-bold">Datos del ingreso</h6>
 
                 <div class="form-row">
 
                     <div class="form-group col-md-3">
-                        <label for="cboOrigen">Origen del ingreso</label>
-                        <select id="cboOrigen" class="form-control" onchange="cambiarOrigenIngreso()">
-                            <option value="Manual">Manual</option>
-                            <option value="Factura">Factura contado</option>
-                            <option value="Abono CxC">Abono cuenta por cobrar</option>
-                        </select>
+                        <label for="txtNumeroIngreso">Número ingreso</label>
+                        <input type="text" id="txtNumeroIngreso" class="form-control codigo-ingreso" readonly placeholder="Se genera automáticamente" />
                     </div>
 
                     <div class="form-group col-md-3">
@@ -95,15 +137,43 @@
                     </div>
 
                     <div class="form-group col-md-3">
-                        <label for="cboTipoIngreso">Tipo ingreso</label>
+                        <label for="cboTipoIngreso">Tipo de ingreso</label>
                         <select id="cboTipoIngreso" class="form-control">
                             <option value="0">Seleccione un tipo</option>
                         </select>
                     </div>
 
                     <div class="form-group col-md-3">
+                        <label for="cboOrigenIngreso">Origen</label>
+                        <select id="cboOrigenIngreso" class="form-control" onchange="cambiarOrigenIngreso()">
+                            <option value="Manual">Manual</option>
+                            <option value="Factura">Factura contado</option>
+                            <option value="Abono CxC">Abono cuenta por cobrar</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-5">
+                        <label for="cboCuentaContable">Cuenta contable</label>
+                        <select id="cboCuentaContable" class="form-control">
+                            <option value="">Seleccione una cuenta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
                         <label for="txtMonto">Monto</label>
-                        <input type="number" id="txtMonto" class="form-control" min="0" step="0.01" />
+                        <input type="text" id="txtMonto" class="form-control" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="cboActivoIngreso">Activo</label>
+                        <select id="cboActivoIngreso" class="form-control">
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
                     </div>
 
                 </div>
@@ -111,118 +181,95 @@
                 <div class="form-row">
 
                     <div class="form-group col-md-12">
-                        <label for="cboCuentaContable">Cuenta contable</label>
-                        <select id="cboCuentaContable" class="form-control">
-                            <option value="0">Seleccione una cuenta contable</option>
-                        </select>
-                        <small class="form-text text-muted">
-                            Esta cuenta se utilizará para comparar el ingreso real contra el presupuesto mensual.
-                        </small>
+                        <label for="txtDescripcion">Descripción</label>
+                        <input type="text" id="txtDescripcion" class="form-control" maxlength="150" placeholder="Descripción del ingreso..." />
                     </div>
 
                 </div>
 
-                <div id="seccionFactura" style="display:none;">
-                    <hr />
-                    <h6 class="font-weight-bold">Buscar factura de contado pendiente</h6>
+                <hr />
 
-                    <div class="form-row">
-                        <div class="form-group col-md-8">
-                            <input type="text" id="txtBuscarFactura" class="form-control" placeholder="Buscar por número de factura, cliente o identificación..." />
-                        </div>
+                <div id="panelFactura" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="font-weight-bold mb-0">Facturas de contado pendientes de ingreso</h6>
 
-                        <div class="form-group col-md-4">
-                            <button type="button" class="btn btn-outline-primary btn-block" onclick="buscarFacturasPendientes()">
-                                Buscar factura
-                            </button>
-                        </div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cargarFacturasContadoPendientes()">
+                            Actualizar facturas
+                        </button>
                     </div>
 
-                    <small class="form-text text-muted mb-2" id="lblFacturaSeleccionada">
-                        Ninguna factura seleccionada.
+                    <small class="form-text text-muted mb-2">
+                        Seleccione una factura de contado emitida que todavía no tenga ingreso registrado.
                     </small>
 
-                    <div class="table-responsive" id="contenedorFacturas" style="display:none;">
-                        <table class="table table-sm table-bordered mb-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered" id="tablaFacturasPendientes">
                             <thead>
                                 <tr>
                                     <th>Factura</th>
                                     <th>Cliente</th>
                                     <th>Fecha</th>
+                                    <th>Tipo</th>
                                     <th>Total</th>
-                                    <th style="width:100px;">Acción</th>
+                                    <th style="width:110px;">Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbodyFacturas"></tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
 
-                <div id="seccionAbono" style="display:none;">
-                    <hr />
-                    <h6 class="font-weight-bold">Buscar abono pendiente</h6>
+                <div id="panelAbono" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="font-weight-bold mb-0">Abonos CxC pendientes de ingreso</h6>
 
-                    <div class="form-row">
-                        <div class="form-group col-md-8">
-                            <input type="text" id="txtBuscarAbono" class="form-control" placeholder="Buscar por factura, cliente o identificación..." />
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <button type="button" class="btn btn-outline-primary btn-block" onclick="buscarAbonosPendientes()">
-                                Buscar abono
-                            </button>
-                        </div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cargarAbonosPendientes()">
+                            Actualizar abonos
+                        </button>
                     </div>
 
-                    <small class="form-text text-muted mb-2" id="lblAbonoSeleccionado">
-                        Ningún abono seleccionado.
+                    <small class="form-text text-muted mb-2">
+                        Seleccione un abono de cuenta por cobrar que todavía no tenga ingreso registrado.
                     </small>
 
-                    <div class="table-responsive" id="contenedorAbonos" style="display:none;">
-                        <table class="table table-sm table-bordered mb-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered" id="tablaAbonosPendientes">
                             <thead>
                                 <tr>
                                     <th>Factura</th>
+                                    <th># Abono</th>
                                     <th>Cliente</th>
-                                    <th>Fecha abono</th>
-                                    <th>Monto</th>
-                                    <th style="width:100px;">Acción</th>
+                                    <th>Fecha</th>
+                                    <th>Monto abono</th>
+                                    <th>Estado cuenta</th>
+                                    <th style="width:110px;">Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbodyAbonos"></tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
 
-                <hr />
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-8">
-                        <label for="txtDescripcion">Descripción</label>
-                        <input type="text" id="txtDescripcion" class="form-control" maxlength="150" />
+                <div class="card bg-light mt-3">
+                    <div class="card-body py-2">
+                        <strong>Referencia seleccionada:</strong>
+                        <span id="lblReferenciaSeleccionada" class="text-muted">Ingreso manual sin referencia.</span>
                     </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="cboActivo">Estado</label>
-                        <select id="cboActivo" class="form-control">
-                            <option value="true">Activo</option>
-                            <option value="false">Inactivo</option>
-                        </select>
-                    </div>
-
                 </div>
-
-                <div class="alert alert-danger mt-2" id="mensajeError" style="display:none;"></div>
 
             </div>
 
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="limpiarFormularioIngreso()">
+                    Limpiar
+                </button>
+
+                <button type="button" class="btn btn-primary" onclick="guardarIngreso()">
+                    Guardar ingreso
+                </button>
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
-                </button>
-                <button type="button" class="btn btn-primary" onclick="guardarIngreso()">
-                    Guardar
                 </button>
             </div>
 
@@ -232,56 +279,39 @@
 
 @section scripts {
     <script>
-        var tablaIngresos = null;
         var listaIngresos = [];
         var listaFacturasPendientes = [];
         var listaAbonosPendientes = [];
 
         $(document).ready(function () {
             cargarIngresos();
-            cargarTipoIngresos();
+            cargarTiposIngreso();
             cargarCuentasContables();
 
-            $("#txtBuscarFactura").on("keypress", function (e) {
-                if (e.which === 13) {
-                    buscarFacturasPendientes();
-                }
-            });
-
-            $("#txtBuscarAbono").on("keypress", function (e) {
-                if (e.which === 13) {
-                    buscarAbonosPendientes();
-                }
-            });
-
-            $("#FormModal").on("hidden.bs.modal", function () {
-                $("#mensajeError").hide().text("");
+            $("#txtBuscarIngreso, #cboFiltroOrigen").on("keyup change", function () {
+                pintarTablaIngresos();
             });
 
             $("#txtMonto").on("input", function () {
-                limpiarNoDecimal("txtMonto", "Solo se permiten números y punto decimal en el monto.");
+                limpiarDecimal("txtMonto", "Solo se permiten números y punto decimal.");
             });
 
             $("#txtDescripcion").on("input", function () {
+                limpiarTextoGeneral("txtDescripcion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
                 if ($(this).val().length > 150) {
                     $(this).val($(this).val().substring(0, 150));
                     mostrarAyudaCampo("txtDescripcion", "La descripción no puede superar los 150 caracteres.");
-                } else {
-                    ocultarAyudaCampo("txtDescripcion");
                 }
             });
 
-            $("#txtBuscarFactura").on("input", function () {
-                limpiarTextoBusqueda("txtBuscarFactura", "Solo se permiten letras, números, espacios y caracteres básicos.");
-            });
-
-            $("#txtBuscarAbono").on("input", function () {
-                limpiarTextoBusqueda("txtBuscarAbono", "Solo se permiten letras, números, espacios y caracteres básicos.");
-            });
-
             $("input, select, textarea").on("change keyup", function () {
-                if ($("#mensajeError").is(":visible")) {
-                    $("#mensajeError").fadeOut(150);
+                if ($("#mensajeErrorIngreso").is(":visible")) {
+                    $("#mensajeErrorIngreso").fadeOut(150);
+                }
+
+                if ($("#mensajeExitoIngreso").is(":visible")) {
+                    $("#mensajeExitoIngreso").fadeOut(150);
                 }
             });
         });
@@ -301,20 +331,19 @@
             });
         }
 
-        function cargarTipoIngresos() {
+        function cargarTiposIngreso() {
             $.ajax({
-                url: '@Url.Action("ListarTipoIngresosActivos", "GestionarIngresos")',
+                url: '@Url.Action("ListarTiposIngresoActivos", "GestionarIngresos")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    $("#cboTipoIngreso").empty();
-                    $("#cboTipoIngreso").append('<option value="0">Seleccione un tipo</option>');
+                    $("#cboTipoIngreso").empty().append('<option value="0">Seleccione un tipo</option>');
 
                     $.each(respuesta.data || [], function (i, item) {
                         $("#cboTipoIngreso").append(
                             $("<option>", {
                                 value: item.IdTipoIngreso,
-                                text: item.Nombre
+                                text: item.Nombre || item.TipoIngreso || item.Descripcion
                             })
                         );
                     });
@@ -327,18 +356,20 @@
 
         function cargarCuentasContables() {
             $.ajax({
-                url: '@Url.Action("ListarCuentasContablesMovimiento", "GestionarIngresos")',
+                url: '@Url.Action("ListarCuentasContablesIngreso", "GestionarIngresos")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    $("#cboCuentaContable").empty();
-                    $("#cboCuentaContable").append('<option value="0">Seleccione una cuenta contable</option>');
+                    $("#cboCuentaContable").empty().append('<option value="">Seleccione una cuenta</option>');
 
                     $.each(respuesta.data || [], function (i, item) {
+                        var codigo = item.CodigoCuenta || "";
+                        var nombre = item.NombreCuenta || item.Nombre || "";
+
                         $("#cboCuentaContable").append(
                             $("<option>", {
-                                value: item.IdCuentaContable,
-                                text: (item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "")
+                                value: codigo,
+                                text: codigo + " - " + nombre
                             })
                         );
                     });
@@ -350,31 +381,46 @@
         }
 
         function pintarTablaIngresos() {
-            if (tablaIngresos != null) {
-                tablaIngresos.clear().destroy();
-                tablaIngresos = null;
-            }
-
+            var filtro = $("#txtBuscarIngreso").val().toLowerCase();
+            var origenFiltro = $("#cboFiltroOrigen").val();
             var tbody = $("#tablaIngresos tbody");
+
             tbody.empty();
 
+            if (listaIngresos.length === 0) {
+                tbody.append('<tr><td colspan="10" class="text-center text-muted">No hay ingresos registrados.</td></tr>');
+                return;
+            }
+
             $.each(listaIngresos, function (i, item) {
-                var estado = item.Activo
-                    ? '<span class="badge badge-success">Activo</span>'
-                    : '<span class="badge badge-secondary">Inactivo</span>';
+                var numero = item.NumeroIngreso || "";
+                var descripcion = item.Descripcion || "";
+                var tipo = item.TipoIngresoNombre || "";
+                var cuenta = (item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "");
+                var origen = item.OrigenIngreso || "";
 
-                var factura = item.NumeroFactura || "-";
+                var referencia = obtenerReferenciaIngreso(item);
 
-                var cuenta = item.CodigoCuenta
-                    ? item.CodigoCuenta + " - " + item.NombreCuenta
-                    : "-";
+                var texto = (numero + " " + descripcion + " " + tipo + " " + cuenta + " " + origen + " " + referencia).toLowerCase();
+
+                if (texto.indexOf(filtro) === -1) {
+                    return;
+                }
+
+                if (origenFiltro !== "" && origen !== origenFiltro) {
+                    return;
+                }
+
+                var activo = item.Activo
+                    ? '<span class="badge badge-info">Sí</span>'
+                    : '<span class="badge badge-secondary">No</span>';
 
                 var botonEditar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-primary mr-1",
                     text: "Editar"
                 }).on("click", function () {
-                    abrirModal(item);
+                    abrirModalIngreso(item);
                 });
 
                 var botonInactivar = $("<button>", {
@@ -382,160 +428,140 @@
                     class: "btn btn-sm btn-outline-danger",
                     text: "Inactivar"
                 }).on("click", function () {
-                    inactivarIngreso(item.IdIngreso);
+                    inactivarIngreso(item.NumeroIngreso);
                 });
 
                 var acciones = $("<td>");
                 acciones.append(botonEditar);
-                acciones.append(botonInactivar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
 
                 var fila = $("<tr>");
+                fila.append($("<td>", { class: "codigo-ingreso", text: numero }));
                 fila.append($("<td>").text(formatearFecha(item.FechaIngreso)));
-                fila.append($("<td>").text(item.TipoIngresoNombre || ""));
-                fila.append($("<td>").text(item.OrigenIngreso || ""));
-                fila.append($("<td>").text(factura));
-                fila.append($("<td>").text(cuenta));
-                fila.append($("<td>").text(item.Descripcion || ""));
-                fila.append($("<td>").text("₡" + parseFloat(item.Monto || 0).toFixed(2)));
-                fila.append($("<td>").html(estado));
+                fila.append($("<td>").text(descripcion));
+                fila.append($("<td>").text(tipo));
+                fila.append($("<td>").html('<span class="codigo-cuenta">' + (item.CodigoCuenta || "") + '</span><br/><span class="texto-tabla-secundario">' + (item.NombreCuenta || "") + '</span>'));
+                fila.append($("<td>").html(obtenerBadgeOrigen(origen)));
+                fila.append($("<td>").text(referencia));
+                fila.append($("<td>").text(formatearNumero(item.Monto)));
+                fila.append($("<td>").html(activo));
                 fila.append(acciones);
 
                 tbody.append(fila);
             });
-
-            tablaIngresos = $("#tablaIngresos").DataTable({
-                responsive: true,
-                pageLength: 10,
-                destroy: true,
-                order: [[0, "desc"]],
-                language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-                }
-            });
         }
 
-        function abrirModal(json) {
-            $("#mensajeError").hide().text("");
+        function obtenerReferenciaIngreso(item) {
+            if ((item.OrigenIngreso || "") === "Factura") {
+                return (item.NumeroFactura || "") + " - " + (item.ClienteNombre || "");
+            }
 
-            $("#txtIdIngreso").val(0);
-            $("#txtIdFactura").val("");
-            $("#txtIdAbonoCuentaPorCobrar").val("");
+            if ((item.OrigenIngreso || "") === "Abono CxC") {
+                return (item.NumeroFacturaAbono || "") + " / Abono #" + (item.NumeroAbonoCuentaPorCobrar || 0);
+            }
 
-            $("#cboOrigen").val("Manual");
+            return "Ingreso manual";
+        }
+
+        function obtenerBadgeOrigen(origen) {
+            if (origen === "Factura") {
+                return '<span class="badge badge-success">Factura</span>';
+            }
+
+            if (origen === "Abono CxC") {
+                return '<span class="badge badge-warning">Abono CxC</span>';
+            }
+
+            return '<span class="badge badge-secondary">Manual</span>';
+        }
+
+        function abrirModalIngreso(json) {
+            limpiarErrores();
+            limpiarFormularioIngreso();
+
+            $("#tituloModalIngreso").text("Nuevo ingreso");
             $("#txtFechaIngreso").val(convertirDateAInput(new Date()));
-            $("#cboTipoIngreso").val(0);
-            $("#cboCuentaContable").val(0);
-            $("#txtMonto").val("");
-            $("#txtDescripcion").val("");
-            $("#cboActivo").val("true");
-
-            $("#txtBuscarFactura").val("");
-            $("#lblFacturaSeleccionada").text("Ninguna factura seleccionada.");
-            $("#contenedorFacturas").hide();
-            $("#tbodyFacturas").empty();
-
-            $("#txtBuscarAbono").val("");
-            $("#lblAbonoSeleccionado").text("Ningún abono seleccionado.");
-            $("#contenedorAbonos").hide();
-            $("#tbodyAbonos").empty();
-
-            $("#tituloModal").text("Nuevo ingreso");
-
-            habilitarCamposOrigen(true);
+            $("#cboOrigenIngreso").val("Manual");
             cambiarOrigenIngreso();
 
             if (json != null) {
-                $("#txtIdIngreso").val(json.IdIngreso);
-                $("#txtIdFactura").val(json.IdFactura || "");
-                $("#txtIdAbonoCuentaPorCobrar").val(json.IdAbonoCuentaPorCobrar || "");
+                $("#tituloModalIngreso").text("Editar ingreso");
 
-                $("#cboOrigen").val(json.OrigenIngreso || "Manual");
+                $("#txtNumeroIngresoInterno").val(json.NumeroIngreso || "");
+                $("#txtNumeroIngreso").val(json.NumeroIngreso || "");
+
                 $("#txtFechaIngreso").val(convertirFechaInput(json.FechaIngreso));
-                $("#cboTipoIngreso").val(json.IdTipoIngreso);
-                $("#cboCuentaContable").val(json.IdCuentaContable);
-                $("#txtMonto").val(parseFloat(json.Monto || 0).toFixed(2));
                 $("#txtDescripcion").val(json.Descripcion || "");
-                $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#cboTipoIngreso").val(json.IdTipoIngreso);
+                $("#cboCuentaContable").val(json.CodigoCuenta || "");
+                $("#cboOrigenIngreso").val(json.OrigenIngreso || "Manual");
+                $("#txtMonto").val(formatearNumero(json.Monto));
+                $("#cboActivoIngreso").val(json.Activo ? "true" : "false");
 
-                $("#tituloModal").text("Editar ingreso");
+                $("#txtIdentificacionCliente").val(json.IdentificacionCliente || "");
+                $("#txtNumeroFactura").val(json.NumeroFactura || "");
 
-                habilitarCamposOrigen(false);
+                $("#txtIdentificacionClienteAbono").val(json.IdentificacionClienteAbono || "");
+                $("#txtNumeroFacturaAbono").val(json.NumeroFacturaAbono || "");
+                $("#txtNumeroAbonoCuentaPorCobrar").val(json.NumeroAbonoCuentaPorCobrar || 0);
+
+                $("#lblReferenciaSeleccionada").text(obtenerReferenciaIngreso(json));
+
                 cambiarOrigenIngreso();
+
+                $("#cboOrigenIngreso").prop("disabled", true);
+            } else {
+                $("#cboOrigenIngreso").prop("disabled", false);
             }
 
-            $("#FormModal").modal("show");
-        }
-
-        function habilitarCamposOrigen(habilitar) {
-            $("#cboOrigen").prop("disabled", !habilitar);
-            $("#txtBuscarFactura").prop("disabled", !habilitar);
-            $("#txtBuscarAbono").prop("disabled", !habilitar);
+            $("#FormModalIngreso").modal("show");
         }
 
         function cambiarOrigenIngreso() {
-            var origen = $("#cboOrigen").val();
+            var origen = $("#cboOrigenIngreso").val();
 
-            $("#seccionFactura").hide();
-            $("#seccionAbono").hide();
+            $("#panelFactura").hide();
+            $("#panelAbono").hide();
+
+            limpiarReferenciaSeleccionada();
 
             if (origen === "Factura") {
-                $("#seccionFactura").show();
-                $("#txtIdAbonoCuentaPorCobrar").val("");
+                $("#panelFactura").show();
+                cargarFacturasContadoPendientes();
+                $("#lblReferenciaSeleccionada").text("Seleccione una factura de contado pendiente.");
             } else if (origen === "Abono CxC") {
-                $("#seccionAbono").show();
-                $("#txtIdFactura").val("");
+                $("#panelAbono").show();
+                cargarAbonosPendientes();
+                $("#lblReferenciaSeleccionada").text("Seleccione un abono de cuenta por cobrar pendiente.");
             } else {
-                $("#txtIdFactura").val("");
-                $("#txtIdAbonoCuentaPorCobrar").val("");
+                $("#lblReferenciaSeleccionada").text("Ingreso manual sin referencia.");
             }
         }
 
-        function buscarFacturasPendientes() {
-            var filtro = $("#txtBuscarFactura").val().trim().toLowerCase();
-
-            if (filtro.length < 2) {
-                mostrarError("Digite al menos 2 caracteres para buscar la factura.", "txtBuscarFactura");
-                return;
-            }
-
+        function cargarFacturasContadoPendientes() {
             $.ajax({
                 url: '@Url.Action("ListarFacturasContadoPendientes", "GestionarIngresos")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaFacturasPendientes = (respuesta.data || []).filter(function (x) {
-                        var texto = (
-                            (x.NumeroFactura || "") + " " +
-                            (x.ClienteNombre || "") + " " +
-                            (x.IdentificacionCliente || "")
-                        ).toLowerCase();
-
-                        return texto.indexOf(filtro) !== -1;
-                    });
-
+                    listaFacturasPendientes = respuesta.data || [];
                     pintarFacturasPendientes();
-                    $("#mensajeError").hide().text("");
                 },
                 error: function () {
-                    $("#mensajeError").text("Error al buscar facturas pendientes.").show();
+                    $("#mensajeErrorIngreso").text("Error al cargar facturas pendientes.").show();
                 }
             });
         }
 
         function pintarFacturasPendientes() {
-            var tbody = $("#tbodyFacturas");
+            var tbody = $("#tablaFacturasPendientes tbody");
             tbody.empty();
 
             if (listaFacturasPendientes.length === 0) {
-                tbody.append(
-                    '<tr>' +
-                        '<td colspan="5" class="text-center text-muted">' +
-                            'No se encontraron facturas de contado pendientes.' +
-                        '</td>' +
-                    '</tr>'
-                );
-
-                $("#contenedorFacturas").show();
+                tbody.append('<tr><td colspan="6" class="text-center text-muted">No hay facturas de contado pendientes de ingreso.</td></tr>');
                 return;
             }
 
@@ -545,88 +571,66 @@
                     class: "btn btn-sm btn-primary",
                     text: "Seleccionar"
                 }).on("click", function () {
-                    seleccionarFactura(item);
+                    seleccionarFacturaPendiente(item);
                 });
 
                 var fila = $("<tr>");
-                fila.append($("<td>").text(item.NumeroFactura || ""));
+                fila.append($("<td>", { class: "codigo-factura", text: item.NumeroFactura || "" }));
                 fila.append($("<td>").text((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "")));
                 fila.append($("<td>").text(formatearFecha(item.FechaFactura)));
-                fila.append($("<td>").text("₡" + parseFloat(item.TotalFactura || 0).toFixed(2)));
+                fila.append($("<td>").text(item.TipoFactura || ""));
+                fila.append($("<td>").text(formatearNumero(item.TotalFactura)));
+                fila.append($("<td>").append(boton));
 
-                var acciones = $("<td>");
-                acciones.append(boton);
-
-                fila.append(acciones);
                 tbody.append(fila);
             });
-
-            $("#contenedorFacturas").show();
         }
 
-        function seleccionarFactura(item) {
-            $("#txtIdFactura").val(item.IdFactura);
-            $("#txtIdAbonoCuentaPorCobrar").val("");
+        function seleccionarFacturaPendiente(item) {
+            $("#txtIdentificacionCliente").val(item.IdentificacionCliente || "");
+            $("#txtNumeroFactura").val(item.NumeroFactura || "");
 
-            $("#txtBuscarFactura").val(item.NumeroFactura || "");
-            $("#lblFacturaSeleccionada").text(
-                "Factura seleccionada: " + (item.NumeroFactura || "") +
-                " | Cliente: " + (item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "")
-            );
+            $("#txtIdentificacionClienteAbono").val("000000000");
+            $("#txtNumeroFacturaAbono").val("FAC-GENERAL-000000");
+            $("#txtNumeroAbonoCuentaPorCobrar").val("0");
 
-            $("#txtFechaIngreso").val(convertirFechaInput(item.FechaFactura));
-            $("#txtMonto").val(parseFloat(item.TotalFactura || 0).toFixed(2));
-            $("#txtDescripcion").val("Ingreso por factura " + (item.NumeroFactura || ""));
-            $("#cboOrigen").val("Factura");
+            $("#txtMonto").val(formatearNumero(item.TotalFactura));
 
-            $("#contenedorFacturas").hide();
-        }
-
-        function buscarAbonosPendientes() {
-            var filtro = $("#txtBuscarAbono").val().trim().toLowerCase();
-            if (filtro.length < 2) {
-                mostrarError("Digite al menos 2 caracteres para buscar el abono.", "txtBuscarAbono");
-                return;
+            if ($("#txtDescripcion").val().trim() === "") {
+                $("#txtDescripcion").val("Ingreso por factura " + (item.NumeroFactura || ""));
             }
 
+            $("#lblReferenciaSeleccionada").text(
+                "Factura seleccionada: " +
+                (item.NumeroFactura || "") +
+                " - " +
+                (item.IdentificacionCliente || "") +
+                " - " +
+                (item.ClienteNombre || "")
+            );
+        }
+
+        function cargarAbonosPendientes() {
             $.ajax({
-                url: '@Url.Action("ListarAbonosPendientes", "GestionarIngresos")',
+                url: '@Url.Action("ListarAbonosPendientesIngreso", "GestionarIngresos")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaAbonosPendientes = (respuesta.data || []).filter(function (x) {
-                        var texto = (
-                            (x.NumeroFactura || "") + " " +
-                            (x.ClienteNombre || "") + " " +
-                            (x.IdentificacionCliente || "")
-                        ).toLowerCase();
-
-                        return texto.indexOf(filtro) !== -1;
-                    });
-
+                    listaAbonosPendientes = respuesta.data || [];
                     pintarAbonosPendientes();
-                    $("#mensajeError").hide().text("");
                 },
                 error: function () {
-                    $("#mensajeError").text("Error al buscar abonos pendientes.").show();
+                    $("#mensajeErrorIngreso").text("Error al cargar abonos pendientes.").show();
                 }
             });
         }
 
         function pintarAbonosPendientes() {
-            var tbody = $("#tbodyAbonos");
+            var tbody = $("#tablaAbonosPendientes tbody");
             tbody.empty();
 
             if (listaAbonosPendientes.length === 0) {
-                tbody.append(
-                    '<tr>' +
-                        '<td colspan="5" class="text-center text-muted">' +
-                            'No se encontraron abonos pendientes.' +
-                        '</td>' +
-                    '</tr>'
-                );
-
-                $("#contenedorAbonos").show();
+                tbody.append('<tr><td colspan="7" class="text-center text-muted">No hay abonos pendientes de ingreso.</td></tr>');
                 return;
             }
 
@@ -636,141 +640,146 @@
                     class: "btn btn-sm btn-primary",
                     text: "Seleccionar"
                 }).on("click", function () {
-                    seleccionarAbono(item);
+                    seleccionarAbonoPendiente(item);
                 });
 
                 var fila = $("<tr>");
-                fila.append($("<td>").text(item.NumeroFactura || ""));
+                fila.append($("<td>", { class: "codigo-factura", text: item.NumeroFactura || "" }));
+                fila.append($("<td>").text(item.NumeroAbono || 0));
                 fila.append($("<td>").text((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "")));
                 fila.append($("<td>").text(formatearFecha(item.FechaAbono)));
-                fila.append($("<td>").text("₡" + parseFloat(item.MontoAbono || 0).toFixed(2)));
+                fila.append($("<td>").text(formatearNumero(item.MontoAbono)));
+                fila.append($("<td>").text(item.EstadoCuenta || ""));
+                fila.append($("<td>").append(boton));
 
-                var acciones = $("<td>");
-                acciones.append(boton);
-
-                fila.append(acciones);
                 tbody.append(fila);
             });
-
-            $("#contenedorAbonos").show();
         }
 
-        function seleccionarAbono(item) {
-            $("#txtIdFactura").val("");
-            $("#txtIdAbonoCuentaPorCobrar").val(item.IdAbonoCuentaPorCobrar);
+        function seleccionarAbonoPendiente(item) {
+            $("#txtIdentificacionCliente").val("000000000");
+            $("#txtNumeroFactura").val("FAC-GENERAL-000000");
 
-            $("#txtBuscarAbono").val(item.NumeroFactura || "");
-            $("#lblAbonoSeleccionado").text(
-                "Abono seleccionado de factura: " + (item.NumeroFactura || "") +
-                " | Cliente: " + (item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "")
+            $("#txtIdentificacionClienteAbono").val(item.IdentificacionCliente || "");
+            $("#txtNumeroFacturaAbono").val(item.NumeroFactura || "");
+            $("#txtNumeroAbonoCuentaPorCobrar").val(item.NumeroAbono || 0);
+
+            $("#txtMonto").val(formatearNumero(item.MontoAbono));
+
+            if ($("#txtDescripcion").val().trim() === "") {
+                $("#txtDescripcion").val("Ingreso por abono CxC factura " + (item.NumeroFactura || "") + " abono #" + (item.NumeroAbono || 0));
+            }
+
+            $("#lblReferenciaSeleccionada").text(
+                "Abono seleccionado: Factura " +
+                (item.NumeroFactura || "") +
+                " / Abono #" +
+                (item.NumeroAbono || 0) +
+                " - " +
+                (item.IdentificacionCliente || "") +
+                " - " +
+                (item.ClienteNombre || "")
             );
-
-            $("#txtFechaIngreso").val(convertirFechaInput(item.FechaAbono));
-            $("#txtMonto").val(parseFloat(item.MontoAbono || 0).toFixed(2));
-            $("#txtDescripcion").val("Ingreso por abono de factura " + (item.NumeroFactura || ""));
-            $("#cboOrigen").val("Abono CxC");
-
-            $("#contenedorAbonos").hide();
         }
 
         function guardarIngreso() {
-    $("#mensajeError").hide().text("");
+            $("#mensajeErrorIngreso").hide().text("");
+            $("#mensajeExitoIngreso").hide().text("");
 
-    var montoTexto = $("#txtMonto").val().trim();
+            var obj = {
+                NumeroIngreso: $("#txtNumeroIngresoInterno").val().trim(),
+                FechaIngreso: $("#txtFechaIngreso").val(),
+                Descripcion: $("#txtDescripcion").val().trim(),
+                IdTipoIngreso: parseInt($("#cboTipoIngreso").val()),
+                CodigoCuenta: $("#cboCuentaContable").val(),
+                IdentificacionCliente: $("#txtIdentificacionCliente").val(),
+                NumeroFactura: $("#txtNumeroFactura").val(),
+                IdentificacionClienteAbono: $("#txtIdentificacionClienteAbono").val(),
+                NumeroFacturaAbono: $("#txtNumeroFacturaAbono").val(),
+                NumeroAbonoCuentaPorCobrar: parseInt($("#txtNumeroAbonoCuentaPorCobrar").val()),
+                OrigenIngreso: $("#cboOrigenIngreso").val(),
+                Monto: parseFloat($("#txtMonto").val()),
+                Activo: $("#cboActivoIngreso").val() === "true"
+            };
 
-    var idFactura = $("#txtIdFactura").val() === "" ? null : parseInt($("#txtIdFactura").val());
-    var idAbono = $("#txtIdAbonoCuentaPorCobrar").val() === "" ? null : parseInt($("#txtIdAbonoCuentaPorCobrar").val());
+            if (isNaN(obj.IdTipoIngreso)) obj.IdTipoIngreso = 0;
+            if (isNaN(obj.NumeroAbonoCuentaPorCobrar)) obj.NumeroAbonoCuentaPorCobrar = 0;
+            if (isNaN(obj.Monto)) obj.Monto = 0;
 
-    var obj = {
-        IdIngreso: parseInt($("#txtIdIngreso").val()),
-        IdFactura: idFactura,
-        IdAbonoCuentaPorCobrar: idAbono,
-        IdCuentaContable: parseInt($("#cboCuentaContable").val()),
-        FechaIngreso: $("#txtFechaIngreso").val(),
-        Descripcion: $("#txtDescripcion").val().trim(),
-        IdTipoIngreso: parseInt($("#cboTipoIngreso").val()),
-        OrigenIngreso: $("#cboOrigen").val(),
-        Monto: montoTexto === "" ? 0 : parseFloat(montoTexto),
-        Activo: $("#cboActivo").val() === "true"
-    };
-
-    if (isNaN(obj.IdIngreso)) {
-        obj.IdIngreso = 0;
-    }
-
-    if (obj.IdFactura != null && obj.IdAbonoCuentaPorCobrar != null) {
-        mostrarError("El ingreso no puede estar asociado a una factura y a un abono al mismo tiempo.", "cboOrigen");
-        return;
-    }
-
-    if (obj.FechaIngreso === "") {
-        mostrarError("Debe ingresar la fecha del ingreso.", "txtFechaIngreso");
-        return;
-    }
-
-    var mensajeFecha = validarFechaNoFutura(obj.FechaIngreso, "La fecha del ingreso no puede ser futura.");
-    if (mensajeFecha !== "") {
-        mostrarError(mensajeFecha, "txtFechaIngreso");
-        return;
-    }
-
-    if (obj.IdTipoIngreso === 0 || isNaN(obj.IdTipoIngreso)) {
-        mostrarError("Debe seleccionar un tipo de ingreso.", "cboTipoIngreso");
-        return;
-    }
-
-    if (obj.IdCuentaContable === 0 || isNaN(obj.IdCuentaContable)) {
-        mostrarError("Debe seleccionar una cuenta contable.", "cboCuentaContable");
-        return;
-    }
-
-    if (obj.OrigenIngreso === "Factura" && obj.IdFactura == null) {
-        mostrarError("Debe seleccionar una factura de contado pendiente.", "txtBuscarFactura");
-        return;
-    }
-
-    if (obj.OrigenIngreso === "Abono CxC" && obj.IdAbonoCuentaPorCobrar == null) {
-        mostrarError("Debe seleccionar un abono de cuenta por cobrar.", "txtBuscarAbono");
-        return;
-    }
-
-    if (obj.Descripcion === "") {
-        mostrarError("Debe ingresar una descripción.", "txtDescripcion");
-        return;
-    }
-
-    if (obj.Descripcion.length > 150) {
-        mostrarError("La descripción no puede superar los 150 caracteres.", "txtDescripcion");
-        return;
-    }
-
-    var mensajeMonto = validarDecimalMayorCero(montoTexto, "el monto del ingreso");
-    if (mensajeMonto !== "") {
-        mostrarError(mensajeMonto, "txtMonto");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarIngreso", "GestionarIngresos")',
-        type: "POST",
-        data: JSON.stringify({ obj: obj }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#FormModal").modal("hide");
-                cargarIngresos();
-            } else {
-                $("#mensajeError").text(respuesta.mensaje).show();
+            if (obj.FechaIngreso === "") {
+                mostrarErrorIngreso("Debe ingresar la fecha del ingreso.", "txtFechaIngreso");
+                return;
             }
-        },
-        error: function () {
-            $("#mensajeError").text("Error al guardar el ingreso.").show();
-        }
-    });
-}
 
-        function inactivarIngreso(idIngreso) {
+            if (obj.Descripcion === "") {
+                mostrarErrorIngreso("Debe ingresar una descripción.", "txtDescripcion");
+                return;
+            }
+
+            if (obj.IdTipoIngreso === 0) {
+                mostrarErrorIngreso("Debe seleccionar un tipo de ingreso.", "cboTipoIngreso");
+                return;
+            }
+
+            if (obj.CodigoCuenta === "") {
+                mostrarErrorIngreso("Debe seleccionar una cuenta contable.", "cboCuentaContable");
+                return;
+            }
+
+            if (obj.Monto <= 0) {
+                mostrarErrorIngreso("El monto del ingreso debe ser mayor a cero.", "txtMonto");
+                return;
+            }
+
+            if (obj.OrigenIngreso === "Factura") {
+                if (obj.IdentificacionCliente === "" || obj.NumeroFactura === "") {
+                    mostrarErrorIngreso("Debe seleccionar una factura de contado pendiente.", "tablaFacturasPendientes");
+                    return;
+                }
+            }
+
+            if (obj.OrigenIngreso === "Abono CxC") {
+                if (obj.IdentificacionClienteAbono === "" || obj.NumeroFacturaAbono === "" || obj.NumeroAbonoCuentaPorCobrar <= 0) {
+                    mostrarErrorIngreso("Debe seleccionar un abono pendiente de ingreso.", "tablaAbonosPendientes");
+                    return;
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarIngreso", "GestionarIngresos")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        var numeroIngreso = respuesta.numeroIngreso || obj.NumeroIngreso;
+
+                        $("#txtNumeroIngresoInterno").val(numeroIngreso);
+                        $("#txtNumeroIngreso").val(numeroIngreso);
+
+                        $("#mensajeExitoIngreso").text(respuesta.mensaje || "Ingreso guardado correctamente.").show();
+
+                        cargarIngresos();
+
+                        if (obj.OrigenIngreso === "Factura") {
+                            cargarFacturasContadoPendientes();
+                        }
+
+                        if (obj.OrigenIngreso === "Abono CxC") {
+                            cargarAbonosPendientes();
+                        }
+                    } else {
+                        $("#mensajeErrorIngreso").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorIngreso").text("Error al guardar el ingreso.").show();
+                }
+            });
+        }
+
+        function inactivarIngreso(numeroIngreso) {
             if (!confirm("¿Desea inactivar este ingreso?")) {
                 return;
             }
@@ -778,7 +787,7 @@
             $.ajax({
                 url: '@Url.Action("InactivarIngreso", "GestionarIngresos")',
                 type: "POST",
-                data: JSON.stringify({ idIngreso: idIngreso }),
+                data: JSON.stringify({ numeroIngreso: numeroIngreso }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
@@ -794,49 +803,51 @@
             });
         }
 
-        function formatearFecha(valor) {
-            if (!valor) {
-                return "";
-            }
+        function limpiarFormularioIngreso() {
+            $("#txtNumeroIngresoInterno").val("");
+            $("#txtNumeroIngreso").val("");
 
-            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
+            $("#txtFechaIngreso").val(convertirDateAInput(new Date()));
+            $("#txtDescripcion").val("");
+            $("#cboTipoIngreso").val("0");
+            $("#cboCuentaContable").val("");
+            $("#cboOrigenIngreso").val("Manual");
+            $("#txtMonto").val("");
+            $("#cboActivoIngreso").val("true");
 
-            if (isNaN(fecha.getTime())) {
-                fecha = new Date(valor);
-            }
+            $("#cboOrigenIngreso").prop("disabled", false);
 
-            return convertirDateAInput(fecha);
+            limpiarReferenciaSeleccionada();
+
+            $("#panelFactura").hide();
+            $("#panelAbono").hide();
+
+            $("#lblReferenciaSeleccionada").text("Ingreso manual sin referencia.");
         }
 
-        function convertirFechaInput(valor) {
-            if (!valor) {
-                return "";
-            }
+        function limpiarReferenciaSeleccionada() {
+            $("#txtIdentificacionCliente").val("");
+            $("#txtNumeroFactura").val("");
 
-            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
-
-            if (isNaN(fecha.getTime())) {
-                fecha = new Date(valor);
-            }
-
-            return convertirDateAInput(fecha);
+            $("#txtIdentificacionClienteAbono").val("");
+            $("#txtNumeroFacturaAbono").val("");
+            $("#txtNumeroAbonoCuentaPorCobrar").val("0");
         }
 
-        function convertirDateAInput(fecha) {
-            var anio = fecha.getFullYear();
-            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
-            var dia = ("0" + fecha.getDate()).slice(-2);
+        function mostrarErrorIngreso(mensaje, idCampo) {
+            $("#mensajeErrorIngreso").text(mensaje).show();
 
-            return anio + "-" + mes + "-" + dia;
-        }
-
-        function mostrarError(mensaje, idCampo) {
-            $("#mensajeError").text(mensaje).show();
-
-            if (idCampo) {
+            if (idCampo && $("#" + idCampo).length > 0) {
                 mostrarAyudaCampo(idCampo, mensaje);
                 $("#" + idCampo).focus();
             }
+        }
+
+        function limpiarErrores() {
+            $("#mensajeErrorIngreso").hide().text("");
+            $("#mensajeExitoIngreso").hide().text("");
+            $(".campo-ayuda-error").hide().text("");
+            $(".input-error-suave").removeClass("input-error-suave");
         }
 
         function mostrarAyudaCampo(idCampo, mensaje) {
@@ -859,7 +870,7 @@
             campo.removeClass("input-error-suave");
         }
 
-        function limpiarNoDecimal(idCampo, mensaje) {
+        function limpiarDecimal(idCampo, mensaje) {
             var campo = $("#" + idCampo);
             var valorOriginal = campo.val();
             var valorLimpio = valorOriginal.replace(/[^0-9.]/g, "");
@@ -877,10 +888,10 @@
             }
         }
 
-        function limpiarTextoBusqueda(idCampo, mensaje) {
+        function limpiarTextoGeneral(idCampo, mensaje) {
             var campo = $("#" + idCampo);
             var valorOriginal = campo.val();
-            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/]/g, "");
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
 
             if (valorOriginal !== valorLimpio) {
                 campo.val(valorLimpio);
@@ -890,47 +901,40 @@
             }
         }
 
-        function validarDecimalMayorCero(texto, nombreCampo) {
-            if (texto === "") {
-                return "Debe ingresar " + nombreCampo + ".";
-            }
-
-            if (!/^[0-9]+(\.[0-9]+)?$/.test(texto)) {
-                return "Debe ingresar un valor válido para " + nombreCampo + ".";
-            }
-
-            var numero = parseFloat(texto);
+        function formatearNumero(valor) {
+            var numero = parseFloat(valor);
 
             if (isNaN(numero)) {
-                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+                return "0.00";
             }
 
-            if (numero <= 0) {
-                return nombreCampo + " debe ser mayor a cero.";
-            }
-
-            return "";
+            return numero.toFixed(2);
         }
 
-        function validarFechaNoFutura(fechaTexto, mensaje) {
-            if (fechaTexto === "") {
+        function formatearFecha(valor) {
+            if (!valor) {
                 return "";
             }
 
-            var fecha = new Date(fechaTexto + "T00:00:00");
-            var hoy = new Date();
+            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
 
             if (isNaN(fecha.getTime())) {
-                return "Debe ingresar una fecha válida.";
+                fecha = new Date(valor);
             }
 
-            hoy.setHours(0, 0, 0, 0);
+            return convertirDateAInput(fecha);
+        }
 
-            if (fecha > hoy) {
-                return mensaje;
-            }
+        function convertirFechaInput(valor) {
+            return formatearFecha(valor);
+        }
 
-            return "";
+        function convertirDateAInput(fecha) {
+            var anio = fecha.getFullYear();
+            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+            var dia = ("0" + fecha.getDate()).slice(-2);
+
+            return anio + "-" + mes + "-" + dia;
         }
     </script>
 }

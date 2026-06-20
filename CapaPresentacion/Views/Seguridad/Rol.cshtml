@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Rol";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
@@ -41,13 +40,12 @@
     </div>
 
     <div class="card-body">
-
-
         <div class="table-responsive">
             <table class="table table-striped table-bordered nowrap" id="tablaRoles" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Rol</th>
+                        <th>Descripción</th>
                         <th>Estado</th>
                         <th style="width:170px;">Acciones</th>
                     </tr>
@@ -56,7 +54,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -78,6 +75,14 @@
                 <div class="form-group">
                     <label for="txtNombre">Nombre del rol</label>
                     <input type="text" id="txtNombre" class="form-control" maxlength="45" autocomplete="off" />
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescripcion">Descripción</label>
+                    <textarea id="txtDescripcion" class="form-control" maxlength="150" rows="3" autocomplete="off"></textarea>
+                    <small class="form-text text-muted">
+                        Máximo 150 caracteres.
+                    </small>
                 </div>
 
                 <div class="form-group">
@@ -122,6 +127,15 @@
                 }
             });
 
+            $("#txtDescripcion").on("input", function () {
+                limpiarTextoCatalogo("txtDescripcion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 150) {
+                    $(this).val($(this).val().substring(0, 150));
+                    mostrarAyudaCampo("txtDescripcion", "La descripción no puede superar los 150 caracteres.");
+                }
+            });
+
             $("input, select, textarea").on("change keyup", function () {
                 if ($("#mensajeError").is(":visible")) {
                     $("#mensajeError").fadeOut(150);
@@ -131,6 +145,7 @@
             $("#FormModal").on("hidden.bs.modal", function () {
                 $("#mensajeError").hide().text("");
                 ocultarAyudaCampo("txtNombre");
+                ocultarAyudaCampo("txtDescripcion");
             });
         });
 
@@ -160,6 +175,7 @@
 
             $.each(listaRoles, function (i, item) {
                 var nombre = item.Nombre || "";
+                var descripcion = item.Descripcion || "";
 
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
@@ -183,10 +199,14 @@
 
                 var acciones = $("<td>");
                 acciones.append(botonEditar);
-                acciones.append(botonInactivar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
 
                 var fila = $("<tr>");
                 fila.append($("<td>").text(nombre));
+                fila.append($("<td>").text(descripcion));
                 fila.append($("<td>").html(estado));
                 fila.append(acciones);
 
@@ -207,15 +227,18 @@
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
             ocultarAyudaCampo("txtNombre");
+            ocultarAyudaCampo("txtDescripcion");
 
             $("#txtIdRol").val(0);
             $("#txtNombre").val("");
+            $("#txtDescripcion").val("");
             $("#cboActivo").val("true");
             $("#tituloModal").text("Nuevo rol");
 
             if (json != null) {
                 $("#txtIdRol").val(json.IdRol);
                 $("#txtNombre").val(json.Nombre || "");
+                $("#txtDescripcion").val(json.Descripcion || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
                 $("#tituloModal").text("Editar rol");
             }
@@ -229,6 +252,7 @@
             var obj = {
                 IdRol: parseInt($("#txtIdRol").val()),
                 Nombre: $("#txtNombre").val().trim(),
+                Descripcion: $("#txtDescripcion").val().trim(),
                 Activo: $("#cboActivo").val() === "true"
             };
 
@@ -246,8 +270,18 @@
                 return;
             }
 
+            if (obj.Descripcion !== "" && !validarTextoCatalogo(obj.Descripcion)) {
+                mostrarError("La descripción solo puede contener letras, números, espacios y caracteres básicos.", "txtDescripcion");
+                return;
+            }
+
             if (obj.Nombre.length > 45) {
                 mostrarError("El rol no puede superar los 45 caracteres.", "txtNombre");
+                return;
+            }
+
+            if (obj.Descripcion.length > 150) {
+                mostrarError("La descripción no puede superar los 150 caracteres.", "txtDescripcion");
                 return;
             }
 
@@ -258,20 +292,11 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (obj.IdRol === 0) {
-                        if (respuesta.resultado != 0) {
-                            $("#FormModal").modal("hide");
-                            cargarRoles();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        $("#FormModal").modal("hide");
+                        cargarRoles();
                     } else {
-                        if (respuesta.resultado) {
-                            $("#FormModal").modal("hide");
-                            cargarRoles();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
+                        $("#mensajeError").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
@@ -280,7 +305,7 @@
             });
         }
 
-        function inactivarRol(id) {
+        function inactivarRol(idRol) {
             if (!confirm("¿Desea inactivar este rol?")) {
                 return;
             }
@@ -288,7 +313,7 @@
             $.ajax({
                 url: '@Url.Action("InactivarRol", "Seguridad")',
                 type: "POST",
-                data: JSON.stringify({ id: id }),
+                data: JSON.stringify({ idRol: idRol }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
@@ -351,4 +376,3 @@
         }
     </script>
 }
-

@@ -1,9 +1,8 @@
 ﻿using CapaDatos.Ubicacion;
 using CapaEntidad.Ubicacion;
-using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
 using System;
-
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -22,7 +21,13 @@ namespace CapaNegocio.Ubicacion
         {
             Mensaje = string.Empty;
 
-            if (obj.IdProvincia == 0)
+            if (obj.CodigoCanton <= 0)
+            {
+                Mensaje = "El código de cantón debe ser mayor a cero.";
+                return 0;
+            }
+
+            if (obj.CodigoProvincia <= 0)
             {
                 Mensaje = "Debe seleccionar una provincia.";
                 return 0;
@@ -33,6 +38,8 @@ namespace CapaNegocio.Ubicacion
                 Mensaje = "El nombre del cantón es obligatorio.";
                 return 0;
             }
+
+            obj.Nombre = obj.Nombre.Trim();
 
             if (obj.Nombre.Length > 45)
             {
@@ -47,13 +54,13 @@ namespace CapaNegocio.Ubicacion
         {
             Mensaje = string.Empty;
 
-            if (obj.IdCanton == 0)
+            if (obj.CodigoCanton <= 0)
             {
                 Mensaje = "Debe seleccionar un cantón válido.";
                 return false;
             }
 
-            if (obj.IdProvincia == 0)
+            if (obj.CodigoProvincia <= 0)
             {
                 Mensaje = "Debe seleccionar una provincia.";
                 return false;
@@ -65,6 +72,8 @@ namespace CapaNegocio.Ubicacion
                 return false;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre del cantón no puede superar los 45 caracteres.";
@@ -74,27 +83,27 @@ namespace CapaNegocio.Ubicacion
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int codigoCanton, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (codigoCanton <= 0)
             {
                 Mensaje = "Debe seleccionar un cantón válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(codigoCanton, out Mensaje);
         }
 
-        public List<Canton> ListarActivosPorProvincia(int idProvincia)
+        public List<Canton> ListarActivosPorProvincia(int codigoProvincia)
         {
-            if (idProvincia == 0)
+            if (codigoProvincia <= 0)
             {
                 return new List<Canton>();
             }
 
-            return objCapaDato.ListarActivosPorProvincia(idProvincia);
+            return objCapaDato.ListarActivosPorProvincia(codigoProvincia);
         }
 
         public object CargarCsv(Stream archivo, out string Mensaje)
@@ -127,27 +136,36 @@ namespace CapaNegocio.Ubicacion
                             continue;
                         }
 
-                        if (campos == null || campos.Length < 2)
+                        if (campos == null || campos.Length < 3)
                         {
                             errores++;
-                            detalleErrores.Add("Línea " + numeroLinea + ": formato inválido. Debe tener IdProvincia y Nombre.");
+                            detalleErrores.Add("Línea " + numeroLinea + ": formato inválido. Debe tener CodigoCanton, CodigoProvincia y Nombre.");
                             continue;
                         }
 
-                        int idProvincia;
+                        int codigoCanton;
+                        int codigoProvincia;
 
-                        if (!int.TryParse(campos[0].Trim(), out idProvincia))
+                        if (!int.TryParse(campos[0].Trim(), out codigoCanton))
                         {
                             errores++;
-                            detalleErrores.Add("Línea " + numeroLinea + ": IdProvincia inválido.");
+                            detalleErrores.Add("Línea " + numeroLinea + ": CodigoCanton inválido.");
                             continue;
                         }
 
-                        string nombre = campos[1].Trim();
+                        if (!int.TryParse(campos[1].Trim(), out codigoProvincia))
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": CodigoProvincia inválido.");
+                            continue;
+                        }
+
+                        string nombre = campos[2].Trim();
 
                         Canton obj = new Canton()
                         {
-                            IdProvincia = idProvincia,
+                            CodigoCanton = codigoCanton,
+                            CodigoProvincia = codigoProvincia,
                             Nombre = nombre,
                             Activo = true
                         };

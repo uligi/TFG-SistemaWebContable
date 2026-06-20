@@ -4,24 +4,30 @@ namespace CapaEntidad.Contabilidad
 {
     public class AsientoContable
     {
-        public int IdAsientoContable { get; set; }
-
-        public int IdPeriodoContable { get; set; }
+        public string NumeroAsiento { get; set; }
 
         public int Anio { get; set; }
-        public int Mes { get; set; }
-        public string EstadoPeriodo { get; set; }
 
-        public string NumeroAsiento { get; set; }
+        public int Mes { get; set; }
+
         public DateTime FechaAsiento { get; set; }
 
         public string TipoAsiento { get; set; }
+
         public string Concepto { get; set; }
 
         public decimal TotalDebe { get; set; }
+
         public decimal TotalHaber { get; set; }
 
         public bool Activo { get; set; }
+
+        // Campos auxiliares que vienen del JOIN con PeriodoContable
+        public DateTime FechaInicio { get; set; }
+
+        public DateTime FechaFin { get; set; }
+
+        public string EstadoPeriodo { get; set; }
 
         public string NombreMes
         {
@@ -50,7 +56,7 @@ namespace CapaEntidad.Contabilidad
         {
             get
             {
-                return Anio.ToString() + " - " + NombreMes;
+                return NombreMes + " " + Anio.ToString();
             }
         }
 
@@ -66,7 +72,28 @@ namespace CapaEntidad.Contabilidad
         {
             get
             {
-                return TotalDebe - TotalHaber;
+                return Math.Abs(TotalDebe - TotalHaber);
+            }
+        }
+
+        public bool PeriodoAbierto
+        {
+            get
+            {
+                return EstadoPeriodo != null && EstadoPeriodo.Trim().ToLower() == "abierto";
+            }
+        }
+
+        public string EstadoCuadre
+        {
+            get
+            {
+                if (EstaCuadrado)
+                {
+                    return "Cuadrado";
+                }
+
+                return "Descuadrado";
             }
         }
     }

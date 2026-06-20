@@ -1,0 +1,144 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Cambiar contraseña";
+}
+
+<!DOCTYPE html>
+<html lang="es" class="material-style layout-fixed">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <title>Cambiar contraseña - Sistema Web Contable</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%);
+            overflow-x: hidden;
+        }
+
+        .change-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 35px 18px;
+        }
+
+        .change-card {
+            width: 100%;
+            max-width: 520px;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 25px 70px rgba(15, 23, 42, 0.35);
+            padding: 38px;
+        }
+
+        .change-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .change-subtitle {
+            color: #64748b;
+            margin-bottom: 28px;
+        }
+
+        .btn-change {
+            min-height: 45px;
+            font-weight: 600;
+        }
+
+        .security-note {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 14px;
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="change-page">
+        <section class="change-card">
+
+            <h2 class="change-title">Cambiar contraseña</h2>
+
+            <p class="change-subtitle">
+                Por seguridad, actualice su contraseña antes de continuar.
+            </p>
+
+            @if (ViewBag.MensajeInfo != null)
+            {
+                <div class="alert alert-info">
+                    @ViewBag.MensajeInfo
+                </div>
+            }
+
+            @if (ViewBag.Mensaje != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.Mensaje
+                </div>
+            }
+
+            @using (Html.BeginForm("CambiarClave", "Acceso", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label>Contraseña actual</label>
+                    <input type="password"
+                           name="ClaveActual"
+                           class="form-control"
+                           autocomplete="current-password"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label>Nueva contraseña</label>
+                    <input type="password"
+                           name="ClaveNueva"
+                           class="form-control"
+                           autocomplete="new-password"
+                           required />
+
+                    <small class="form-text text-muted">
+                        Mínimo 8 caracteres, con mayúscula, minúscula y número.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirmar nueva contraseña</label>
+                    <input type="password"
+                           name="ConfirmarClave"
+                           class="form-control"
+                           autocomplete="new-password"
+                           required />
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-change">
+                    Guardar nueva contraseña
+                </button>
+            }
+
+            <div class="security-note">
+                Después de cambiar la contraseña, podrá ingresar normalmente al sistema.
+            </div>
+
+        </section>
+    </main>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>

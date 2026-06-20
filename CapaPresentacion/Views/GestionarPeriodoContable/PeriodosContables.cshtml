@@ -3,17 +3,36 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h4 class="font-weight-bold py-3 mb-0">Gestionar Períodos Contables</h4>
+
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+
+    .texto-tabla-secundario {
+        font-size: 12px;
+        color: #6c757d;
+    }
+</style>
+
+<h4 class="font-weight-bold py-3 mb-0">Gestión de Períodos Contables</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="@Url.Action("Index", "Home")">
+            <a href="@Url.Action("Index", "Mantenimientos")">
                 <i class="feather icon-home"></i>
             </a>
         </li>
         <li class="breadcrumb-item">Contabilidad</li>
-        <li class="breadcrumb-item active">Períodos Contables</li>
+        <li class="breadcrumb-item active">Períodos contables</li>
     </ol>
 </div>
 
@@ -21,31 +40,19 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h6 class="mb-0">Lista de períodos contables</h6>
 
-        <div>
-            <button type="button" class="btn btn-outline-info btn-sm mr-2" data-toggle="modal" data-target="#ModalAyudaPeriodo">
-                ¿Cómo funciona?
-            </button>
-
-            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
-                Nuevo período
-            </button>
-        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+            Nuevo período
+        </button>
     </div>
 
     <div class="card-body">
-
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por año, mes o estado...">
-            </div>
-        </div>
-
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaPeriodosContables">
+            <table class="table table-striped table-bordered nowrap" id="tablaPeriodos" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Año</th>
                         <th>Mes</th>
+                        <th>Período</th>
                         <th>Fecha inicio</th>
                         <th>Fecha fin</th>
                         <th>Estado</th>
@@ -56,7 +63,6 @@
                 <tbody></tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -73,75 +79,78 @@
 
             <div class="modal-body">
 
-                <input type="hidden" id="txtIdPeriodoContable" value="0" />
+                <input type="hidden" id="txtEsEdicion" value="false" />
 
-                <div class="form-row">
+                <div class="alert alert-danger mt-2" id="mensajeError" style="display:none;"></div>
 
-                    <div class="form-group col-md-6">
-                        <label for="txtAnio">Año</label>
-                        <input type="number" id="txtAnio" class="form-control" min="2000" max="2100" step="1" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtAnio">Año</label>
+                            <input type="number" id="txtAnio" class="form-control" min="2000" max="2100" step="1" autocomplete="off" />
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <label for="cboMes">Mes</label>
-                        <select id="cboMes" class="form-control">
-                            <option value="0">Seleccione un mes</option>
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <option value="3">Marzo</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Mayo</option>
-                            <option value="6">Junio</option>
-                            <option value="7">Julio</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
-                        </select>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="cboMes">Mes</label>
+                            <select id="cboMes" class="form-control">
+                                <option value="0">Seleccione</option>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
                     </div>
-
                 </div>
 
-                <div class="form-row">
-
-                    <div class="form-group col-md-6">
-                        <label for="txtFechaInicio">Fecha inicio</label>
-                        <input type="date" id="txtFechaInicio" class="form-control" />
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="txtFechaFin">Fecha fin</label>
-                        <input type="date" id="txtFechaFin" class="form-control" />
-                    </div>
-
+                <div class="alert alert-info" id="mensajeLlavePrimaria" style="display:none;">
+                    El año y el mes no se pueden cambiar porque forman la llave del período contable.
                 </div>
 
-                <div class="form-row">
-
-                    <div class="form-group col-md-6">
-                        <label for="cboEstado">Estado</label>
-                        <select id="cboEstado" class="form-control">
-                            <option value="Abierto">Abierto</option>
-                            <option value="Cerrado">Cerrado</option>
-                        </select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtFechaInicio">Fecha inicio</label>
+                            <input type="date" id="txtFechaInicio" class="form-control" />
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <label for="cboActivo">Activo</label>
-                        <select id="cboActivo" class="form-control">
-                            <option value="true">Sí</option>
-                            <option value="false">No</option>
-                        </select>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtFechaFin">Fecha fin</label>
+                            <input type="date" id="txtFechaFin" class="form-control" />
+                        </div>
                     </div>
-
                 </div>
 
-                <div class="alert alert-info">
-                    Solo puede existir un período contable abierto a la vez.
+                <div class="form-group">
+                    <label for="cboEstado">Estado</label>
+                    <select id="cboEstado" class="form-control">
+                        <option value="Abierto">Abierto</option>
+                        <option value="Cerrado">Cerrado</option>
+                    </select>
+                    <small class="form-text text-muted">
+                        Solo puede existir un período abierto a la vez.
+                    </small>
                 </div>
 
-                <div class="alert alert-danger mt-3" id="mensajeError" style="display:none;"></div>
+                <div class="form-group" id="grupoActivo">
+                    <label for="cboActivo">Activo</label>
+                    <select id="cboActivo" class="form-control">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
 
             </div>
 
@@ -149,7 +158,7 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
                 </button>
-                <button type="button" class="btn btn-primary" onclick="guardarPeriodoContable()">
+                <button type="button" class="btn btn-primary" onclick="guardarPeriodo()">
                     Guardar
                 </button>
             </div>
@@ -157,70 +166,66 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="ModalAyudaPeriodo" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
 
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">Guía rápida de períodos contables</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body">
-
-                <p class="mb-2">
-                    Esta pantalla permite controlar los meses contables en los que se registrarán movimientos del sistema.
-                </p>
-
-                <ul class="mb-3">
-                    <li>Cree un período por cada mes contable.</li>
-                    <li>Solo puede existir un período abierto a la vez.</li>
-                    <li>Un período abierto permite registrar movimientos contables.</li>
-                    <li>Un período cerrado ya no debería recibir nuevos movimientos.</li>
-                    <li>Use <strong>Cerrar</strong> cuando termine de registrar las operaciones del mes.</li>
-                    <li>Use <strong>Inactivar</strong> solo si el período fue creado por error y ya está cerrado.</li>
-                </ul>
-
-                <div class="alert alert-light border mb-0">
-                    <strong>Nota:</strong> al seleccionar el año y el mes, el sistema genera automáticamente la fecha de inicio y la fecha final.
-                </div>
-
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    Cerrar
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div>
 @section scripts {
     <script>
-        var listaPeriodosContables = [];
+        var listaPeriodos = [];
+        var tablaPeriodos = null;
 
         $(document).ready(function () {
-            cargarPeriodosContables();
+            cargarPeriodos();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
+            $("#txtAnio").on("input", function () {
+                var valor = $(this).val();
+                valor = valor.replace(/[^0-9]/g, "");
+
+                if (valor.length > 4) {
+                    valor = valor.substring(0, 4);
+                }
+
+                $(this).val(valor);
             });
 
-            $("#txtAnio, #cboMes").on("change", function () {
-                generarFechasPeriodo();
+            $("#txtFechaInicio").on("change", function () {
+                var anio = parseInt($("#txtAnio").val());
+                var mes = parseInt($("#cboMes").val());
+
+                if (!isNaN(anio) && anio >= 2000 && anio <= 2100 && !isNaN(mes) && mes >= 1 && mes <= 12) {
+                    validarFechaDentroPeriodo("txtFechaInicio", anio, mes);
+                }
+            });
+
+            $("#txtFechaFin").on("change", function () {
+                var anio = parseInt($("#txtAnio").val());
+                var mes = parseInt($("#cboMes").val());
+
+                if (!isNaN(anio) && anio >= 2000 && anio <= 2100 && !isNaN(mes) && mes >= 1 && mes <= 12) {
+                    validarFechaDentroPeriodo("txtFechaFin", anio, mes);
+                }
+            });
+
+            $("#cboMes, #txtAnio").on("change keyup", function () {
+                autocompletarFechasPeriodo();
+            });
+
+            $("input, select").on("change keyup", function () {
+                if ($("#mensajeError").is(":visible")) {
+                    $("#mensajeError").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                limpiarErrores();
             });
         });
 
-        function cargarPeriodosContables() {
+        function cargarPeriodos() {
             $.ajax({
                 url: '@Url.Action("ListarPeriodosContables", "GestionarPeriodoContable")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaPeriodosContables = respuesta.data;
+                    listaPeriodos = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -230,104 +235,139 @@
         }
 
         function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaPeriodosContables tbody");
-
-            tbody.empty();
-
-            if (listaPeriodosContables.length === 0) {
-                tbody.append(`
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">
-                            No hay períodos contables registrados.
-                        </td>
-                    </tr>
-                `);
-                return;
+            if (tablaPeriodos != null) {
+                tablaPeriodos.clear().destroy();
+                tablaPeriodos = null;
             }
 
-            $.each(listaPeriodosContables, function (i, item) {
-                var anio = item.Anio || "";
-                var mes = obtenerNombreMes(item.Mes);
-                var estadoTexto = item.Estado || "";
+            var tbody = $("#tablaPeriodos tbody");
+            tbody.empty();
 
-                var texto = (anio + " " + mes + " " + estadoTexto).toLowerCase();
+            $.each(listaPeriodos, function (i, item) {
+                var anio = item.Anio || 0;
+                var mes = item.Mes || 0;
+                var nombreMes = obtenerNombreMes(mes);
+                var periodo = nombreMes + " " + anio;
 
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
-
-                var estado = estadoTexto === "Abierto"
-                    ? '<span class="badge badge-success">Abierto</span>'
-                    : '<span class="badge badge-secondary">Cerrado</span>';
+                var estado = item.Estado === "Abierto"
+                    ? '<span class="badge badge-primary">Abierto</span>'
+                    : '<span class="badge badge-dark">Cerrado</span>';
 
                 var activo = item.Activo
-                    ? '<span class="badge badge-info">Sí</span>'
-                    : '<span class="badge badge-light">No</span>';
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var botonCerrar = "";
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1 mb-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
 
-                if (item.Estado === "Abierto" && item.Activo) {
-                    botonCerrar = `
-                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="cerrarPeriodoContable(${item.IdPeriodoContable})">
-                            Cerrar
-                        </button>
-                    `;
+                var botonCerrar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-warning mr-1 mb-1",
+                    text: "Cerrar"
+                }).on("click", function () {
+                    cerrarPeriodo(item.Anio, item.Mes);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger mb-1",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarPeriodo(item.Anio, item.Mes);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                if (item.Activo && item.Estado === "Abierto") {
+                    acciones.append(botonCerrar);
                 }
 
-                var fila = `
-                    <tr>
-                        <td>${anio}</td>
-                        <td>${mes}</td>
-                        <td>${formatearFecha(item.FechaInicio)}</td>
-                        <td>${formatearFecha(item.FechaFin)}</td>
-                        <td>${estado}</td>
-                        <td>${activo}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            ${botonCerrar}
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarPeriodoContable(${item.IdPeriodoContable})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                if (item.Activo && item.Estado === "Cerrado") {
+                    acciones.append(botonInactivar);
+                }
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(anio));
+                fila.append($("<td>").text(mes));
+                fila.append($("<td>").text(periodo));
+                fila.append($("<td>").text(formatearFechaTexto(item.FechaInicio)));
+                fila.append($("<td>").text(formatearFechaTexto(item.FechaFin)));
+                fila.append($("<td>").html(estado));
+                fila.append($("<td>").html(activo));
+                fila.append(acciones);
 
                 tbody.append(fila);
+            });
+
+            tablaPeriodos = $("#tablaPeriodos").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "desc"], [1, "desc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
             });
         }
 
         function abrirModal(json) {
-            $("#mensajeError").hide().text("");
+            limpiarErrores();
 
-            $("#txtIdPeriodoContable").val(0);
+            $("#txtEsEdicion").val("false");
+
             $("#txtAnio").val(new Date().getFullYear());
+            $("#txtAnio").prop("disabled", false);
+
             $("#cboMes").val(new Date().getMonth() + 1);
+            $("#cboMes").prop("disabled", false);
+
+            $("#txtFechaInicio").val("");
+            $("#txtFechaFin").val("");
+
             $("#cboEstado").val("Abierto");
             $("#cboActivo").val("true");
+
+            $("#grupoActivo").hide();
+            $("#mensajeLlavePrimaria").hide();
+
             $("#tituloModal").text("Nuevo período contable");
 
-            generarFechasPeriodo();
+            autocompletarFechasPeriodo();
 
             if (json != null) {
-                $("#txtIdPeriodoContable").val(json.IdPeriodoContable);
+                $("#txtEsEdicion").val("true");
+
                 $("#txtAnio").val(json.Anio);
+                $("#txtAnio").prop("disabled", true);
+
                 $("#cboMes").val(json.Mes);
-                $("#txtFechaInicio").val(convertirFechaInput(json.FechaInicio));
-                $("#txtFechaFin").val(convertirFechaInput(json.FechaFin));
-                $("#cboEstado").val(json.Estado);
+                $("#cboMes").prop("disabled", true);
+
+                $("#txtFechaInicio").val(formatearFechaInput(json.FechaInicio));
+                $("#txtFechaFin").val(formatearFechaInput(json.FechaFin));
+
+                $("#cboEstado").val(json.Estado || "Abierto");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
+
+                $("#grupoActivo").show();
+                $("#mensajeLlavePrimaria").show();
+
                 $("#tituloModal").text("Editar período contable");
             }
 
             $("#FormModal").modal("show");
         }
 
-        function guardarPeriodoContable() {
+        function guardarPeriodo() {
+            $("#mensajeError").hide().text("");
+
             var obj = {
-                IdPeriodoContable: parseInt($("#txtIdPeriodoContable").val()),
                 Anio: parseInt($("#txtAnio").val()),
                 Mes: parseInt($("#cboMes").val()),
                 FechaInicio: $("#txtFechaInicio").val(),
@@ -336,33 +376,41 @@
                 Activo: $("#cboActivo").val() === "true"
             };
 
-            if (isNaN(obj.Anio) || obj.Anio < 2000 || obj.Anio > 2100) {
-                $("#mensajeError").text("Debe ingresar un año válido.").show();
+            if (isNaN(obj.Anio)) {
+                obj.Anio = 0;
+            }
+
+            if (isNaN(obj.Mes)) {
+                obj.Mes = 0;
+            }
+
+            if (obj.Anio < 2000 || obj.Anio > 2100) {
+                mostrarError("Debe ingresar un año válido.", "txtAnio");
                 return;
             }
 
-            if (isNaN(obj.Mes) || obj.Mes < 1 || obj.Mes > 12) {
-                $("#mensajeError").text("Debe seleccionar un mes válido.").show();
+            if (obj.Mes < 1 || obj.Mes > 12) {
+                mostrarError("Debe seleccionar un mes válido.", "cboMes");
                 return;
             }
 
             if (obj.FechaInicio === "") {
-                $("#mensajeError").text("Debe ingresar la fecha de inicio.").show();
+                mostrarError("Debe ingresar la fecha de inicio.", "txtFechaInicio");
                 return;
             }
 
             if (obj.FechaFin === "") {
-                $("#mensajeError").text("Debe ingresar la fecha final.").show();
+                mostrarError("Debe ingresar la fecha final.", "txtFechaFin");
                 return;
             }
 
-            if (new Date(obj.FechaInicio) > new Date(obj.FechaFin)) {
-                $("#mensajeError").text("La fecha de inicio no puede ser mayor que la fecha final.").show();
+            if (obj.FechaInicio > obj.FechaFin) {
+                mostrarError("La fecha de inicio no puede ser mayor que la fecha final.", "txtFechaInicio");
                 return;
             }
 
             if (obj.Estado !== "Abierto" && obj.Estado !== "Cerrado") {
-                $("#mensajeError").text("Debe seleccionar un estado válido.").show();
+                mostrarError("El estado debe ser Abierto o Cerrado.", "cboEstado");
                 return;
             }
 
@@ -373,9 +421,9 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (respuesta.resultado) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
-                        cargarPeriodosContables();
+                        cargarPeriodos();
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -386,20 +434,23 @@
             });
         }
 
-        function cerrarPeriodoContable(idPeriodoContable) {
-            if (!confirm("¿Desea cerrar este período contable? Después de cerrarlo no debería registrar movimientos en él.")) {
+        function cerrarPeriodo(anio, mes) {
+            if (!confirm("¿Desea cerrar este período contable? Después de cerrarlo no debería registrar movimientos nuevos en él.")) {
                 return;
             }
 
             $.ajax({
                 url: '@Url.Action("CerrarPeriodoContable", "GestionarPeriodoContable")',
                 type: "POST",
-                data: JSON.stringify({ idPeriodoContable: idPeriodoContable }),
+                data: JSON.stringify({
+                    anio: anio,
+                    mes: mes
+                }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        cargarPeriodosContables();
+                        cargarPeriodos();
                     } else {
                         alert(respuesta.mensaje);
                     }
@@ -410,7 +461,7 @@
             });
         }
 
-        function inactivarPeriodoContable(idPeriodoContable) {
+        function inactivarPeriodo(anio, mes) {
             if (!confirm("¿Desea inactivar este período contable?")) {
                 return;
             }
@@ -418,12 +469,15 @@
             $.ajax({
                 url: '@Url.Action("InactivarPeriodoContable", "GestionarPeriodoContable")',
                 type: "POST",
-                data: JSON.stringify({ idPeriodoContable: idPeriodoContable }),
+                data: JSON.stringify({
+                    anio: anio,
+                    mes: mes
+                }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        cargarPeriodosContables();
+                        cargarPeriodos();
                     } else {
                         alert(respuesta.mensaje);
                     }
@@ -434,19 +488,93 @@
             });
         }
 
-        function generarFechasPeriodo() {
+        function autocompletarFechasPeriodo() {
+            var esEdicion = $("#txtEsEdicion").val() === "true";
+
+            if (esEdicion) {
+                return;
+            }
+
             var anio = parseInt($("#txtAnio").val());
             var mes = parseInt($("#cboMes").val());
 
-            if (isNaN(anio) || isNaN(mes) || mes < 1 || mes > 12) {
+            if (isNaN(anio) || anio < 2000 || anio > 2100 || isNaN(mes) || mes < 1 || mes > 12) {
                 return;
             }
 
             var fechaInicio = new Date(anio, mes - 1, 1);
             var fechaFin = new Date(anio, mes, 0);
 
-            $("#txtFechaInicio").val(convertirDateAInput(fechaInicio));
-            $("#txtFechaFin").val(convertirDateAInput(fechaFin));
+            $("#txtFechaInicio").val(convertirFechaInput(fechaInicio));
+            $("#txtFechaFin").val(convertirFechaInput(fechaFin));
+        }
+
+        function validarFechaDentroPeriodo(idCampo, anio, mes) {
+            var valor = $("#" + idCampo).val();
+
+            if (valor === "") {
+                return;
+            }
+
+            var partes = valor.split("-");
+
+            if (partes.length !== 3) {
+                return;
+            }
+
+            var fechaAnio = parseInt(partes[0]);
+            var fechaMes = parseInt(partes[1]);
+
+            if (fechaAnio !== anio || fechaMes !== mes) {
+                mostrarAyudaCampo(idCampo, "La fecha debería pertenecer al año y mes seleccionados.");
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function convertirFechaInput(fecha) {
+            var mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+            var dia = fecha.getDate().toString().padStart(2, "0");
+
+            return fecha.getFullYear() + "-" + mes + "-" + dia;
+        }
+
+        function formatearFechaInput(valor) {
+            if (valor == null || valor === "") {
+                return "";
+            }
+
+            if (typeof valor === "string" && valor.indexOf("/Date(") === 0) {
+                var ticks = parseInt(valor.replace("/Date(", "").replace(")/", ""));
+                var fecha = new Date(ticks);
+
+                var mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+                var dia = fecha.getDate().toString().padStart(2, "0");
+
+                return fecha.getFullYear() + "-" + mes + "-" + dia;
+            }
+
+            if (typeof valor === "string" && valor.length >= 10) {
+                return valor.substring(0, 10);
+            }
+
+            return "";
+        }
+
+        function formatearFechaTexto(valor) {
+            var fechaInput = formatearFechaInput(valor);
+
+            if (fechaInput === "") {
+                return "-";
+            }
+
+            var partes = fechaInput.split("-");
+
+            if (partes.length !== 3) {
+                return fechaInput;
+            }
+
+            return partes[2] + "/" + partes[1] + "/" + partes[0];
         }
 
         function obtenerNombreMes(mes) {
@@ -467,40 +595,40 @@
             }
         }
 
-        function formatearFecha(valor) {
-            if (!valor) {
-                return "";
+        function mostrarError(mensaje, idCampo) {
+            $("#mensajeError").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
             }
-
-            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
-
-            if (isNaN(fecha.getTime())) {
-                fecha = new Date(valor);
-            }
-
-            return convertirDateAInput(fecha);
         }
 
-        function convertirFechaInput(valor) {
-            if (!valor) {
-                return "";
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
             }
 
-            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
-
-            if (isNaN(fecha.getTime())) {
-                fecha = new Date(valor);
-            }
-
-            return convertirDateAInput(fecha);
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
         }
 
-        function convertirDateAInput(fecha) {
-            var anio = fecha.getFullYear();
-            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
-            var dia = ("0" + fecha.getDate()).slice(-2);
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
 
-            return anio + "-" + mes + "-" + dia;
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarErrores() {
+            $("#mensajeError").hide().text("");
+
+            $(".campo-ayuda-error").hide().text("");
+            $(".input-error-suave").removeClass("input-error-suave");
         }
     </script>
 }

@@ -3,6 +3,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section estilos {
+    <link href="~/Scripts/js/libs/morris/morris.css" rel="stylesheet" />
+}
+
 <h4 class="font-weight-bold py-3 mb-0">Reportes Financieros</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
@@ -92,6 +96,50 @@
 
 <div class="row mb-4">
 
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <small class="text-muted">Margen de utilidad</small>
+                <h5 class="mb-0" id="lblMargenUtilidad">0.00%</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <small class="text-muted">Capital neto pendiente</small>
+                <h5 class="mb-0" id="lblCapitalNetoPendiente">₡0.00</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <small class="text-muted">Estado financiero</small>
+                <h5 class="mb-0" id="lblEstadoFinanciero">
+                    <span class="badge badge-secondary">Sin datos</span>
+                </h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <small class="text-muted">Recomendación</small>
+                <div class="small" id="lblRecomendacionGeneral">
+                    Genere el reporte para ver la recomendación.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mb-4">
+
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
@@ -149,6 +197,15 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#tabCxP">Cuentas por pagar</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabProductos">Productos más vendidos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabClientes">Clientes clave</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabFlujo">Flujo diario</a>
         </li>
     </ul>
 
@@ -228,6 +285,9 @@
                                     <th>Monto original</th>
                                     <th>Saldo actual</th>
                                     <th>Estado</th>
+                                    <th>Estado crédito</th>
+                                    <th>Días</th>
+                                    <th>Prioridad</th>
                                     <th>Detalle</th>
                                 </tr>
                             </thead>
@@ -257,6 +317,94 @@
                                     <th>Monto original</th>
                                     <th>Saldo actual</th>
                                     <th>Estado</th>
+                                    <th>Estado crédito</th>
+                                    <th>Días</th>
+                                    <th>Prioridad</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabProductos">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Productos más vendidos</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaProductos" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th>Tipo</th>
+                                    <th>Cantidad vendida</th>
+                                    <th>Total vendido</th>
+                                    <th>Veces facturado</th>
+                                    <th>Stock actual</th>
+                                    <th>Recomendación</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabClientes">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Clientes clave</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaClientes" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Facturas</th>
+                                    <th>Total comprado</th>
+                                    <th>Promedio compra</th>
+                                    <th>Última compra</th>
+                                    <th>Límite crédito</th>
+                                    <th>Días crédito</th>
+                                    <th>Clasificación</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabFlujo">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Flujo diario</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaFlujo" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Ingresos</th>
+                                    <th>Gastos</th>
+                                    <th>Resultado diario</th>
+                                    <th>Estado</th>
+                                    <th>Recomendación</th>
                                     <th>Detalle</th>
                                 </tr>
                             </thead>
@@ -300,16 +448,25 @@
 </div>
 
 @section scripts {
+
+    <script src="~/Scripts/js/libs/raphael/raphael.min.js"></script>
+    <script src="~/Scripts/js/libs/morris/morris.min.js"></script>
     <script>
         var tablaIngresos = null;
         var tablaGastos = null;
         var tablaCxC = null;
         var tablaCxP = null;
+        var tablaProductos = null;
+        var tablaClientes = null;
+        var tablaFlujo = null;
 
         var listaIngresosGlobal = [];
         var listaGastosGlobal = [];
         var listaCxCGlobal = [];
         var listaCxPGlobal = [];
+        var listaProductosGlobal = [];
+        var listaClientesGlobal = [];
+        var listaFlujoGlobal = [];
         var resumenGlobal = {};
 
         $(document).ready(function () {
@@ -355,11 +512,14 @@
             cargarGastos(fechaInicio, fechaFin);
             cargarCuentasPorCobrar();
             cargarCuentasPorPagar();
+            cargarProductosMasVendidos(fechaInicio, fechaFin);
+            cargarClientesMasVentas(fechaInicio, fechaFin);
+            cargarFlujoDiario(fechaInicio, fechaFin);
         }
 
         function cargarResumenFinanciero(fechaInicio, fechaFin) {
             $.ajax({
-                url: '@Url.Action("ResumenFinanciero", "Reportes")',
+                url: '@Url.Action("ObtenerResumenFinanciero", "Reportes")',
                 type: "GET",
                 data: {
                     fechaInicio: fechaInicio,
@@ -367,6 +527,11 @@
                 },
                 dataType: "json",
                 success: function (respuesta) {
+                    if (respuesta.resultado === false) {
+                        $("#mensajeError").text(respuesta.mensaje || "No se pudo cargar el resumen financiero.").show();
+                        return;
+                    }
+
                     var item = respuesta.data || {};
                     resumenGlobal = item;
 
@@ -375,6 +540,11 @@
                     $("#lblUtilidadEstimada").text(formatearMoneda(item.UtilidadEstimada));
                     $("#lblTotalCxC").text(formatearMoneda(item.TotalCuentasPorCobrar));
                     $("#lblTotalCxP").text(formatearMoneda(item.TotalCuentasPorPagar));
+
+                    $("#lblMargenUtilidad").text(formatearNumero(item.MargenUtilidad) + "%");
+                    $("#lblCapitalNetoPendiente").text(formatearMoneda(item.CapitalNetoPendiente));
+                    $("#lblEstadoFinanciero").html(obtenerBadgeEstadoFinanciero(item.EstadoFinanciero));
+                    $("#lblRecomendacionGeneral").text(item.RecomendacionGeneral || "Mantener seguimiento del negocio.");
 
                     pintarGraficosPorReporteActivo();
                 },
@@ -456,6 +626,66 @@
             });
         }
 
+        function cargarProductosMasVendidos(fechaInicio, fechaFin) {
+            $.ajax({
+                url: '@Url.Action("ReporteProductosMasVendidos", "Reportes")',
+                type: "GET",
+                data: {
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin
+                },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaProductosGlobal = respuesta.data || [];
+                    pintarTablaProductos(listaProductosGlobal);
+                    pintarGraficosPorReporteActivo();
+                },
+                error: function () {
+                    alert("Error al cargar productos más vendidos.");
+                }
+            });
+        }
+
+        function cargarClientesMasVentas(fechaInicio, fechaFin) {
+            $.ajax({
+                url: '@Url.Action("ReporteClientesMasVentas", "Reportes")',
+                type: "GET",
+                data: {
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin
+                },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaClientesGlobal = respuesta.data || [];
+                    pintarTablaClientes(listaClientesGlobal);
+                    pintarGraficosPorReporteActivo();
+                },
+                error: function () {
+                    alert("Error al cargar clientes clave.");
+                }
+            });
+        }
+
+        function cargarFlujoDiario(fechaInicio, fechaFin) {
+            $.ajax({
+                url: '@Url.Action("ReporteFlujoDiario", "Reportes")',
+                type: "GET",
+                data: {
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin
+                },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaFlujoGlobal = respuesta.data || [];
+                    pintarTablaFlujo(listaFlujoGlobal);
+                    pintarGraficosPorReporteActivo();
+                },
+                error: function () {
+                    alert("Error al cargar flujo diario.");
+                }
+            });
+        }
+
         function pintarTablaIngresos(lista) {
             if (tablaIngresos != null) {
                 tablaIngresos.clear().destroy();
@@ -520,6 +750,7 @@
                 fila.append($("<td>").html(
                     '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleGasto(' + i + ')">Ver</button>'
                 ));
+
                 tbody.append(fila);
             });
 
@@ -556,6 +787,9 @@
                 fila.append($("<td>").text(formatearMoneda(item.MontoOriginal)));
                 fila.append($("<td>").text(formatearMoneda(item.SaldoActual)));
                 fila.append($("<td>").html(obtenerBadgeEstadoCuenta(item.Estado)));
+                fila.append($("<td>").html(obtenerBadgeEstadoCredito(item.EstadoCredito)));
+                fila.append($("<td>").text(item.DiasRestantesTexto || obtenerTextoDiasRestantes(item.DiasRestantes, item.EstadoCredito)));
+                fila.append($("<td>").html(obtenerBadgePrioridad(item.PrioridadCobro)));
                 fila.append($("<td>").html(
                     '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleCxC(' + i + ')">Ver</button>'
                 ));
@@ -597,6 +831,9 @@
                 fila.append($("<td>").text(formatearMoneda(item.MontoOriginal)));
                 fila.append($("<td>").text(formatearMoneda(item.SaldoActual)));
                 fila.append($("<td>").html(obtenerBadgeEstadoCuenta(item.Estado)));
+                fila.append($("<td>").html(obtenerBadgeEstadoCredito(item.EstadoCredito)));
+                fila.append($("<td>").text(item.DiasRestantesTexto || obtenerTextoDiasRestantes(item.DiasRestantes, item.EstadoCredito)));
+                fila.append($("<td>").html(obtenerBadgePrioridad(item.PrioridadPago)));
                 fila.append($("<td>").html(
                     '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleCxP(' + i + ')">Ver</button>'
                 ));
@@ -611,6 +848,125 @@
                 pageLength: 10,
                 destroy: true,
                 order: [[3, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function pintarTablaProductos(lista) {
+            if (tablaProductos != null) {
+                tablaProductos.clear().destroy();
+                tablaProductos = null;
+            }
+
+            var tbody = $("#tablaProductos tbody");
+            tbody.empty();
+
+            $.each(lista, function (i, item) {
+                var fila = $("<tr>");
+
+                fila.append($("<td>").text(item.CodigoProducto || ""));
+                fila.append($("<td>").text(item.NombreProducto || ""));
+                fila.append($("<td>").text(item.TipoProducto || ""));
+                fila.append($("<td>").text(formatearNumero(item.CantidadVendida)));
+                fila.append($("<td>").text(formatearMoneda(item.TotalVendido)));
+                fila.append($("<td>").text(item.VecesFacturado || 0));
+                fila.append($("<td>").text(formatearNumero(item.StockActual)));
+                fila.append($("<td>").html(obtenerBadgeRecomendacionProducto(item.Recomendacion)));
+                fila.append($("<td>").html(
+                    '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleProducto(' + i + ')">Ver</button>'
+                ));
+
+                tbody.append(fila);
+            });
+
+            tablaProductos = $("#tablaProductos").DataTable({
+                responsive: false,
+                scrollX: true,
+                autoWidth: false,
+                pageLength: 10,
+                destroy: true,
+                order: [[4, "desc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function pintarTablaClientes(lista) {
+            if (tablaClientes != null) {
+                tablaClientes.clear().destroy();
+                tablaClientes = null;
+            }
+
+            var tbody = $("#tablaClientes tbody");
+            tbody.empty();
+
+            $.each(lista, function (i, item) {
+                var cliente = (item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "");
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(cliente));
+                fila.append($("<td>").text(item.CantidadFacturas || 0));
+                fila.append($("<td>").text(formatearMoneda(item.TotalComprado)));
+                fila.append($("<td>").text(formatearMoneda(item.PromedioCompra)));
+                fila.append($("<td>").text(formatearFecha(item.UltimaCompra)));
+                fila.append($("<td>").text(formatearMoneda(item.LimiteCredito)));
+                fila.append($("<td>").text((item.DiasCredito || 0) + " día(s)"));
+                fila.append($("<td>").html(obtenerBadgeClasificacionCliente(item.ClasificacionCliente)));
+                fila.append($("<td>").html(
+                    '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleCliente(' + i + ')">Ver</button>'
+                ));
+
+                tbody.append(fila);
+            });
+
+            tablaClientes = $("#tablaClientes").DataTable({
+                responsive: false,
+                scrollX: true,
+                autoWidth: false,
+                pageLength: 10,
+                destroy: true,
+                order: [[2, "desc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function pintarTablaFlujo(lista) {
+            if (tablaFlujo != null) {
+                tablaFlujo.clear().destroy();
+                tablaFlujo = null;
+            }
+
+            var tbody = $("#tablaFlujo tbody");
+            tbody.empty();
+
+            $.each(lista, function (i, item) {
+                var fila = $("<tr>");
+
+                fila.append($("<td>").text(formatearFecha(item.Fecha)));
+                fila.append($("<td>").text(formatearMoneda(item.TotalIngresos)));
+                fila.append($("<td>").text(formatearMoneda(item.TotalGastos)));
+                fila.append($("<td>").text(formatearMoneda(item.ResultadoDiario)));
+                fila.append($("<td>").html(obtenerBadgeEstadoDia(item.EstadoDia)));
+                fila.append($("<td>").text(item.Recomendacion || ""));
+                fila.append($("<td>").html(
+                    '<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleFlujo(' + i + ')">Ver</button>'
+                ));
+
+                tbody.append(fila);
+            });
+
+            tablaFlujo = $("#tablaFlujo").DataTable({
+                responsive: false,
+                scrollX: true,
+                autoWidth: false,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "asc"]],
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 }
@@ -648,20 +1004,47 @@
             }
 
             if (tabActivo === "#tabCxC") {
-                $("#tituloGraficoPrincipal").text("Cuentas por cobrar por estado");
+                $("#tituloGraficoPrincipal").text("Cuentas por cobrar por estado de crédito");
                 $("#tituloGraficoResumen").text("Saldo pendiente CxC");
 
-                pintarBarraPorCampo("graficoPrincipal", listaCxCGlobal, "Estado", "SaldoActual", "Saldo");
+                pintarBarraPorCampo("graficoPrincipal", listaCxCGlobal, "EstadoCredito", "SaldoActual", "Saldo");
                 pintarDonutCuentas("graficoResumen", "CxC");
                 return;
             }
 
             if (tabActivo === "#tabCxP") {
-                $("#tituloGraficoPrincipal").text("Cuentas por pagar por estado");
+                $("#tituloGraficoPrincipal").text("Cuentas por pagar por estado de crédito");
                 $("#tituloGraficoResumen").text("Saldo pendiente CxP");
 
-                pintarBarraPorCampo("graficoPrincipal", listaCxPGlobal, "Estado", "SaldoActual", "Saldo");
+                pintarBarraPorCampo("graficoPrincipal", listaCxPGlobal, "EstadoCredito", "SaldoActual", "Saldo");
                 pintarDonutCuentas("graficoResumen", "CxP");
+                return;
+            }
+
+            if (tabActivo === "#tabProductos") {
+                $("#tituloGraficoPrincipal").text("Productos por total vendido");
+                $("#tituloGraficoResumen").text("Top productos por cantidad");
+
+                pintarBarraPorCampo("graficoPrincipal", listaProductosGlobal, "NombreProducto", "TotalVendido", "Total vendido");
+                pintarBarraPorCampo("graficoResumen", listaProductosGlobal.slice(0, 5), "NombreProducto", "CantidadVendida", "Cantidad");
+                return;
+            }
+
+            if (tabActivo === "#tabClientes") {
+                $("#tituloGraficoPrincipal").text("Clientes por total comprado");
+                $("#tituloGraficoResumen").text("Clientes por cantidad de facturas");
+
+                pintarBarraPorCampo("graficoPrincipal", listaClientesGlobal, "ClienteNombre", "TotalComprado", "Total comprado");
+                pintarBarraPorCampo("graficoResumen", listaClientesGlobal.slice(0, 5), "ClienteNombre", "CantidadFacturas", "Facturas");
+                return;
+            }
+
+            if (tabActivo === "#tabFlujo") {
+                $("#tituloGraficoPrincipal").text("Flujo diario");
+                $("#tituloGraficoResumen").text("Ingresos vs gastos");
+
+                pintarFlujoDiario("graficoPrincipal");
+                pintarIngresosVsGastos("graficoResumen");
                 return;
             }
         }
@@ -775,6 +1158,39 @@
             });
         }
 
+        function pintarFlujoDiario(idContenedor) {
+            limpiarGrafico(idContenedor);
+
+            var data = [];
+
+            $.each(listaFlujoGlobal, function (i, item) {
+                data.push({
+                    fecha: formatearFecha(item.Fecha),
+                    ingresos: parseFloat(item.TotalIngresos || 0),
+                    gastos: parseFloat(item.TotalGastos || 0),
+                    resultado: parseFloat(item.ResultadoDiario || 0)
+                });
+            });
+
+            if (data.length === 0) {
+                $("#" + idContenedor).html(
+                    '<div class="text-center text-muted pt-5">No hay flujo diario para graficar.</div>'
+                );
+                return;
+            }
+
+            Morris.Line({
+                element: idContenedor,
+                data: data,
+                xkey: "fecha",
+                ykeys: ["ingresos", "gastos", "resultado"],
+                labels: ["Ingresos", "Gastos", "Resultado"],
+                parseTime: false,
+                resize: true,
+                hideHover: "auto"
+            });
+        }
+
         function ajustarTablas() {
             if (tablaIngresos != null) {
                 tablaIngresos.columns.adjust();
@@ -790,6 +1206,18 @@
 
             if (tablaCxP != null) {
                 tablaCxP.columns.adjust();
+            }
+
+            if (tablaProductos != null) {
+                tablaProductos.columns.adjust();
+            }
+
+            if (tablaClientes != null) {
+                tablaClientes.columns.adjust();
+            }
+
+            if (tablaFlujo != null) {
+                tablaFlujo.columns.adjust();
             }
         }
 
@@ -813,6 +1241,112 @@
             return '<span class="badge badge-warning">' + (estado || "Pendiente") + '</span>';
         }
 
+        function obtenerBadgeEstadoCredito(estadoCredito) {
+            if (estadoCredito === "Pagada") {
+                return '<span class="badge badge-success">Pagada</span>';
+            }
+
+            if (estadoCredito === "Vencida") {
+                return '<span class="badge badge-danger">Vencida</span>';
+            }
+
+            if (estadoCredito === "Por vencer") {
+                return '<span class="badge badge-warning">Por vencer</span>';
+            }
+
+            if (estadoCredito === "Anulada") {
+                return '<span class="badge badge-secondary">Anulada</span>';
+            }
+
+            return '<span class="badge badge-info">' + (estadoCredito || "Pendiente") + '</span>';
+        }
+
+        function obtenerBadgePrioridad(prioridad) {
+            if (prioridad === "Alta") {
+                return '<span class="badge badge-danger">Alta</span>';
+            }
+
+            if (prioridad === "Media") {
+                return '<span class="badge badge-warning">Media</span>';
+            }
+
+            return '<span class="badge badge-info">' + (prioridad || "Normal") + '</span>';
+        }
+
+        function obtenerBadgeEstadoFinanciero(estado) {
+            if (estado === "Rentable") {
+                return '<span class="badge badge-success">Rentable</span>';
+            }
+
+            if (estado === "Pérdida") {
+                return '<span class="badge badge-danger">Pérdida</span>';
+            }
+
+            if (estado === "Equilibrado") {
+                return '<span class="badge badge-warning">Equilibrado</span>';
+            }
+
+            return '<span class="badge badge-secondary">Sin datos</span>';
+        }
+
+        function obtenerBadgeRecomendacionProducto(recomendacion) {
+            if (recomendacion === "Sin stock") {
+                return '<span class="badge badge-danger">Sin stock</span>';
+            }
+
+            if (recomendacion === "Revisar inventario") {
+                return '<span class="badge badge-warning">Revisar inventario</span>';
+            }
+
+            return '<span class="badge badge-success">' + (recomendacion || "Stock disponible") + '</span>';
+        }
+
+        function obtenerBadgeClasificacionCliente(clasificacion) {
+            if (clasificacion === "Cliente frecuente") {
+                return '<span class="badge badge-success">Cliente frecuente</span>';
+            }
+
+            if (clasificacion === "Cliente de alto valor") {
+                return '<span class="badge badge-primary">Cliente de alto valor</span>';
+            }
+
+            return '<span class="badge badge-secondary">' + (clasificacion || "Cliente ocasional") + '</span>';
+        }
+
+        function obtenerBadgeEstadoDia(estado) {
+            if (estado === "Positivo") {
+                return '<span class="badge badge-success">Positivo</span>';
+            }
+
+            if (estado === "Negativo") {
+                return '<span class="badge badge-danger">Negativo</span>';
+            }
+
+            if (estado === "Equilibrado") {
+                return '<span class="badge badge-warning">Equilibrado</span>';
+            }
+
+            return '<span class="badge badge-secondary">' + (estado || "Sin datos") + '</span>';
+        }
+
+        function obtenerTextoDiasRestantes(diasRestantes, estadoCredito) {
+            diasRestantes = parseInt(diasRestantes || 0);
+
+            if (estadoCredito === "Pagada") {
+                return "Pagada";
+            }
+
+            if (diasRestantes < 0) {
+                return Math.abs(diasRestantes) + " día(s) vencida";
+            }
+
+            if (diasRestantes === 0) {
+                return "Vence hoy";
+            }
+
+            return diasRestantes + " día(s)";
+        }
+
         function formatearFecha(valor) {
             if (!valor) {
                 return "";
@@ -822,6 +1356,10 @@
 
             if (isNaN(fecha.getTime())) {
                 fecha = new Date(valor);
+            }
+
+            if (isNaN(fecha.getTime())) {
+                return "";
             }
 
             return convertirDateAInput(fecha);
@@ -838,6 +1376,11 @@
         function formatearMoneda(valor) {
             var numero = parseFloat(valor || 0);
             return "₡" + numero.toFixed(2);
+        }
+
+        function formatearNumero(valor) {
+            var numero = parseFloat(valor || 0);
+            return numero.toFixed(2);
         }
 
         function obtenerReporteActivo() {
@@ -889,7 +1432,11 @@
                         { titulo: "Vencimiento", campo: "FechaVencimiento", tipo: "fecha" },
                         { titulo: "Monto original", campo: "MontoOriginal", tipo: "moneda" },
                         { titulo: "Saldo actual", campo: "SaldoActual", tipo: "moneda" },
-                        { titulo: "Estado", campo: "Estado" }
+                        { titulo: "Estado", campo: "Estado" },
+                        { titulo: "Estado crédito", campo: "EstadoCredito" },
+                        { titulo: "Días restantes", campo: "DiasRestantesTexto" },
+                        { titulo: "Prioridad", campo: "PrioridadCobro" },
+                        { titulo: "Recomendación", campo: "RecomendacionCobro" }
                     ]
                 };
             }
@@ -907,7 +1454,66 @@
                         { titulo: "Concepto", campo: "Concepto" },
                         { titulo: "Monto original", campo: "MontoOriginal", tipo: "moneda" },
                         { titulo: "Saldo actual", campo: "SaldoActual", tipo: "moneda" },
-                        { titulo: "Estado", campo: "Estado" }
+                        { titulo: "Estado", campo: "Estado" },
+                        { titulo: "Estado crédito", campo: "EstadoCredito" },
+                        { titulo: "Días restantes", campo: "DiasRestantesTexto" },
+                        { titulo: "Prioridad", campo: "PrioridadPago" },
+                        { titulo: "Recomendación", campo: "RecomendacionPago" }
+                    ]
+                };
+            }
+
+            if (tabActivo === "#tabProductos") {
+                return {
+                    nombre: "Productos más vendidos",
+                    archivo: "reporte_productos_mas_vendidos",
+                    lista: listaProductosGlobal,
+                    columnas: [
+                        { titulo: "Código", campo: "CodigoProducto" },
+                        { titulo: "Producto", campo: "NombreProducto" },
+                        { titulo: "Tipo", campo: "TipoProducto" },
+                        { titulo: "Cantidad vendida", campo: "CantidadVendida" },
+                        { titulo: "Total vendido", campo: "TotalVendido", tipo: "moneda" },
+                        { titulo: "Veces facturado", campo: "VecesFacturado" },
+                        { titulo: "Stock actual", campo: "StockActual" },
+                        { titulo: "Recomendación", campo: "Recomendacion" },
+                        { titulo: "Acción sugerida", campo: "AccionSugerida" }
+                    ]
+                };
+            }
+
+            if (tabActivo === "#tabClientes") {
+                return {
+                    nombre: "Clientes clave",
+                    archivo: "reporte_clientes_clave",
+                    lista: listaClientesGlobal,
+                    columnas: [
+                        { titulo: "Identificación", campo: "IdentificacionCliente" },
+                        { titulo: "Cliente", campo: "ClienteNombre" },
+                        { titulo: "Facturas", campo: "CantidadFacturas" },
+                        { titulo: "Total comprado", campo: "TotalComprado", tipo: "moneda" },
+                        { titulo: "Promedio compra", campo: "PromedioCompra", tipo: "moneda" },
+                        { titulo: "Última compra", campo: "UltimaCompra", tipo: "fecha" },
+                        { titulo: "Límite crédito", campo: "LimiteCredito", tipo: "moneda" },
+                        { titulo: "Días crédito", campo: "DiasCredito" },
+                        { titulo: "Clasificación", campo: "ClasificacionCliente" },
+                        { titulo: "Acción sugerida", campo: "AccionSugerida" }
+                    ]
+                };
+            }
+
+            if (tabActivo === "#tabFlujo") {
+                return {
+                    nombre: "Flujo diario",
+                    archivo: "reporte_flujo_diario",
+                    lista: listaFlujoGlobal,
+                    columnas: [
+                        { titulo: "Fecha", campo: "Fecha", tipo: "fecha" },
+                        { titulo: "Ingresos", campo: "TotalIngresos", tipo: "moneda" },
+                        { titulo: "Gastos", campo: "TotalGastos", tipo: "moneda" },
+                        { titulo: "Resultado diario", campo: "ResultadoDiario", tipo: "moneda" },
+                        { titulo: "Estado", campo: "EstadoDia" },
+                        { titulo: "Recomendación", campo: "Recomendacion" }
                     ]
                 };
             }
@@ -1042,6 +1648,7 @@
             var item = listaIngresosGlobal[index];
 
             abrirDetalleReporte("Detalle de ingreso", [
+                ["Número ingreso", item.NumeroIngreso],
                 ["Fecha", formatearFecha(item.FechaIngreso)],
                 ["Tipo de ingreso", item.TipoIngreso],
                 ["Origen", item.OrigenIngreso],
@@ -1056,13 +1663,15 @@
             var item = listaGastosGlobal[index];
 
             abrirDetalleReporte("Detalle de gasto", [
+                ["Número gasto", item.NumeroGasto],
                 ["Fecha", formatearFecha(item.FechaGasto)],
                 ["Tipo de gasto", item.TipoGasto],
                 ["Cuenta contable", (item.CodigoCuenta || "-") + " - " + (item.NombreCuenta || "-")],
                 ["Proveedor", (item.IdentificacionProveedor || "-") + " - " + (item.ProveedorNombre || "-")],
                 ["Número documento", item.NumeroDocumento],
                 ["Descripción", item.Descripcion],
-                ["Monto", formatearMoneda(item.Monto)]
+                ["Monto", formatearMoneda(item.Monto)],
+                ["Comprobante", item.ComprobanteDescripcion || item.NumeroComprobante || "Sin comprobante"]
             ]);
         }
 
@@ -1076,7 +1685,11 @@
                 ["Fecha vencimiento", formatearFecha(item.FechaVencimiento)],
                 ["Monto original", formatearMoneda(item.MontoOriginal)],
                 ["Saldo actual", formatearMoneda(item.SaldoActual)],
-                ["Estado", item.Estado]
+                ["Estado", item.Estado],
+                ["Estado crédito", item.EstadoCredito],
+                ["Días restantes", item.DiasRestantesTexto || obtenerTextoDiasRestantes(item.DiasRestantes, item.EstadoCredito)],
+                ["Prioridad de cobro", item.PrioridadCobro],
+                ["Recomendación", item.RecomendacionCobro]
             ]);
         }
 
@@ -1091,7 +1704,56 @@
                 ["Concepto", item.Concepto],
                 ["Monto original", formatearMoneda(item.MontoOriginal)],
                 ["Saldo actual", formatearMoneda(item.SaldoActual)],
-                ["Estado", item.Estado]
+                ["Estado", item.Estado],
+                ["Estado crédito", item.EstadoCredito],
+                ["Días restantes", item.DiasRestantesTexto || obtenerTextoDiasRestantes(item.DiasRestantes, item.EstadoCredito)],
+                ["Prioridad de pago", item.PrioridadPago],
+                ["Recomendación", item.RecomendacionPago]
+            ]);
+        }
+
+        function verDetalleProducto(index) {
+            var item = listaProductosGlobal[index];
+
+            abrirDetalleReporte("Detalle de producto más vendido", [
+                ["Código", item.CodigoProducto],
+                ["Producto", item.NombreProducto],
+                ["Tipo", item.TipoProducto],
+                ["Cantidad vendida", formatearNumero(item.CantidadVendida)],
+                ["Total vendido", formatearMoneda(item.TotalVendido)],
+                ["Veces facturado", item.VecesFacturado],
+                ["Stock actual", formatearNumero(item.StockActual)],
+                ["Recomendación", item.Recomendacion],
+                ["Acción sugerida", item.AccionSugerida]
+            ]);
+        }
+
+        function verDetalleCliente(index) {
+            var item = listaClientesGlobal[index];
+
+            abrirDetalleReporte("Detalle de cliente clave", [
+                ["Cliente", (item.IdentificacionCliente || "-") + " - " + (item.ClienteNombre || "-")],
+                ["Cantidad de facturas", item.CantidadFacturas],
+                ["Total comprado", formatearMoneda(item.TotalComprado)],
+                ["Promedio de compra", formatearMoneda(item.PromedioCompra)],
+                ["Última compra", formatearFecha(item.UltimaCompra)],
+                ["Límite crédito", formatearMoneda(item.LimiteCredito)],
+                ["Días crédito", (item.DiasCredito || 0) + " día(s)"],
+                ["Clasificación", item.ClasificacionCliente],
+                ["Acción sugerida", item.AccionSugerida]
+            ]);
+        }
+
+        function verDetalleFlujo(index) {
+            var item = listaFlujoGlobal[index];
+
+            abrirDetalleReporte("Detalle de flujo diario", [
+                ["Fecha", formatearFecha(item.Fecha)],
+                ["Total ingresos", formatearMoneda(item.TotalIngresos)],
+                ["Total gastos", formatearMoneda(item.TotalGastos)],
+                ["Resultado diario", formatearMoneda(item.ResultadoDiario)],
+                ["Estado del día", item.EstadoDia],
+                ["Recomendación", item.Recomendacion]
             ]);
         }
 

@@ -27,8 +27,8 @@ namespace CapaDatos.Ubicacion
                         {
                             lista.Add(new Canton()
                             {
-                                IdCanton = Convert.ToInt32(dr["IdCanton"]),
-                                IdProvincia = Convert.ToInt32(dr["IdProvincia"]),
+                                CodigoCanton = Convert.ToInt32(dr["CodigoCanton"]),
+                                CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
                                 Nombre = dr["Nombre"].ToString(),
                                 Activo = Convert.ToBoolean(dr["Activo"]),
                                 ProvinciaNombre = dr["ProvinciaNombre"].ToString()
@@ -57,7 +57,8 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Canton_Registrar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdProvincia", obj.IdProvincia);
+                    cmd.Parameters.AddWithValue("@CodigoCanton", obj.CodigoCanton);
+                    cmd.Parameters.AddWithValue("@CodigoProvincia", obj.CodigoProvincia);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -91,8 +92,8 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Canton_Editar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdCanton", obj.IdCanton);
-                    cmd.Parameters.AddWithValue("@IdProvincia", obj.IdProvincia);
+                    cmd.Parameters.AddWithValue("@CodigoCanton", obj.CodigoCanton);
+                    cmd.Parameters.AddWithValue("@CodigoProvincia", obj.CodigoProvincia);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
@@ -115,7 +116,7 @@ namespace CapaDatos.Ubicacion
             return resultado;
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int codigoCanton, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -127,7 +128,7 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Canton_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdCanton", id);
+                    cmd.Parameters.AddWithValue("@CodigoCanton", codigoCanton);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -148,8 +149,7 @@ namespace CapaDatos.Ubicacion
             return resultado;
         }
 
-
-        public List<Canton> ListarActivosPorProvincia(int idProvincia)
+        public List<Canton> ListarActivosPorProvincia(int codigoProvincia)
         {
             List<Canton> lista = new List<Canton>();
 
@@ -159,7 +159,8 @@ namespace CapaDatos.Ubicacion
                 {
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Canton_ListarActivosPorProvincia", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@IdProvincia", idProvincia);
+
+                    cmd.Parameters.AddWithValue("@CodigoProvincia", codigoProvincia);
 
                     oconexion.Open();
 
@@ -169,8 +170,8 @@ namespace CapaDatos.Ubicacion
                         {
                             lista.Add(new Canton()
                             {
-                                IdCanton = Convert.ToInt32(dr["IdCanton"]),
-                                IdProvincia = Convert.ToInt32(dr["IdProvincia"]),
+                                CodigoCanton = Convert.ToInt32(dr["CodigoCanton"]),
+                                CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
                                 Nombre = dr["Nombre"].ToString(),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
@@ -185,7 +186,5 @@ namespace CapaDatos.Ubicacion
 
             return lista;
         }
-
- 
     }
 }

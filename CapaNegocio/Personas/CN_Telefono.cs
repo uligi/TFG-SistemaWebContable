@@ -1,6 +1,7 @@
 ﻿using CapaDatos.personas;
-using CapaEntidad.personas;
+using CapaEntidad.Personas;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace CapaNegocio.personas
 {
@@ -13,31 +14,29 @@ namespace CapaNegocio.personas
             return objCapaDato.Listar();
         }
 
+        public List<Telefono> ListarPorPersona(string identificacion)
+        {
+            identificacion = identificacion == null ? "" : identificacion.Trim();
+
+            if (identificacion == "")
+            {
+                return new List<Telefono>();
+            }
+
+            return objCapaDato.ListarPorPersona(identificacion);
+        }
+
         public int Registrar(Telefono obj, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(obj.NumeroTelefono))
-            {
-                Mensaje = "El número de teléfono es obligatorio.";
-                return 0;
-            }
+            PrepararDatos(obj);
 
-            if (obj.NumeroTelefono.Length > 45)
-            {
-                Mensaje = "El número de teléfono no puede superar los 45 caracteres.";
-                return 0;
-            }
+            string error = Validar(obj, false);
 
-            if (string.IsNullOrWhiteSpace(obj.Identificacion))
+            if (error != "")
             {
-                Mensaje = "Debe seleccionar una persona.";
-                return 0;
-            }
-
-            if (obj.IdTipoTelefono == 0)
-            {
-                Mensaje = "Debe seleccionar un tipo de teléfono.";
+                Mensaje = error;
                 return 0;
             }
 
@@ -48,81 +47,106 @@ namespace CapaNegocio.personas
         {
             Mensaje = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(obj.NumeroTelefono))
-            {
-                Mensaje = "Debe seleccionar un teléfono válido.";
-                return false;
-            }
+            PrepararDatos(obj);
 
-            if (string.IsNullOrWhiteSpace(obj.Identificacion))
-            {
-                Mensaje = "Debe seleccionar una persona válida.";
-                return false;
-            }
+            string error = Validar(obj, true);
 
-            if (obj.IdTipoTelefono == 0)
+            if (error != "")
             {
-                Mensaje = "Debe seleccionar un tipo de teléfono.";
+                Mensaje = error;
                 return false;
             }
 
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(string numeroTelefono, string identificacion, out string Mensaje)
+        public bool Inactivar(string identificacion, string numeroTelefono, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(numeroTelefono))
-            {
-                Mensaje = "Debe seleccionar un teléfono válido.";
-                return false;
-            }
+            identificacion = identificacion == null ? "" : identificacion.Trim();
+            numeroTelefono = numeroTelefono == null ? "" : numeroTelefono.Trim();
 
-            if (string.IsNullOrWhiteSpace(identificacion))
+            if (identificacion == "")
             {
                 Mensaje = "Debe seleccionar una persona válida.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(numeroTelefono, identificacion, out Mensaje);
-        }
+            if (!Regex.IsMatch(identificacion, @"^([0-9]{9}|[0-9]{11})$"))
+            {
+                Mensaje = "La identificación debe contener solo números: 9 dígitos para cédula nacional o 11 dígitos para cédula extranjera.";
+                return false;
+            }
 
-        public bool EditarDesdeCliente(string numeroAnterior, Telefono obj, out string Mensaje)
-        {
-            Mensaje = string.Empty;
-
-            if (string.IsNullOrWhiteSpace(numeroAnterior))
+            if (numeroTelefono == "")
             {
                 Mensaje = "Debe seleccionar un teléfono válido.";
                 return false;
+            }
+
+            if (!Regex.IsMatch(numeroTelefono, @"^[0-9]{8}$"))
+            {
+                Mensaje = "El número de teléfono debe contener exactamente 8 dígitos numéricos, sin prefijo ni caracteres especiales.";
+                return false;
+            }
+
+            return objCapaDato.Inactivar(identificacion, numeroTelefono, out Mensaje);
+        }
+
+        private void PrepararDatos(Telefono obj)
+        {
+            obj.Identificacion = obj.Identificacion == null ? "" : obj.Identificacion.Trim();
+            obj.NumeroTelefono = obj.NumeroTelefono == null ? "" : obj.NumeroTelefono.Trim();
+            obj.NumeroTelefonoAnterior = obj.NumeroTelefonoAnterior == null ? "" : obj.NumeroTelefonoAnterior.Trim();
+            obj.TipoTelefonoNombre = obj.TipoTelefonoNombre == null ? "" : obj.TipoTelefonoNombre.Trim();
+
+            obj.Nombre = obj.Nombre == null ? "" : obj.Nombre.Trim();
+            obj.PrimerApellido = obj.PrimerApellido == null ? "" : obj.PrimerApellido.Trim();
+            obj.SegundoApellido = obj.SegundoApellido == null ? "" : obj.SegundoApellido.Trim();
+        }
+
+        private string Validar(Telefono obj, bool esEdicion)
+        {
+            if (string.IsNullOrWhiteSpace(obj.Identificacion))
+            {
+                return "Debe seleccionar una persona.";
+            }
+
+            if (!Regex.IsMatch(obj.Identificacion, @"^([0-9]{9}|[0-9]{11})$"))
+            {
+                return "La identificación debe contener solo números: 9 dígitos para cédula nacional o 11 dígitos para cédula extranjera.";
+            }
+
+            if (esEdicion)
+            {
+                if (string.IsNullOrWhiteSpace(obj.NumeroTelefonoAnterior))
+                {
+                    return "Debe seleccionar un teléfono válido.";
+                }
+
+                if (!Regex.IsMatch(obj.NumeroTelefonoAnterior, @"^[0-9]{8}$"))
+                {
+                    return "El teléfono anterior debe contener exactamente 8 dígitos numéricos.";
+                }
             }
 
             if (string.IsNullOrWhiteSpace(obj.NumeroTelefono))
             {
-                Mensaje = "El número de teléfono es obligatorio.";
-                return false;
+                return "El número de teléfono es obligatorio.";
             }
 
-            if (obj.NumeroTelefono.Length > 45)
+            if (!Regex.IsMatch(obj.NumeroTelefono, @"^[0-9]{8}$"))
             {
-                Mensaje = "El número de teléfono no puede superar los 45 caracteres.";
-                return false;
+                return "El número de teléfono debe contener exactamente 8 dígitos numéricos, sin prefijo ni caracteres especiales.";
             }
 
-            if (string.IsNullOrWhiteSpace(obj.Identificacion))
+            if (obj.IdTipoTelefono <= 0)
             {
-                Mensaje = "Debe seleccionar una persona válida.";
-                return false;
+                return "Debe seleccionar un tipo de teléfono.";
             }
 
-            if (obj.IdTipoTelefono == 0)
-            {
-                Mensaje = "Debe seleccionar un tipo de teléfono.";
-                return false;
-            }
-
-            return objCapaDato.EditarDesdeCliente(numeroAnterior, obj, out Mensaje);
+            return "";
         }
     }
 }

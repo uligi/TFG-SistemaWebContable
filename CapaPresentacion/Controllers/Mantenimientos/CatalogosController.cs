@@ -1,21 +1,24 @@
-﻿using System;
+﻿using CapaEntidad.Catalogos;
+using CapaNegocio.Catalogos;
+using CapaPresentacion.Filtros;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CapaEntidad.Catalogos;
-using CapaNegocio.Catalogos;
 
 
 namespace CapaPresentacion.Controllers.Mantenimientos
 {
     public class CatalogosController : Controller
     {
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
         // GET: ********************TipoTelefono*********************
         public ActionResult TipoTelefono()
         {
             return View();
         }
+
         [HttpGet]
         public JsonResult ListarTipoTelefonos()
         {
@@ -42,19 +45,21 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoTelefono(int id)
+        public JsonResult InactivarTipoTelefono(int idTipoTelefono)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoTelefono().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoTelefono().Inactivar(idTipoTelefono, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
         // GET: ********************TipoCorreo*********************
         public ActionResult TipoCorreo()
         {
             return View();
         }
+
         [HttpGet]
         public JsonResult ListarTipoCorreos()
         {
@@ -81,16 +86,17 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoCorreo(int id)
+        public JsonResult InactivarTipoCorreo(int idTipoCorreo)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoCorreo().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoCorreo().Inactivar(idTipoCorreo, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
-        // GET: ********************TipoFactura*********************
 
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
+        // GET: ********************TipoFactura*********************
         public ActionResult TipoFactura()
         {
             return View();
@@ -131,13 +137,16 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoFactura(int id)
+        public JsonResult InactivarTipoFactura(int idTipoFactura)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoFactura().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoFactura().Inactivar(idTipoFactura, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
+
+
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
         // GET: ********************TipoDeObservacion*********************
         public ActionResult TipoDeObservacion()
         {
@@ -148,6 +157,15 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         public JsonResult ListarTipoDeObservaciones()
         {
             var lista = new CN_TipoDeObservacion().Listar();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ListarTipoDeObservacionesActivos()
+        {
+            var lista = new CN_TipoDeObservacion().Listar()
+                .FindAll(x => x.Activo == true);
+
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
@@ -170,18 +188,22 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoDeObservacion(int id)
+        public JsonResult InactivarTipoDeObservacion(int idTipoDeObservacion)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoDeObservacion().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoDeObservacion().Inactivar(idTipoDeObservacion, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
-        // GET: ********************TipoProducto*********************
+
+
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
+        // GET: ********************TipoPago*********************
         public ActionResult TipoPago()
         {
             return View();
         }
+
         [HttpGet]
         public JsonResult ListarTipoPagos()
         {
@@ -197,7 +219,6 @@ namespace CapaPresentacion.Controllers.Mantenimientos
 
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
-
 
         [HttpPost]
         public JsonResult GuardarTipoPago(TipoPago obj)
@@ -218,23 +239,34 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoPago(int id)
+        public JsonResult InactivarTipoPago(int idTipoPago)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoPago().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoPago().Inactivar(idTipoPago, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
-        // GET: ********************TipoProducto*********************
+        // ===============================
+        // TIPO PRODUCTO
+        // ===============================
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
         public ActionResult TipoProducto()
         {
             return View();
         }
+
         [HttpGet]
         public JsonResult ListarTipoProductos()
         {
             var lista = new CN_TipoProducto().Listar();
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ListarTipoProductosActivos()
+        {
+            var lista = new CN_TipoProducto().ListarActivos();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
@@ -257,19 +289,18 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoProducto(int id)
+        public JsonResult InactivarTipoProducto(int idTipoProducto)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoProducto().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoProducto().Inactivar(idTipoProducto, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
-    
         // ===============================
         // PUESTO
         // ===============================
-
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
         public ActionResult Puestos()
         {
             return View();
@@ -308,10 +339,10 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarPuesto(int id)
+        public JsonResult InactivarPuesto(int idPuesto)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_Puesto().Inactivar(id, out mensaje);
+            bool resultado = new CN_Puesto().Inactivar(idPuesto, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
@@ -320,7 +351,7 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         // ===============================
         // NATURALEZA CUENTA CONTABLE
         // ===============================
-
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
         public ActionResult NaturalezasCuentaContable()
         {
             return View();
@@ -359,10 +390,10 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarNaturalezaCuentaContable(int id)
+        public JsonResult InactivarNaturalezaCuentaContable(int idNaturalezaCuentaContable)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_NaturalezaCuentaContable().Inactivar(id, out mensaje);
+            bool resultado = new CN_NaturalezaCuentaContable().Inactivar(idNaturalezaCuentaContable, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
@@ -371,21 +402,21 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         // ===============================
         // TIPO GASTO
         // ===============================
-
+        [PermisoAuthorize(CodigoModulo = "TIPOS_GASTO")]
         public ActionResult TiposGasto()
         {
             return View();
         }
 
         [HttpGet]
-        public JsonResult ListarTiposGasto()
+        public JsonResult ListarTipoGastos()
         {
             var lista = new CN_TipoGasto().Listar();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public JsonResult ListarTiposGastoActivos()
+        public JsonResult ListarTipoGastosActivos()
         {
             var lista = new CN_TipoGasto().ListarActivos();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
@@ -410,10 +441,10 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoGasto(int id)
+        public JsonResult InactivarTipoGasto(int idTipoGasto)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoGasto().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoGasto().Inactivar(idTipoGasto, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
@@ -422,21 +453,21 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         // ===============================
         // TIPO INGRESO
         // ===============================
-
+        [PermisoAuthorize(CodigoModulo = "TIPOS_INGRESO")]
         public ActionResult TiposIngreso()
         {
             return View();
         }
 
         [HttpGet]
-        public JsonResult ListarTiposIngreso()
+        public JsonResult ListarTipoIngresos()
         {
             var lista = new CN_TipoIngreso().Listar();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public JsonResult ListarTiposIngresoActivos()
+        public JsonResult ListarTipoIngresosActivos()
         {
             var lista = new CN_TipoIngreso().ListarActivos();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
@@ -461,10 +492,10 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoIngreso(int id)
+        public JsonResult InactivarTipoIngreso(int idTipoIngreso)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoIngreso().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoIngreso().Inactivar(idTipoIngreso, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
@@ -473,7 +504,7 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         // ===============================
         // TIPO CUENTA CONTABLE
         // ===============================
-
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
         public ActionResult TiposCuentaContable()
         {
             return View();
@@ -512,23 +543,23 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         }
 
         [HttpPost]
-        public JsonResult InactivarTipoCuentaContable(int id)
+        public JsonResult InactivarTipoCuentaContable(int idTipoCuentaContable)
         {
             string mensaje = string.Empty;
-            bool resultado = new CN_TipoCuentaContable().Inactivar(id, out mensaje);
+            bool resultado = new CN_TipoCuentaContable().Inactivar(idTipoCuentaContable, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
+
+
         // ===============================
         // IMPUESTOS
         // ===============================
-
-
+        [PermisoAuthorize(CodigoModulo = "CATALOGOS")]
         public ActionResult Impuestos()
         {
             return View();
         }
-
 
         [HttpGet]
         public JsonResult ListarImpuestos()
@@ -566,11 +597,7 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         public JsonResult InactivarImpuesto(int idImpuesto)
         {
             string mensaje = string.Empty;
-
-            bool resultado = new CN_Impuesto().Inactivar(
-                idImpuesto,
-                out mensaje
-            );
+            bool resultado = new CN_Impuesto().Inactivar(idImpuesto, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
@@ -580,12 +607,10 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         // DESCUENTOS
         // ===============================
 
-
-        public ActionResult Descuento()
+        public ActionResult Descuentos()
         {
             return View();
         }
-
 
         [HttpGet]
         public JsonResult ListarDescuentos()
@@ -623,11 +648,7 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         public JsonResult InactivarDescuento(int idDescuento)
         {
             string mensaje = string.Empty;
-
-            bool resultado = new CN_Descuento().Inactivar(
-                idDescuento,
-                out mensaje
-            );
+            bool resultado = new CN_Descuento().Inactivar(idDescuento, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }

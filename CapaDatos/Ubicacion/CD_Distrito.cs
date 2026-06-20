@@ -27,12 +27,12 @@ namespace CapaDatos.Ubicacion
                         {
                             lista.Add(new Distrito()
                             {
-                                IdDistrito = Convert.ToInt32(dr["IdDistrito"]),
-                                IdCanton = Convert.ToInt32(dr["IdCanton"]),
+                                CodigoDistrito = Convert.ToInt32(dr["CodigoDistrito"]),
+                                CodigoCanton = Convert.ToInt32(dr["CodigoCanton"]),
                                 Nombre = dr["Nombre"].ToString(),
                                 Activo = Convert.ToBoolean(dr["Activo"]),
                                 CantonNombre = dr["CantonNombre"].ToString(),
-                                IdProvincia = Convert.ToInt32(dr["IdProvincia"]),
+                                CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
                                 ProvinciaNombre = dr["ProvinciaNombre"].ToString()
                             });
                         }
@@ -59,7 +59,8 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Distrito_Registrar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdCanton", obj.IdCanton);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", obj.CodigoDistrito);
+                    cmd.Parameters.AddWithValue("@CodigoCanton", obj.CodigoCanton);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -93,8 +94,8 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Distrito_Editar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdDistrito", obj.IdDistrito);
-                    cmd.Parameters.AddWithValue("@IdCanton", obj.IdCanton);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", obj.CodigoDistrito);
+                    cmd.Parameters.AddWithValue("@CodigoCanton", obj.CodigoCanton);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
@@ -117,7 +118,7 @@ namespace CapaDatos.Ubicacion
             return resultado;
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int codigoDistrito, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -129,7 +130,7 @@ namespace CapaDatos.Ubicacion
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Distrito_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdDistrito", id);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", codigoDistrito);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -150,7 +151,7 @@ namespace CapaDatos.Ubicacion
             return resultado;
         }
 
-        public List<Distrito> ListarActivosPorCanton(int idCanton)
+        public List<Distrito> ListarActivosPorCanton(int codigoCanton)
         {
             List<Distrito> lista = new List<Distrito>();
 
@@ -160,7 +161,8 @@ namespace CapaDatos.Ubicacion
                 {
                     SqlCommand cmd = new SqlCommand("Ubicacion.sp_Distrito_ListarActivosPorCanton", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@IdCanton", idCanton);
+
+                    cmd.Parameters.AddWithValue("@CodigoCanton", codigoCanton);
 
                     oconexion.Open();
 
@@ -170,8 +172,8 @@ namespace CapaDatos.Ubicacion
                         {
                             lista.Add(new Distrito()
                             {
-                                IdDistrito = Convert.ToInt32(dr["IdDistrito"]),
-                                IdCanton = Convert.ToInt32(dr["IdCanton"]),
+                                CodigoDistrito = Convert.ToInt32(dr["CodigoDistrito"]),
+                                CodigoCanton = Convert.ToInt32(dr["CodigoCanton"]),
                                 Nombre = dr["Nombre"].ToString(),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });

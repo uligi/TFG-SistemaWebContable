@@ -1,4 +1,4 @@
-﻿using CapaEntidad.personas;
+﻿using CapaEntidad.Personas;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,33 +31,38 @@ namespace CapaDatos.personas
 
                                 Nombre = dr["Nombre"].ToString(),
                                 PrimerApellido = dr["PrimerApellido"].ToString(),
-                                SegundoApellido = dr["SegundoApellido"] == DBNull.Value ? "" : dr["SegundoApellido"].ToString(),
-                                FechaNacimiento = dr["FechaNacimiento"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaNacimiento"]),
+                                SegundoApellido = dr["SegundoApellido"].ToString(),
+                                FechaNacimiento = Convert.ToDateTime(dr["FechaNacimiento"]),
 
-                                IdDistrito = dr["IdDistrito"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdDistrito"]),
-                                DistritoNombre = dr["DistritoNombre"] == DBNull.Value ? "" : dr["DistritoNombre"].ToString(),
+                                CodigoDistrito = Convert.ToInt32(dr["CodigoDistrito"]),
+                                DistritoNombre = dr["DistritoNombre"].ToString(),
 
-                                IdCanton = dr["IdCanton"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdCanton"]),
-                                CantonNombre = dr["CantonNombre"] == DBNull.Value ? "" : dr["CantonNombre"].ToString(),
+                                CodigoCanton = Convert.ToInt32(dr["CodigoCanton"]),
+                                CantonNombre = dr["CantonNombre"].ToString(),
 
-                                IdProvincia = dr["IdProvincia"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdProvincia"]),
-                                ProvinciaNombre = dr["ProvinciaNombre"] == DBNull.Value ? "" : dr["ProvinciaNombre"].ToString(),
+                                CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
+                                ProvinciaNombre = dr["ProvinciaNombre"].ToString(),
 
-                                Direccion = dr["Direccion"] == DBNull.Value ? "" : dr["Direccion"].ToString(),
+                                Direccion = dr["Direccion"].ToString(),
 
                                 CodigoEmpleado = dr["CodigoEmpleado"].ToString(),
-                                IdPuesto = dr["IdPuesto"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdPuesto"]),
-                                PuestoNombre = dr["PuestoNombre"] == DBNull.Value ? "" : dr["PuestoNombre"].ToString(),
-                                FechaIngreso = dr["FechaIngreso"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaIngreso"]),
+
+                                IdPuesto = Convert.ToInt32(dr["IdPuesto"]),
+                                PuestoNombre = dr["PuestoNombre"].ToString(),
+
+                                FechaIngreso = Convert.ToDateTime(dr["FechaIngreso"]),
 
                                 IdRol = Convert.ToInt32(dr["IdRol"]),
                                 RolNombre = dr["RolNombre"].ToString(),
 
                                 NombreUsuario = dr["NombreUsuario"].ToString(),
-                                UltimoAcceso = dr["UltimoAcceso"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["UltimoAcceso"]),
+
+                                UltimoAcceso = dr["UltimoAcceso"] == DBNull.Value
+                                    ? (DateTime?)null
+                                    : Convert.ToDateTime(dr["UltimoAcceso"]),
 
                                 FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
-                                FechaModificacion = dr["FechaModificacion"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaModificacion"]),
+                                FechaModificacion = Convert.ToDateTime(dr["FechaModificacion"]),
 
                                 RestablecerClave = Convert.ToBoolean(dr["RestablecerClave"]),
                                 Activo = Convert.ToBoolean(dr["Activo"])
@@ -74,12 +79,17 @@ namespace CapaDatos.personas
             return lista;
         }
 
-        public int Registrar(Empleado obj, out string Mensaje, out string nombreUsuarioGenerado, out string codigoEmpleadoGenerado)
+        public int Registrar(
+            Empleado obj,
+            out string Mensaje,
+            out string NombreUsuarioGenerado,
+            out string CodigoEmpleadoGenerado
+        )
         {
             int resultado = 0;
             Mensaje = string.Empty;
-            nombreUsuarioGenerado = string.Empty;
-            codigoEmpleadoGenerado = string.Empty;
+            NombreUsuarioGenerado = string.Empty;
+            CodigoEmpleadoGenerado = string.Empty;
 
             try
             {
@@ -91,14 +101,15 @@ namespace CapaDatos.personas
                     cmd.Parameters.AddWithValue("@Identificacion", obj.Identificacion);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("@PrimerApellido", obj.PrimerApellido);
-                    cmd.Parameters.AddWithValue("@SegundoApellido", string.IsNullOrWhiteSpace(obj.SegundoApellido) ? (object)DBNull.Value : obj.SegundoApellido);
+                    cmd.Parameters.AddWithValue("@SegundoApellido", obj.SegundoApellido ?? "");
                     cmd.Parameters.AddWithValue("@FechaNacimiento", obj.FechaNacimiento.HasValue ? (object)obj.FechaNacimiento.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@IdDistrito", obj.IdDistrito.HasValue ? (object)obj.IdDistrito.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Direccion", string.IsNullOrWhiteSpace(obj.Direccion) ? (object)DBNull.Value : obj.Direccion);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", obj.CodigoDistrito);
+                    cmd.Parameters.AddWithValue("@Direccion", obj.Direccion ?? "");
 
-                    cmd.Parameters.AddWithValue("@IdPuesto", obj.IdPuesto.HasValue ? (object)obj.IdPuesto.Value : DBNull.Value); cmd.Parameters.AddWithValue("@FechaIngreso", obj.FechaIngreso.HasValue ? (object)obj.FechaIngreso.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@IdPuesto", obj.IdPuesto);
+                    cmd.Parameters.AddWithValue("@FechaIngreso", obj.FechaIngreso.HasValue ? (object)obj.FechaIngreso.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@IdRol", obj.IdRol);
-                    cmd.Parameters.AddWithValue("@ClaveHash", obj.ClaveHash);
+                    cmd.Parameters.AddWithValue("@ClaveHash", obj.ClaveHash ?? "");
 
                     cmd.Parameters.Add("@NombreUsuarioGenerado", SqlDbType.VarChar, 45).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@CodigoEmpleadoGenerado", SqlDbType.VarChar, 45).Direction = ParameterDirection.Output;
@@ -110,16 +121,16 @@ namespace CapaDatos.personas
 
                     resultado = Convert.ToInt32(cmd.Parameters["@Resultado"].Value);
                     Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-                    nombreUsuarioGenerado = cmd.Parameters["@NombreUsuarioGenerado"].Value.ToString();
-                    codigoEmpleadoGenerado = cmd.Parameters["@CodigoEmpleadoGenerado"].Value.ToString();
+                    NombreUsuarioGenerado = cmd.Parameters["@NombreUsuarioGenerado"].Value.ToString();
+                    CodigoEmpleadoGenerado = cmd.Parameters["@CodigoEmpleadoGenerado"].Value.ToString();
                 }
             }
             catch (Exception ex)
             {
                 resultado = 0;
                 Mensaje = ex.Message;
-                nombreUsuarioGenerado = string.Empty;
-                codigoEmpleadoGenerado = string.Empty;
+                NombreUsuarioGenerado = string.Empty;
+                CodigoEmpleadoGenerado = string.Empty;
             }
 
             return resultado;
@@ -140,12 +151,13 @@ namespace CapaDatos.personas
                     cmd.Parameters.AddWithValue("@Identificacion", obj.Identificacion);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("@PrimerApellido", obj.PrimerApellido);
-                    cmd.Parameters.AddWithValue("@SegundoApellido", string.IsNullOrWhiteSpace(obj.SegundoApellido) ? (object)DBNull.Value : obj.SegundoApellido);
+                    cmd.Parameters.AddWithValue("@SegundoApellido", obj.SegundoApellido ?? "");
                     cmd.Parameters.AddWithValue("@FechaNacimiento", obj.FechaNacimiento.HasValue ? (object)obj.FechaNacimiento.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@IdDistrito", obj.IdDistrito.HasValue ? (object)obj.IdDistrito.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Direccion", string.IsNullOrWhiteSpace(obj.Direccion) ? (object)DBNull.Value : obj.Direccion);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", obj.CodigoDistrito);
+                    cmd.Parameters.AddWithValue("@Direccion", obj.Direccion ?? "");
 
-                    cmd.Parameters.AddWithValue("@IdPuesto", obj.IdPuesto.HasValue ? (object)obj.IdPuesto.Value : DBNull.Value); cmd.Parameters.AddWithValue("@FechaIngreso", obj.FechaIngreso.HasValue ? (object)obj.FechaIngreso.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@IdPuesto", obj.IdPuesto);
+                    cmd.Parameters.AddWithValue("@FechaIngreso", obj.FechaIngreso.HasValue ? (object)obj.FechaIngreso.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@IdRol", obj.IdRol);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
@@ -180,7 +192,7 @@ namespace CapaDatos.personas
                     SqlCommand cmd = new SqlCommand("Persona.sp_Empleado_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@Identificacion", identificacion);
+                    cmd.Parameters.AddWithValue("@Identificacion", identificacion ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -201,11 +213,16 @@ namespace CapaDatos.personas
             return resultado;
         }
 
-        public bool RestablecerClave(string identificacion, string claveHash, out string Mensaje, out string nombreUsuario)
+        public bool RestablecerClave(
+            string identificacion,
+            string claveHash,
+            out string Mensaje,
+            out string NombreUsuario
+        )
         {
             bool resultado = false;
             Mensaje = string.Empty;
-            nombreUsuario = string.Empty;
+            NombreUsuario = string.Empty;
 
             try
             {
@@ -214,8 +231,8 @@ namespace CapaDatos.personas
                     SqlCommand cmd = new SqlCommand("Persona.sp_Empleado_RestablecerClave", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@Identificacion", identificacion);
-                    cmd.Parameters.AddWithValue("@ClaveHash", claveHash);
+                    cmd.Parameters.AddWithValue("@Identificacion", identificacion ?? "");
+                    cmd.Parameters.AddWithValue("@ClaveHash", claveHash ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -226,14 +243,14 @@ namespace CapaDatos.personas
 
                     resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
                     Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-                    nombreUsuario = cmd.Parameters["@NombreUsuario"].Value.ToString();
+                    NombreUsuario = cmd.Parameters["@NombreUsuario"].Value.ToString();
                 }
             }
             catch (Exception ex)
             {
                 resultado = false;
                 Mensaje = ex.Message;
-                nombreUsuario = string.Empty;
+                NombreUsuario = string.Empty;
             }
 
             return resultado;

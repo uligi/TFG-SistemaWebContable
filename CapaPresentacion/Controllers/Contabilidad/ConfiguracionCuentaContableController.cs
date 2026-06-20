@@ -1,10 +1,11 @@
 ﻿using CapaEntidad.Contabilidad;
 using CapaNegocio.Contabilidad;
-using System.Linq;
 using System.Web.Mvc;
+using CapaPresentacion.Filtros;
 
 namespace CapaPresentacion.Controllers.Contabilidad
 {
+    [PermisoAuthorize(CodigoModulo = "CUENTAS_CONTABLES")]
     public class ConfiguracionCuentaContableController : Controller
     {
         public ActionResult ConfiguracionCuentaContable()
@@ -13,33 +14,66 @@ namespace CapaPresentacion.Controllers.Contabilidad
         }
 
         [HttpGet]
-        public JsonResult ListarConfiguraciones()
+        public JsonResult ListarConfiguracionesCuentaContable()
         {
             var lista = new CN_ConfiguracionCuentaContable().Listar();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public JsonResult GuardarConfiguracion(ConfiguracionCuentaContable obj)
+        [HttpGet]
+        public JsonResult ObtenerConfiguracionCuentaContable(string codigoOperacion)
         {
-            string mensaje = string.Empty;
-
-            bool resultado = new CN_ConfiguracionCuentaContable().Editar(
-                obj,
-                out mensaje
-            );
-
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            var obj = new CN_ConfiguracionCuentaContable().ObtenerPorOperacion(codigoOperacion);
+            return Json(new { data = obj }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public JsonResult ListarCuentasContablesMovimiento()
+        public JsonResult ObtenerConfiguracionCuentaContableActiva(string codigoOperacion)
         {
-            var lista = new CN_CuentaContable().Listar()
-                .Where(x => x.Activo == true && x.AceptaMovimientos == true)
-                .ToList();
+            var obj = new CN_ConfiguracionCuentaContable().ObtenerActivaPorOperacion(codigoOperacion);
+            return Json(new { data = obj }, JsonRequestBehavior.AllowGet);
+        }
 
-            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        [HttpPost]
+        public JsonResult GuardarConfiguracionCuentaContable(ConfiguracionCuentaContable obj)
+        {
+            object resultado;
+            string mensaje = string.Empty;
+
+            ConfiguracionCuentaContable configuracionExistente =
+                new CN_ConfiguracionCuentaContable().ObtenerPorOperacion(obj.CodigoOperacion);
+
+            if (configuracionExistente == null)
+            {
+                resultado = new CN_ConfiguracionCuentaContable().Registrar(obj, out mensaje);
+            }
+            else
+            {
+                resultado = new CN_ConfiguracionCuentaContable().Editar(obj, out mensaje);
+            }
+
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult InactivarConfiguracionCuentaContable(string codigoOperacion)
+        {
+            string mensaje = string.Empty;
+
+            bool resultado = new CN_ConfiguracionCuentaContable().Inactivar(
+                codigoOperacion,
+                out mensaje
+            );
+
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

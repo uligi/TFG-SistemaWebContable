@@ -23,6 +23,8 @@ namespace CapaNegocio.Catalogos
                 return 0;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre del tipo de correo no puede superar los 45 caracteres.";
@@ -36,7 +38,7 @@ namespace CapaNegocio.Catalogos
         {
             Mensaje = string.Empty;
 
-            if (obj.IdTipoCorreo == 0)
+            if (obj.IdTipoCorreo <= 0)
             {
                 Mensaje = "Debe seleccionar un tipo de correo válido.";
                 return false;
@@ -48,6 +50,8 @@ namespace CapaNegocio.Catalogos
                 return false;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre del tipo de correo no puede superar los 45 caracteres.";
@@ -57,17 +61,17 @@ namespace CapaNegocio.Catalogos
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idTipoCorreo, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (idTipoCorreo <= 0)
             {
                 Mensaje = "Debe seleccionar un tipo de correo válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(idTipoCorreo, out Mensaje);
         }
     }
 }

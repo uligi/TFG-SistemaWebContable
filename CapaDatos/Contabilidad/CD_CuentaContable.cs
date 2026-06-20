@@ -25,25 +25,7 @@ namespace CapaDatos.Contabilidad
                     {
                         while (dr.Read())
                         {
-                            lista.Add(new CuentaContable()
-                            {
-                                IdCuentaContable = Convert.ToInt32(dr["IdCuentaContable"]),
-                                CodigoCuenta = dr["CodigoCuenta"].ToString(),
-                                NombreCuenta = dr["NombreCuenta"].ToString(),
-
-                                IdTipoCuentaContable = Convert.ToInt32(dr["IdTipoCuentaContable"]),
-                                TipoCuentaContableNombre = dr["TipoCuentaContableNombre"].ToString(),
-
-                                IdNaturalezaCuentaContable = Convert.ToInt32(dr["IdNaturalezaCuentaContable"]),
-                                NaturalezaCuentaContableNombre = dr["NaturalezaCuentaContableNombre"].ToString(),
-
-                                AceptaMovimientos = Convert.ToBoolean(dr["AceptaMovimientos"]),
-                                Activo = Convert.ToBoolean(dr["Activo"]),
-
-                                IdCuentaPadre = dr["IdCuentaPadre"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdCuentaPadre"]),
-                                CodigoCuentaPadre = dr["CodigoCuentaPadre"] == DBNull.Value ? "" : dr["CodigoCuentaPadre"].ToString(),
-                                NombreCuentaPadre = dr["NombreCuentaPadre"] == DBNull.Value ? "" : dr["NombreCuentaPadre"].ToString()
-                            });
+                            lista.Add(MapearCuenta(dr));
                         }
                     }
                 }
@@ -73,25 +55,7 @@ namespace CapaDatos.Contabilidad
                     {
                         while (dr.Read())
                         {
-                            lista.Add(new CuentaContable()
-                            {
-                                IdCuentaContable = Convert.ToInt32(dr["IdCuentaContable"]),
-                                CodigoCuenta = dr["CodigoCuenta"].ToString(),
-                                NombreCuenta = dr["NombreCuenta"].ToString(),
-
-                                IdTipoCuentaContable = Convert.ToInt32(dr["IdTipoCuentaContable"]),
-                                TipoCuentaContableNombre = dr["TipoCuentaContableNombre"].ToString(),
-
-                                IdNaturalezaCuentaContable = Convert.ToInt32(dr["IdNaturalezaCuentaContable"]),
-                                NaturalezaCuentaContableNombre = dr["NaturalezaCuentaContableNombre"].ToString(),
-
-                                AceptaMovimientos = Convert.ToBoolean(dr["AceptaMovimientos"]),
-                                Activo = Convert.ToBoolean(dr["Activo"]),
-
-                                IdCuentaPadre = dr["IdCuentaPadre"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdCuentaPadre"]),
-                                CodigoCuentaPadre = dr["CodigoCuentaPadre"] == DBNull.Value ? "" : dr["CodigoCuentaPadre"].ToString(),
-                                NombreCuentaPadre = dr["NombreCuentaPadre"] == DBNull.Value ? "" : dr["NombreCuentaPadre"].ToString()
-                            });
+                            lista.Add(MapearCuenta(dr));
                         }
                     }
                 }
@@ -102,6 +66,68 @@ namespace CapaDatos.Contabilidad
             }
 
             return lista;
+        }
+
+        public List<CuentaContable> ListarParaMovimientos()
+        {
+            List<CuentaContable> lista = new List<CuentaContable>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Contabilidad.sp_CuentaContable_ListarParaMovimientos", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(MapearCuenta(dr));
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<CuentaContable>();
+            }
+
+            return lista;
+        }
+
+        public CuentaContable Obtener(string codigoCuenta)
+        {
+            CuentaContable obj = null;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Contabilidad.sp_CuentaContable_Obtener", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@CodigoCuenta", codigoCuenta ?? "");
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            obj = MapearCuenta(dr);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                obj = null;
+            }
+
+            return obj;
         }
 
         public int Registrar(CuentaContable obj, out string Mensaje)
@@ -116,12 +142,12 @@ namespace CapaDatos.Contabilidad
                     SqlCommand cmd = new SqlCommand("Contabilidad.sp_CuentaContable_Registrar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@CodigoCuenta", obj.CodigoCuenta);
-                    cmd.Parameters.AddWithValue("@NombreCuenta", obj.NombreCuenta);
+                    cmd.Parameters.AddWithValue("@CodigoCuenta", obj.CodigoCuenta ?? "");
+                    cmd.Parameters.AddWithValue("@NombreCuenta", obj.NombreCuenta ?? "");
                     cmd.Parameters.AddWithValue("@IdTipoCuentaContable", obj.IdTipoCuentaContable);
                     cmd.Parameters.AddWithValue("@IdNaturalezaCuentaContable", obj.IdNaturalezaCuentaContable);
                     cmd.Parameters.AddWithValue("@AceptaMovimientos", obj.AceptaMovimientos);
-                    cmd.Parameters.AddWithValue("@IdCuentaPadre", obj.IdCuentaPadre.HasValue ? (object)obj.IdCuentaPadre.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@CodigoCuentaPadre", string.IsNullOrWhiteSpace(obj.CodigoCuentaPadre) ? "0" : obj.CodigoCuentaPadre);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -154,14 +180,13 @@ namespace CapaDatos.Contabilidad
                     SqlCommand cmd = new SqlCommand("Contabilidad.sp_CuentaContable_Editar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdCuentaContable", obj.IdCuentaContable);
-                    cmd.Parameters.AddWithValue("@CodigoCuenta", obj.CodigoCuenta);
-                    cmd.Parameters.AddWithValue("@NombreCuenta", obj.NombreCuenta);
+                    cmd.Parameters.AddWithValue("@CodigoCuenta", obj.CodigoCuenta ?? "");
+                    cmd.Parameters.AddWithValue("@NombreCuenta", obj.NombreCuenta ?? "");
                     cmd.Parameters.AddWithValue("@IdTipoCuentaContable", obj.IdTipoCuentaContable);
                     cmd.Parameters.AddWithValue("@IdNaturalezaCuentaContable", obj.IdNaturalezaCuentaContable);
                     cmd.Parameters.AddWithValue("@AceptaMovimientos", obj.AceptaMovimientos);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
-                    cmd.Parameters.AddWithValue("@IdCuentaPadre", obj.IdCuentaPadre.HasValue ? (object)obj.IdCuentaPadre.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@CodigoCuentaPadre", string.IsNullOrWhiteSpace(obj.CodigoCuentaPadre) ? "0" : obj.CodigoCuentaPadre);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -182,7 +207,7 @@ namespace CapaDatos.Contabilidad
             return resultado;
         }
 
-        public bool Inactivar(int idCuentaContable, out string Mensaje)
+        public bool Inactivar(string codigoCuenta, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -194,7 +219,7 @@ namespace CapaDatos.Contabilidad
                     SqlCommand cmd = new SqlCommand("Contabilidad.sp_CuentaContable_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdCuentaContable", idCuentaContable);
+                    cmd.Parameters.AddWithValue("@CodigoCuenta", codigoCuenta ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -215,10 +240,10 @@ namespace CapaDatos.Contabilidad
             return resultado;
         }
 
-        public string GenerarCodigo(int idCuentaPadre, out string Mensaje)
+        public bool GenerarCodigo(string codigoCuentaPadre, out string CodigoGenerado, out string Mensaje)
         {
-            string codigoGenerado = string.Empty;
             bool resultado = false;
+            CodigoGenerado = string.Empty;
             Mensaje = string.Empty;
 
             try
@@ -228,7 +253,7 @@ namespace CapaDatos.Contabilidad
                     SqlCommand cmd = new SqlCommand("Contabilidad.sp_CuentaContable_GenerarCodigo", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdCuentaPadre", idCuentaPadre);
+                    cmd.Parameters.AddWithValue("@CodigoCuentaPadre", string.IsNullOrWhiteSpace(codigoCuentaPadre) ? "0" : codigoCuentaPadre);
 
                     cmd.Parameters.Add("@CodigoGenerado", SqlDbType.VarChar, 45).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -238,65 +263,41 @@ namespace CapaDatos.Contabilidad
                     cmd.ExecuteNonQuery();
 
                     resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
+                    CodigoGenerado = cmd.Parameters["@CodigoGenerado"].Value.ToString();
                     Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-
-                    if (resultado)
-                    {
-                        codigoGenerado = cmd.Parameters["@CodigoGenerado"].Value.ToString();
-                    }
                 }
             }
             catch (Exception ex)
             {
-                codigoGenerado = string.Empty;
+                resultado = false;
+                CodigoGenerado = string.Empty;
                 Mensaje = ex.Message;
             }
 
-            return codigoGenerado;
+            return resultado;
         }
 
-
-        public List<CuentaContable> ListarParaMovimientos()
+        private CuentaContable MapearCuenta(SqlDataReader dr)
         {
-            List<CuentaContable> lista = new List<CuentaContable>();
-
-            try
+            return new CuentaContable()
             {
-                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
-                {
-                    SqlCommand cmd = new SqlCommand("Contabilidad.sp_CuentaContable_ListarParaMovimientos", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                CodigoCuenta = dr["CodigoCuenta"].ToString(),
+                NombreCuenta = dr["NombreCuenta"].ToString(),
 
-                    oconexion.Open();
+                IdTipoCuentaContable = Convert.ToInt32(dr["IdTipoCuentaContable"]),
+                TipoCuentaContableNombre = dr["TipoCuentaContableNombre"].ToString(),
 
-                    using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        while (dr.Read())
-                        {
-                            lista.Add(new CuentaContable()
-                            {
-                                IdCuentaContable = Convert.ToInt32(dr["IdCuentaContable"]),
-                                CodigoCuenta = dr["CodigoCuenta"].ToString(),
-                                NombreCuenta = dr["NombreCuenta"].ToString(),
+                IdNaturalezaCuentaContable = Convert.ToInt32(dr["IdNaturalezaCuentaContable"]),
+                NaturalezaCuentaContableNombre = dr["NaturalezaCuentaContableNombre"].ToString(),
 
-                                IdTipoCuentaContable = Convert.ToInt32(dr["IdTipoCuentaContable"]),
-                                IdNaturalezaCuentaContable = Convert.ToInt32(dr["IdNaturalezaCuentaContable"]),
+                AceptaMovimientos = Convert.ToBoolean(dr["AceptaMovimientos"]),
+                Activo = Convert.ToBoolean(dr["Activo"]),
 
-                                AceptaMovimientos = Convert.ToBoolean(dr["AceptaMovimientos"]),
-                                Activo = Convert.ToBoolean(dr["Activo"]),
-
-                                IdCuentaPadre = dr["IdCuentaPadre"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdCuentaPadre"])
-                            });
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                lista = new List<CuentaContable>();
-            }
-
-            return lista;
+                CodigoCuentaPadre = dr["CodigoCuentaPadre"].ToString(),
+                NombreCuentaPadre = dr["NombreCuentaPadre"] == DBNull.Value
+                    ? ""
+                    : dr["NombreCuentaPadre"].ToString()
+            };
         }
     }
 }

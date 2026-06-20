@@ -28,6 +28,9 @@ namespace CapaNegocio.Catalogos
                 return 0;
             }
 
+            obj.Naturaleza = obj.Naturaleza.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Naturaleza.Length > 45)
             {
                 Mensaje = "La naturaleza no puede superar los 45 caracteres.";
@@ -53,7 +56,7 @@ namespace CapaNegocio.Catalogos
         {
             Mensaje = string.Empty;
 
-            if (obj.IdNaturalezaCuentaContable == 0)
+            if (obj.IdNaturalezaCuentaContable <= 0)
             {
                 Mensaje = "Debe seleccionar una naturaleza válida.";
                 return false;
@@ -64,6 +67,9 @@ namespace CapaNegocio.Catalogos
                 Mensaje = "La naturaleza es obligatoria.";
                 return false;
             }
+
+            obj.Naturaleza = obj.Naturaleza.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
 
             if (obj.Naturaleza.Length > 45)
             {
@@ -86,17 +92,17 @@ namespace CapaNegocio.Catalogos
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idNaturalezaCuentaContable, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (idNaturalezaCuentaContable <= 0)
             {
                 Mensaje = "Debe seleccionar una naturaleza válida.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(idNaturalezaCuentaContable, out Mensaje);
         }
     }
 }

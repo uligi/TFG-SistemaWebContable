@@ -14,6 +14,33 @@
     .input-error-suave {
         border-color: #d9534f !important;
     }
+
+    .texto-tabla-secundario {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .bloque-credenciales {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 12px;
+        margin-top: 10px;
+        display: none;
+    }
+
+    .bloque-contacto {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .tabla-contacto th,
+    .tabla-contacto td {
+        vertical-align: middle !important;
+    }
 </style>
 
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Empleados</h4>
@@ -40,31 +67,24 @@
     </div>
 
     <div class="card-body">
-
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por identificación, código, usuario o nombre...">
-            </div>
-        </div>
-
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaEmpleados">
+            <table class="table table-striped table-bordered nowrap" id="tablaEmpleados" style="width:100%;">
                 <thead>
                     <tr>
-                        <th>Código</th>
+                        <th>Código empleado</th>
                         <th>Identificación</th>
                         <th>Empleado</th>
-                        <th>Usuario</th>
-                        <th>Rol</th>
                         <th>Puesto</th>
+                        <th>Rol</th>
+                        <th>Usuario</th>
+                        <th>Ubicación</th>
                         <th>Estado</th>
-                        <th style="width:260px;">Acciones</th>
+                        <th style="width:240px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -82,72 +102,83 @@
             <div class="modal-body">
 
                 <input type="hidden" id="txtCodigoEmpleado" value="" />
+                <input type="hidden" id="txtNombreUsuarioActual" value="" />
 
-                <h6 class="font-weight-bold">Datos personales</h6>
+                <div class="alert alert-danger mt-2" id="mensajeError" style="display:none;"></div>
 
-                <div class="form-row">
+                <h6 class="font-weight-bold mb-3">Datos personales</h6>
 
-                    <div class="form-group col-md-4">
-                        <label for="txtIdentificacion">Identificación</label>
-                        <input type="text" id="txtIdentificacion" class="form-control" maxlength="45" autocomplete="off" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtIdentificacion">Identificación</label>
+                            <input type="text" id="txtIdentificacion" class="form-control" maxlength="11" autocomplete="off" inputmode="numeric" />
+                            <small class="form-text text-muted">Cédula nacional: 9 dígitos. Cédula extranjera: 11 dígitos.</small>
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="txtCodigoEmpleadoMostrar">Código de empleado</label>
-                        <input type="text" id="txtCodigoEmpleadoMostrar" class="form-control" readonly placeholder="Se genera automáticamente" />
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtFechaNacimiento">Fecha de nacimiento</label>
+                            <input type="date" id="txtFechaNacimiento" class="form-control" />
+                        </div>
                     </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="txtFechaNacimiento">Fecha de nacimiento</label>
-                        <input type="date" id="txtFechaNacimiento" class="form-control" />
-                    </div>
-
                 </div>
 
-                <div class="form-row">
-
-                    <div class="form-group col-md-4">
-                        <label for="txtNombre">Nombre</label>
-                        <input type="text" id="txtNombre" class="form-control" maxlength="45" autocomplete="off" />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="txtNombre">Nombre</label>
+                            <input type="text" id="txtNombre" class="form-control" maxlength="45" autocomplete="off" />
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="txtPrimerApellido">Primer apellido</label>
-                        <input type="text" id="txtPrimerApellido" class="form-control" maxlength="45" autocomplete="off" />
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="txtPrimerApellido">Primer apellido</label>
+                            <input type="text" id="txtPrimerApellido" class="form-control" maxlength="45" autocomplete="off" />
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="txtSegundoApellido">Segundo apellido</label>
-                        <input type="text" id="txtSegundoApellido" class="form-control" maxlength="45" autocomplete="off" />
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="txtSegundoApellido">Segundo apellido</label>
+                            <input type="text" id="txtSegundoApellido" class="form-control" maxlength="45" autocomplete="off" />
+                        </div>
                     </div>
-
                 </div>
 
-                <h6 class="font-weight-bold mt-3">Ubicación</h6>
+                <hr />
 
-                <div class="form-row">
+                <h6 class="font-weight-bold mb-3">Ubicación</h6>
 
-                    <div class="form-group col-md-4">
-                        <label for="cboProvincia">Provincia</label>
-                        <select id="cboProvincia" class="form-control">
-                            <option value="0">Seleccione una provincia</option>
-                        </select>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboProvincia">Provincia</label>
+                            <select id="cboProvincia" class="form-control">
+                                <option value="0">Seleccione una provincia</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="cboCanton">Cantón</label>
-                        <select id="cboCanton" class="form-control">
-                            <option value="0">Seleccione un cantón</option>
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboCanton">Cantón</label>
+                            <select id="cboCanton" class="form-control">
+                                <option value="0">Seleccione un cantón</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="cboDistrito">Distrito</label>
-                        <select id="cboDistrito" class="form-control">
-                            <option value="0">Seleccione un distrito</option>
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboDistrito">Distrito</label>
+                            <select id="cboDistrito" class="form-control">
+                                <option value="0">Seleccione un distrito</option>
+                            </select>
+                        </div>
                     </div>
-
                 </div>
 
                 <div class="form-group">
@@ -156,177 +187,211 @@
                     <small class="form-text text-muted">Máximo 250 caracteres.</small>
                 </div>
 
-                <h6 class="font-weight-bold mt-3">Datos de empleado</h6>
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-4">
-                        <label for="txtNombreUsuario">Nombre de usuario</label>
-                        <input type="text" id="txtNombreUsuario" class="form-control" readonly placeholder="Se genera automáticamente" />
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="cboRol">Rol</label>
-                        <select id="cboRol" class="form-control">
-                            <option value="0">Seleccione un rol</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="cboPuesto">Puesto</label>
-                        <select id="cboPuesto" class="form-control">
-                            <option value="0">Seleccione un puesto</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-4">
-                        <label for="txtFechaIngreso">Fecha de ingreso</label>
-                        <input type="date" id="txtFechaIngreso" class="form-control" />
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="cboActivo">Estado</label>
-                        <select id="cboActivo" class="form-control">
-                            <option value="true">Activo</option>
-                            <option value="false">Inactivo</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="alert alert-danger mt-3" id="mensajeError" style="display:none;"></div>
-
                 <hr />
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="font-weight-bold mb-0">Teléfonos del empleado</h6>
-                    <small class="text-muted" id="textoAyudaTelefono">
-                        Para agregar teléfonos, primero guarde el empleado.
-                    </small>
-                </div>
+                <h6 class="font-weight-bold mb-3">Datos laborales y acceso</h6>
 
-                <div class="form-row mt-3">
-
-                    <div class="form-group col-md-4">
-                        <label for="txtNumeroTelefonoEmpleado">Número de teléfono</label>
-                        <input type="text" id="txtNumeroTelefonoEmpleado" class="form-control" maxlength="45" autocomplete="off" />
-                        <input type="hidden" id="txtNumeroTelefonoAnterior" value="" />
-                        <input type="hidden" id="txtTelefonoEsNuevo" value="true" />
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="cboTipoTelefonoEmpleado">Tipo de teléfono</label>
-                        <select id="cboTipoTelefonoEmpleado" class="form-control">
-                            <option value="0">Seleccione un tipo</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-2">
-                        <label for="cboTelefonoPrincipalEmpleado">Principal</label>
-                        <select id="cboTelefonoPrincipalEmpleado" class="form-control">
-                            <option value="true">Sí</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label>&nbsp;</label>
-                        <div class="btn-group btn-block">
-                            <button type="button" class="btn btn-primary" id="btnGuardarTelefono" onclick="guardarTelefonoEmpleado()">
-                                Guardar teléfono
-                            </button>
-                            <button type="button" class="btn btn-secondary" id="btnLimpiarTelefono" onclick="limpiarFormularioTelefonoEmpleado()">
-                                Limpiar
-                            </button>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboPuesto">Puesto</label>
+                            <select id="cboPuesto" class="form-control">
+                                <option value="0">Seleccione un puesto</option>
+                            </select>
                         </div>
                     </div>
 
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="txtFechaIngreso">Fecha de ingreso</label>
+                            <input type="date" id="txtFechaIngreso" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboRol">Rol</label>
+                            <select id="cboRol" class="form-control">
+                                <option value="0">Seleccione un rol</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered" id="tablaTelefonosEmpleado">
-                        <thead>
-                            <tr>
-                                <th>Teléfono</th>
-                                <th>Tipo</th>
-                                <th>Principal</th>
-                                <th>Estado</th>
-                                <th style="width:170px;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                <div class="alert alert-info" id="mensajeClaveAutomatica">
+                    La contraseña temporal se generará automáticamente al guardar el empleado.
+                </div>
+
+                <div class="row" id="filaEstadoEmpleado">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboActivo">Estado</label>
+                            <select id="cboActivo" class="form-control">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bloque-credenciales" id="bloqueCredenciales">
+                    <div class="font-weight-bold mb-1">Credenciales generadas</div>
+                    <div><strong>Código empleado:</strong> <span id="lblCodigoEmpleadoGenerado"></span></div>
+                    <div><strong>Usuario:</strong> <span id="lblNombreUsuarioGenerado"></span></div>
+                    <div><strong>Contraseña temporal:</strong> <span id="lblClaveTemporalGenerada"></span></div>
+                    <div class="texto-tabla-secundario mt-1">
+                        Guardá estos datos para entregarlos al empleado.
+                    </div>
                 </div>
 
                 <hr />
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="font-weight-bold mb-0">Correos del empleado</h6>
-                    <small class="text-muted" id="textoAyudaCorreo">
-                        Para agregar correos, primero guarde el empleado.
-                    </small>
-                </div>
+                <h6 class="font-weight-bold mb-3">Teléfonos</h6>
 
-                <div class="form-row mt-3">
+                <div class="bloque-contacto">
+                    <input type="hidden" id="txtTelefonoAnterior" value="" />
 
-                    <div class="form-group col-md-4">
-                        <label for="txtDireccionCorreoEmpleado">Correo electrónico</label>
-                        <input type="email" id="txtDireccionCorreoEmpleado" class="form-control" maxlength="255" autocomplete="off" />
-                        <input type="hidden" id="txtCorreoAnterior" value="" />
-                        <input type="hidden" id="txtCorreoEsNuevo" value="true" />
-                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group mb-2">
+                                <label for="txtTelefono">Teléfono</label>
+                                <input type="text" id="txtTelefono" class="form-control" maxlength="8" autocomplete="off" inputmode="numeric" />
+                                <small class="form-text text-muted">Debe contener exactamente 8 números, sin +506, guiones ni espacios.</small>
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-3">
-                        <label for="cboTipoCorreoEmpleado">Tipo de correo</label>
-                        <select id="cboTipoCorreoEmpleado" class="form-control">
-                            <option value="0">Seleccione un tipo</option>
-                        </select>
-                    </div>
+                        <div class="col-md-3">
+                            <div class="form-group mb-2">
+                                <label for="cboTipoTelefono">Tipo</label>
+                                <select id="cboTipoTelefono" class="form-control">
+                                    <option value="0">Seleccione</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-2">
-                        <label for="cboCorreoPrincipalEmpleado">Principal</label>
-                        <select id="cboCorreoPrincipalEmpleado" class="form-control">
-                            <option value="true">Sí</option>
-                            <option value="false">No</option>
-                        </select>
-                    </div>
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="cboTelefonoPrincipal">Principal</label>
+                                <select id="cboTelefonoPrincipal" class="form-control">
+                                    <option value="false">No</option>
+                                    <option value="true">Sí</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-3">
-                        <label>&nbsp;</label>
-                        <div class="btn-group btn-block">
-                            <button type="button" class="btn btn-primary" id="btnGuardarCorreo" onclick="guardarCorreoEmpleado()">
-                                Guardar correo
-                            </button>
-                            <button type="button" class="btn btn-secondary" id="btnLimpiarCorreo" onclick="limpiarFormularioCorreoEmpleado()">
-                                Limpiar
-                            </button>
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="cboTelefonoActivo">Estado</label>
+                                <select id="cboTelefonoActivo" class="form-control">
+                                    <option value="true">Activo</option>
+                                    <option value="false">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-group mb-2 w-100">
+                                <button type="button" class="btn btn-primary btn-block" onclick="guardarTelefonoEmpleado()">
+                                    Agregar
+                                </button>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="alert alert-danger mt-2" id="mensajeErrorTelefono" style="display:none;"></div>
+
+                    <div class="table-responsive mt-2">
+                        <table class="table table-sm table-bordered tabla-contacto" id="tablaTelefonosEmpleado" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Teléfono</th>
+                                    <th>Tipo</th>
+                                    <th>Principal</th>
+                                    <th>Estado</th>
+                                    <th style="width:160px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered" id="tablaCorreosEmpleado">
-                        <thead>
-                            <tr>
-                                <th>Correo</th>
-                                <th>Tipo</th>
-                                <th>Principal</th>
-                                <th>Estado</th>
-                                <th style="width:170px;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                <h6 class="font-weight-bold mb-3">Correos</h6>
+
+                <div class="bloque-contacto">
+                    <input type="hidden" id="txtCorreoAnterior" value="" />
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-2">
+                                <label for="txtCorreo">Correo</label>
+                                <input type="email" id="txtCorreo" class="form-control" maxlength="255" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group mb-2">
+                                <label for="cboTipoCorreo">Tipo</label>
+                                <select id="cboTipoCorreo" class="form-control">
+                                    <option value="0">Seleccione</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="cboCorreoPrincipal">Principal</label>
+                                <select id="cboCorreoPrincipal" class="form-control">
+                                    <option value="false">No</option>
+                                    <option value="true">Sí</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="cboCorreoActivo">Estado</label>
+                                <select id="cboCorreoActivo" class="form-control">
+                                    <option value="true">Activo</option>
+                                    <option value="false">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1 d-flex align-items-end">
+                            <div class="form-group mb-2 w-100">
+                                <button type="button" class="btn btn-primary btn-block" onclick="guardarCorreoEmpleado()">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-danger mt-2" id="mensajeErrorCorreo" style="display:none;"></div>
+
+                    <div class="table-responsive mt-2">
+                        <table class="table table-sm table-bordered tabla-contacto" id="tablaCorreosEmpleado" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Correo</th>
+                                    <th>Tipo</th>
+                                    <th>Principal</th>
+                                    <th>Estado</th>
+                                    <th style="width:160px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>
 
             <div class="modal-footer">
+                <small class="text-muted mr-auto">
+                    Para agregar teléfonos o correos, primero guarde el empleado.
+                </small>
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
                 </button>
@@ -339,40 +404,47 @@
     </div>
 </div>
 
-<div class="modal fade" id="ModalCredenciales" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="ModalClave" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title">Credenciales del empleado</h5>
+                <h5 class="modal-title">Restablecer contraseña</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
             <div class="modal-body">
-                <div class="alert alert-warning">
-                    Guarde estas credenciales y entréguelas al empleado. La contraseña temporal no se volverá a mostrar.
-                </div>
+                <input type="hidden" id="txtIdentificacionClave" value="" />
+
+                <div class="alert alert-danger" id="mensajeErrorClave" style="display:none;"></div>
 
                 <div class="form-group">
-                    <label>Usuario</label>
-                    <input type="text" id="txtCredencialUsuario" class="form-control" readonly />
+                    <label>Empleado</label>
+                    <input type="text" id="txtEmpleadoClave" class="form-control" disabled />
                 </div>
 
-                <div class="form-group">
-                    <label>Contraseña temporal</label>
-                    <input type="text" id="txtCredencialClave" class="form-control" readonly />
+                <div class="alert alert-info">
+                    Se generará automáticamente una nueva contraseña temporal.
                 </div>
 
-                <small class="text-muted">
-                    El empleado deberá cambiar la contraseña al iniciar sesión.
-                </small>
+                <div class="bloque-credenciales" id="bloqueClaveRestablecida">
+                    <div class="font-weight-bold mb-1">Nueva credencial temporal</div>
+                    <div><strong>Usuario:</strong> <span id="lblUsuarioClaveRestablecida"></span></div>
+                    <div><strong>Contraseña temporal:</strong> <span id="lblClaveRestablecida"></span></div>
+                    <div class="texto-tabla-secundario mt-1">
+                        Guardá estos datos para entregarlos al empleado.
+                    </div>
+                </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="restablecerClave()">
+                    Generar nueva clave
                 </button>
             </div>
 
@@ -383,57 +455,130 @@
 @section scripts {
     <script>
         var listaEmpleados = [];
+        var tablaEmpleados = null;
+
         var listaTelefonosEmpleado = [];
         var listaCorreosEmpleado = [];
 
         $(document).ready(function () {
             cargarProvinciasActivas();
-            cargarRoles();
-            cargarPuestos();
-            cargarTiposTelefonoEmpleado();
-            cargarTiposCorreoEmpleado();
+            cargarPuestosActivos();
+            cargarRolesActivos();
+            cargarTiposTelefonoActivos();
+            cargarTiposCorreoActivos();
             cargarEmpleados();
 
-
-            $("#txtBuscar").on("keyup", function () {
-                pintarTabla();
-            });
-
             $("#cboProvincia").on("change", function () {
-                var idProvincia = parseInt($(this).val());
-                cargarCantonesPorProvincia(idProvincia, 0);
-                limpiarDistritos();
+                var codigoProvincia = parseInt($(this).val());
+
+                $("#cboCanton").empty();
+                $("#cboCanton").append('<option value="0">Seleccione un cantón</option>');
+
+                $("#cboDistrito").empty();
+                $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
+
+                if (!isNaN(codigoProvincia) && codigoProvincia > 0) {
+                    cargarCantonesPorProvincia(codigoProvincia, null);
+                }
             });
 
             $("#cboCanton").on("change", function () {
-                var idCanton = parseInt($(this).val());
-                cargarDistritosPorCanton(idCanton, 0);
+                var codigoCanton = parseInt($(this).val());
+
+                $("#cboDistrito").empty();
+                $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
+
+                if (!isNaN(codigoCanton) && codigoCanton > 0) {
+                    cargarDistritosPorCanton(codigoCanton, null);
+                }
             });
 
             $("#txtIdentificacion").on("input", function () {
-                limpiarNoNumeros("txtIdentificacion", "Solo se permiten números en la identificación.");
+                var valor = $(this).val();
+
+                valor = valor.replace(/[^0-9]/g, "");
+
+                if (valor.length > 11) {
+                    valor = valor.substring(0, 11);
+                }
+
+                $(this).val(valor);
+
+                if (valor.length > 0 && valor.length < 8) {
+                    mostrarAyudaCampo("txtIdentificacion", "La identificación debe tener entre 8 y 11 números.");
+                } else {
+                    ocultarAyudaCampo("txtIdentificacion");
+                }
             });
 
-            $("#txtNumeroTelefonoEmpleado").on("input", function () {
-                limpiarNoNumeros("txtNumeroTelefonoEmpleado", "Solo se permiten números en el teléfono.");
+            $("#txtNombre, #txtPrimerApellido, #txtSegundoApellido").on("input", function () {
+                limpiarTextoPersona(this.id, "Solo se permiten letras y espacios.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo(this.id, "Este campo no puede superar los 45 caracteres.");
+                }
             });
 
-            $("#txtNombre").on("input", function () {
-                limpiarNoLetras("txtNombre", "Solo se permiten letras y espacios en el nombre.");
+            $("#txtDireccion").on("input", function () {
+                limpiarTextoDireccion("txtDireccion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 250) {
+                    $(this).val($(this).val().substring(0, 250));
+                    mostrarAyudaCampo("txtDireccion", "La dirección no puede superar los 250 caracteres.");
+                }
             });
 
-            $("#txtPrimerApellido").on("input", function () {
-                limpiarNoLetras("txtPrimerApellido", "Solo se permiten letras y espacios en el primer apellido.");
+            $("#txtTelefono").on("input", function () {
+                var valor = $(this).val();
+                valor = valor.replace(/[^0-9]/g, "");
+
+                if (valor.length > 15) {
+                    valor = valor.substring(0, 15);
+                }
+
+                $(this).val(valor);
             });
 
-            $("#txtSegundoApellido").on("input", function () {
-                limpiarNoLetras("txtSegundoApellido", "Solo se permiten letras y espacios en el segundo apellido.");
+            $("#txtCorreo").on("input", function () {
+                var valor = $(this).val().trim().toLowerCase();
+
+                if (valor.length > 255) {
+                    valor = valor.substring(0, 255);
+                }
+
+                $(this).val(valor);
             });
 
             $("input, select, textarea").on("change keyup", function () {
                 if ($("#mensajeError").is(":visible")) {
                     $("#mensajeError").fadeOut(150);
                 }
+
+                if ($("#mensajeErrorClave").is(":visible")) {
+                    $("#mensajeErrorClave").fadeOut(150);
+                }
+
+                if ($("#mensajeErrorTelefono").is(":visible")) {
+                    $("#mensajeErrorTelefono").fadeOut(150);
+                }
+
+                if ($("#mensajeErrorCorreo").is(":visible")) {
+                    $("#mensajeErrorCorreo").fadeOut(150);
+                }
+            });
+
+            $("#FormModal").on("hidden.bs.modal", function () {
+                limpiarErrores();
+            });
+
+            $("#ModalClave").on("hidden.bs.modal", function () {
+                $("#mensajeErrorClave").hide().text("");
+                $("#txtIdentificacionClave").val("");
+                $("#txtEmpleadoClave").val("");
+                $("#bloqueClaveRestablecida").hide();
+                $("#lblUsuarioClaveRestablecida").text("");
+                $("#lblClaveRestablecida").text("");
             });
         });
 
@@ -443,7 +588,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaEmpleados = respuesta.data;
+                    listaEmpleados = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -452,7 +597,209 @@
             });
         }
 
-        function cargarRoles() {
+        function pintarTabla() {
+            if (tablaEmpleados != null) {
+                tablaEmpleados.clear().destroy();
+                tablaEmpleados = null;
+            }
+
+            var tbody = $("#tablaEmpleados tbody");
+            tbody.empty();
+
+            $.each(listaEmpleados, function (i, item) {
+                var codigoEmpleado = item.CodigoEmpleado || "";
+                var identificacion = item.Identificacion || "";
+                var nombreCompleto = obtenerNombreCompleto(item);
+                var puesto = item.PuestoNombre || "-";
+                var rol = item.RolNombre || "-";
+                var usuario = item.NombreUsuario || "-";
+
+                var ubicacion = "";
+                if (item.DistritoNombre && item.CantonNombre && item.ProvinciaNombre) {
+                    ubicacion = item.DistritoNombre + ", " + item.CantonNombre + ", " + item.ProvinciaNombre;
+                } else {
+                    ubicacion = "-";
+                }
+
+                var estado = item.Activo
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var restablecer = item.RestablecerClave
+                    ? '<div class="texto-tabla-secundario text-warning">Debe restablecer clave</div>'
+                    : '';
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1 mb-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
+
+                var botonClave = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-warning mr-1 mb-1",
+                    text: "Clave"
+                }).on("click", function () {
+                    abrirModalClave(item);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger mb-1",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarEmpleado(item.Identificacion);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonClave);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var celdaEmpleado = $("<td>");
+                celdaEmpleado.append($("<div>").text(nombreCompleto));
+                celdaEmpleado.append($("<div>", {
+                    class: "texto-tabla-secundario",
+                    text: "Ingreso: " + formatearFechaTexto(item.FechaIngreso)
+                }));
+                celdaEmpleado.append($("<div>", {
+                    class: "texto-tabla-secundario",
+                    text: "Dirección: " + (item.Direccion || "-")
+                }));
+
+                var celdaUsuario = $("<td>");
+                celdaUsuario.append($("<div>").text(usuario));
+                celdaUsuario.append(restablecer);
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(codigoEmpleado));
+                fila.append($("<td>").text(identificacion));
+                fila.append(celdaEmpleado);
+                fila.append($("<td>").text(puesto));
+                fila.append($("<td>").text(rol));
+                fila.append(celdaUsuario);
+                fila.append($("<td>").text(ubicacion));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
+
+                tbody.append(fila);
+            });
+
+            tablaEmpleados = $("#tablaEmpleados").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[0, "desc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function cargarProvinciasActivas() {
+            $.ajax({
+                url: '@Url.Action("ListarProvinciasActivas", "Ubicacion")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboProvincia").empty();
+                    $("#cboProvincia").append('<option value="0">Seleccione una provincia</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboProvincia").append($("<option>", {
+                            value: item.CodigoProvincia,
+                            text: item.Nombre
+                        }));
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar las provincias.");
+                }
+            });
+        }
+
+        function cargarCantonesPorProvincia(codigoProvincia, callback) {
+            $.ajax({
+                url: '@Url.Action("ListarCantonesActivosPorProvincia", "Ubicacion")',
+                type: "GET",
+                data: { codigoProvincia: codigoProvincia },
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboCanton").empty();
+                    $("#cboCanton").append('<option value="0">Seleccione un cantón</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboCanton").append($("<option>", {
+                            value: item.CodigoCanton,
+                            text: item.Nombre
+                        }));
+                    });
+
+                    if (callback != null) {
+                        callback();
+                    }
+                },
+                error: function () {
+                    alert("Error al cargar los cantones.");
+                }
+            });
+        }
+
+        function cargarDistritosPorCanton(codigoCanton, callback) {
+            $.ajax({
+                url: '@Url.Action("ListarDistritosActivosPorCanton", "Ubicacion")',
+                type: "GET",
+                data: { codigoCanton: codigoCanton },
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboDistrito").empty();
+                    $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboDistrito").append($("<option>", {
+                            value: item.CodigoDistrito,
+                            text: item.Nombre
+                        }));
+                    });
+
+                    if (callback != null) {
+                        callback();
+                    }
+                },
+                error: function () {
+                    alert("Error al cargar los distritos.");
+                }
+            });
+        }
+
+        function cargarPuestosActivos() {
+            $.ajax({
+                url: '@Url.Action("ListarPuestosActivos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboPuesto").empty();
+                    $("#cboPuesto").append('<option value="0">Seleccione un puesto</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboPuesto").append($("<option>", {
+                            value: item.IdPuesto,
+                            text: item.Nombre
+                        }));
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los puestos.");
+                }
+            });
+        }
+
+        function cargarRolesActivos() {
             $.ajax({
                 url: '@Url.Action("ListarRoles", "Seguridad")',
                 type: "GET",
@@ -461,14 +808,12 @@
                     $("#cboRol").empty();
                     $("#cboRol").append('<option value="0">Seleccione un rol</option>');
 
-                    $.each(respuesta.data, function (i, item) {
+                    $.each(respuesta.data || [], function (i, item) {
                         if (item.Activo) {
-                            $("#cboRol").append(
-                                $("<option>", {
-                                    value: item.IdRol,
-                                    text: item.Nombre
-                                })
-                            );
+                            $("#cboRol").append($("<option>", {
+                                value: item.IdRol,
+                                text: item.Nombre
+                            }));
                         }
                     });
                 },
@@ -477,94 +822,66 @@
                 }
             });
         }
-        function cargarPuestos() {
-    $.ajax({
-        url: '@Url.Action("ListarPuestosActivos", "Catalogos")',
-        type: "GET",
-        dataType: "json",
-        success: function (respuesta) {
-            $("#cboPuesto").empty();
-            $("#cboPuesto").append('<option value="0">Seleccione un puesto</option>');
 
-            $.each(respuesta.data, function (i, item) {
-                $("#cboPuesto").append(
-                    $("<option>", {
-                        value: item.IdPuesto,
-                        text: item.Nombre
-                    })
-                );
-            });
-        },
-        error: function () {
-            alert("Error al cargar los puestos.");
-        }
-    });
-}
+        function cargarTiposTelefonoActivos() {
+            $.ajax({
+                url: '@Url.Action("ListarTipoTelefonos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoTelefono").empty();
+                    $("#cboTipoTelefono").append('<option value="0">Seleccione</option>');
 
-        function pintarTabla() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaEmpleados tbody");
-
-            tbody.empty();
-
-            $.each(listaEmpleados, function (i, item) {
-
-                var codigo = item.CodigoEmpleado || "";
-                var identificacion = item.Identificacion || "";
-                var nombre = item.Nombre || "";
-                var primerApellido = item.PrimerApellido || "";
-                var segundoApellido = item.SegundoApellido || "";
-                var nombreCompleto = (nombre + " " + primerApellido + " " + segundoApellido).trim();
-                var usuario = item.NombreUsuario || "";
-                var rol = item.RolNombre || "";
-                var puesto = item.PuestoNombre || "";
-
-                var texto = (codigo + " " + identificacion + " " + nombreCompleto + " " + usuario + " " + rol + " " + puesto).toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
+                    $.each(respuesta.data || [], function (i, item) {
+                        if (item.Activo) {
+                            $("#cboTipoTelefono").append($("<option>", {
+                                value: item.IdTipoTelefono,
+                                text: item.Nombre
+                            }));
+                        }
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de teléfono.");
                 }
+            });
+        }
 
-                var estado = item.Activo
-                    ? '<span class="badge badge-success">Activo</span>'
-                    : '<span class="badge badge-secondary">Inactivo</span>';
+        function cargarTiposCorreoActivos() {
+            $.ajax({
+                url: '@Url.Action("ListarTipoCorreos", "Catalogos")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoCorreo").empty();
+                    $("#cboTipoCorreo").append('<option value="0">Seleccione</option>');
 
-                var fila = `
-                    <tr>
-                        <td>${codigo}</td>
-                        <td>${identificacion}</td>
-                        <td>${nombreCompleto}</td>
-                        <td>${usuario}</td>
-                        <td>${rol}</td>
-                        <td>${puesto}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick='inactivarEmpleado(${JSON.stringify(identificacion)})'>
-                                Inactivar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-warning" onclick='restablecerClaveEmpleado(${JSON.stringify(identificacion)})'>
-                                Restablecer
-                            </button>
-                        </td>
-                    </tr>
-                `;
-
-                tbody.append(fila);
+                    $.each(respuesta.data || [], function (i, item) {
+                        if (item.Activo) {
+                            $("#cboTipoCorreo").append($("<option>", {
+                                value: item.IdTipoCorreo,
+                                text: item.Nombre
+                            }));
+                        }
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los tipos de correo.");
+                }
             });
         }
 
         function abrirModal(json) {
-            $("#mensajeError").hide().text("");
+            limpiarErrores();
+
+            listaTelefonosEmpleado = [];
+            listaCorreosEmpleado = [];
 
             $("#txtCodigoEmpleado").val("");
-            $("#txtCodigoEmpleadoMostrar").val("");
-            $("#txtNombreUsuario").val("");
+            $("#txtNombreUsuarioActual").val("");
 
             $("#txtIdentificacion").val("");
-            $("#txtIdentificacion").prop("readonly", false);
+            $("#txtIdentificacion").prop("disabled", false);
 
             $("#txtNombre").val("");
             $("#txtPrimerApellido").val("");
@@ -572,66 +889,72 @@
             $("#txtFechaNacimiento").val("");
 
             $("#cboProvincia").val(0);
-            $("#cboCanton").empty().append('<option value="0">Seleccione un cantón</option>');
-            $("#cboDistrito").empty().append('<option value="0">Seleccione un distrito</option>');
+
+            $("#cboCanton").empty();
+            $("#cboCanton").append('<option value="0">Seleccione un cantón</option>');
+
+            $("#cboDistrito").empty();
+            $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
 
             $("#txtDireccion").val("");
+
             $("#cboPuesto").val(0);
             $("#txtFechaIngreso").val("");
             $("#cboRol").val(0);
+
+            $("#mensajeClaveAutomatica").show();
+
             $("#cboActivo").val("true");
-            $("#tituloModal").text("Nuevo empleado");
+            $("#filaEstadoEmpleado").show();
 
-            limpiarFormularioTelefonoEmpleado();
-            listaTelefonosEmpleado = [];
+            $("#bloqueCredenciales").hide();
+            $("#lblCodigoEmpleadoGenerado").text("");
+            $("#lblNombreUsuarioGenerado").text("");
+            $("#lblClaveTemporalGenerada").text("");
+
+            limpiarFormularioTelefono();
+            limpiarFormularioCorreo();
             pintarTelefonosEmpleado();
-            bloquearTelefonosEmpleado(true);
-
-            limpiarFormularioCorreoEmpleado();
-            listaCorreosEmpleado = [];
             pintarCorreosEmpleado();
-            bloquearCorreosEmpleado(true);
+
+            $("#tituloModal").text("Nuevo empleado");
 
             if (json != null) {
                 $("#txtCodigoEmpleado").val(json.CodigoEmpleado || "");
-                $("#txtCodigoEmpleadoMostrar").val(json.CodigoEmpleado || "");
-                $("#txtNombreUsuario").val(json.NombreUsuario || "");
+                $("#txtNombreUsuarioActual").val(json.NombreUsuario || "");
 
-                $("#txtIdentificacion").val(json.Identificacion);
-                $("#txtIdentificacion").prop("readonly", true);
+                $("#txtIdentificacion").val(json.Identificacion || "");
+                $("#txtIdentificacion").prop("disabled", true);
 
-                $("#txtNombre").val(json.Nombre);
-                $("#txtPrimerApellido").val(json.PrimerApellido);
+                $("#txtNombre").val(json.Nombre || "");
+                $("#txtPrimerApellido").val(json.PrimerApellido || "");
                 $("#txtSegundoApellido").val(json.SegundoApellido || "");
+                $("#txtFechaNacimiento").val(formatearFechaInput(json.FechaNacimiento));
 
-                if (json.FechaNacimiento != null) {
-                    $("#txtFechaNacimiento").val(convertirFechaJson(json.FechaNacimiento));
-                }
+                $("#cboProvincia").val(json.CodigoProvincia);
+
+                cargarCantonesPorProvincia(json.CodigoProvincia, function () {
+                    $("#cboCanton").val(json.CodigoCanton);
+
+                    cargarDistritosPorCanton(json.CodigoCanton, function () {
+                        $("#cboDistrito").val(json.CodigoDistrito);
+                    });
+                });
 
                 $("#txtDireccion").val(json.Direccion || "");
-                $("#cboPuesto").val(json.IdPuesto || 0);
 
-                if (json.FechaIngreso != null) {
-                    $("#txtFechaIngreso").val(convertirFechaJson(json.FechaIngreso));
-                }
-
+                $("#cboPuesto").val(json.IdPuesto);
+                $("#txtFechaIngreso").val(formatearFechaInput(json.FechaIngreso));
                 $("#cboRol").val(json.IdRol);
+
+                $("#mensajeClaveAutomatica").hide();
+
                 $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#filaEstadoEmpleado").show();
+
                 $("#tituloModal").text("Editar empleado");
 
-                if (json.IdProvincia != null) {
-                    $("#cboProvincia").val(json.IdProvincia);
-                    cargarCantonesPorProvincia(json.IdProvincia, json.IdCanton);
-
-                    setTimeout(function () {
-                        cargarDistritosPorCanton(json.IdCanton, json.IdDistrito);
-                    }, 300);
-                }
-
-                bloquearTelefonosEmpleado(false);
                 cargarTelefonosEmpleado(json.Identificacion);
-
-                bloquearCorreosEmpleado(false);
                 cargarCorreosEmpleado(json.Identificacion);
             }
 
@@ -639,135 +962,156 @@
         }
 
         function guardarEmpleado() {
-    $("#mensajeError").hide().text("");
+            $("#mensajeError").hide().text("");
 
-    var obj = {
-        Identificacion: $("#txtIdentificacion").val().trim(),
-        CodigoEmpleado: $("#txtCodigoEmpleado").val().trim(),
+            var obj = {
+                Identificacion: $("#txtIdentificacion").val().trim(),
+                CodigoEmpleado: $("#txtCodigoEmpleado").val().trim(),
 
-        Nombre: $("#txtNombre").val().trim(),
-        PrimerApellido: $("#txtPrimerApellido").val().trim(),
-        SegundoApellido: $("#txtSegundoApellido").val().trim(),
-        FechaNacimiento: $("#txtFechaNacimiento").val() === "" ? null : $("#txtFechaNacimiento").val(),
-        IdDistrito: parseInt($("#cboDistrito").val()) === 0 ? null : parseInt($("#cboDistrito").val()),
-        Direccion: $("#txtDireccion").val().trim(),
+                Nombre: $("#txtNombre").val().trim(),
+                PrimerApellido: $("#txtPrimerApellido").val().trim(),
+                SegundoApellido: $("#txtSegundoApellido").val().trim(),
+                FechaNacimiento: $("#txtFechaNacimiento").val(),
 
-        IdPuesto: parseInt($("#cboPuesto").val()) === 0 ? null : parseInt($("#cboPuesto").val()),
-        FechaIngreso: $("#txtFechaIngreso").val() === "" ? null : $("#txtFechaIngreso").val(),
-        IdRol: parseInt($("#cboRol").val()),
-        Activo: $("#cboActivo").val() === "true"
-    };
+                CodigoDistrito: parseInt($("#cboDistrito").val()),
+                Direccion: $("#txtDireccion").val().trim(),
 
-    var mensajeIdentificacion = validarIdentificacionCostaRica(obj.Identificacion);
-    if (mensajeIdentificacion !== "") {
-        mostrarError(mensajeIdentificacion, "txtIdentificacion");
-        return;
-    }
+                IdPuesto: parseInt($("#cboPuesto").val()),
+                FechaIngreso: $("#txtFechaIngreso").val(),
 
-    if (obj.Nombre === "") {
-        mostrarError("Debe ingresar el nombre.", "txtNombre");
-        return;
-    }
+                IdRol: parseInt($("#cboRol").val()),
+                NombreUsuario: $("#txtNombreUsuarioActual").val().trim(),
 
-    if (!soloTextoNombre(obj.Nombre)) {
-        mostrarError("El nombre solo puede contener letras y espacios.", "txtNombre");
-        return;
-    }
+                Clave: "",
+                Activo: $("#cboActivo").val() === "true"
+            };
 
-    if (obj.Nombre.length > 45) {
-        mostrarError("El nombre no puede superar los 45 caracteres.", "txtNombre");
-        return;
-    }
+            var codigoProvincia = parseInt($("#cboProvincia").val());
+            var codigoCanton = parseInt($("#cboCanton").val());
 
-    if (obj.PrimerApellido === "") {
-        mostrarError("Debe ingresar el primer apellido.", "txtPrimerApellido");
-        return;
-    }
+            if (isNaN(obj.CodigoDistrito)) obj.CodigoDistrito = 0;
+            if (isNaN(obj.IdPuesto)) obj.IdPuesto = 0;
+            if (isNaN(obj.IdRol)) obj.IdRol = 0;
 
-    if (!soloTextoNombre(obj.PrimerApellido)) {
-        mostrarError("El primer apellido solo puede contener letras y espacios.", "txtPrimerApellido");
-        return;
-    }
-
-    if (obj.PrimerApellido.length > 45) {
-        mostrarError("El primer apellido no puede superar los 45 caracteres.", "txtPrimerApellido");
-        return;
-    }
-
-    if (obj.SegundoApellido !== "" && !soloTextoNombre(obj.SegundoApellido)) {
-        mostrarError("El segundo apellido solo puede contener letras y espacios.", "txtSegundoApellido");
-        return;
-    }
-
-    if (obj.SegundoApellido.length > 45) {
-        mostrarError("El segundo apellido no puede superar los 45 caracteres.", "txtSegundoApellido");
-        return;
-    }
-
-    var mensajeFechaNacimiento = validarFechaNacimiento($("#txtFechaNacimiento").val());
-    if (mensajeFechaNacimiento !== "") {
-        mostrarError(mensajeFechaNacimiento, "txtFechaNacimiento");
-        return;
-    }
-
-    var mensajeFechaIngreso = validarFechaIngreso($("#txtFechaIngreso").val(), $("#txtFechaNacimiento").val());
-    if (mensajeFechaIngreso !== "") {
-        mostrarError(mensajeFechaIngreso, "txtFechaIngreso");
-        return;
-    }
-
-    if (obj.Direccion.length > 250) {
-        mostrarError("La dirección no puede superar los 250 caracteres.", "txtDireccion");
-        return;
-    }
-
-    if (obj.IdPuesto === null || obj.IdPuesto === 0 || isNaN(obj.IdPuesto)) {
-        mostrarError("Debe seleccionar un puesto.", "cboPuesto");
-        return;
-    }
-
-    if (obj.IdRol === 0 || isNaN(obj.IdRol)) {
-        mostrarError("Debe seleccionar un rol.", "cboRol");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarEmpleado", "Persona")',
-        type: "POST",
-        data: JSON.stringify({ obj: obj }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (obj.CodigoEmpleado === "") {
-                if (respuesta.resultado != 0) {
-                    $("#FormModal").modal("hide");
-                    cargarEmpleados();
-
-                    $("#txtCredencialUsuario").val(respuesta.nombreUsuario);
-                    $("#txtCredencialClave").val(respuesta.claveTemporal);
-                    $("#ModalCredenciales").modal("show");
-                } else {
-                    $("#mensajeError").text(respuesta.mensaje).show();
-                }
-            } else {
-                if (respuesta.resultado) {
-                    $("#FormModal").modal("hide");
-                    cargarEmpleados();
-                } else {
-                    $("#mensajeError").text(respuesta.mensaje).show();
-                }
-            }
-        },
-        error: function () {
-            $("#mensajeError").text("Error al guardar el empleado.").show();
-        }
-    });
-}
-
-        function inactivarEmpleado(identificacion) {
-            if (!confirm("¿Desea inactivar este empleado?")) {
+            if (obj.Identificacion === "") {
+                mostrarError("Debe ingresar la identificación.", "txtIdentificacion");
                 return;
             }
+
+            if (!validarIdentificacion(obj.Identificacion)) {
+                mostrarError("La identificación debe contener solo números: 9 dígitos para cédula nacional o 11 dígitos para cédula extranjera.", "txtIdentificacion");
+                return;
+            }
+
+            if (!validarMayorEdad(obj.FechaNacimiento)) {
+                mostrarError("La fecha de nacimiento es obligatoria y debe corresponder a un empleado mayor de edad.", "txtFechaNacimiento");
+                return;
+            }
+
+            if (obj.Nombre === "") {
+                mostrarError("Debe ingresar el nombre.", "txtNombre");
+                return;
+            }
+
+            if (!validarTextoPersona(obj.Nombre)) {
+                mostrarError("El nombre solo puede contener letras y espacios.", "txtNombre");
+                return;
+            }
+
+            if (obj.PrimerApellido === "") {
+                mostrarError("Debe ingresar el primer apellido.", "txtPrimerApellido");
+                return;
+            }
+
+            if (!validarTextoPersona(obj.PrimerApellido)) {
+                mostrarError("El primer apellido solo puede contener letras y espacios.", "txtPrimerApellido");
+                return;
+            }
+
+            if (obj.SegundoApellido !== "" && !validarTextoPersona(obj.SegundoApellido)) {
+                mostrarError("El segundo apellido solo puede contener letras y espacios.", "txtSegundoApellido");
+                return;
+            }
+
+            if (isNaN(codigoProvincia) || codigoProvincia <= 0) {
+                mostrarError("Debe seleccionar una provincia.", "cboProvincia");
+                return;
+            }
+
+            if (isNaN(codigoCanton) || codigoCanton <= 0) {
+                mostrarError("Debe seleccionar un cantón.", "cboCanton");
+                return;
+            }
+
+            if (obj.CodigoDistrito <= 0) {
+                mostrarError("Debe seleccionar un distrito.", "cboDistrito");
+                return;
+            }
+
+            if (obj.Direccion === "") {
+                mostrarError("Debe ingresar la dirección exacta.", "txtDireccion");
+                return;
+            }
+
+            if (!validarTextoDireccion(obj.Direccion)) {
+                mostrarError("La dirección solo puede contener letras, números, espacios y caracteres básicos.", "txtDireccion");
+                return;
+            }
+
+            if (obj.IdPuesto <= 0) {
+                mostrarError("Debe seleccionar un puesto.", "cboPuesto");
+                return;
+            }
+
+            if (obj.FechaIngreso === "") {
+                mostrarError("Debe ingresar la fecha de ingreso.", "txtFechaIngreso");
+                return;
+            }
+
+            if (obj.IdRol <= 0) {
+                mostrarError("Debe seleccionar un rol.", "cboRol");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarEmpleado", "Persona")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        if (obj.CodigoEmpleado === "") {
+                            $("#lblCodigoEmpleadoGenerado").text(respuesta.codigoEmpleado || "");
+                            $("#lblNombreUsuarioGenerado").text(respuesta.nombreUsuario || "");
+                            $("#lblClaveTemporalGenerada").text(respuesta.claveTemporal || "");
+                            $("#bloqueCredenciales").show();
+
+                            $("#txtCodigoEmpleado").val(respuesta.codigoEmpleado || "");
+                            $("#txtNombreUsuarioActual").val(respuesta.nombreUsuario || "");
+                            $("#txtIdentificacion").prop("disabled", true);
+                            $("#mensajeClaveAutomatica").hide();
+
+                            $("#tituloModal").text("Editar empleado");
+
+                            alert("Empleado guardado correctamente. Ya puede agregar teléfonos y correos.");
+                        } else {
+                            alert("Empleado actualizado correctamente.");
+                        }
+
+                        cargarEmpleados();
+                    } else {
+                        $("#mensajeError").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al guardar el empleado.").show();
+                }
+            });
+        }
+
+        function inactivarEmpleado(identificacion) {
+            if (!confirm("¿Desea inactivar este empleado?")) return;
 
             $.ajax({
                 url: '@Url.Action("InactivarEmpleado", "Persona")',
@@ -788,8 +1132,30 @@
             });
         }
 
-        function restablecerClaveEmpleado(identificacion) {
-            if (!confirm("¿Desea restablecer la contraseña de este empleado?")) {
+        function abrirModalClave(item) {
+            $("#mensajeErrorClave").hide().text("");
+            $("#bloqueClaveRestablecida").hide();
+            $("#lblUsuarioClaveRestablecida").text("");
+            $("#lblClaveRestablecida").text("");
+
+            $("#txtIdentificacionClave").val(item.Identificacion || "");
+            $("#txtEmpleadoClave").val(obtenerNombreCompleto(item) + " - " + (item.NombreUsuario || ""));
+
+            $("#ModalClave").modal("show");
+        }
+
+        function restablecerClave() {
+            $("#mensajeErrorClave").hide().text("");
+
+            var identificacion = $("#txtIdentificacionClave").val().trim();
+
+            if (identificacion === "") {
+                $("#mensajeErrorClave").text("Debe seleccionar un empleado válido.").show();
+                return;
+            }
+
+            if (!validarIdentificacion(identificacion)) {
+                $("#mensajeErrorClave").text("La identificación debe contener solo números y tener entre 8 y 11 dígitos.").show();
                 return;
             }
 
@@ -801,198 +1167,32 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        $("#txtCredencialUsuario").val(respuesta.nombreUsuario);
-                        $("#txtCredencialClave").val(respuesta.claveTemporal);
-                        $("#ModalCredenciales").modal("show");
+                        $("#lblUsuarioClaveRestablecida").text(respuesta.nombreUsuario || "");
+                        $("#lblClaveRestablecida").text(respuesta.claveTemporal || "");
+                        $("#bloqueClaveRestablecida").show();
+                        cargarEmpleados();
                     } else {
-                        alert(respuesta.mensaje);
+                        $("#mensajeErrorClave").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
-                    alert("Error al restablecer la contraseña.");
+                    $("#mensajeErrorClave").text("Error al restablecer la contraseña.").show();
                 }
             });
-        }
-
-        function convertirFechaJson(fechaJson) {
-            if (typeof fechaJson !== "string") {
-                return "";
-            }
-
-            if (fechaJson.indexOf("/Date") === 0) {
-                var timestamp = parseInt(fechaJson.replace(/\/Date\((\d+)\)\//, "$1"));
-                var fecha = new Date(timestamp);
-                return fecha.toISOString().split("T")[0];
-            }
-
-            if (fechaJson.indexOf("T") > -1) {
-                return fechaJson.split("T")[0];
-            }
-
-            return fechaJson;
-    }
-
-            function cargarProvinciasActivas() {
-            $.ajax({
-                url: '@Url.Action("ListarProvinciasActivas", "Ubicacion")',
-                type: "GET",
-                dataType: "json",
-                success: function (respuesta) {
-                    $("#cboProvincia").empty();
-                    $("#cboProvincia").append('<option value="0">Seleccione una provincia</option>');
-
-                    $.each(respuesta.data, function (i, item) {
-                        $("#cboProvincia").append(
-                            $("<option>", {
-                                value: item.IdProvincia,
-                                text: item.Nombre
-                            })
-                        );
-                    });
-                },
-                error: function () {
-                    alert("Error al cargar las provincias.");
-                }
-            });
-        }
-
-        function cargarCantonesPorProvincia(idProvincia, idCantonSeleccionado) {
-            $("#cboCanton").empty();
-            $("#cboCanton").append('<option value="0">Seleccione un cantón</option>');
-
-            if (idProvincia === 0 || isNaN(idProvincia)) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("ListarCantonesActivosPorProvincia", "Ubicacion")',
-                type: "GET",
-                data: { idProvincia: idProvincia },
-                dataType: "json",
-                success: function (respuesta) {
-                    $.each(respuesta.data, function (i, item) {
-                        $("#cboCanton").append(
-                            $("<option>", {
-                                value: item.IdCanton,
-                                text: item.Nombre
-                            })
-                        );
-                    });
-
-                    if (idCantonSeleccionado !== 0 && idCantonSeleccionado != null) {
-                        $("#cboCanton").val(idCantonSeleccionado);
-                    }
-                },
-                error: function () {
-                    alert("Error al cargar los cantones.");
-                }
-            });
-        }
-
-        function cargarDistritosPorCanton(idCanton, idDistritoSeleccionado) {
-            limpiarDistritos();
-
-            if (idCanton === 0 || isNaN(idCanton)) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("ListarDistritosActivosPorCanton", "Ubicacion")',
-                type: "GET",
-                data: { idCanton: idCanton },
-                dataType: "json",
-                success: function (respuesta) {
-                    $.each(respuesta.data, function (i, item) {
-                        $("#cboDistrito").append(
-                            $("<option>", {
-                                value: item.IdDistrito,
-                                text: item.Nombre
-                            })
-                        );
-                    });
-
-                    if (idDistritoSeleccionado !== 0 && idDistritoSeleccionado != null) {
-                        $("#cboDistrito").val(idDistritoSeleccionado);
-                    }
-                },
-                error: function () {
-                    alert("Error al cargar los distritos.");
-                }
-            });
-        }
-
-        function limpiarDistritos() {
-            $("#cboDistrito").empty();
-            $("#cboDistrito").append('<option value="0">Seleccione un distrito</option>');
-        }
-
-        function cargarTiposTelefonoEmpleado() {
-            $.ajax({
-                url: '@Url.Action("ListarTipoTelefonos", "Catalogos")',
-                type: "GET",
-                dataType: "json",
-                success: function (respuesta) {
-                    $("#cboTipoTelefonoEmpleado").empty();
-                    $("#cboTipoTelefonoEmpleado").append('<option value="0">Seleccione un tipo</option>');
-
-                    $.each(respuesta.data, function (i, item) {
-                        if (item.Activo) {
-                            $("#cboTipoTelefonoEmpleado").append(
-                                $("<option>", {
-                                    value: item.IdTipoTelefono,
-                                    text: item.Nombre
-                                })
-                            );
-                        }
-                    });
-                },
-                error: function () {
-                    alert("Error al cargar los tipos de teléfono.");
-                }
-            });
-        }
-
-        function bloquearTelefonosEmpleado(bloquear) {
-            $("#txtNumeroTelefonoEmpleado").prop("disabled", bloquear);
-            $("#cboTipoTelefonoEmpleado").prop("disabled", bloquear);
-            $("#cboTelefonoPrincipalEmpleado").prop("disabled", bloquear);
-            $("#btnGuardarTelefono").prop("disabled", bloquear);
-            $("#btnLimpiarTelefono").prop("disabled", bloquear);
-
-            if (bloquear) {
-                $("#textoAyudaTelefono").text("Para agregar teléfonos, primero guarde el empleado.");
-            } else {
-                $("#textoAyudaTelefono").text("Puede agregar, editar o inactivar teléfonos del empleado.");
-            }
-        }
-
-        function limpiarFormularioTelefonoEmpleado() {
-            $("#txtNumeroTelefonoEmpleado").val("");
-            $("#txtNumeroTelefonoAnterior").val("");
-            $("#txtTelefonoEsNuevo").val("true");
-            $("#cboTipoTelefonoEmpleado").val(0);
-            $("#cboTelefonoPrincipalEmpleado").val("true");
         }
 
         function cargarTelefonosEmpleado(identificacion) {
-            listaTelefonosEmpleado = [];
-            pintarTelefonosEmpleado();
-
-            if (identificacion === "") {
-                return;
-            }
-
             $.ajax({
                 url: '@Url.Action("ListarTelefonosPorPersona", "Persona")',
                 type: "GET",
                 data: { identificacion: identificacion },
                 dataType: "json",
                 success: function (respuesta) {
-                    listaTelefonosEmpleado = respuesta.data;
+                    listaTelefonosEmpleado = respuesta.data || [];
                     pintarTelefonosEmpleado();
                 },
                 error: function () {
-                    alert("Error al cargar los teléfonos del empleado.");
+                    $("#mensajeErrorTelefono").text("Error al cargar los teléfonos.").show();
                 }
             });
         }
@@ -1001,212 +1201,156 @@
             var tbody = $("#tablaTelefonosEmpleado tbody");
             tbody.empty();
 
-            if (listaTelefonosEmpleado.length === 0) {
-                tbody.append(`
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">
-                            No hay teléfonos registrados.
-                        </td>
-                    </tr>
-                `);
-                return;
-            }
-
             $.each(listaTelefonosEmpleado, function (i, item) {
+                var principal = item.EsPrincipal
+                    ? '<span class="badge badge-primary">Sí</span>'
+                    : '<span class="badge badge-light">No</span>';
+
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var principal = item.EsPrincipal
-                    ? '<span class="badge badge-info">Sí</span>'
-                    : '<span class="badge badge-light">No</span>';
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    editarTelefonoEmpleado(item);
+                });
 
-                var fila = `
-                    <tr>
-                        <td>${item.NumeroTelefono}</td>
-                        <td>${item.TipoTelefonoNombre}</td>
-                        <td>${principal}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='editarTelefonoEmpleado(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick='inactivarTelefonoEmpleado(${JSON.stringify(item.NumeroTelefono)}, ${JSON.stringify(item.Identificacion)})'>
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarTelefonoEmpleado(item.NumeroTelefono);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.NumeroTelefono || ""));
+                fila.append($("<td>").text(item.TipoTelefonoNombre || ""));
+                fila.append($("<td>").html(principal));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
             });
         }
 
-        function editarTelefonoEmpleado(item) {
-            $("#txtTelefonoEsNuevo").val("false");
-            $("#txtNumeroTelefonoAnterior").val(item.NumeroTelefono);
-            $("#txtNumeroTelefonoEmpleado").val(item.NumeroTelefono);
-            $("#cboTipoTelefonoEmpleado").val(item.IdTipoTelefono);
-            $("#cboTelefonoPrincipalEmpleado").val(item.EsPrincipal ? "true" : "false");
-        }
+        function guardarTelefonoEmpleado() {
+            $("#mensajeErrorTelefono").hide().text("");
 
- function guardarTelefonoEmpleado() {
-    $("#mensajeError").hide().text("");
+            var identificacion = $("#txtIdentificacion").val().trim();
 
-    var identificacion = $("#txtIdentificacion").val().trim();
-
-    if (identificacion === "") {
-        mostrarError("Primero debe ingresar la identificación del empleado.", "txtIdentificacion");
-        return;
-    }
-
-    var obj = {
-        NumeroTelefono: $("#txtNumeroTelefonoEmpleado").val().trim(),
-        Identificacion: identificacion,
-        IdTipoTelefono: parseInt($("#cboTipoTelefonoEmpleado").val()),
-        EsPrincipal: $("#cboTelefonoPrincipalEmpleado").val() === "true",
-        Activo: true
-    };
-
-    var esNuevo = $("#txtTelefonoEsNuevo").val() === "true";
-    var numeroAnterior = $("#txtNumeroTelefonoAnterior").val().trim();
-
-    var mensajeTelefono = validarTelefonoCostaRica(obj.NumeroTelefono);
-    if (mensajeTelefono !== "") {
-        mostrarError(mensajeTelefono, "txtNumeroTelefonoEmpleado");
-        return;
-    }
-
-    if (obj.IdTipoTelefono === 0 || isNaN(obj.IdTipoTelefono)) {
-        mostrarError("Debe seleccionar un tipo de teléfono.", "cboTipoTelefonoEmpleado");
-        return;
-    }
-
-    if (!esNuevo && numeroAnterior === "") {
-        mostrarError("Debe seleccionar un teléfono válido para editar.", "txtNumeroTelefonoEmpleado");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarTelefonoDesdeCliente", "Persona")',
-        type: "POST",
-        data: JSON.stringify({
-            obj: obj,
-            esNuevo: esNuevo,
-            numeroAnterior: numeroAnterior
-        }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#mensajeError").hide().text("");
-                limpiarFormularioTelefonoEmpleado();
-                cargarTelefonosEmpleado(identificacion);
-            } else {
-                $("#mensajeError").text(respuesta.mensaje).show();
+            if (!validarIdentificacion(identificacion) || $("#txtCodigoEmpleado").val().trim() === "") {
+                $("#mensajeErrorTelefono").text("Primero debe guardar un empleado válido.").show();
+                return;
             }
-        },
-        error: function () {
-            $("#mensajeError").text("Error al guardar el teléfono del empleado.").show();
-        }
-    });
-}
 
-        function inactivarTelefonoEmpleado(numeroTelefono, identificacion) {
-            if (!confirm("¿Desea inactivar este teléfono?")) {
+            var obj = {
+                Identificacion: identificacion,
+                NumeroTelefonoAnterior: $("#txtTelefonoAnterior").val().trim(),
+                NumeroTelefono: $("#txtTelefono").val().trim(),
+                IdTipoTelefono: parseInt($("#cboTipoTelefono").val()),
+                EsPrincipal: $("#cboTelefonoPrincipal").val() === "true",
+                Activo: $("#cboTelefonoActivo").val() === "true"
+            };
+
+            if (isNaN(obj.IdTipoTelefono)) obj.IdTipoTelefono = 0;
+
+            if (!validarTelefono(obj.NumeroTelefono)) {
+                $("#mensajeErrorTelefono").text("El teléfono debe contener exactamente 8 dígitos numéricos, sin prefijo ni caracteres especiales.").show();
+                return;
+            }
+
+            if (obj.IdTipoTelefono <= 0) {
+                $("#mensajeErrorTelefono").text("Debe seleccionar un tipo de teléfono.").show();
                 return;
             }
 
             $.ajax({
-                url: '@Url.Action("InactivarTelefonoDesdeCliente", "Persona")',
+                url: '@Url.Action("GuardarTelefono", "Persona")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        limpiarFormularioTelefono();
+                        cargarTelefonosEmpleado(identificacion);
+                    } else {
+                        $("#mensajeErrorTelefono").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorTelefono").text("Error al guardar el teléfono.").show();
+                }
+            });
+        }
+
+        function editarTelefonoEmpleado(item) {
+            $("#txtTelefonoAnterior").val(item.NumeroTelefono || "");
+            $("#txtTelefono").val(item.NumeroTelefono || "");
+            $("#cboTipoTelefono").val(item.IdTipoTelefono);
+            $("#cboTelefonoPrincipal").val(item.EsPrincipal ? "true" : "false");
+            $("#cboTelefonoActivo").val(item.Activo ? "true" : "false");
+        }
+
+        function inactivarTelefonoEmpleado(numeroTelefono) {
+            var identificacion = $("#txtIdentificacion").val().trim();
+
+            if (!confirm("¿Desea inactivar este teléfono?")) return;
+
+            $.ajax({
+                url: '@Url.Action("InactivarTelefono", "Persona")',
                 type: "POST",
                 data: JSON.stringify({
-                    numeroTelefono: numeroTelefono,
-                    identificacion: identificacion
+                    identificacion: identificacion,
+                    numeroTelefono: numeroTelefono
                 }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        limpiarFormularioTelefonoEmpleado();
                         cargarTelefonosEmpleado(identificacion);
                     } else {
-                        alert(respuesta.mensaje);
+                        $("#mensajeErrorTelefono").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el teléfono.");
+                    $("#mensajeErrorTelefono").text("Error al inactivar el teléfono.").show();
                 }
             });
         }
 
-                function cargarTiposCorreoEmpleado() {
-            $.ajax({
-                url: '@Url.Action("ListarTipoCorreos", "Catalogos")',
-                type: "GET",
-                dataType: "json",
-                success: function (respuesta) {
-                    $("#cboTipoCorreoEmpleado").empty();
-                    $("#cboTipoCorreoEmpleado").append('<option value="0">Seleccione un tipo</option>');
-
-                    $.each(respuesta.data, function (i, item) {
-                        if (item.Activo) {
-                            $("#cboTipoCorreoEmpleado").append(
-                                $("<option>", {
-                                    value: item.IdTipoCorreo,
-                                    text: item.Nombre
-                                })
-                            );
-                        }
-                    });
-                },
-                error: function () {
-                    alert("Error al cargar los tipos de correo.");
-                }
-            });
-        }
-
-        function bloquearCorreosEmpleado(bloquear) {
-            $("#txtDireccionCorreoEmpleado").prop("disabled", bloquear);
-            $("#cboTipoCorreoEmpleado").prop("disabled", bloquear);
-            $("#cboCorreoPrincipalEmpleado").prop("disabled", bloquear);
-            $("#btnGuardarCorreo").prop("disabled", bloquear);
-            $("#btnLimpiarCorreo").prop("disabled", bloquear);
-
-            if (bloquear) {
-                $("#textoAyudaCorreo").text("Para agregar correos, primero guarde el empleado.");
-            } else {
-                $("#textoAyudaCorreo").text("Puede agregar, editar o inactivar correos del empleado.");
-            }
-        }
-
-        function limpiarFormularioCorreoEmpleado() {
-            $("#txtDireccionCorreoEmpleado").val("");
-            $("#txtCorreoAnterior").val("");
-            $("#txtCorreoEsNuevo").val("true");
-            $("#cboTipoCorreoEmpleado").val(0);
-            $("#cboCorreoPrincipalEmpleado").val("true");
+        function limpiarFormularioTelefono() {
+            $("#txtTelefonoAnterior").val("");
+            $("#txtTelefono").val("");
+            $("#cboTipoTelefono").val("0");
+            $("#cboTelefonoPrincipal").val("false");
+            $("#cboTelefonoActivo").val("true");
+            $("#mensajeErrorTelefono").hide().text("");
         }
 
         function cargarCorreosEmpleado(identificacion) {
-            listaCorreosEmpleado = [];
-            pintarCorreosEmpleado();
-
-            if (identificacion === "") {
-                return;
-            }
-
             $.ajax({
                 url: '@Url.Action("ListarCorreosPorPersona", "Persona")',
                 type: "GET",
                 data: { identificacion: identificacion },
                 dataType: "json",
                 success: function (respuesta) {
-                    listaCorreosEmpleado = respuesta.data;
+                    listaCorreosEmpleado = respuesta.data || [];
                     pintarCorreosEmpleado();
                 },
                 error: function () {
-                    alert("Error al cargar los correos del empleado.");
+                    $("#mensajeErrorCorreo").text("Error al cargar los correos.").show();
                 }
             });
         }
@@ -1215,133 +1359,115 @@
             var tbody = $("#tablaCorreosEmpleado tbody");
             tbody.empty();
 
-            if (listaCorreosEmpleado.length === 0) {
-                tbody.append(`
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">
-                            No hay correos registrados.
-                        </td>
-                    </tr>
-                `);
-                return;
-            }
-
             $.each(listaCorreosEmpleado, function (i, item) {
+                var principal = item.EsPrincipal
+                    ? '<span class="badge badge-primary">Sí</span>'
+                    : '<span class="badge badge-light">No</span>';
+
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var principal = item.EsPrincipal
-                    ? '<span class="badge badge-info">Sí</span>'
-                    : '<span class="badge badge-light">No</span>';
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    editarCorreoEmpleado(item);
+                });
 
-                var fila = `
-                    <tr>
-                        <td>${item.DireccionCorreo}</td>
-                        <td>${item.TipoCorreoNombre}</td>
-                        <td>${principal}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='editarCorreoEmpleado(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick='inactivarCorreoEmpleado(${JSON.stringify(item.DireccionCorreo)}, ${JSON.stringify(item.Identificacion)})'>
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarCorreoEmpleado(item.DireccionCorreo);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.DireccionCorreo || ""));
+                fila.append($("<td>").text(item.TipoCorreoNombre || ""));
+                fila.append($("<td>").html(principal));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
             });
         }
 
-        function editarCorreoEmpleado(item) {
-            $("#txtCorreoEsNuevo").val("false");
-            $("#txtCorreoAnterior").val(item.DireccionCorreo);
-            $("#txtDireccionCorreoEmpleado").val(item.DireccionCorreo);
-            $("#cboTipoCorreoEmpleado").val(item.IdTipoCorreo);
-            $("#cboCorreoPrincipalEmpleado").val(item.EsPrincipal ? "true" : "false");
-        }
+        function guardarCorreoEmpleado() {
+            $("#mensajeErrorCorreo").hide().text("");
 
-function guardarCorreoEmpleado() {
-    $("#mensajeError").hide().text("");
+            var identificacion = $("#txtIdentificacion").val().trim();
 
-    var identificacion = $("#txtIdentificacion").val().trim();
-
-    if (identificacion === "") {
-        mostrarError("Primero debe ingresar la identificación del empleado.", "txtIdentificacion");
-        return;
-    }
-
-    var obj = {
-        Identificacion: identificacion,
-        DireccionCorreo: $("#txtDireccionCorreoEmpleado").val().trim(),
-        IdTipoCorreo: parseInt($("#cboTipoCorreoEmpleado").val()),
-        EsPrincipal: $("#cboCorreoPrincipalEmpleado").val() === "true",
-        Activo: true
-    };
-
-    var esNuevo = $("#txtCorreoEsNuevo").val() === "true";
-    var correoAnterior = $("#txtCorreoAnterior").val().trim();
-
-    if (obj.DireccionCorreo === "") {
-        mostrarError("Debe ingresar la dirección de correo.", "txtDireccionCorreoEmpleado");
-        return;
-    }
-
-    if (obj.DireccionCorreo.length > 255) {
-        mostrarError("La dirección de correo no puede superar los 255 caracteres.", "txtDireccionCorreoEmpleado");
-        return;
-    }
-
-    if (!validarFormatoCorreo(obj.DireccionCorreo)) {
-        mostrarError("Debe ingresar un correo electrónico válido.", "txtDireccionCorreoEmpleado");
-        return;
-    }
-
-    if (obj.IdTipoCorreo === 0 || isNaN(obj.IdTipoCorreo)) {
-        mostrarError("Debe seleccionar un tipo de correo.", "cboTipoCorreoEmpleado");
-        return;
-    }
-
-    if (!esNuevo && correoAnterior === "") {
-        mostrarError("Debe seleccionar un correo válido para editar.", "txtDireccionCorreoEmpleado");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarCorreoDesdeCliente", "Persona")',
-        type: "POST",
-        data: JSON.stringify({
-            obj: obj,
-            esNuevo: esNuevo,
-            correoAnterior: correoAnterior
-        }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#mensajeError").hide().text("");
-                limpiarFormularioCorreoEmpleado();
-                cargarCorreosEmpleado(identificacion);
-            } else {
-                $("#mensajeError").text(respuesta.mensaje).show();
+            if (!validarIdentificacion(identificacion) || $("#txtCodigoEmpleado").val().trim() === "") {
+                $("#mensajeErrorCorreo").text("Primero debe guardar un empleado válido.").show();
+                return;
             }
-        },
-        error: function () {
-            $("#mensajeError").text("Error al guardar el correo del empleado.").show();
-        }
-    });
-}
 
-        function inactivarCorreoEmpleado(direccionCorreo, identificacion) {
-            if (!confirm("¿Desea inactivar este correo?")) {
+            var obj = {
+                Identificacion: identificacion,
+                DireccionCorreoAnterior: $("#txtCorreoAnterior").val().trim(),
+                DireccionCorreo: $("#txtCorreo").val().trim().toLowerCase(),
+                IdTipoCorreo: parseInt($("#cboTipoCorreo").val()),
+                EsPrincipal: $("#cboCorreoPrincipal").val() === "true",
+                Activo: $("#cboCorreoActivo").val() === "true"
+            };
+
+            if (isNaN(obj.IdTipoCorreo)) obj.IdTipoCorreo = 0;
+
+            if (!validarCorreo(obj.DireccionCorreo)) {
+                $("#mensajeErrorCorreo").text("Debe ingresar una dirección de correo válida.").show();
+                return;
+            }
+
+            if (obj.IdTipoCorreo <= 0) {
+                $("#mensajeErrorCorreo").text("Debe seleccionar un tipo de correo.").show();
                 return;
             }
 
             $.ajax({
-                url: '@Url.Action("InactivarCorreoDesdeCliente", "Persona")',
+                url: '@Url.Action("GuardarCorreo", "Persona")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        limpiarFormularioCorreo();
+                        cargarCorreosEmpleado(identificacion);
+                    } else {
+                        $("#mensajeErrorCorreo").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorCorreo").text("Error al guardar el correo.").show();
+                }
+            });
+        }
+
+        function editarCorreoEmpleado(item) {
+            $("#txtCorreoAnterior").val(item.DireccionCorreo || "");
+            $("#txtCorreo").val(item.DireccionCorreo || "");
+            $("#cboTipoCorreo").val(item.IdTipoCorreo);
+            $("#cboCorreoPrincipal").val(item.EsPrincipal ? "true" : "false");
+            $("#cboCorreoActivo").val(item.Activo ? "true" : "false");
+        }
+
+        function inactivarCorreoEmpleado(direccionCorreo) {
+            var identificacion = $("#txtIdentificacion").val().trim();
+
+            if (!confirm("¿Desea inactivar este correo?")) return;
+
+            $.ajax({
+                url: '@Url.Action("InactivarCorreo", "Persona")',
                 type: "POST",
                 data: JSON.stringify({
                     identificacion: identificacion,
@@ -1351,59 +1477,73 @@ function guardarCorreoEmpleado() {
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        limpiarFormularioCorreoEmpleado();
                         cargarCorreosEmpleado(identificacion);
                     } else {
-                        alert(respuesta.mensaje);
+                        $("#mensajeErrorCorreo").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el correo.");
+                    $("#mensajeErrorCorreo").text("Error al inactivar el correo.").show();
                 }
             });
         }
 
-        function validarFormatoCorreo(correo) {
-            if (correo === null || correo === undefined) {
-                return false;
-            }
-
-            correo = correo.trim();
-
-            var arroba = String.fromCharCode(64);
-
-            if (correo.indexOf(arroba) === -1) {
-                return false;
-            }
-
-            if (correo.indexOf(arroba) !== correo.lastIndexOf(arroba)) {
-                return false;
-            }
-
-            var partes = correo.split(arroba);
-
-            if (partes.length !== 2) {
-                return false;
-            }
-
-            var usuario = partes[0];
-            var dominio = partes[1];
-
-            if (usuario.length === 0 || dominio.length === 0) {
-                return false;
-            }
-
-            if (dominio.indexOf(".") === -1) {
-                return false;
-            }
-
-            if (dominio.startsWith(".") || dominio.endsWith(".")) {
-                return false;
-            }
-
-            return true;
+        function limpiarFormularioCorreo() {
+            $("#txtCorreoAnterior").val("");
+            $("#txtCorreo").val("");
+            $("#cboTipoCorreo").val("0");
+            $("#cboCorreoPrincipal").val("false");
+            $("#cboCorreoActivo").val("true");
+            $("#mensajeErrorCorreo").hide().text("");
         }
 
+        function obtenerNombreCompleto(item) {
+            var partes = [];
+
+            if (item.Nombre) partes.push(item.Nombre);
+            if (item.PrimerApellido) partes.push(item.PrimerApellido);
+            if (item.SegundoApellido) partes.push(item.SegundoApellido);
+
+            return partes.join(" ");
+        }
+
+        function formatearFechaInput(valor) {
+            if (valor == null || valor === "") {
+                return "";
+            }
+
+            if (typeof valor === "string" && valor.indexOf("/Date(") === 0) {
+                var ticks = parseInt(valor.replace("/Date(", "").replace(")/", ""));
+                var fecha = new Date(ticks);
+
+                var mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+                var dia = fecha.getDate().toString().padStart(2, "0");
+
+                return fecha.getFullYear() + "-" + mes + "-" + dia;
+            }
+
+            if (typeof valor === "string" && valor.length >= 10) {
+                return valor.substring(0, 10);
+            }
+
+            return "";
+        }
+
+        function formatearFechaTexto(valor) {
+            var fechaInput = formatearFechaInput(valor);
+
+            if (fechaInput === "") {
+                return "-";
+            }
+
+            var partes = fechaInput.split("-");
+
+            if (partes.length !== 3) {
+                return fechaInput;
+            }
+
+            return partes[2] + "/" + partes[1] + "/" + partes[0];
+        }
 
         function mostrarError(mensaje, idCampo) {
             $("#mensajeError").text(mensaje).show();
@@ -1434,20 +1574,16 @@ function guardarCorreoEmpleado() {
             campo.removeClass("input-error-suave");
         }
 
-        function limpiarNoNumeros(idCampo, mensaje) {
-            var campo = $("#" + idCampo);
-            var valorOriginal = campo.val();
-            var valorLimpio = valorOriginal.replace(/[^0-9]/g, "");
+        function limpiarErrores() {
+            $("#mensajeError").hide().text("");
+            $("#mensajeErrorTelefono").hide().text("");
+            $("#mensajeErrorCorreo").hide().text("");
 
-            if (valorOriginal !== valorLimpio) {
-                campo.val(valorLimpio);
-                mostrarAyudaCampo(idCampo, mensaje);
-            } else {
-                ocultarAyudaCampo(idCampo);
-            }
+            $(".campo-ayuda-error").hide().text("");
+            $(".input-error-suave").removeClass("input-error-suave");
         }
 
-        function limpiarNoLetras(idCampo, mensaje) {
+        function limpiarTextoPersona(idCampo, mensaje) {
             var campo = $("#" + idCampo);
             var valorOriginal = campo.val();
             var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, "");
@@ -1460,101 +1596,68 @@ function guardarCorreoEmpleado() {
             }
         }
 
-        function soloNumeros(valor) {
-            return /^[0-9]+$/.test(valor);
+        function limpiarTextoDireccion(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
         }
 
-        function soloTextoNombre(valor) {
+        function validarTextoPersona(valor) {
             return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(valor);
         }
 
-        function validarIdentificacionCostaRica(identificacion) {
-            if (identificacion === "") {
-                return "Debe ingresar la identificación.";
-            }
-
-            if (!soloNumeros(identificacion)) {
-                return "La identificación debe contener solo números.";
-            }
-
-            if (identificacion.length < 9 || identificacion.length > 12) {
-                return "La identificación debe tener entre 9 y 12 dígitos.";
-            }
-
-            return "";
+        function validarIdentificacion(valor) {
+            return /^([0-9]{9}|[0-9]{11})$/.test(valor);
         }
 
-        function validarFechaNacimiento(fechaTexto) {
-            if (fechaTexto === "") {
-                return "";
+        function validarTextoDireccion(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
+        }
+
+        function validarTelefono(valor) {
+            return /^[0-9]{8}$/.test(valor);
+        }
+
+        function validarMayorEdad(valor) {
+            if (!valor) {
+                return false;
             }
 
-            var fecha = new Date(fechaTexto + "T00:00:00");
+            var fechaNacimiento = new Date(valor + "T00:00:00");
             var hoy = new Date();
 
-            if (isNaN(fecha.getTime())) {
-                return "Debe ingresar una fecha de nacimiento válida.";
+            hoy.setHours(0, 0, 0, 0);
+
+            if (fechaNacimiento >= hoy) {
+                return false;
             }
 
-            if (fecha > hoy) {
-                return "La fecha de nacimiento no puede ser futura.";
-            }
+            var fechaMinima = new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate());
 
-            var edad = hoy.getFullYear() - fecha.getFullYear();
-            var mes = hoy.getMonth() - fecha.getMonth();
-
-            if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
-                edad--;
-            }
-
-            if (edad > 120) {
-                return "La fecha de nacimiento no es válida.";
-            }
-
-            return "";
+            return fechaNacimiento <= fechaMinima;
         }
 
-        function validarFechaIngreso(fechaIngresoTexto, fechaNacimientoTexto) {
-            if (fechaIngresoTexto === "") {
-                return "Debe ingresar la fecha de ingreso.";
+        function validarCorreo(valor) {
+            if (valor == null) {
+                return false;
             }
 
-            var fechaIngreso = new Date(fechaIngresoTexto + "T00:00:00");
-            var hoy = new Date();
+            valor = valor.trim().toLowerCase();
 
-            if (isNaN(fechaIngreso.getTime())) {
-                return "Debe ingresar una fecha de ingreso válida.";
-            }
+            var arroba = String.fromCharCode(64);
+            var patron = "^[^\\s" + arroba + "]+"
+                + arroba
+                + "[^\\s" + arroba + "]+\\.[^\\s" + arroba + "]+$";
 
-            if (fechaIngreso > hoy) {
-                return "La fecha de ingreso no puede ser futura.";
-            }
-
-            if (fechaNacimientoTexto !== "") {
-                var fechaNacimiento = new Date(fechaNacimientoTexto + "T00:00:00");
-
-                if (!isNaN(fechaNacimiento.getTime()) && fechaIngreso < fechaNacimiento) {
-                    return "La fecha de ingreso no puede ser menor que la fecha de nacimiento.";
-                }
-            }
-
-            return "";
-        }
-
-        function validarTelefonoCostaRica(numero) {
-            if (numero === "") {
-                return "Debe ingresar el número de teléfono.";
-            }
-
-            if (!soloNumeros(numero)) {
-                return "El teléfono debe contener solo números.";
-            }
-
-            if (numero.length !== 8) {
-                return "El teléfono debe tener 8 dígitos.";
-            }
-
-            return "";
+            var regexCorreo = new RegExp(patron);
+            return regexCorreo.test(valor);
         }
     </script>
 }

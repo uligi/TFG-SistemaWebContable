@@ -29,9 +29,58 @@ namespace CapaDatos.Proveedores
                             {
                                 IdentificacionProveedor = dr["IdentificacionProveedor"].ToString(),
                                 RazonSocial = dr["RazonSocial"].ToString(),
+
                                 DireccionCorreo = dr["DireccionCorreo"].ToString(),
+                                DireccionCorreoAnterior = dr["DireccionCorreo"].ToString(),
+
                                 IdTipoCorreo = Convert.ToInt32(dr["IdTipoCorreo"]),
                                 TipoCorreoNombre = dr["TipoCorreoNombre"].ToString(),
+
+                                EsPrincipal = Convert.ToBoolean(dr["EsPrincipal"]),
+                                Activo = Convert.ToBoolean(dr["Activo"])
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<CorreoProveedor>();
+            }
+
+            return lista;
+        }
+
+        public List<CorreoProveedor> ListarPorProveedor(string identificacionProveedor)
+        {
+            List<CorreoProveedor> lista = new List<CorreoProveedor>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Persona.sp_CorreoProveedor_ListarPorProveedor", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@IdentificacionProveedor", identificacionProveedor ?? "");
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new CorreoProveedor()
+                            {
+                                IdentificacionProveedor = dr["IdentificacionProveedor"].ToString(),
+                                RazonSocial = dr["RazonSocial"].ToString(),
+
+                                DireccionCorreo = dr["DireccionCorreo"].ToString(),
+                                DireccionCorreoAnterior = dr["DireccionCorreo"].ToString(),
+
+                                IdTipoCorreo = Convert.ToInt32(dr["IdTipoCorreo"]),
+                                TipoCorreoNombre = dr["TipoCorreoNombre"].ToString(),
+
                                 EsPrincipal = Convert.ToBoolean(dr["EsPrincipal"]),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
@@ -83,7 +132,7 @@ namespace CapaDatos.Proveedores
             return resultado;
         }
 
-        public bool Editar(string correoAnterior, CorreoProveedor obj, out string Mensaje)
+        public bool Editar(CorreoProveedor obj, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -96,8 +145,8 @@ namespace CapaDatos.Proveedores
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@IdentificacionProveedor", obj.IdentificacionProveedor);
-                    cmd.Parameters.AddWithValue("@CorreoAnterior", correoAnterior);
-                    cmd.Parameters.AddWithValue("@CorreoNuevo", obj.DireccionCorreo);
+                    cmd.Parameters.AddWithValue("@DireccionCorreoAnterior", obj.DireccionCorreoAnterior);
+                    cmd.Parameters.AddWithValue("@DireccionCorreoNuevo", obj.DireccionCorreo);
                     cmd.Parameters.AddWithValue("@IdTipoCorreo", obj.IdTipoCorreo);
                     cmd.Parameters.AddWithValue("@EsPrincipal", obj.EsPrincipal);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
@@ -133,8 +182,8 @@ namespace CapaDatos.Proveedores
                     SqlCommand cmd = new SqlCommand("Persona.sp_CorreoProveedor_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdentificacionProveedor", identificacionProveedor);
-                    cmd.Parameters.AddWithValue("@DireccionCorreo", direccionCorreo);
+                    cmd.Parameters.AddWithValue("@IdentificacionProveedor", identificacionProveedor ?? "");
+                    cmd.Parameters.AddWithValue("@DireccionCorreo", direccionCorreo ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

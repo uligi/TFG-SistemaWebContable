@@ -1,9 +1,8 @@
 ﻿using CapaDatos.Ubicacion;
 using CapaEntidad.Ubicacion;
-using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
 using System;
-
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -22,7 +21,13 @@ namespace CapaNegocio.Ubicacion
         {
             Mensaje = string.Empty;
 
-            if (obj.IdCanton == 0)
+            if (obj.CodigoDistrito <= 0)
+            {
+                Mensaje = "El código de distrito debe ser mayor a cero.";
+                return 0;
+            }
+
+            if (obj.CodigoCanton <= 0)
             {
                 Mensaje = "Debe seleccionar un cantón.";
                 return 0;
@@ -33,6 +38,8 @@ namespace CapaNegocio.Ubicacion
                 Mensaje = "El nombre del distrito es obligatorio.";
                 return 0;
             }
+
+            obj.Nombre = obj.Nombre.Trim();
 
             if (obj.Nombre.Length > 45)
             {
@@ -47,13 +54,13 @@ namespace CapaNegocio.Ubicacion
         {
             Mensaje = string.Empty;
 
-            if (obj.IdDistrito == 0)
+            if (obj.CodigoDistrito <= 0)
             {
                 Mensaje = "Debe seleccionar un distrito válido.";
                 return false;
             }
 
-            if (obj.IdCanton == 0)
+            if (obj.CodigoCanton <= 0)
             {
                 Mensaje = "Debe seleccionar un cantón.";
                 return false;
@@ -65,6 +72,8 @@ namespace CapaNegocio.Ubicacion
                 return false;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre del distrito no puede superar los 45 caracteres.";
@@ -74,27 +83,27 @@ namespace CapaNegocio.Ubicacion
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int codigoDistrito, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (codigoDistrito <= 0)
             {
                 Mensaje = "Debe seleccionar un distrito válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(codigoDistrito, out Mensaje);
         }
 
-        public List<Distrito> ListarActivosPorCanton(int idCanton)
+        public List<Distrito> ListarActivosPorCanton(int codigoCanton)
         {
-            if (idCanton == 0)
+            if (codigoCanton <= 0)
             {
                 return new List<Distrito>();
             }
 
-            return objCapaDato.ListarActivosPorCanton(idCanton);
+            return objCapaDato.ListarActivosPorCanton(codigoCanton);
         }
 
         public object CargarCsv(Stream archivo, out string Mensaje)
@@ -127,27 +136,36 @@ namespace CapaNegocio.Ubicacion
                             continue;
                         }
 
-                        if (campos == null || campos.Length < 2)
+                        if (campos == null || campos.Length < 3)
                         {
                             errores++;
-                            detalleErrores.Add("Línea " + numeroLinea + ": formato inválido. Debe tener IdCanton y Nombre.");
+                            detalleErrores.Add("Línea " + numeroLinea + ": formato inválido. Debe tener CodigoDistrito, CodigoCanton y Nombre.");
                             continue;
                         }
 
-                        int idCanton;
+                        int codigoDistrito;
+                        int codigoCanton;
 
-                        if (!int.TryParse(campos[0].Trim(), out idCanton))
+                        if (!int.TryParse(campos[0].Trim(), out codigoDistrito))
                         {
                             errores++;
-                            detalleErrores.Add("Línea " + numeroLinea + ": IdCanton inválido.");
+                            detalleErrores.Add("Línea " + numeroLinea + ": CodigoDistrito inválido.");
                             continue;
                         }
 
-                        string nombre = campos[1].Trim();
+                        if (!int.TryParse(campos[1].Trim(), out codigoCanton))
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": CodigoCanton inválido.");
+                            continue;
+                        }
+
+                        string nombre = campos[2].Trim();
 
                         Distrito obj = new Distrito()
                         {
-                            IdCanton = idCanton,
+                            CodigoDistrito = codigoDistrito,
+                            CodigoCanton = codigoCanton,
                             Nombre = nombre,
                             Activo = true
                         };

@@ -9,75 +9,30 @@ namespace CapaNegocio.Reportes
     {
         private CD_Reportes objCapaDato = new CD_Reportes();
 
-        public ReporteResumenFinanciero ResumenFinanciero(DateTime fechaInicio, DateTime fechaFin, out string Mensaje)
+        public ReporteResumenFinanciero ObtenerResumenFinanciero(DateTime fechaInicio, DateTime fechaFin)
         {
-            Mensaje = string.Empty;
-
-            if (fechaInicio == DateTime.MinValue)
+            if (!ValidarRangoFechas(fechaInicio, fechaFin))
             {
-                Mensaje = "Debe ingresar la fecha de inicio.";
                 return new ReporteResumenFinanciero();
             }
 
-            if (fechaFin == DateTime.MinValue)
-            {
-                Mensaje = "Debe ingresar la fecha final.";
-                return new ReporteResumenFinanciero();
-            }
-
-            if (fechaFin < fechaInicio)
-            {
-                Mensaje = "La fecha final no puede ser menor que la fecha de inicio.";
-                return new ReporteResumenFinanciero();
-            }
-
-            return objCapaDato.ResumenFinanciero(fechaInicio, fechaFin);
+            return objCapaDato.ObtenerResumenFinanciero(fechaInicio, fechaFin);
         }
 
-        public List<ReporteIngreso> ReporteIngresos(DateTime fechaInicio, DateTime fechaFin, out string Mensaje)
+        public List<ReporteIngreso> ReporteIngresos(DateTime fechaInicio, DateTime fechaFin)
         {
-            Mensaje = string.Empty;
-
-            if (fechaInicio == DateTime.MinValue)
+            if (!ValidarRangoFechas(fechaInicio, fechaFin))
             {
-                Mensaje = "Debe ingresar la fecha de inicio.";
-                return new List<ReporteIngreso>();
-            }
-
-            if (fechaFin == DateTime.MinValue)
-            {
-                Mensaje = "Debe ingresar la fecha final.";
-                return new List<ReporteIngreso>();
-            }
-
-            if (fechaFin < fechaInicio)
-            {
-                Mensaje = "La fecha final no puede ser menor que la fecha de inicio.";
                 return new List<ReporteIngreso>();
             }
 
             return objCapaDato.ReporteIngresos(fechaInicio, fechaFin);
         }
 
-        public List<ReporteGasto> ReporteGastos(DateTime fechaInicio, DateTime fechaFin, out string Mensaje)
+        public List<ReporteGasto> ReporteGastos(DateTime fechaInicio, DateTime fechaFin)
         {
-            Mensaje = string.Empty;
-
-            if (fechaInicio == DateTime.MinValue)
+            if (!ValidarRangoFechas(fechaInicio, fechaFin))
             {
-                Mensaje = "Debe ingresar la fecha de inicio.";
-                return new List<ReporteGasto>();
-            }
-
-            if (fechaFin == DateTime.MinValue)
-            {
-                Mensaje = "Debe ingresar la fecha final.";
-                return new List<ReporteGasto>();
-            }
-
-            if (fechaFin < fechaInicio)
-            {
-                Mensaje = "La fecha final no puede ser menor que la fecha de inicio.";
                 return new List<ReporteGasto>();
             }
 
@@ -92,6 +47,79 @@ namespace CapaNegocio.Reportes
         public List<ReporteCuentaPorPagar> ReporteCuentasPorPagar()
         {
             return objCapaDato.ReporteCuentasPorPagar();
+        }
+
+        public List<ReporteProductoMasVendido> ReporteProductosMasVendidos(DateTime fechaInicio, DateTime fechaFin)
+        {
+            if (!ValidarRangoFechas(fechaInicio, fechaFin))
+            {
+                return new List<ReporteProductoMasVendido>();
+            }
+
+            return objCapaDato.ReporteProductosMasVendidos(fechaInicio, fechaFin);
+        }
+
+        public List<ReporteClienteMasVenta> ReporteClientesMasVentas(DateTime fechaInicio, DateTime fechaFin)
+        {
+            if (!ValidarRangoFechas(fechaInicio, fechaFin))
+            {
+                return new List<ReporteClienteMasVenta>();
+            }
+
+            return objCapaDato.ReporteClientesMasVentas(fechaInicio, fechaFin);
+        }
+
+        public List<ReporteFlujoDiario> ReporteFlujoDiario(DateTime fechaInicio, DateTime fechaFin)
+        {
+            if (!ValidarRangoFechas(fechaInicio, fechaFin))
+            {
+                return new List<ReporteFlujoDiario>();
+            }
+
+            return objCapaDato.ReporteFlujoDiario(fechaInicio, fechaFin);
+        }
+
+        public bool ValidarFechas(DateTime fechaInicio, DateTime fechaFin, out string Mensaje)
+        {
+            Mensaje = string.Empty;
+
+            if (fechaInicio == DateTime.MinValue)
+            {
+                Mensaje = "Debe ingresar la fecha de inicio.";
+                return false;
+            }
+
+            if (fechaFin == DateTime.MinValue)
+            {
+                Mensaje = "Debe ingresar la fecha final.";
+                return false;
+            }
+
+            if (fechaInicio > fechaFin)
+            {
+                Mensaje = "La fecha de inicio no puede ser mayor que la fecha final.";
+                return false;
+            }
+
+            if (fechaInicio.Year < 2000 || fechaInicio.Year > 2100)
+            {
+                Mensaje = "La fecha de inicio no es válida.";
+                return false;
+            }
+
+            if (fechaFin.Year < 2000 || fechaFin.Year > 2100)
+            {
+                Mensaje = "La fecha final no es válida.";
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidarRangoFechas(DateTime fechaInicio, DateTime fechaFin)
+        {
+            string mensaje = string.Empty;
+            return ValidarFechas(fechaInicio, fechaFin, out mensaje);
         }
     }
 }

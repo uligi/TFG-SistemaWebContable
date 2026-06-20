@@ -1,5 +1,6 @@
 ﻿@using System
 @using System.Linq
+@using CapaEntidad.Seguridad
 
 <!DOCTYPE html>
 <html lang="es" class="material-style layout-fixed">
@@ -12,6 +13,7 @@
 
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/datatables")
+    @RenderSection("estilos", required: false)
     @Scripts.Render("~/bundles/modernizr")
 
     <style>
@@ -21,6 +23,127 @@
 
         .layout-content {
             background: #f3f6fb;
+        }
+        /* ==============================
+           MENÚ LATERAL - ALTO CONTRASTE
+           ============================== */
+
+        #layout-sidenav {
+            background: #07111f !important;
+            color: #ffffff !important;
+            border-right: 1px solid #1e293b;
+        }
+
+            #layout-sidenav .app-brand {
+                background: #020617 !important;
+                border-bottom: 1px solid #1e293b;
+            }
+
+            #layout-sidenav .brand-logo {
+                background: #2563eb !important;
+                color: #ffffff !important;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, .25);
+            }
+
+            #layout-sidenav .brand-text-main {
+                color: #ffffff !important;
+                font-size: 15px;
+                font-weight: 800;
+            }
+
+            #layout-sidenav .brand-text-sub {
+                color: #cbd5e1 !important;
+                font-size: 12px;
+            }
+
+            #layout-sidenav .sidenav-header {
+                color: #93c5fd !important;
+                font-size: 11px;
+                font-weight: 800 !important;
+                text-transform: uppercase;
+                letter-spacing: .09em;
+                padding: 18px 20px 8px 20px;
+            }
+
+            #layout-sidenav .sidenav-divider {
+                border-color: #1e293b !important;
+                margin: 8px 18px !important;
+            }
+
+            #layout-sidenav .sidenav-link {
+                color: #e5e7eb !important;
+                font-weight: 600;
+                margin: 2px 10px;
+                border-radius: 10px;
+            }
+
+                #layout-sidenav .sidenav-link div {
+                    color: #e5e7eb !important;
+                }
+
+            #layout-sidenav .sidenav-icon {
+                color: #bfdbfe !important;
+                opacity: 1 !important;
+            }
+
+            #layout-sidenav .sidenav-link:hover {
+                background: #1d4ed8 !important;
+                color: #ffffff !important;
+            }
+
+                #layout-sidenav .sidenav-link:hover div,
+                #layout-sidenav .sidenav-link:hover .sidenav-icon {
+                    color: #ffffff !important;
+                }
+
+            #layout-sidenav .sidenav-item.active > .sidenav-link,
+            #layout-sidenav .sidenav-item.open > .sidenav-link {
+                background: #2563eb !important;
+                color: #ffffff !important;
+                box-shadow: inset 4px 0 0 #facc15;
+            }
+
+                #layout-sidenav .sidenav-item.active > .sidenav-link div,
+                #layout-sidenav .sidenav-item.open > .sidenav-link div,
+                #layout-sidenav .sidenav-item.active > .sidenav-link .sidenav-icon,
+                #layout-sidenav .sidenav-item.open > .sidenav-link .sidenav-icon {
+                    color: #ffffff !important;
+                }
+
+            #layout-sidenav .sidenav-menu {
+                background: #0f172a !important;
+                margin: 4px 10px 8px 10px;
+                border-radius: 10px;
+                padding: 6px 0;
+                border: 1px solid #1e293b;
+            }
+
+                #layout-sidenav .sidenav-menu .sidenav-link {
+                    color: #dbeafe !important;
+                    font-size: 13px;
+                    margin: 2px 6px;
+                    padding-left: 18px !important;
+                }
+
+                    #layout-sidenav .sidenav-menu .sidenav-link:hover {
+                        background: #334155 !important;
+                        color: #ffffff !important;
+                    }
+
+                #layout-sidenav .sidenav-menu .sidenav-item.active > .sidenav-link {
+                    background: #1d4ed8 !important;
+                    color: #ffffff !important;
+                    box-shadow: inset 4px 0 0 #facc15;
+                }
+
+        .menu-section-label {
+            display: block;
+            padding: 3px 18px 6px 18px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
         }
 
         .container-p-y {
@@ -195,6 +318,39 @@
                 display: none;
             }
         }
+        /* ==============================
+   SCROLL EN MENÚ LATERAL
+   ============================== */
+
+        #layout-sidenav {
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+
+            #layout-sidenav .sidenav-inner {
+                height: calc(100vh - 74px) !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                padding-bottom: 30px !important;
+            }
+
+                /* Scrollbar visible y con buen contraste */
+                #layout-sidenav .sidenav-inner::-webkit-scrollbar {
+                    width: 8px;
+                }
+
+                #layout-sidenav .sidenav-inner::-webkit-scrollbar-track {
+                    background: #020617;
+                }
+
+                #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb {
+                    background: #475569;
+                    border-radius: 10px;
+                }
+
+                    #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb:hover {
+                        background: #64748b;
+                    }
     </style>
 </head>
 
@@ -202,6 +358,8 @@
     @{
         var controller = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
         var action = (ViewContext.RouteData.Values["action"] ?? "").ToString();
+
+        UsuarioSesion usuarioSesion = Session["UsuarioSesion"] as UsuarioSesion;
 
         Func<string, string, string> activo = (ctrl, act) =>
             controller.Equals(ctrl, StringComparison.OrdinalIgnoreCase)
@@ -214,9 +372,33 @@
                 ? "open active"
                 : "";
 
-        string nombreUsuario = "Usuario";
+        Func<string, bool> puedeVer = (codigoModulo) =>
+            usuarioSesion != null
+            && usuarioSesion.Permisos != null
+            && usuarioSesion.Permisos.Any(p =>
+                p.CodigoModulo == codigoModulo
+                && p.Activo
+                && p.PuedeVer
+            );
 
-        if (Session["NombreUsuario"] != null)
+        Func<string[], bool> puedeVerAlguno = (codigos) =>
+            usuarioSesion != null
+            && usuarioSesion.Permisos != null
+            && usuarioSesion.Permisos.Any(p =>
+                codigos.Contains(p.CodigoModulo)
+                && p.Activo
+                && p.PuedeVer
+            );
+
+        string nombreUsuario = "Usuario";
+        string nombreRol = "Sin rol";
+
+        if (usuarioSesion != null)
+        {
+            nombreUsuario = usuarioSesion.NombreUsuario;
+            nombreRol = usuarioSesion.NombreRol;
+        }
+        else if (Session["NombreUsuario"] != null)
         {
             nombreUsuario = Session["NombreUsuario"].ToString();
         }
@@ -237,15 +419,11 @@
     <div class="layout-wrapper layout-2">
         <div class="layout-inner">
 
-            <!-- SIDEBAR -->
             <div id="layout-sidenav" class="layout-sidenav sidenav sidenav-vertical bg-dark">
 
-                <!-- MARCA -->
                 <div class="app-brand">
-                    <a href="@Url.Action("Mantenimientos", "Home")" class="brand-box">
-                        <div class="brand-logo">
-                            <i class="feather icon-settings"></i>
-                        </div>
+                    <a href="@Url.Action("Index", "Home")" class="brand-box">
+                        <div class="brand-logo">₡</div>
                         <div>
                             <span class="brand-text-main">Mantenimientos</span>
                             <span class="brand-text-sub">Sistema Contable</span>
@@ -257,264 +435,350 @@
 
                 <ul class="sidenav-inner py-1">
 
-                    <!-- GENERAL -->
-                    <li class="sidenav-header small font-weight-semibold">
-                        General
-                    </li>
+                    @if (puedeVerAlguno(new[] { "CATALOGOS", "PRODUCTOS", "CLIENTES", "EMPLEADOS", "PROVEEDORES", "UBICACIONES", "ROLES", "CONFIG_CUENTA_CONTABLE", "PERIODO_CONTABLE" }))
+                    {
+                        <li class="sidenav-header small font-weight-semibold">
+                            General
+                        </li>
 
-                    <li class="sidenav-item @activo("Home", "Mantenimientos")">
-                        <a href="@Url.Action("Mantenimientos", "Home")" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-grid"></i>
-                            <div>Panel principal</div>
-                        </a>
-                    </li>
+                        <li class="sidenav-item @activo("Home", "Mantenimientos")">
+                            <a href="@Url.Action("Mantenimientos", "Home")" class="sidenav-link">
+                                <i class="sidenav-icon feather icon-grid"></i>
+                                <div>Panel principal</div>
+                            </a>
+                        </li>
 
-                    <li class="sidenav-item">
-                        <a href="@Url.Action("Index", "Home")" class="sidenav-link back-system-link">
-                            <i class="sidenav-icon feather icon-arrow-left"></i>
-                            <div>Volver al sistema</div>
-                        </a>
-                    </li>
+                        <li class="sidenav-item">
+                            <a href="@Url.Action("Index", "Home")" class="sidenav-link back-system-link">
+                                <i class="sidenav-icon feather icon-arrow-left"></i>
+                                <div>Volver al sistema</div>
+                            </a>
+                        </li>
+                    }
 
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">
-                        Datos del negocio
-                    </li>
+                    @if (puedeVerAlguno(new[] { "CLIENTES", "EMPLEADOS", "PROVEEDORES", "CATALOGOS", "UBICACIONES" }))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">
+                            Datos del negocio
+                        </li>
+                    }
 
-                    <!-- PERSONAS -->
-                    <li class="sidenav-item @abierto(new[] { "Persona", "Proveedor" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-users"></i>
-                            <div>Personas</div>
-                        </a>
+                    @if (puedeVerAlguno(new[] { "CLIENTES", "EMPLEADOS", "PROVEEDORES" }))
+                    {
+                        <li class="sidenav-item @abierto(new[] { "Persona", "Proveedor" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-users"></i>
+                                <div>Personas</div>
+                            </a>
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Persona", "Clientes")">
-                                <a href="@Url.Action("Clientes", "Persona")" class="sidenav-link">
-                                    <div>Clientes</div>
-                                </a>
-                            </li>
+                            <ul class="sidenav-menu">
 
-                            <li class="sidenav-item @activo("Persona", "Empleados")">
-                                <a href="@Url.Action("Empleados", "Persona")" class="sidenav-link">
-                                    <div>Empleados</div>
-                                </a>
-                            </li>
+                                @if (puedeVer("CLIENTES"))
+                                {
+                                    <li class="sidenav-item @activo("Persona", "Clientes")">
+                                        <a href="@Url.Action("Clientes", "Persona")" class="sidenav-link">
+                                            <div>Clientes</div>
+                                        </a>
+                                    </li>
+                                }
 
-                            <li class="sidenav-item @activo("Proveedor", "Proveedores")">
-                                <a href="@Url.Action("Proveedores", "Proveedor")" class="sidenav-link">
-                                    <div>Proveedores</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                                @if (puedeVer("EMPLEADOS"))
+                                {
+                                    <li class="sidenav-item @activo("Persona", "Empleados")">
+                                        <a href="@Url.Action("Empleados", "Persona")" class="sidenav-link">
+                                            <div>Empleados</div>
+                                        </a>
+                                    </li>
+                                }
 
-                    <!-- CONTACTO -->
-                    <li class="sidenav-item @abierto(new[] { "Persona", "Catalogos" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-phone"></i>
-                            <div>Contacto</div>
-                        </a>
+                                @if (puedeVer("PROVEEDORES"))
+                                {
+                                    <li class="sidenav-item @activo("Proveedor", "Proveedores")">
+                                        <a href="@Url.Action("Proveedores", "Proveedor")" class="sidenav-link">
+                                            <div>Proveedores</div>
+                                        </a>
+                                    </li>
+                                }
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Persona", "Telefono")">
-                                <a href="@Url.Action("Telefono", "Persona")" class="sidenav-link">
-                                    <div>Teléfonos</div>
-                                </a>
-                            </li>
+                            </ul>
+                        </li>
+                    }
 
-                            <li class="sidenav-item @activo("Persona", "Correo")">
-                                <a href="@Url.Action("Correo", "Persona")" class="sidenav-link">
-                                    <div>Correos</div>
-                                </a>
-                            </li>
+                    @if (puedeVer("CATALOGOS"))
+                    {
+                        <li class="sidenav-item @abierto(new[] { "Persona", "Catalogos" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-phone"></i>
+                                <div>Contacto</div>
+                            </a>
 
-                            <li class="sidenav-item @activo("Catalogos", "TipoTelefono")">
-                                <a href="@Url.Action("TipoTelefono", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de teléfono</div>
-                                </a>
-                            </li>
+                            <ul class="sidenav-menu">
+                                <li class="sidenav-item @activo("Persona", "Telefono")">
+                                    <a href="@Url.Action("Telefono", "Persona")" class="sidenav-link">
+                                        <div>Teléfonos</div>
+                                    </a>
+                                </li>
 
-                            <li class="sidenav-item @activo("Catalogos", "TipoCorreo")">
-                                <a href="@Url.Action("TipoCorreo", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de correo</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                                <li class="sidenav-item @activo("Persona", "Correo")">
+                                    <a href="@Url.Action("Correo", "Persona")" class="sidenav-link">
+                                        <div>Correos</div>
+                                    </a>
+                                </li>
 
-                    <!-- UBICACIONES -->
-                    <li class="sidenav-item @abierto(new[] { "Ubicacion" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-map-pin"></i>
-                            <div>Ubicaciones</div>
-                        </a>
+                                <li class="sidenav-item @activo("Catalogos", "TipoTelefono")">
+                                    <a href="@Url.Action("TipoTelefono", "Catalogos")" class="sidenav-link">
+                                        <div>Tipos de teléfono</div>
+                                    </a>
+                                </li>
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Ubicacion", "Provincia")">
-                                <a href="@Url.Action("Provincia", "Ubicacion")" class="sidenav-link">
-                                    <div>Provincias</div>
-                                </a>
-                            </li>
+                                <li class="sidenav-item @activo("Catalogos", "TipoCorreo")">
+                                    <a href="@Url.Action("TipoCorreo", "Catalogos")" class="sidenav-link">
+                                        <div>Tipos de correo</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
 
-                            <li class="sidenav-item @activo("Ubicacion", "Canton")">
-                                <a href="@Url.Action("Canton", "Ubicacion")" class="sidenav-link">
-                                    <div>Cantones</div>
-                                </a>
-                            </li>
+                    @if (puedeVer("UBICACIONES"))
+                    {
+                        <li class="sidenav-item @abierto(new[] { "Ubicacion" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-map-pin"></i>
+                                <div>Ubicaciones</div>
+                            </a>
 
-                            <li class="sidenav-item @activo("Ubicacion", "Distrito")">
-                                <a href="@Url.Action("Distrito", "Ubicacion")" class="sidenav-link">
-                                    <div>Distritos</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                            <ul class="sidenav-menu">
+                                <li class="sidenav-item @activo("Ubicacion", "Provincia")">
+                                    <a href="@Url.Action("Provincia", "Ubicacion")" class="sidenav-link">
+                                        <div>Provincias</div>
+                                    </a>
+                                </li>
 
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">
-                        Productos y ventas
-                    </li>
+                                <li class="sidenav-item @activo("Ubicacion", "Canton")">
+                                    <a href="@Url.Action("Canton", "Ubicacion")" class="sidenav-link">
+                                        <div>Cantones</div>
+                                    </a>
+                                </li>
 
-                    <!-- PRODUCTOS -->
-                    <li class="sidenav-item @abierto(new[] { "Producto" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-package"></i>
-                            <div>Productos</div>
-                        </a>
+                                <li class="sidenav-item @activo("Ubicacion", "Distrito")">
+                                    <a href="@Url.Action("Distrito", "Ubicacion")" class="sidenav-link">
+                                        <div>Distritos</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Producto", "Productos")">
-                                <a href="@Url.Action("Productos", "Producto")" class="sidenav-link">
-                                    <div>Productos</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    @if (puedeVerAlguno(new[] { "PRODUCTOS", "CATALOGOS" }))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">
+                            Productos y ventas
+                        </li>
+                    }
 
-                    <!-- FACTURACIÓN Y PAGOS -->
-                    <li class="sidenav-item @abierto(new[] { "Catalogos" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-file-text"></i>
-                            <div>Facturación y pagos</div>
-                        </a>
+                    @if (puedeVer("PRODUCTOS"))
+                    {
+                        <li class="sidenav-item @abierto(new[] { "Producto" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-package"></i>
+                                <div>Productos</div>
+                            </a>
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Catalogos", "TipoProducto")">
-                                <a href="@Url.Action("TipoProducto", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de producto</div>
-                                </a>
-                            </li>
+                            <ul class="sidenav-menu">
+                                <li class="sidenav-item @activo("Producto", "Productos")">
+                                    <a href="@Url.Action("Productos", "Producto")" class="sidenav-link">
+                                        <div>Productos</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
 
-                            <li class="sidenav-item @activo("Catalogos", "TipoPago")">
-                                <a href="@Url.Action("TipoPago", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de pago</div>
-                                </a>
-                            </li>
+                    @if (puedeVer("CATALOGOS"))
+                    {
+                        <li class="sidenav-item @abierto(new[] { "Catalogos" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-file-text"></i>
+                                <div>Facturación y pagos</div>
+                            </a>
 
-                            <li class="sidenav-item @activo("Catalogos", "TipoFactura")">
-                                <a href="@Url.Action("TipoFactura", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de factura</div>
-                                </a>
-                            </li>
+                            <ul class="sidenav-menu">
+                                <li class="sidenav-item @activo("Catalogos", "TipoProducto")">
+                                    <a href="@Url.Action("TipoProducto", "Catalogos")" class="sidenav-link">
+                                        <div>Tipos de producto</div>
+                                    </a>
+                                </li>
 
-                            <li class="sidenav-item @activo("Catalogos", "Impuestos")">
-                                <a href="@Url.Action("Impuestos", "Catalogos")" class="sidenav-link">
-                                    <div>Impuestos</div>
-                                </a>
-                            </li>
+                                <li class="sidenav-item @activo("Catalogos", "TipoPago")">
+                                    <a href="@Url.Action("TipoPago", "Catalogos")" class="sidenav-link">
+                                        <div>Tipos de pago</div>
+                                    </a>
+                                </li>
 
-                            <li class="sidenav-item @activo("Catalogos", "Descuento")">
-                                <a href="@Url.Action("Descuento", "Catalogos")" class="sidenav-link">
-                                    <div>Descuentos</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                                <li class="sidenav-item @activo("Catalogos", "TipoFactura")">
+                                    <a href="@Url.Action("TipoFactura", "Catalogos")" class="sidenav-link">
+                                        <div>Tipos de factura</div>
+                                    </a>
+                                </li>
 
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">
-                        Contabilidad
-                    </li>
+                                <li class="sidenav-item @activo("Catalogos", "Impuestos")">
+                                    <a href="@Url.Action("Impuestos", "Catalogos")" class="sidenav-link">
+                                        <div>Impuestos</div>
+                                    </a>
+                                </li>
 
-                    <!-- CATÁLOGOS CONTABLES -->
-                    <li class="sidenav-item @abierto(new[] { "Catalogos", "PeriodoContable", "ConfiguracionCuentaContable" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-book"></i>
-                            <div>Catálogos contables</div>
-                        </a>
+                                <li class="sidenav-item @activo("Catalogos", "Descuento")">
+                                    <a href="@Url.Action("Descuento", "Catalogos")" class="sidenav-link">
+                                        <div>Descuentos</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Catalogos", "TiposIngreso")">
-                                <a href="@Url.Action("TiposIngreso", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de ingreso</div>
-                                </a>
-                            </li>
+                    @if (puedeVerAlguno(new[] { "TIPOS_INGRESO", "TIPOS_GASTO", "CATALOGOS", "PERIODO_CONTABLE", "CONFIG_CUENTA_CONTABLE" }))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">
+                            Contabilidad
+                        </li>
+                    }
 
-                            <li class="sidenav-item @activo("Catalogos", "TiposGasto")">
-                                <a href="@Url.Action("TiposGasto", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de gasto</div>
-                                </a>
-                            </li>
+                    @if (puedeVerAlguno(new[] { "TIPOS_INGRESO", "TIPOS_GASTO", "CATALOGOS", "PERIODO_CONTABLE", "CONFIG_CUENTA_CONTABLE" }))
+                    {
+                        <li class="sidenav-item @abierto(new[] { "Catalogos", "PeriodoContable", "ConfiguracionCuentaContable" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-book"></i>
+                                <div>Catálogos contables</div>
+                            </a>
 
-                            <li class="sidenav-item @activo("Catalogos", "NaturalezasCuentaContable")">
-                                <a href="@Url.Action("NaturalezasCuentaContable", "Catalogos")" class="sidenav-link">
-                                    <div>Naturalezas de cuenta</div>
-                                </a>
-                            </li>
+                            <ul class="sidenav-menu">
 
-                            <li class="sidenav-item @activo("Catalogos", "TiposCuentaContable")">
-                                <a href="@Url.Action("TiposCuentaContable", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de cuenta contable</div>
-                                </a>
-                            </li>
 
-                            <li class="sidenav-item @activo("PeriodoContable", "Index")">
-                                <a href="@Url.Action("Index", "PeriodoContable")" class="sidenav-link">
-                                    <div>Periodos contables</div>
-                                </a>
-                            </li>
+                                @if (puedeVer("TIPOS_INGRESO"))
+                                {
+                                    <li class="sidenav-item @activo("Catalogos", "TiposIngreso")">
+                                        <a href="@Url.Action("TiposIngreso", "Catalogos")" class="sidenav-link">
+                                            <div>Tipos de ingreso</div>
+                                        </a>
+                                    </li>
+                                }
 
-                            <li class="sidenav-item @activo("ConfiguracionCuentaContable", "ConfiguracionCuentaContable")">
-                                <a href="@Url.Action("ConfiguracionCuentaContable", "ConfiguracionCuentaContable")" class="sidenav-link">
-                                    <div>Configuración cuenta contable</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                                @if (puedeVer("TIPOS_GASTO"))
+                                {
+                                    <li class="sidenav-item @activo("Catalogos", "TiposGasto")">
+                                        <a href="@Url.Action("TiposGasto", "Catalogos")" class="sidenav-link">
+                                            <div>Tipos de gasto</div>
+                                        </a>
+                                    </li>
+                                }
 
-                    <li class="sidenav-divider mb-1"></li>
-                    <li class="sidenav-header small font-weight-semibold">
-                        Administración
-                    </li>
+                                @if (puedeVer("CATALOGOS"))
+                                {
+                                    <li class="sidenav-item @activo("Catalogos", "NaturalezasCuentaContable")">
+                                        <a href="@Url.Action("NaturalezasCuentaContable", "Catalogos")" class="sidenav-link">
+                                            <div>Naturalezas de cuenta</div>
+                                        </a>
+                                    </li>
+                                }
 
-                    <!-- SEGURIDAD Y PERSONAL -->
-                    <li class="sidenav-item @abierto(new[] { "Seguridad", "Catalogos" })">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <i class="sidenav-icon feather icon-shield"></i>
-                            <div>Seguridad y personal</div>
-                        </a>
+                                @if (puedeVer("CATALOGOS"))
+                                {
+                                    <li class="sidenav-item @activo("Catalogos", "TiposCuentaContable")">
+                                        <a href="@Url.Action("TiposCuentaContable", "Catalogos")" class="sidenav-link">
+                                            <div>Tipos de cuenta contable</div>
+                                        </a>
+                                    </li>
+                                }
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item @activo("Seguridad", "Rol")">
-                                <a href="@Url.Action("Rol", "Seguridad")" class="sidenav-link">
-                                    <div>Roles</div>
-                                </a>
-                            </li>
+                                @if (puedeVer("PERIODO_CONTABLE"))
+                                {
+                                    <li class="sidenav-item @activo("PeriodoContable", "Index")">
+                                        <a href="@Url.Action("Index", "PeriodoContable")" class="sidenav-link">
+                                            <div>Periodos contables</div>
+                                        </a>
+                                    </li>
+                                }
 
-                            <li class="sidenav-item @activo("Catalogos", "Puestos")">
-                                <a href="@Url.Action("Puestos", "Catalogos")" class="sidenav-link">
-                                    <div>Puestos</div>
-                                </a>
-                            </li>
+                                @if (puedeVer("CONFIG_CUENTA_CONTABLE"))
+                                {
+                                    <li class="sidenav-item @activo("ConfiguracionCuentaContable", "ConfiguracionCuentaContable")">
+                                        <a href="@Url.Action("ConfiguracionCuentaContable", "ConfiguracionCuentaContable")" class="sidenav-link">
+                                            <div>Configuración cuenta contable</div>
+                                        </a>
+                                    </li>
+                                }
 
-                            <li class="sidenav-item @activo("Catalogos", "TipoDeObservacion")">
-                                <a href="@Url.Action("TipoDeObservacion", "Catalogos")" class="sidenav-link">
-                                    <div>Tipos de observación</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    }
+
+                    @if (puedeVerAlguno(new[] { "ROLES", "CATALOGOS" }))
+                    {
+                        <li class="sidenav-divider mb-1"></li>
+                        <li class="sidenav-header small font-weight-semibold">
+                            Administración
+                        </li>
+                    }
+
+                    @if (puedeVerAlguno(new[] { "ROLES", "CATALOGOS" }))
+                    {
+                        <li class="sidenav-item @abierto(new[] { "Seguridad", "Catalogos" })">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <i class="sidenav-icon feather icon-shield"></i>
+                                <div>Seguridad y personal</div>
+                            </a>
+
+                            <ul class="sidenav-menu">
+
+                                @if (puedeVer("ROLES"))
+                                {
+                                    <li class="sidenav-item @activo("Seguridad", "Rol")">
+                                        <a href="@Url.Action("Rol", "Seguridad")" class="sidenav-link">
+                                            <div>Roles</div>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (puedeVer("ROLES"))
+                                {
+                                    <li class="sidenav-item @activo("Seguridad", "RolPermiso")">
+                                        <a href="@Url.Action("RolPermiso", "Seguridad")" class="sidenav-link">
+                                            <div>Roles y Permisos</div>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (puedeVer("CATALOGOS"))
+                                {
+                                    <li class="sidenav-item @activo("Catalogos", "Puestos")">
+                                        <a href="@Url.Action("Puestos", "Catalogos")" class="sidenav-link">
+                                            <div>Puestos</div>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidenav-item @activo("Catalogos", "TipoDeObservacion")">
+                                        <a href="@Url.Action("TipoDeObservacion", "Catalogos")" class="sidenav-link">
+                                            <div>Tipos de observación</div>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (puedeVer("HISTORIAL_CAMBIOS"))
+                                {
+                                    <li class="sidenav-item @activo("Seguridad", "HistorialCambios")">
+                                        <a href="@Url.Action("HistorialCambios", "Seguridad")" class="sidenav-link">
+                                            <div>Historial de cambios</div>
+                                        </a>
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                    }
 
                 </ul>
             </div>
@@ -546,7 +810,7 @@
 
                                 <div class="user-info">
                                     <strong>@nombreUsuario</strong>
-                                    <span>Usuario del sistema</span>
+                                    <span>@nombreRol</span>
                                 </div>
                             </div>
 
@@ -579,6 +843,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/morris")
     @RenderSection("scripts", required: false)
 </body>
 </html>

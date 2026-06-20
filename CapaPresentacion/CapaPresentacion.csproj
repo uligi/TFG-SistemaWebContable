@@ -112,8 +112,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Acceso\AccesoController.cs" />
-    <Compile Include="Controllers\Consultas\ConsultasController.cs" />
     <Compile Include="Controllers\Contabilidad\ConfiguracionCuentaContableController.cs" />
+    <Compile Include="Controllers\Contabilidad\ConsultasController.cs" />
     <Compile Include="Controllers\Contabilidad\GestionarAsientoContableController.cs" />
     <Compile Include="Controllers\Contabilidad\GestionarPeriodoContableController.cs" />
     <Compile Include="Controllers\Facturacion\FacturacionController.cs" />
@@ -131,6 +131,7 @@
     <Compile Include="Controllers\Mantenimientos\SeguridadController.cs" />
     <Compile Include="Controllers\Mantenimientos\UbicacionController.cs" />
     <Compile Include="Controllers\Reportes\ReportesController.cs" />
+    <Compile Include="Filtros\PermisoAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -372,6 +373,11 @@
     <Content Include="Views\GestionarGastos\Gastos.cshtml" />
     <Content Include="Views\GestionarPresupuestoMensual\PresupuestoMensual.cshtml" />
     <Content Include="Views\ConfiguracionCuentaContable\ConfiguracionCuentaContable.cshtml" />
+    <Content Include="Views\Facturacion\NotasCredito.cshtml" />
+    <Content Include="Views\Home\SinPermiso.cshtml" />
+    <Content Include="Views\Acceso\CambiarClave.cshtml" />
+    <Content Include="Views\Seguridad\HistorialCambios.cshtml" />
+    <Content Include="Views\Seguridad\RolPermiso.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,268 +1,1547 @@
-﻿
-@{
-    ViewBag.Title = "Consultas";
+﻿@{
+    ViewBag.Title = "Consultas Generales";
     Layout = "~/Views/Shared/_Layout.cshtml";
-   
-       
+}
+
+<style>
+    .codigo-consulta {
+        font-family: Consolas, monospace;
+        font-weight: bold;
     }
 
-    <h4 class="font-weight-bold py-3 mb-0">Consultas</h4>
+    .texto-secundario {
+        font-size: 12px;
+        color: #6c757d;
+    }
 
-    <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="@Url.Action("Index", "Home")">
-                    <i class="feather icon-home"></i>
-                </a>
-            </li>
-            <li class="breadcrumb-item">Sistema</li>
-            <li class="breadcrumb-item active">Consultas</li>
-        </ol>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+</style>
+
+<h4 class="font-weight-bold py-3 mb-0">Consultas Generales</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Consultas</li>
+        <li class="breadcrumb-item active">Consultas generales</li>
+    </ol>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h6 class="mb-0">Filtros de búsqueda</h6>
     </div>
 
-    <div class="card mb-4">
-        <h6 class="card-header">Parámetros de consulta</h6>
+    <div class="card-body">
 
-        <div class="card-body">
+        <div class="alert alert-danger" id="mensajeErrorConsulta" style="display:none;"></div>
 
-            <form>
+        <div class="form-row">
 
-                <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="txtFiltroGeneral">Buscar</label>
+                <input type="text" id="txtFiltroGeneral" class="form-control" maxlength="100"
+                       placeholder="Número, nombre, identificación, cuenta, producto..." />
+            </div>
 
-                    <div class="form-group col-md-4">
-                        <label class="form-label">Tipo de consulta</label>
-                        <select class="custom-select" name="TipoConsulta">
-                            <option value="">Seleccione el tipo de consulta</option>
-                            <option value="Facturas">Facturas</option>
-                            <option value="CuentasPorCobrar">Cuentas por cobrar</option>
-                            <option value="CuentasPorPagar">Cuentas por pagar</option>
-                            <option value="Ingresos">Ingresos</option>
-                            <option value="Gastos">Gastos</option>
-                            <option value="PresupuestoMensual">Presupuesto mensual</option>
-                            <option value="Clientes">Clientes</option>
-                            <option value="Proveedores">Proveedores</option>
-                            <option value="Productos">Productos</option>
-                            <option value="AsientosContables">Asientos contables</option>
-                        </select>
-                    </div>
+            <div class="form-group col-md-2">
+                <label for="txtFechaInicio">Fecha inicio</label>
+                <input type="date" id="txtFechaInicio" class="form-control" />
+            </div>
 
-                    <div class="form-group col-md-4">
-                        <label class="form-label">Criterio de búsqueda</label>
-                        <select class="custom-select" name="CriterioBusqueda">
-                            <option value="">Seleccione un criterio</option>
-                            <option value="Codigo">Código</option>
-                            <option value="Nombre">Nombre</option>
-                            <option value="NumeroDocumento">Número de documento</option>
-                            <option value="Factura">Factura</option>
-                            <option value="Descripcion">Descripción</option>
-                            <option value="Categoria">Categoría</option>
-                            <option value="Fecha">Fecha</option>
-                            <option value="Estado">Estado</option>
-                        </select>
-                    </div>
+            <div class="form-group col-md-2">
+                <label for="txtFechaFin">Fecha final</label>
+                <input type="date" id="txtFechaFin" class="form-control" />
+            </div>
 
-                    <div class="form-group col-md-4">
-                        <label class="form-label">Palabra clave</label>
-                        <input type="text"
-                               class="form-control"
-                               name="PalabraClave"
-                               placeholder="Ingrese una palabra clave" />
-                        <div class="clearfix"></div>
-                    </div>
+            <div class="form-group col-md-2">
+                <label for="cboEstado">Estado</label>
+                <select id="cboEstado" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="Emitida">Emitida</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Parcial">Parcial</option>
+                    <option value="Pagada">Pagada</option>
+                    <option value="Anulada">Anulada</option>
+                    <option value="Vencida">Vencida</option>
+                </select>
+            </div>
 
-                </div>
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-4">
-                        <label class="form-label">Cliente</label>
-                        <select class="custom-select" name="IdentificacionCliente">
-                            <option value="">Todos los clientes</option>
-                            <option value="101110111">Cliente ejemplo 1</option>
-                            <option value="202220222">Cliente ejemplo 2</option>
-                            <option value="303330333">Cliente ejemplo 3</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label class="form-label">Proveedor</label>
-                        <select class="custom-select" name="IdentificacionProveedor">
-                            <option value="">Todos los proveedores</option>
-                            <option value="310100001">Proveedor ejemplo 1</option>
-                            <option value="310100002">Proveedor ejemplo 2</option>
-                            <option value="310100003">Proveedor ejemplo 3</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label class="form-label">Estado</label>
-                        <select class="custom-select" name="Estado">
-                            <option value="">Todos los estados</option>
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Parcial">Parcial</option>
-                            <option value="Pagada">Pagada</option>
-                            <option value="Vencida">Vencida</option>
-                            <option value="Anulada">Anulada</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-3">
-                        <label class="form-label">Fecha inicial</label>
-                        <input type="date"
-                               class="form-control"
-                               name="FechaInicial" />
-                        <div class="clearfix"></div>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label class="form-label">Fecha final</label>
-                        <input type="date"
-                               class="form-control"
-                               name="FechaFinal" />
-                        <div class="clearfix"></div>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label class="form-label">Monto mínimo</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">₡</span>
-                            </div>
-                            <input type="number"
-                                   class="form-control"
-                                   name="MontoMinimo"
-                                   placeholder="0.00"
-                                   step="0.01" />
-                            <div class="clearfix"></div>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label class="form-label">Monto máximo</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">₡</span>
-                            </div>
-                            <input type="number"
-                                   class="form-control"
-                                   name="MontoMaximo"
-                                   placeholder="0.00"
-                                   step="0.01" />
-                            <div class="clearfix"></div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form-group mt-4">
-                    <button type="button" class="btn btn-primary">
-                        Consultar
-                    </button>
-
-                    <button type="button" class="btn btn-secondary">
-                        Exportar
-                    </button>
-
-                    <button type="reset" class="btn btn-outline-secondary">
-                        Limpiar filtros
-                    </button>
-                </div>
-
-            </form>
+            <div class="form-group col-md-2">
+                <label for="cboEstadoCredito">Estado crédito</label>
+                <select id="cboEstadoCredito" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Por vencer">Por vencer</option>
+                    <option value="Vencida">Vencida</option>
+                    <option value="Pagada">Pagada</option>
+                    <option value="Anulada">Anulada</option>
+                </select>
+            </div>
 
         </div>
+
+        <div class="form-row">
+
+            <div class="form-group col-md-3">
+                <label for="cboTipoMovimiento">Tipo movimiento</label>
+                <select id="cboTipoMovimiento" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="Ingreso">Ingreso</option>
+                    <option value="Gasto">Gasto</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label>Filtros rápidos</label>
+
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkSoloBajoStock">
+                    <label class="custom-control-label" for="chkSoloBajoStock">Solo bajo stock</label>
+                </div>
+
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkSoloSinStock">
+                    <label class="custom-control-label" for="chkSoloSinStock">Solo sin stock</label>
+                </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label>&nbsp;</label>
+
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkSoloConSaldo">
+                    <label class="custom-control-label" for="chkSoloConSaldo">Solo con saldo pendiente</label>
+                </div>
+
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkSoloActivos" checked>
+                    <label class="custom-control-label" for="chkSoloActivos">Solo activos</label>
+                </div>
+            </div>
+
+            <div class="form-group col-md-3 d-flex align-items-end">
+                <button type="button" class="btn btn-primary btn-block" onclick="ejecutarConsultaActiva()">
+                    Consultar
+                </button>
+            </div>
+
+        </div>
+
+        <small class="text-muted">
+            Las fechas aplican principalmente para facturas y movimientos contables. Cuentas, productos, clientes y proveedores se consultan por estado actual.
+        </small>
+
     </div>
+</div>
 
-    <div class="card mb-4">
-        <h6 class="card-header">Resultados de la consulta</h6>
+<div class="card mb-4">
+    <div class="card-body">
+        <button type="button" class="btn btn-success mr-2" onclick="exportarConsultaActualCSV()">
+            Exportar CSV
+        </button>
 
-        <div class="card-body">
+        <button type="button" class="btn btn-info mr-2" onclick="imprimirConsultaActual()">
+            Imprimir
+        </button>
 
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Tipo</th>
-                            <th>Documento</th>
-                            <th>Cliente / Proveedor</th>
-                            <th>Descripción</th>
-                            <th>Fecha</th>
-                            <th>Monto</th>
-                            <th>Estado</th>
-                            <th>Detalle</th>
-                        </tr>
-                    </thead>
+        <span class="text-muted small">
+            Exporta o imprime la pestaña activa.
+        </span>
+    </div>
+</div>
 
-                    <tbody>
-                        <tr>
-                            <td>Factura</td>
-                            <td>FAC-0001</td>
-                            <td>Cliente ejemplo 1</td>
-                            <td>Venta de productos</td>
-                            <td>2026-04-01</td>
-                            <td>₡125,000.00</td>
-                            <td>Activo</td>
-                            <td>
-                                <button type="button" class="btn btn-sm btn-outline-primary">
-                                    Ver
-                                </button>
-                            </td>
-                        </tr>
+<div class="nav-tabs-top mb-4">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#tabFacturas">Facturas</a>
+        </li>
 
-                        <tr>
-                            <td>Cuenta por cobrar</td>
-                            <td>CXC-0001</td>
-                            <td>Cliente ejemplo 2</td>
-                            <td>Saldo pendiente de factura</td>
-                            <td>2026-04-05</td>
-                            <td>₡60,000.00</td>
-                            <td>Parcial</td>
-                            <td>
-                                <button type="button" class="btn btn-sm btn-outline-primary">
-                                    Ver
-                                </button>
-                            </td>
-                        </tr>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabCxC">Cuentas por cobrar</a>
+        </li>
 
-                        <tr>
-                            <td>Cuenta por pagar</td>
-                            <td>CXP-0001</td>
-                            <td>Proveedor ejemplo 1</td>
-                            <td>Compra de mercadería</td>
-                            <td>2026-04-10</td>
-                            <td>₡220,000.00</td>
-                            <td>Pendiente</td>
-                            <td>
-                                <button type="button" class="btn btn-sm btn-outline-primary">
-                                    Ver
-                                </button>
-                            </td>
-                        </tr>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabCxP">Cuentas por pagar</a>
+        </li>
 
-                        <tr>
-                            <td>Gasto</td>
-                            <td>COMP-0001</td>
-                            <td>Proveedor ejemplo 2</td>
-                            <td>Pago de servicio público</td>
-                            <td>2026-04-12</td>
-                            <td>₡38,000.00</td>
-                            <td>Activo</td>
-                            <td>
-                                <button type="button" class="btn btn-sm btn-outline-primary">
-                                    Ver
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabProductos">Productos</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabClientes">Clientes</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabProveedores">Proveedores</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabMovimientos">Movimientos contables</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade show active" id="tabFacturas">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Consulta de facturas</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaFacturas" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Empleado</th>
+                                    <th>Tipo factura</th>
+                                    <th>Tipo pago</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabCxC">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Consulta de cuentas por cobrar</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaCxC" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Factura</th>
+                                    <th>Cliente</th>
+                                    <th>Emisión</th>
+                                    <th>Vencimiento</th>
+                                    <th>Monto original</th>
+                                    <th>Saldo actual</th>
+                                    <th>Estado</th>
+                                    <th>Estado crédito</th>
+                                    <th>Días</th>
+                                    <th>Prioridad</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabCxP">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Consulta de cuentas por pagar</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaCxP" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Documento</th>
+                                    <th>Proveedor</th>
+                                    <th>Emisión</th>
+                                    <th>Vencimiento</th>
+                                    <th>Concepto</th>
+                                    <th>Monto original</th>
+                                    <th>Saldo actual</th>
+                                    <th>Estado</th>
+                                    <th>Estado crédito</th>
+                                    <th>Días</th>
+                                    <th>Prioridad</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabProductos">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Consulta de productos</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaProductos" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th>Tipo</th>
+                                    <th>Precio venta</th>
+                                    <th>Stock actual</th>
+                                    <th>IVA</th>
+                                    <th>Estado inventario</th>
+                                    <th>Activo</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabClientes">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Consulta de clientes</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaClientes" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Identificación</th>
+                                    <th>Cliente</th>
+                                    <th>Límite crédito</th>
+                                    <th>Días crédito</th>
+                                    <th>Saldo pendiente</th>
+                                    <th>Facturas pendientes</th>
+                                    <th>Estado</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabProveedores">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Consulta de proveedores</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaProveedores" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Identificación</th>
+                                    <th>Razón social</th>
+                                    <th>Contacto</th>
+                                    <th>Días crédito</th>
+                                    <th>Saldo pendiente</th>
+                                    <th>Documentos pendientes</th>
+                                    <th>Estado</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabMovimientos">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Consulta de movimientos contables</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered nowrap" id="tablaMovimientos" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Número</th>
+                                    <th>Fecha</th>
+                                    <th>Cuenta</th>
+                                    <th>Descripción</th>
+                                    <th>Monto</th>
+                                    <th>Origen</th>
+                                    <th>Referencia</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="ModalDetalleConsulta" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="tituloDetalleConsulta">Detalle de consulta</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div id="contenidoDetalleConsulta"></div>
+
+                <div id="contenedorDetalleFactura" style="display:none;">
+                    <hr />
+                    <h6 class="font-weight-bold">Productos de la factura</h6>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered" id="tablaDetalleFactura">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Descripción</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>IVA</th>
+                                    <th>Descuento</th>
+                                    <th>Subtotal</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="imprimirDetalleConsulta()">
+                    Imprimir detalle
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
             </div>
 
         </div>
     </div>
+</div>
 
+@section scripts {
+    <script>
+    var tablaFacturas = null;
+    var tablaCxC = null;
+    var tablaCxP = null;
+    var tablaProductos = null;
+    var tablaClientes = null;
+    var tablaProveedores = null;
+    var tablaMovimientos = null;
+
+    var listaFacturasGlobal = [];
+    var listaCxCGlobal = [];
+    var listaCxPGlobal = [];
+    var listaProductosGlobal = [];
+    var listaClientesGlobal = [];
+    var listaProveedoresGlobal = [];
+    var listaMovimientosGlobal = [];
+
+    $(document).ready(function () {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+            setTimeout(function () {
+                ajustarTablas();
+            }, 200);
+        });
+
+        $("#txtFiltroGeneral").on("keypress", function (e) {
+            if (e.which === 13) {
+                ejecutarConsultaActiva();
+            }
+        });
+
+        $("#chkSoloSinStock").on("change", function () {
+            if ($(this).is(":checked")) {
+                $("#chkSoloBajoStock").prop("checked", false);
+            }
+        });
+
+        $("#chkSoloBajoStock").on("change", function () {
+            if ($(this).is(":checked")) {
+                $("#chkSoloSinStock").prop("checked", false);
+            }
+        });
+
+        ejecutarConsultaActiva();
+    });
+
+    function ejecutarConsultaActiva() {
+        var tabActivo = $(".nav-tabs .nav-link.active").attr("href");
+
+        $("#mensajeErrorConsulta").hide().text("");
+
+        if (tabActivo === "#tabFacturas") {
+            consultarFacturas();
+            return;
+        }
+
+        if (tabActivo === "#tabCxC") {
+            consultarCuentasPorCobrar();
+            return;
+        }
+
+        if (tabActivo === "#tabCxP") {
+            consultarCuentasPorPagar();
+            return;
+        }
+
+        if (tabActivo === "#tabProductos") {
+            consultarProductos();
+            return;
+        }
+
+        if (tabActivo === "#tabClientes") {
+            consultarClientes();
+            return;
+        }
+
+        if (tabActivo === "#tabProveedores") {
+            consultarProveedores();
+            return;
+        }
+
+        if (tabActivo === "#tabMovimientos") {
+            consultarMovimientosContables();
+            return;
+        }
+    }
+
+    function obtenerFiltroBase() {
+        return $("#txtFiltroGeneral").val().trim();
+    }
+
+    function consultarFacturas() {
+        $.ajax({
+            url: '@Url.Action("ConsultarFacturas", "Consultas")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                filtro: obtenerFiltroBase(),
+                fechaInicio: $("#txtFechaInicio").val(),
+                fechaFin: $("#txtFechaFin").val(),
+                estado: $("#cboEstado").val()
+            },
+            success: function (respuesta) {
+                if (respuesta.resultado === false) {
+                    mostrarErrorConsulta(respuesta.mensaje);
+                    return;
+                }
+
+                listaFacturasGlobal = respuesta.data || [];
+                pintarTablaFacturas(listaFacturasGlobal);
+            },
+            error: function () {
+                mostrarErrorConsulta("Error al consultar facturas.");
+            }
+        });
+    }
+
+    function consultarCuentasPorCobrar() {
+        $.ajax({
+            url: '@Url.Action("ConsultarCuentasPorCobrar", "Consultas")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                filtro: obtenerFiltroBase(),
+                estado: $("#cboEstado").val(),
+                estadoCredito: $("#cboEstadoCredito").val()
+            },
+            success: function (respuesta) {
+                listaCxCGlobal = respuesta.data || [];
+                pintarTablaCxC(listaCxCGlobal);
+            },
+            error: function () {
+                mostrarErrorConsulta("Error al consultar cuentas por cobrar.");
+            }
+        });
+    }
+
+    function consultarCuentasPorPagar() {
+        $.ajax({
+            url: '@Url.Action("ConsultarCuentasPorPagar", "Consultas")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                filtro: obtenerFiltroBase(),
+                estado: $("#cboEstado").val(),
+                estadoCredito: $("#cboEstadoCredito").val()
+            },
+            success: function (respuesta) {
+                listaCxPGlobal = respuesta.data || [];
+                pintarTablaCxP(listaCxPGlobal);
+            },
+            error: function () {
+                mostrarErrorConsulta("Error al consultar cuentas por pagar.");
+            }
+        });
+    }
+
+    function consultarProductos() {
+        $.ajax({
+            url: '@Url.Action("ConsultarProductos", "Consultas")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                filtro: obtenerFiltroBase(),
+                soloBajoStock: $("#chkSoloBajoStock").is(":checked"),
+                soloSinStock: $("#chkSoloSinStock").is(":checked"),
+                soloActivos: $("#chkSoloActivos").is(":checked")
+            },
+            success: function (respuesta) {
+                listaProductosGlobal = respuesta.data || [];
+                pintarTablaProductos(listaProductosGlobal);
+            },
+            error: function () {
+                mostrarErrorConsulta("Error al consultar productos.");
+            }
+        });
+    }
+
+    function consultarClientes() {
+        $.ajax({
+            url: '@Url.Action("ConsultarClientes", "Consultas")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                filtro: obtenerFiltroBase(),
+                soloConSaldo: $("#chkSoloConSaldo").is(":checked"),
+                soloActivos: $("#chkSoloActivos").is(":checked")
+            },
+            success: function (respuesta) {
+                listaClientesGlobal = respuesta.data || [];
+                pintarTablaClientes(listaClientesGlobal);
+            },
+            error: function () {
+                mostrarErrorConsulta("Error al consultar clientes.");
+            }
+        });
+    }
+
+    function consultarProveedores() {
+        $.ajax({
+            url: '@Url.Action("ConsultarProveedores", "Consultas")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                filtro: obtenerFiltroBase(),
+                soloConSaldo: $("#chkSoloConSaldo").is(":checked"),
+                soloActivos: $("#chkSoloActivos").is(":checked")
+            },
+            success: function (respuesta) {
+                listaProveedoresGlobal = respuesta.data || [];
+                pintarTablaProveedores(listaProveedoresGlobal);
+            },
+            error: function () {
+                mostrarErrorConsulta("Error al consultar proveedores.");
+            }
+        });
+    }
+
+    function consultarMovimientosContables() {
+        $.ajax({
+            url: '@Url.Action("ConsultarMovimientosContables", "Consultas")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                filtro: obtenerFiltroBase(),
+                fechaInicio: $("#txtFechaInicio").val(),
+                fechaFin: $("#txtFechaFin").val(),
+                tipoMovimiento: $("#cboTipoMovimiento").val()
+            },
+            success: function (respuesta) {
+                if (respuesta.resultado === false) {
+                    mostrarErrorConsulta(respuesta.mensaje);
+                    return;
+                }
+
+                listaMovimientosGlobal = respuesta.data || [];
+                pintarTablaMovimientos(listaMovimientosGlobal);
+            },
+            error: function () {
+                mostrarErrorConsulta("Error al consultar movimientos contables.");
+            }
+        });
+    }
+
+    function pintarTablaFacturas(lista) {
+        if (tablaFacturas != null) {
+            tablaFacturas.clear().destroy();
+            tablaFacturas = null;
+        }
+
+        var tbody = $("#tablaFacturas tbody");
+        tbody.empty();
+
+        $.each(lista, function (i, item) {
+            var fila = $("<tr>");
+
+            fila.append($("<td>", { class: "codigo-consulta", text: item.NumeroFactura || "" }));
+            fila.append($("<td>").text(formatearFecha(item.FechaFactura)));
+            fila.append($("<td>").text((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "")));
+            fila.append($("<td>").text((item.IdentificacionEmpleado || "") + " - " + (item.EmpleadoNombre || "")));
+            fila.append($("<td>").text(item.TipoFacturaNombre || ""));
+            fila.append($("<td>").text(item.TipoPagoNombre || ""));
+            fila.append($("<td>").text(formatearMoneda(item.TotalFactura)));
+            fila.append($("<td>").html(obtenerBadgeEstado(item.Estado)));
+            fila.append($("<td>").html('<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleFactura(' + i + ')">Ver</button>'));
+
+            tbody.append(fila);
+        });
+
+        tablaFacturas = crearDataTable("#tablaFacturas", [[1, "desc"]]);
+    }
+
+    function pintarTablaCxC(lista) {
+        if (tablaCxC != null) {
+            tablaCxC.clear().destroy();
+            tablaCxC = null;
+        }
+
+        var tbody = $("#tablaCxC tbody");
+        tbody.empty();
+
+        $.each(lista, function (i, item) {
+            var fila = $("<tr>");
+
+            fila.append($("<td>", { class: "codigo-consulta", text: item.NumeroFactura || "" }));
+            fila.append($("<td>").text((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "")));
+            fila.append($("<td>").text(formatearFecha(item.FechaEmision)));
+            fila.append($("<td>").text(formatearFecha(item.FechaVencimiento)));
+            fila.append($("<td>").text(formatearMoneda(item.MontoOriginal)));
+            fila.append($("<td>").text(formatearMoneda(item.SaldoActual)));
+            fila.append($("<td>").html(obtenerBadgeEstado(item.Estado)));
+            fila.append($("<td>").html(obtenerBadgeEstadoCredito(item.EstadoCredito)));
+            fila.append($("<td>").text(item.DiasRestantesTexto || obtenerTextoDias(item.DiasRestantes, item.EstadoCredito)));
+            fila.append($("<td>").html(obtenerBadgePrioridad(item.PrioridadCobro)));
+            fila.append($("<td>").html('<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleCxC(' + i + ')">Ver</button>'));
+
+            tbody.append(fila);
+        });
+
+        tablaCxC = crearDataTable("#tablaCxC", [[3, "asc"]]);
+    }
+
+    function pintarTablaCxP(lista) {
+        if (tablaCxP != null) {
+            tablaCxP.clear().destroy();
+            tablaCxP = null;
+        }
+
+        var tbody = $("#tablaCxP tbody");
+        tbody.empty();
+
+        $.each(lista, function (i, item) {
+            var fila = $("<tr>");
+
+            fila.append($("<td>", { class: "codigo-consulta", text: item.NumeroDocumento || "" }));
+            fila.append($("<td>").text((item.IdentificacionProveedor || "") + " - " + (item.ProveedorNombre || "")));
+            fila.append($("<td>").text(formatearFecha(item.FechaEmision)));
+            fila.append($("<td>").text(formatearFecha(item.FechaVencimiento)));
+            fila.append($("<td>").text(item.Concepto || ""));
+            fila.append($("<td>").text(formatearMoneda(item.MontoOriginal)));
+            fila.append($("<td>").text(formatearMoneda(item.SaldoActual)));
+            fila.append($("<td>").html(obtenerBadgeEstado(item.Estado)));
+            fila.append($("<td>").html(obtenerBadgeEstadoCredito(item.EstadoCredito)));
+            fila.append($("<td>").text(item.DiasRestantesTexto || obtenerTextoDias(item.DiasRestantes, item.EstadoCredito)));
+            fila.append($("<td>").html(obtenerBadgePrioridad(item.PrioridadPago)));
+            fila.append($("<td>").html('<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleCxP(' + i + ')">Ver</button>'));
+
+            tbody.append(fila);
+        });
+
+        tablaCxP = crearDataTable("#tablaCxP", [[3, "asc"]]);
+    }
+
+    function pintarTablaProductos(lista) {
+        if (tablaProductos != null) {
+            tablaProductos.clear().destroy();
+            tablaProductos = null;
+        }
+
+        var tbody = $("#tablaProductos tbody");
+        tbody.empty();
+
+        $.each(lista, function (i, item) {
+            var fila = $("<tr>");
+
+            fila.append($("<td>", { class: "codigo-consulta", text: item.CodigoProducto || "" }));
+            fila.append($("<td>").text(item.NombreProducto || ""));
+            fila.append($("<td>").text(item.TipoProducto || ""));
+            fila.append($("<td>").text(formatearMoneda(item.PrecioVenta)));
+            fila.append($("<td>").text(formatearNumero(item.StockActual)));
+            fila.append($("<td>").text(item.ImpuestoTexto || ((item.ImpuestoNombre || "") + " " + formatearNumero(item.PorcentajeImpuesto) + "%")));
+            fila.append($("<td>").html(obtenerBadgeInventario(item.EstadoInventario)));
+            fila.append($("<td>").html(item.Activo ? '<span class="badge badge-info">Sí</span>' : '<span class="badge badge-secondary">No</span>'));
+            fila.append($("<td>").html('<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleProducto(' + i + ')">Ver</button>'));
+
+            tbody.append(fila);
+        });
+
+        tablaProductos = crearDataTable("#tablaProductos", [[1, "asc"]]);
+    }
+
+    function pintarTablaClientes(lista) {
+        if (tablaClientes != null) {
+            tablaClientes.clear().destroy();
+            tablaClientes = null;
+        }
+
+        var tbody = $("#tablaClientes tbody");
+        tbody.empty();
+
+        $.each(lista, function (i, item) {
+            var fila = $("<tr>");
+
+            fila.append($("<td>", { class: "codigo-consulta", text: item.Identificacion || "" }));
+            fila.append($("<td>").text(item.ClienteNombre || ""));
+            fila.append($("<td>").text(formatearMoneda(item.LimiteCredito)));
+            fila.append($("<td>").text((item.DiasCredito || 0) + " día(s)"));
+            fila.append($("<td>").text(formatearMoneda(item.SaldoPendiente)));
+            fila.append($("<td>").text(item.CantidadFacturasPendientes || 0));
+            fila.append($("<td>").html(obtenerBadgeEstadoClienteProveedor(item.EstadoCliente)));
+            fila.append($("<td>").html('<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleCliente(' + i + ')">Ver</button>'));
+
+            tbody.append(fila);
+        });
+
+        tablaClientes = crearDataTable("#tablaClientes", [[1, "asc"]]);
+    }
+
+    function pintarTablaProveedores(lista) {
+        if (tablaProveedores != null) {
+            tablaProveedores.clear().destroy();
+            tablaProveedores = null;
+        }
+
+        var tbody = $("#tablaProveedores tbody");
+        tbody.empty();
+
+        $.each(lista, function (i, item) {
+            var fila = $("<tr>");
+
+            fila.append($("<td>", { class: "codigo-consulta", text: item.IdentificacionProveedor || "" }));
+            fila.append($("<td>").text(item.RazonSocial || ""));
+            fila.append($("<td>").text(item.NombreContacto || ""));
+            fila.append($("<td>").text((item.DiasCredito || 0) + " día(s)"));
+            fila.append($("<td>").text(formatearMoneda(item.SaldoPendiente)));
+            fila.append($("<td>").text(item.CantidadDocumentosPendientes || 0));
+            fila.append($("<td>").html(obtenerBadgeEstadoClienteProveedor(item.EstadoProveedor)));
+            fila.append($("<td>").html('<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleProveedor(' + i + ')">Ver</button>'));
+
+            tbody.append(fila);
+        });
+
+        tablaProveedores = crearDataTable("#tablaProveedores", [[1, "asc"]]);
+    }
+
+    function pintarTablaMovimientos(lista) {
+        if (tablaMovimientos != null) {
+            tablaMovimientos.clear().destroy();
+            tablaMovimientos = null;
+        }
+
+        var tbody = $("#tablaMovimientos tbody");
+        tbody.empty();
+
+        $.each(lista, function (i, item) {
+            var fila = $("<tr>");
+
+            fila.append($("<td>").html(obtenerBadgeTipoMovimiento(item.TipoMovimiento)));
+            fila.append($("<td>", { class: "codigo-consulta", text: item.NumeroMovimiento || "" }));
+            fila.append($("<td>").text(formatearFecha(item.FechaMovimiento)));
+            fila.append($("<td>").text((item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "")));
+            fila.append($("<td>").text(item.Descripcion || ""));
+            fila.append($("<td>").text(formatearMoneda(item.Monto)));
+            fila.append($("<td>").text(item.Origen || ""));
+            fila.append($("<td>").text(item.Referencia || ""));
+            fila.append($("<td>").html('<button type="button" class="btn btn-sm btn-outline-primary" onclick="verDetalleMovimiento(' + i + ')">Ver</button>'));
+
+            tbody.append(fila);
+        });
+
+        tablaMovimientos = crearDataTable("#tablaMovimientos", [[2, "desc"]]);
+    }
+
+    function crearDataTable(selector, orden) {
+        return $(selector).DataTable({
+            responsive: false,
+            scrollX: true,
+            autoWidth: false,
+            pageLength: 10,
+            destroy: true,
+            order: orden,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+            }
+        });
+    }
+
+    function ajustarTablas() {
+        var tablas = [
+            tablaFacturas,
+            tablaCxC,
+            tablaCxP,
+            tablaProductos,
+            tablaClientes,
+            tablaProveedores,
+            tablaMovimientos
+        ];
+
+        $.each(tablas, function (i, tabla) {
+            if (tabla != null) {
+                tabla.columns.adjust();
+            }
+        });
+    }
+
+    function verDetalleFactura(index) {
+        var item = listaFacturasGlobal[index];
+
+        abrirDetalleConsulta("Detalle de factura", [
+            ["Número factura", item.NumeroFactura],
+            ["Fecha", formatearFecha(item.FechaFactura)],
+            ["Cliente", (item.IdentificacionCliente || "-") + " - " + (item.ClienteNombre || "-")],
+            ["Empleado", (item.IdentificacionEmpleado || "-") + " - " + (item.EmpleadoNombre || "-")],
+            ["Tipo factura", item.TipoFacturaNombre],
+            ["Tipo pago", item.TipoPagoNombre],
+            ["Subtotal", formatearMoneda(item.SubtotalFactura)],
+            ["Impuesto", formatearMoneda(item.ImpuestoFactura)],
+            ["Descuento", formatearMoneda(item.DescuentoFactura)],
+            ["Total", formatearMoneda(item.TotalFactura)],
+            ["Estado", item.Estado],
+            ["Activo", item.Activo ? "Sí" : "No"]
+        ]);
+
+        cargarDetalleFactura(item.NumeroFactura);
+    }
+
+    function cargarDetalleFactura(numeroFactura) {
+        $("#contenedorDetalleFactura").hide();
+        $("#tablaDetalleFactura tbody").empty();
+
+        $.ajax({
+            url: '@Url.Action("ConsultarDetalleFactura", "Consultas")',
+            type: "GET",
+            dataType: "json",
+            data: {
+                numeroFactura: numeroFactura
+            },
+            success: function (respuesta) {
+                var lista = respuesta.data || [];
+                var tbody = $("#tablaDetalleFactura tbody");
+
+                tbody.empty();
+
+                if (lista.length === 0) {
+                    tbody.append('<tr><td colspan="8" class="text-center text-muted">No hay productos en esta factura.</td></tr>');
+                }
+
+                $.each(lista, function (i, item) {
+                    var fila = $("<tr>");
+
+                    fila.append($("<td>").text((item.CodigoProducto || "") + " - " + (item.NombreProducto || "")));
+                    fila.append($("<td>").text(item.DescripcionItem || ""));
+                    fila.append($("<td>").text(formatearNumero(item.Cantidad)));
+                    fila.append($("<td>").text(formatearMoneda(item.PrecioUnitario)));
+                    fila.append($("<td>").text(formatearNumero(item.PorcentajeImpuesto) + "%"));
+                    fila.append($("<td>").text(formatearNumero(item.PorcentajeDescuento) + "%"));
+                    fila.append($("<td>").text(formatearMoneda(item.SubtotalLinea)));
+                    fila.append($("<td>").text(formatearMoneda(item.TotalLinea)));
+
+                    tbody.append(fila);
+                });
+
+                $("#contenedorDetalleFactura").show();
+            },
+            error: function () {
+                $("#contenedorDetalleFactura").hide();
+            }
+        });
+    }
+
+    function verDetalleCxC(index) {
+        var item = listaCxCGlobal[index];
+
+        abrirDetalleConsulta("Detalle de cuenta por cobrar", [
+            ["Factura", item.NumeroFactura],
+            ["Cliente", (item.IdentificacionCliente || "-") + " - " + (item.ClienteNombre || "-")],
+            ["Fecha emisión", formatearFecha(item.FechaEmision)],
+            ["Fecha vencimiento", formatearFecha(item.FechaVencimiento)],
+            ["Monto original", formatearMoneda(item.MontoOriginal)],
+            ["Monto pagado", formatearMoneda(item.MontoPagado)],
+            ["Saldo actual", formatearMoneda(item.SaldoActual)],
+            ["Estado", item.Estado],
+            ["Estado crédito", item.EstadoCredito],
+            ["Días restantes", item.DiasRestantesTexto || obtenerTextoDias(item.DiasRestantes, item.EstadoCredito)],
+            ["Prioridad", item.PrioridadCobro],
+            ["Recomendación", item.Recomendacion]
+        ]);
+    }
+
+    function verDetalleCxP(index) {
+        var item = listaCxPGlobal[index];
+
+        abrirDetalleConsulta("Detalle de cuenta por pagar", [
+            ["Documento", item.NumeroDocumento],
+            ["Proveedor", (item.IdentificacionProveedor || "-") + " - " + (item.ProveedorNombre || "-")],
+            ["Fecha emisión", formatearFecha(item.FechaEmision)],
+            ["Fecha vencimiento", formatearFecha(item.FechaVencimiento)],
+            ["Concepto", item.Concepto],
+            ["Monto original", formatearMoneda(item.MontoOriginal)],
+            ["Monto pagado", formatearMoneda(item.MontoPagado)],
+            ["Saldo actual", formatearMoneda(item.SaldoActual)],
+            ["Estado", item.Estado],
+            ["Estado crédito", item.EstadoCredito],
+            ["Días restantes", item.DiasRestantesTexto || obtenerTextoDias(item.DiasRestantes, item.EstadoCredito)],
+            ["Prioridad", item.PrioridadPago],
+            ["Recomendación", item.Recomendacion]
+        ]);
+    }
+
+    function verDetalleProducto(index) {
+        var item = listaProductosGlobal[index];
+
+        abrirDetalleConsulta("Detalle de producto", [
+            ["Código", item.CodigoProducto],
+            ["Producto", item.NombreProducto],
+            ["Tipo", item.TipoProducto],
+            ["Precio venta", formatearMoneda(item.PrecioVenta)],
+            ["Stock actual", formatearNumero(item.StockActual)],
+            ["Stock mínimo de referencia", formatearNumero(item.StockMinimo)],
+            ["Impuesto", item.ImpuestoTexto || ""],
+            ["Estado inventario", item.EstadoInventario],
+            ["Activo", item.Activo ? "Sí" : "No"],
+            ["Recomendación", item.Recomendacion]
+        ]);
+    }
+
+    function verDetalleCliente(index) {
+        var item = listaClientesGlobal[index];
+
+        abrirDetalleConsulta("Detalle de cliente", [
+            ["Identificación", item.Identificacion],
+            ["Cliente", item.ClienteNombre],
+            ["Límite crédito", formatearMoneda(item.LimiteCredito)],
+            ["Días crédito", (item.DiasCredito || 0) + " día(s)"],
+            ["Saldo pendiente", formatearMoneda(item.SaldoPendiente)],
+            ["Facturas pendientes", item.CantidadFacturasPendientes],
+            ["Estado", item.EstadoCliente],
+            ["Activo", item.Activo ? "Sí" : "No"],
+            ["Recomendación", item.Recomendacion]
+        ]);
+    }
+
+    function verDetalleProveedor(index) {
+        var item = listaProveedoresGlobal[index];
+
+        abrirDetalleConsulta("Detalle de proveedor", [
+            ["Identificación", item.IdentificacionProveedor],
+            ["Razón social", item.RazonSocial],
+            ["Contacto", item.NombreContacto],
+            ["Días crédito", (item.DiasCredito || 0) + " día(s)"],
+            ["Saldo pendiente", formatearMoneda(item.SaldoPendiente)],
+            ["Documentos pendientes", item.CantidadDocumentosPendientes],
+            ["Estado", item.EstadoProveedor],
+            ["Activo", item.Activo ? "Sí" : "No"],
+            ["Recomendación", item.Recomendacion]
+        ]);
+    }
+
+    function verDetalleMovimiento(index) {
+        var item = listaMovimientosGlobal[index];
+
+        abrirDetalleConsulta("Detalle de movimiento contable", [
+            ["Tipo", item.TipoMovimiento],
+            ["Número movimiento", item.NumeroMovimiento],
+            ["Fecha", formatearFecha(item.FechaMovimiento)],
+            ["Cuenta", (item.CodigoCuenta || "-") + " - " + (item.NombreCuenta || "-")],
+            ["Descripción", item.Descripcion],
+            ["Monto", formatearMoneda(item.Monto)],
+            ["Origen", item.Origen],
+            ["Referencia", item.Referencia],
+            ["Activo", item.Activo ? "Sí" : "No"]
+        ]);
+    }
+
+    function abrirDetalleConsulta(titulo, datos) {
+        $("#tituloDetalleConsulta").text(titulo);
+
+        var html = '<table class="table table-bordered table-striped mb-0">';
+        html += '<tbody>';
+
+        $.each(datos, function (i, fila) {
+            html += '<tr>';
+            html += '<th style="width:35%;">' + fila[0] + '</th>';
+            html += '<td>' + (fila[1] || "") + '</td>';
+            html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+
+        $("#contenidoDetalleConsulta").html(html);
+        $("#contenedorDetalleFactura").hide();
+        $("#ModalDetalleConsulta").modal("show");
+    }
+
+    function imprimirDetalleConsulta() {
+        var titulo = $("#tituloDetalleConsulta").text();
+        var contenido = $("#contenidoDetalleConsulta").html();
+        var detalleFactura = $("#contenedorDetalleFactura").is(":visible") ? $("#contenedorDetalleFactura").html() : "";
+
+        var html = '';
+        html += '<!DOCTYPE html>';
+        html += '<html><head><meta charset="utf-8">';
+        html += '<title>' + titulo + '</title>';
+        html += '<style>';
+        html += 'body{font-family:Arial, sans-serif; font-size:12px; margin:25px;}';
+        html += 'h2{margin-bottom:15px;}';
+        html += 'table{width:100%; border-collapse:collapse; margin-top:10px;}';
+        html += 'th,td{border:1px solid #ccc; padding:8px; text-align:left;}';
+        html += 'th{background:#f2f2f2;}';
+        html += '</style>';
+        html += '</head><body>';
+        html += '<h2>' + titulo + '</h2>';
+        html += contenido;
+        html += detalleFactura;
+        html += '</body></html>';
+
+        var ventana = window.open("", "_blank");
+        ventana.document.open();
+        ventana.document.write(html);
+        ventana.document.close();
+        ventana.focus();
+        ventana.print();
+    }
+
+    function obtenerConsultaActiva() {
+        var tabActivo = $(".nav-tabs .nav-link.active").attr("href");
+
+        if (tabActivo === "#tabFacturas") {
+            return {
+                nombre: "Consulta de facturas",
+                archivo: "consulta_facturas",
+                lista: listaFacturasGlobal,
+                columnas: [
+                    { titulo: "Número", campo: "NumeroFactura" },
+                    { titulo: "Fecha", campo: "FechaFactura", tipo: "fecha" },
+                    { titulo: "Cliente", campo: "ClienteNombre" },
+                    { titulo: "Empleado", campo: "EmpleadoNombre" },
+                    { titulo: "Tipo factura", campo: "TipoFacturaNombre" },
+                    { titulo: "Tipo pago", campo: "TipoPagoNombre" },
+                    { titulo: "Total", campo: "TotalFactura", tipo: "moneda" },
+                    { titulo: "Estado", campo: "Estado" }
+                ]
+            };
+        }
+
+        if (tabActivo === "#tabCxC") {
+            return {
+                nombre: "Consulta de cuentas por cobrar",
+                archivo: "consulta_cuentas_por_cobrar",
+                lista: listaCxCGlobal,
+                columnas: [
+                    { titulo: "Factura", campo: "NumeroFactura" },
+                    { titulo: "Cliente", campo: "ClienteNombre" },
+                    { titulo: "Vencimiento", campo: "FechaVencimiento", tipo: "fecha" },
+                    { titulo: "Monto original", campo: "MontoOriginal", tipo: "moneda" },
+                    { titulo: "Saldo actual", campo: "SaldoActual", tipo: "moneda" },
+                    { titulo: "Estado", campo: "Estado" },
+                    { titulo: "Estado crédito", campo: "EstadoCredito" },
+                    { titulo: "Prioridad", campo: "PrioridadCobro" },
+                    { titulo: "Recomendación", campo: "Recomendacion" }
+                ]
+            };
+        }
+
+        if (tabActivo === "#tabCxP") {
+            return {
+                nombre: "Consulta de cuentas por pagar",
+                archivo: "consulta_cuentas_por_pagar",
+                lista: listaCxPGlobal,
+                columnas: [
+                    { titulo: "Documento", campo: "NumeroDocumento" },
+                    { titulo: "Proveedor", campo: "ProveedorNombre" },
+                    { titulo: "Vencimiento", campo: "FechaVencimiento", tipo: "fecha" },
+                    { titulo: "Concepto", campo: "Concepto" },
+                    { titulo: "Monto original", campo: "MontoOriginal", tipo: "moneda" },
+                    { titulo: "Saldo actual", campo: "SaldoActual", tipo: "moneda" },
+                    { titulo: "Estado", campo: "Estado" },
+                    { titulo: "Estado crédito", campo: "EstadoCredito" },
+                    { titulo: "Prioridad", campo: "PrioridadPago" },
+                    { titulo: "Recomendación", campo: "Recomendacion" }
+                ]
+            };
+        }
+
+        if (tabActivo === "#tabProductos") {
+            return {
+                nombre: "Consulta de productos",
+                archivo: "consulta_productos",
+                lista: listaProductosGlobal,
+                columnas: [
+                    { titulo: "Código", campo: "CodigoProducto" },
+                    { titulo: "Producto", campo: "NombreProducto" },
+                    { titulo: "Tipo", campo: "TipoProducto" },
+                    { titulo: "Precio venta", campo: "PrecioVenta", tipo: "moneda" },
+                    { titulo: "Stock actual", campo: "StockActual" },
+                    { titulo: "Estado inventario", campo: "EstadoInventario" },
+                    { titulo: "Recomendación", campo: "Recomendacion" }
+                ]
+            };
+        }
+
+        if (tabActivo === "#tabClientes") {
+            return {
+                nombre: "Consulta de clientes",
+                archivo: "consulta_clientes",
+                lista: listaClientesGlobal,
+                columnas: [
+                    { titulo: "Identificación", campo: "Identificacion" },
+                    { titulo: "Cliente", campo: "ClienteNombre" },
+                    { titulo: "Límite crédito", campo: "LimiteCredito", tipo: "moneda" },
+                    { titulo: "Días crédito", campo: "DiasCredito" },
+                    { titulo: "Saldo pendiente", campo: "SaldoPendiente", tipo: "moneda" },
+                    { titulo: "Facturas pendientes", campo: "CantidadFacturasPendientes" },
+                    { titulo: "Estado", campo: "EstadoCliente" },
+                    { titulo: "Recomendación", campo: "Recomendacion" }
+                ]
+            };
+        }
+
+        if (tabActivo === "#tabProveedores") {
+            return {
+                nombre: "Consulta de proveedores",
+                archivo: "consulta_proveedores",
+                lista: listaProveedoresGlobal,
+                columnas: [
+                    { titulo: "Identificación", campo: "IdentificacionProveedor" },
+                    { titulo: "Razón social", campo: "RazonSocial" },
+                    { titulo: "Contacto", campo: "NombreContacto" },
+                    { titulo: "Días crédito", campo: "DiasCredito" },
+                    { titulo: "Saldo pendiente", campo: "SaldoPendiente", tipo: "moneda" },
+                    { titulo: "Documentos pendientes", campo: "CantidadDocumentosPendientes" },
+                    { titulo: "Estado", campo: "EstadoProveedor" },
+                    { titulo: "Recomendación", campo: "Recomendacion" }
+                ]
+            };
+        }
+
+        if (tabActivo === "#tabMovimientos") {
+            return {
+                nombre: "Consulta de movimientos contables",
+                archivo: "consulta_movimientos_contables",
+                lista: listaMovimientosGlobal,
+                columnas: [
+                    { titulo: "Tipo", campo: "TipoMovimiento" },
+                    { titulo: "Número", campo: "NumeroMovimiento" },
+                    { titulo: "Fecha", campo: "FechaMovimiento", tipo: "fecha" },
+                    { titulo: "Cuenta", campo: "NombreCuenta" },
+                    { titulo: "Descripción", campo: "Descripcion" },
+                    { titulo: "Monto", campo: "Monto", tipo: "moneda" },
+                    { titulo: "Origen", campo: "Origen" },
+                    { titulo: "Referencia", campo: "Referencia" }
+                ]
+            };
+        }
+
+        return null;
+    }
+
+    function exportarConsultaActualCSV() {
+        var consulta = obtenerConsultaActiva();
+
+        if (consulta === null || consulta.lista.length === 0) {
+            alert("No hay datos para exportar.");
+            return;
+        }
+
+        var lineas = [];
+
+        lineas.push(consulta.columnas.map(function (c) {
+            return escaparCSV(c.titulo);
+        }).join(";"));
+
+        $.each(consulta.lista, function (i, item) {
+            var fila = consulta.columnas.map(function (columna) {
+                return escaparCSV(obtenerValorFormateado(item, columna));
+            });
+
+            lineas.push(fila.join(";"));
+        });
+
+        var contenido = "\uFEFF" + lineas.join("\n");
+        var blob = new Blob([contenido], { type: "text/csv;charset=utf-8;" });
+
+        var enlace = document.createElement("a");
+        var url = URL.createObjectURL(blob);
+
+        enlace.setAttribute("href", url);
+        enlace.setAttribute("download", consulta.archivo + ".csv");
+        enlace.style.visibility = "hidden";
+
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+    }
+
+    function imprimirConsultaActual() {
+        var consulta = obtenerConsultaActiva();
+
+        if (consulta === null || consulta.lista.length === 0) {
+            alert("No hay datos para imprimir.");
+            return;
+        }
+
+        var html = generarHTMLImpresion(consulta.nombre, consulta.lista, consulta.columnas);
+
+        var ventana = window.open("", "_blank");
+        ventana.document.open();
+        ventana.document.write(html);
+        ventana.document.close();
+        ventana.focus();
+        ventana.print();
+    }
+
+    function generarHTMLImpresion(titulo, lista, columnas) {
+        var html = '';
+
+        html += '<!DOCTYPE html>';
+        html += '<html><head><meta charset="utf-8">';
+        html += '<title>' + titulo + '</title>';
+        html += '<style>';
+        html += 'body{font-family:Arial, sans-serif; font-size:12px; margin:25px;}';
+        html += 'h2{margin-bottom:5px;}';
+        html += 'table{width:100%; border-collapse:collapse; margin-top:15px;}';
+        html += 'th,td{border:1px solid #ccc; padding:6px; text-align:left;}';
+        html += 'th{background:#f2f2f2;}';
+        html += '</style>';
+        html += '</head><body>';
+
+        html += '<h2>' + titulo + '</h2>';
+        html += '<table>';
+        html += '<thead><tr>';
+
+        $.each(columnas, function (i, columna) {
+            html += '<th>' + columna.titulo + '</th>';
+        });
+
+        html += '</tr></thead><tbody>';
+
+        $.each(lista, function (i, item) {
+            html += '<tr>';
+
+            $.each(columnas, function (j, columna) {
+                html += '<td>' + obtenerValorFormateado(item, columna) + '</td>';
+            });
+
+            html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+        html += '</body></html>';
+
+        return html;
+    }
+
+    function obtenerValorFormateado(item, columna) {
+        var valor = item[columna.campo];
+
+        if (columna.tipo === "fecha") {
+            return formatearFecha(valor);
+        }
+
+        if (columna.tipo === "moneda") {
+            return formatearMoneda(valor);
+        }
+
+        return valor || "";
+    }
+
+    function escaparCSV(valor) {
+        valor = valor === null || valor === undefined ? "" : valor.toString();
+        valor = valor.replace(/"/g, '""');
+        return '"' + valor + '"';
+    }
+
+    function mostrarErrorConsulta(mensaje) {
+        $("#mensajeErrorConsulta").text(mensaje).show();
+    }
+
+    function obtenerBadgeEstado(estado) {
+        if (estado === "Emitida" || estado === "Pagada") {
+            return '<span class="badge badge-success">' + estado + '</span>';
+        }
+
+        if (estado === "Parcial") {
+            return '<span class="badge badge-info">Parcial</span>';
+        }
+
+        if (estado === "Vencida" || estado === "Anulada") {
+            return '<span class="badge badge-danger">' + estado + '</span>';
+        }
+
+        return '<span class="badge badge-warning">' + (estado || "Pendiente") + '</span>';
+    }
+
+    function obtenerBadgeEstadoCredito(estado) {
+        if (estado === "Pagada") {
+            return '<span class="badge badge-success">Pagada</span>';
+        }
+
+        if (estado === "Vencida") {
+            return '<span class="badge badge-danger">Vencida</span>';
+        }
+
+        if (estado === "Por vencer") {
+            return '<span class="badge badge-warning">Por vencer</span>';
+        }
+
+        if (estado === "Anulada") {
+            return '<span class="badge badge-secondary">Anulada</span>';
+        }
+
+        return '<span class="badge badge-info">' + (estado || "Pendiente") + '</span>';
+    }
+
+    function obtenerBadgePrioridad(prioridad) {
+        if (prioridad === "Alta") {
+            return '<span class="badge badge-danger">Alta</span>';
+        }
+
+        if (prioridad === "Media") {
+            return '<span class="badge badge-warning">Media</span>';
+        }
+
+        return '<span class="badge badge-info">' + (prioridad || "Normal") + '</span>';
+    }
+
+    function obtenerBadgeInventario(estado) {
+        if (estado === "Sin stock") {
+            return '<span class="badge badge-danger">Sin stock</span>';
+        }
+
+        if (estado === "Bajo stock") {
+            return '<span class="badge badge-warning">Bajo stock</span>';
+        }
+
+        return '<span class="badge badge-success">' + (estado || "Stock disponible") + '</span>';
+    }
+
+    function obtenerBadgeEstadoClienteProveedor(estado) {
+        if (estado === "Con saldo pendiente") {
+            return '<span class="badge badge-warning">Con saldo pendiente</span>';
+        }
+
+        if (estado === "Inactivo") {
+            return '<span class="badge badge-secondary">Inactivo</span>';
+        }
+
+        return '<span class="badge badge-success">' + (estado || "Al día") + '</span>';
+    }
+
+    function obtenerBadgeTipoMovimiento(tipo) {
+        if (tipo === "Ingreso") {
+            return '<span class="badge badge-success">Ingreso</span>';
+        }
+
+        if (tipo === "Gasto") {
+            return '<span class="badge badge-danger">Gasto</span>';
+        }
+
+        return '<span class="badge badge-secondary">' + (tipo || "") + '</span>';
+    }
+
+    function obtenerTextoDias(diasRestantes, estadoCredito) {
+        diasRestantes = parseInt(diasRestantes || 0);
+
+        if (estadoCredito === "Pagada") {
+            return "Pagada";
+        }
+
+        if (diasRestantes < 0) {
+            return Math.abs(diasRestantes) + " día(s) vencida";
+        }
+
+        if (diasRestantes === 0) {
+            return "Vence hoy";
+        }
+
+        return diasRestantes + " día(s)";
+    }
+
+    function formatearFecha(valor) {
+        if (!valor) {
+            return "";
+        }
+
+        var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
+
+        if (isNaN(fecha.getTime())) {
+            fecha = new Date(valor);
+        }
+
+        if (isNaN(fecha.getTime())) {
+            return "";
+        }
+
+        return convertirDateAInput(fecha);
+    }
+
+    function convertirDateAInput(fecha) {
+        var anio = fecha.getFullYear();
+        var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+        var dia = ("0" + fecha.getDate()).slice(-2);
+
+        return anio + "-" + mes + "-" + dia;
+    }
+
+    function formatearMoneda(valor) {
+        var numero = parseFloat(valor || 0);
+        return "₡" + numero.toFixed(2);
+    }
+
+    function formatearNumero(valor) {
+        var numero = parseFloat(valor || 0);
+        return numero.toFixed(2);
+    }
+    </script>
+}

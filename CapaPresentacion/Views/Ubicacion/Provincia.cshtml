@@ -1,81 +1,58 @@
-﻿
-@{
-    ViewBag.Title = "Provincia";
+﻿@{
+    ViewBag.Title = "Provincias";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
-<style>
-    .campo-ayuda-error {
-        display: none;
-        color: #d9534f;
-        font-size: 12px;
-        margin-top: 4px;
-    }
+<div class="container-fluid">
 
-    .input-error-suave {
-        border-color: #d9534f !important;
-    }
-</style>
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">
+                        <i class="fas fa-map-marked-alt mr-2"></i>Provincias
+                    </h4>
+                    <small class="text-muted">
+                        Mantenimiento de provincias registradas en el sistema.
+                    </small>
+                </div>
 
+                <div>
+                    <button type="button" class="btn btn-outline-secondary mr-2" onclick="abrirModalCsv()">
+                        <i class="fas fa-file-csv mr-1"></i> Cargar CSV
+                    </button>
 
-<h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Provincias</h4>
-
-<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="@Url.Action("Index", "Mantenimientos")">
-                <i class="feather icon-home"></i>
-            </a>
-        </li>
-        <li class="breadcrumb-item">Ubicación</li>
-        <li class="breadcrumb-item active">Provincias</li>
-    </ol>
-</div>
-
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h6 class="mb-0">Lista de provincias</h6>
-
-        <div>
-            <input type="file" id="archivoCsvProvincia" accept=".csv" style="display:none;" />
-
-            <button type="button" class="btn btn-secondary btn-sm" onclick="$('#archivoCsvProvincia').click();">
-                Cargar CSV
-            </button>
-
-            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
-                Nueva provincia
-            </button>
-        </div>
-    </div>
-
-
-    <div class="card-body">
-
-
-
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered nowrap" id="tablaProvincias" style="width:100%;">
-                <thead>
-                    <tr>
-                        <th>Provincia</th>
-                        <th>Estado</th>
-                        <th style="width:160px;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+                    <button type="button" class="btn btn-primary" onclick="abrirModal(null)">
+                        <i class="fas fa-plus mr-1"></i> Nueva provincia
+                    </button>
+                </div>
+            </div>
         </div>
 
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="tablaProvincias" class="table table-hover table-bordered w-100">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Código</th>
+                            <th>Provincia</th>
+                            <th>Estado</th>
+                            <th style="width: 160px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
+<!-- Modal Provincia -->
+<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-labelledby="tituloModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow">
 
-            <div class="modal-header bg-dark text-white">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="tituloModal">Nueva provincia</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
@@ -84,11 +61,31 @@
 
             <div class="modal-body">
 
-                <input type="hidden" id="txtIdProvincia" value="0" />
+                <div class="alert alert-danger" id="mensajeError" style="display:none;"></div>
+
+                <div class="form-group">
+                    <label for="txtCodigoProvincia">Código de provincia</label>
+                    <input type="number"
+                           id="txtCodigoProvincia"
+                           class="form-control"
+                           min="1"
+                           autocomplete="off"
+                           placeholder="Ejemplo: 2" />
+                    <small class="form-text text-muted">
+                        Este código será la llave primaria de la provincia.
+                    </small>
+                    <small class="text-danger ayuda-campo" id="ayuda_txtCodigoProvincia" style="display:none;"></small>
+                </div>
 
                 <div class="form-group">
                     <label for="txtNombre">Nombre de la provincia</label>
-                    <input type="text" id="txtNombre" class="form-control" maxlength="45" autocomplete="off" />
+                    <input type="text"
+                           id="txtNombre"
+                           class="form-control"
+                           maxlength="45"
+                           autocomplete="off"
+                           placeholder="Ejemplo: Cartago" />
+                    <small class="text-danger ayuda-campo" id="ayuda_txtNombre" style="display:none;"></small>
                 </div>
 
                 <div class="form-group">
@@ -99,16 +96,14 @@
                     </select>
                 </div>
 
-                <div class="alert alert-danger mt-3" id="mensajeError" style="display:none;"></div>
-
             </div>
 
-            <div class="modal-footer">
+            <div class="modal-footer bg-light">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    Cerrar
+                    Cancelar
                 </button>
                 <button type="button" class="btn btn-primary" onclick="guardarProvincia()">
-                    Guardar
+                    <i class="fas fa-save mr-1"></i> Guardar
                 </button>
             </div>
 
@@ -116,36 +111,92 @@
     </div>
 </div>
 
-@section scripts {
+<!-- Modal CSV -->
+<div class="modal fade" id="ModalCsv" tabindex="-1" role="dialog" aria-labelledby="tituloModalCsv" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title" id="tituloModalCsv">Cargar provincias desde CSV</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="alert alert-danger" id="mensajeErrorCsv" style="display:none;"></div>
+                <div class="alert alert-success" id="mensajeExitoCsv" style="display:none;"></div>
+
+                <div class="form-group">
+                    <label for="archivoCsv">Archivo CSV</label>
+                    <input type="file" id="archivoCsv" class="form-control-file" accept=".csv" />
+                    <small class="form-text text-muted">
+                        El archivo debe tener las columnas: CodigoProvincia, Nombre.
+                    </small>
+                </div>
+
+                <div class="bg-light border rounded p-3">
+                    <strong>Ejemplo:</strong>
+                    <pre class="mb-0 mt-2">CodigoProvincia,Nombre
+2,San José
+3,Alajuela
+4,Cartago
+5,Heredia
+6,Guanacaste
+7,Puntarenas
+8,Limón</pre>
+                </div>
+
+                <div id="detalleCsv" class="mt-3" style="display:none;">
+                    <strong>Detalle de errores:</strong>
+                    <ul id="listaErroresCsv" class="mb-0 mt-2 text-danger"></ul>
+                </div>
+
+            </div>
+
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="cargarCsvProvincias()">
+                    <i class="fas fa-upload mr-1"></i> Cargar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
     <script>
+
+        var tablaProvincias;
         var listaProvincias = [];
-        var tablaProvincias = null;
 
         $(document).ready(function () {
             cargarProvincias();
 
-            $("#archivoCsvProvincia").on("change", function () {
-                cargarCsvProvincia();
+            $("#txtCodigoProvincia").on("input", function () {
+                var valor = $(this).val();
+
+                valor = valor.replace(/[^0-9]/g, "");
+
+                if (valor.length > 5) {
+                    valor = valor.substring(0, 5);
+                }
+
+                $(this).val(valor);
             });
 
             $("#txtNombre").on("input", function () {
-                limpiarTextoUbicacion("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
-
-                if ($(this).val().length > 45) {
-                    $(this).val($(this).val().substring(0, 45));
-                    mostrarAyudaCampo("txtNombre", "El nombre de la provincia no puede superar los 45 caracteres.");
-                }
-            });
-
-            $("input, select, textarea").on("change keyup", function () {
-                if ($("#mensajeError").is(":visible")) {
-                    $("#mensajeError").fadeOut(150);
-                }
-            });
-
-            $("#FormModal").on("hidden.bs.modal", function () {
-                $("#mensajeError").hide().text("");
                 ocultarAyudaCampo("txtNombre");
+                $("#mensajeError").hide().text("");
+            });
+
+            $("#txtCodigoProvincia").on("input", function () {
+                ocultarAyudaCampo("txtCodigoProvincia");
+                $("#mensajeError").hide().text("");
             });
         });
 
@@ -164,50 +215,18 @@
             });
         }
 
-        function cargarCsvProvincia() {
-            var archivo = $("#archivoCsvProvincia")[0].files[0];
-
-            if (archivo == null) {
-                alert("Debe seleccionar un archivo CSV.");
-                return;
-            }
-
-            var formData = new FormData();
-            formData.append("archivo", archivo);
-
-            $.ajax({
-                url: '@Url.Action("CargarCsvProvincias", "Ubicacion")',
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        alert("Insertados: " + respuesta.data.insertados + "\nErrores: " + respuesta.data.errores);
-                        cargarProvincias();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
-
-                    $("#archivoCsvProvincia").val("");
-                },
-                error: function () {
-                    alert("Error al cargar el archivo CSV.");
-                    $("#archivoCsvProvincia").val("");
-                }
-            });
-        }
-
         function pintarTabla() {
-            if (tablaProvincias != null) {
-                tablaProvincias.clear().destroy();
-                tablaProvincias = null;
+
+            if ($.fn.DataTable.isDataTable("#tablaProvincias")) {
+                tablaProvincias.destroy();
             }
 
             var tbody = $("#tablaProvincias tbody");
             tbody.empty();
 
             $.each(listaProvincias, function (i, item) {
+
+                var codigo = item.CodigoProvincia || 0;
                 var nombre = item.Nombre || "";
 
                 var estado = item.Activo
@@ -227,14 +246,18 @@
                     class: "btn btn-sm btn-outline-danger",
                     text: "Inactivar"
                 }).on("click", function () {
-                    inactivarProvincia(item.IdProvincia);
+                    inactivarCanton(item.CodigoCanton);
                 });
 
-                var acciones = $("<td>");
+                var acciones = $("<td class='text-center'>");
                 acciones.append(botonEditar);
-                acciones.append(botonInactivar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
 
                 var fila = $("<tr>");
+                fila.append($("<td>").text(codigo));
                 fila.append($("<td>").text(nombre));
                 fila.append($("<td>").html(estado));
                 fila.append(acciones);
@@ -244,9 +267,9 @@
 
             tablaProvincias = $("#tablaProvincias").DataTable({
                 responsive: true,
-                pageLength: 10,
-                destroy: true,
+                ordering: true,
                 order: [[0, "asc"]],
+                pageLength: 10,
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 }
@@ -255,17 +278,23 @@
 
         function abrirModal(json) {
             $("#mensajeError").hide().text("");
-            ocultarAyudaCampo("txtNombre");
+            $(".ayuda-campo").hide().text("");
 
-            $("#txtIdProvincia").val(0);
+            $("#txtCodigoProvincia").val("");
+            $("#txtCodigoProvincia").prop("disabled", false);
+
             $("#txtNombre").val("");
             $("#cboActivo").val("true");
+
             $("#tituloModal").text("Nueva provincia");
 
             if (json != null) {
-                $("#txtIdProvincia").val(json.IdProvincia);
+                $("#txtCodigoProvincia").val(json.CodigoProvincia);
+                $("#txtCodigoProvincia").prop("disabled", true);
+
                 $("#txtNombre").val(json.Nombre || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
+
                 $("#tituloModal").text("Editar provincia");
             }
 
@@ -274,15 +303,17 @@
 
         function guardarProvincia() {
             $("#mensajeError").hide().text("");
+            $(".ayuda-campo").hide().text("");
 
             var obj = {
-                IdProvincia: parseInt($("#txtIdProvincia").val()),
+                CodigoProvincia: parseInt($("#txtCodigoProvincia").val()),
                 Nombre: $("#txtNombre").val().trim(),
                 Activo: $("#cboActivo").val() === "true"
             };
 
-            if (isNaN(obj.IdProvincia)) {
-                obj.IdProvincia = 0;
+            if (isNaN(obj.CodigoProvincia) || obj.CodigoProvincia <= 0) {
+                mostrarError("Debe ingresar un código de provincia válido.", "txtCodigoProvincia");
+                return;
             }
 
             if (obj.Nombre === "") {
@@ -307,20 +338,11 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (obj.IdProvincia === 0) {
-                        if (respuesta.resultado != 0) {
-                            $("#FormModal").modal("hide");
-                            cargarProvincias();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        $("#FormModal").modal("hide");
+                        cargarProvincias();
                     } else {
-                        if (respuesta.resultado) {
-                            $("#FormModal").modal("hide");
-                            cargarProvincias();
-                        } else {
-                            $("#mensajeError").text(respuesta.mensaje).show();
-                        }
+                        $("#mensajeError").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
@@ -329,7 +351,7 @@
             });
         }
 
-        function inactivarProvincia(id) {
+        function inactivarProvincia(codigoProvincia) {
             if (!confirm("¿Desea inactivar esta provincia?")) {
                 return;
             }
@@ -337,7 +359,7 @@
             $.ajax({
                 url: '@Url.Action("InactivarProvincia", "Ubicacion")',
                 type: "POST",
-                data: JSON.stringify({ id: id }),
+                data: JSON.stringify({ codigoProvincia: codigoProvincia }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
@@ -353,50 +375,95 @@
             });
         }
 
-        function mostrarError(mensaje, idCampo) {
+        function abrirModalCsv() {
+            $("#archivoCsv").val("");
+            $("#mensajeErrorCsv").hide().text("");
+            $("#mensajeExitoCsv").hide().text("");
+            $("#detalleCsv").hide();
+            $("#listaErroresCsv").empty();
+
+            $("#ModalCsv").modal("show");
+        }
+
+        function cargarCsvProvincias() {
+            $("#mensajeErrorCsv").hide().text("");
+            $("#mensajeExitoCsv").hide().text("");
+            $("#detalleCsv").hide();
+            $("#listaErroresCsv").empty();
+
+            var archivo = $("#archivoCsv")[0].files[0];
+
+            if (archivo == null) {
+                $("#mensajeErrorCsv").text("Debe seleccionar un archivo CSV.").show();
+                return;
+            }
+
+            var extension = archivo.name.split(".").pop().toLowerCase();
+
+            if (extension !== "csv") {
+                $("#mensajeErrorCsv").text("El archivo debe tener formato CSV.").show();
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("archivo", archivo);
+
+            $.ajax({
+                url: '@Url.Action("CargarCsvProvincias", "Ubicacion")',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (respuesta) {
+
+                    if (respuesta.resultado) {
+
+                        var data = respuesta.data || {};
+                        var insertados = data.insertados || 0;
+                        var errores = data.errores || 0;
+                        var detalleErrores = data.detalleErrores || [];
+
+                        $("#mensajeExitoCsv")
+                            .text("Carga finalizada. Insertados: " + insertados + ". Errores: " + errores + ".")
+                            .show();
+
+                        if (detalleErrores.length > 0) {
+                            $.each(detalleErrores, function (i, error) {
+                                $("#listaErroresCsv").append($("<li>").text(error));
+                            });
+
+                            $("#detalleCsv").show();
+                        }
+
+                        cargarProvincias();
+
+                    } else {
+                        $("#mensajeErrorCsv").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorCsv").text("Error al cargar el archivo CSV.").show();
+                }
+            });
+        }
+
+        function mostrarError(mensaje, campo) {
             $("#mensajeError").text(mensaje).show();
 
-            if (idCampo) {
-                mostrarAyudaCampo(idCampo, mensaje);
-                $("#" + idCampo).focus();
+            if (campo != null && campo !== "") {
+                $("#ayuda_" + campo).text(mensaje).show();
+                $("#" + campo).focus();
             }
         }
 
-        function mostrarAyudaCampo(idCampo, mensaje) {
-            var campo = $("#" + idCampo);
-            var idMensaje = "msg_" + idCampo;
-
-            if ($("#" + idMensaje).length === 0) {
-                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
-            }
-
-            $("#" + idMensaje).text(mensaje).fadeIn(150);
-            campo.addClass("input-error-suave");
+        function ocultarAyudaCampo(campo) {
+            $("#ayuda_" + campo).hide().text("");
         }
 
-        function ocultarAyudaCampo(idCampo) {
-            var campo = $("#" + idCampo);
-            var idMensaje = "msg_" + idCampo;
-
-            $("#" + idMensaje).fadeOut(150);
-            campo.removeClass("input-error-suave");
+        function validarTextoUbicacion(texto) {
+            var regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s\.\-]+$/;
+            return regex.test(texto);
         }
 
-        function limpiarTextoUbicacion(idCampo, mensaje) {
-            var campo = $("#" + idCampo);
-            var valorOriginal = campo.val();
-            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
-
-            if (valorOriginal !== valorLimpio) {
-                campo.val(valorLimpio);
-                mostrarAyudaCampo(idCampo, mensaje);
-            } else {
-                ocultarAyudaCampo(idCampo);
-            }
-        }
-
-        function validarTextoUbicacion(valor) {
-            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
-        }
     </script>
 }

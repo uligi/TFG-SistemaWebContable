@@ -1,6 +1,5 @@
-﻿
-@{
-    ViewBag.Title = "CuentasPorCobrar";
+﻿@{
+    ViewBag.Title = "Cuentas por Cobrar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -15,9 +14,66 @@
     .input-error-suave {
         border-color: #d9534f !important;
     }
+
+    .codigo-factura {
+        font-family: Consolas, monospace;
+        font-weight: bold;
+    }
+
+    .texto-tabla-secundario {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .texto-vencido {
+        color: #dc3545;
+        font-weight: bold;
+    }
+
+    .texto-por-vencer {
+        color: #856404;
+        font-weight: bold;
+    }
+
+    .texto-pagado {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .mensaje-operacion {
+        display: none;
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        font-weight: 600;
+        border-left: 5px solid transparent;
+    }
+
+        .mensaje-operacion.exito {
+            display: block;
+            background: #eaf7ee;
+            color: #1f7a3f;
+            border-left-color: #28a745;
+        }
+
+        .mensaje-operacion.error {
+            display: block;
+            background: #fdecea;
+            color: #b02a37;
+            border-left-color: #dc3545;
+        }
+
+        .mensaje-operacion.advertencia {
+            display: block;
+            background: #fff8e1;
+            color: #8a6d1d;
+            border-left-color: #ffc107;
+        }
+
 </style>
 
-<h4 class="font-weight-bold py-3 mb-0">Gestionar Cuentas por Cobrar</h4>
+<h4 class="font-weight-bold py-3 mb-0">Gestión de Cuentas por Cobrar</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
     <ol class="breadcrumb">
@@ -27,7 +83,7 @@
             </a>
         </li>
         <li class="breadcrumb-item">Cuentas</li>
-        <li class="breadcrumb-item active">Cuentas por Cobrar</li>
+        <li class="breadcrumb-item active">Cuentas por cobrar</li>
     </ol>
 </div>
 
@@ -36,34 +92,73 @@
         <h6 class="mb-0">Lista de cuentas por cobrar</h6>
 
         <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalCuenta(null)">
-            Nueva cuenta por cobrar
+            Nueva cuenta
         </button>
     </div>
 
     <div class="card-body">
+        <div id="mensajeOperacion" class="mensaje-operacion"></div>
+
+
+        <div class="form-row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="txtBuscarCuenta" class="form-control" placeholder="Buscar por cliente, factura o estado..." />
+            </div>
+
+            <div class="col-md-3">
+                <select id="cboFiltroEstado" class="form-control">
+                    <option value="">Todos los estados de cuenta</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Parcial">Parcial</option>
+                    <option value="Pagada">Pagada</option>
+                    <option value="Anulada">Anulada</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <select id="cboFiltroEstadoCredito" class="form-control">
+                    <option value="">Todos los estados de crédito</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Por vencer">Por vencer</option>
+                    <option value="Vencida">Vencida</option>
+                    <option value="Pagada">Pagada</option>
+                    <option value="Anulada">Anulada</option>
+                    <option value="Inactiva">Inactiva</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="button" class="btn btn-outline-secondary btn-block" onclick="cargarCuentasPorCobrar()">
+                    Actualizar
+                </button>
+            </div>
+        </div>
+
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaCuentasPorCobrar" style="width:100%;">
+            <table class="table table-striped table-bordered" id="tablaCuentasPorCobrar">
                 <thead>
                     <tr>
-                        <th>Factura</th>
                         <th>Cliente</th>
-                        <th>Emisión</th>
+                        <th>Factura</th>
+                        <th>Fecha emisión</th>
                         <th>Vencimiento</th>
+                        <th>Días</th>
                         <th>Monto original</th>
                         <th>Saldo actual</th>
-                        <th>Estado</th>
+                        <th>Estado cuenta</th>
+                        <th>Estado crédito</th>
                         <th>Activo</th>
-                        <th style="width:230px;">Acciones</th>
+                        <th style="width:260px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
+
     </div>
 </div>
 
-<!-- MODAL CUENTA POR COBRAR -->
-<div class="modal fade" id="ModalCuenta" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="FormModalCuenta" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
 
@@ -76,37 +171,45 @@
 
             <div class="modal-body">
 
-                <input type="hidden" id="txtIdCuentaPorCobrar" value="0" />
-                <input type="hidden" id="txtIdFactura" value="0" />
                 <input type="hidden" id="txtIdentificacionCliente" value="" />
+                <input type="hidden" id="txtNumeroFactura" value="" />
+                <input type="hidden" id="txtEsEdicionCuenta" value="false" />
+
+                <div class="alert alert-danger" id="mensajeErrorCuenta" style="display:none;"></div>
+                <div class="alert alert-success" id="mensajeExitoCuenta" style="display:none;"></div>
+
+                <h6 class="font-weight-bold">Datos de la cuenta</h6>
 
                 <div class="form-row">
 
                     <div class="form-group col-md-4">
-                        <label>Factura</label>
+                        <label for="txtClienteVisible">Cliente</label>
+                        <input type="text" id="txtClienteVisible" class="form-control" readonly />
+                    </div>
 
+                    <div class="form-group col-md-3">
+                        <label for="txtNumeroFacturaVisible">Factura</label>
+                        <input type="text" id="txtNumeroFacturaVisible" class="form-control codigo-factura" readonly />
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label for="txtBuscarFactura">Buscar factura</label>
                         <div class="input-group">
-                            <input type="text" id="txtBuscarFactura" class="form-control" placeholder="Buscar factura por número o cliente..." />
+                            <input type="text" id="txtBuscarFactura" class="form-control" placeholder="Número o cliente..." />
+
                             <div class="input-group-append">
                                 <button type="button" class="btn btn-outline-primary" onclick="buscarFacturas()">
                                     Buscar
                                 </button>
                             </div>
                         </div>
-
-                        <small class="form-text text-muted" id="lblFacturaSeleccionada">
-                            Ninguna factura seleccionada.
-                        </small>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label>Cliente</label>
-                        <input type="text" id="txtClienteNombre" class="form-control" readonly />
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label>Número de factura</label>
-                        <input type="text" id="txtNumeroFactura" class="form-control" readonly />
+                    <div class="form-group col-md-2">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn btn-outline-secondary btn-block" onclick="limpiarSeleccionFactura()">
+                            Limpiar
+                        </button>
                     </div>
 
                 </div>
@@ -115,12 +218,12 @@
                     <table class="table table-sm table-bordered mb-0">
                         <thead>
                             <tr>
-                                <th>Número</th>
+                                <th>Factura</th>
                                 <th>Cliente</th>
                                 <th>Fecha</th>
                                 <th>Total</th>
                                 <th>Estado</th>
-                                <th style="width:100px;">Acción</th>
+                                <th style="width:110px;">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyResultadosFactura"></tbody>
@@ -139,82 +242,70 @@
                         <input type="date" id="txtFechaVencimiento" class="form-control" />
                     </div>
 
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="txtMontoOriginal">Monto original</label>
-                        <input type="number" id="txtMontoOriginal" class="form-control" min="0" step="0.01" />
+                        <input type="text" id="txtMontoOriginal" class="form-control" />
                     </div>
 
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="txtSaldoActual">Saldo actual</label>
-                        <input type="number" id="txtSaldoActual" class="form-control" readonly />
+                        <input type="text" id="txtSaldoActual" class="form-control" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="cboEstadoCuenta">Estado</label>
+                        <select id="cboEstadoCuenta" class="form-control">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Parcial">Parcial</option>
+                            <option value="Pagada">Pagada</option>
+                            <option value="Anulada">Anulada</option>
+                        </select>
                     </div>
 
                 </div>
 
                 <div class="form-row">
 
-                    <div class="form-group col-md-6">
-                        <label for="cboEstado">Estado</label>
-                        <select id="cboEstado" class="form-control">
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Parcial">Parcial</option>
-                            <option value="Pagada">Pagada</option>
-                            <option value="Vencida">Vencida</option>
-                            <option value="Anulada">Anulada</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="cboActivo">Activo</label>
-                        <select id="cboActivo" class="form-control">
+                    <div class="form-group col-md-2">
+                        <label for="cboActivoCuenta">Activo</label>
+                        <select id="cboActivoCuenta" class="form-control">
                             <option value="true">Sí</option>
                             <option value="false">No</option>
                         </select>
                     </div>
 
+                    <div class="form-group col-md-4">
+                        <label>Estado crédito</label>
+                        <div class="form-control bg-light" id="lblEstadoCreditoModal">
+                            Pendiente
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6 d-flex align-items-end justify-content-end">
+                        <button type="button" class="btn btn-primary" onclick="guardarCuentaPorCobrar()">
+                            Guardar cuenta
+                        </button>
+                    </div>
+
                 </div>
 
-                <div class="alert alert-danger mt-2" id="mensajeErrorCuenta" style="display:none;"></div>
+                <hr />
 
-            </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="font-weight-bold mb-0">Abonos de la cuenta</h6>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    Cerrar
-                </button>
-                <button type="button" class="btn btn-primary" onclick="guardarCuentaPorCobrar()">
-                    Guardar
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- MODAL ABONOS -->
-<div class="modal fade" id="ModalAbonos" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title">Abonos de cuenta por cobrar</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body">
-
-                <input type="hidden" id="txtIdCuentaAbono" value="0" />
-                <input type="hidden" id="txtIdAbonoCuentaPorCobrar" value="0" />
-
-                <div class="alert alert-info">
-                    <strong>Factura:</strong> <span id="lblAbonoFactura"></span> |
-                    <strong>Cliente:</strong> <span id="lblAbonoCliente"></span> |
-                    <strong>Saldo actual:</strong> ₡<span id="lblAbonoSaldo"></span>
+                    <div>
+                        <span class="badge badge-info mr-2" id="lblMontoOriginal">Monto original: 0.00</span>
+                        <span class="badge badge-warning mr-2" id="lblMontoPagado">Pagado: 0.00</span>
+                        <span class="badge badge-success" id="lblSaldoActual">Saldo: 0.00</span>
+                    </div>
                 </div>
 
-                <h6 class="font-weight-bold">Registrar abono</h6>
+                <small class="form-text text-muted mb-3" id="textoAyudaAbono">
+                    Para registrar abonos, primero guarde o seleccione una cuenta por cobrar.
+                </small>
+
+                <input type="hidden" id="txtNumeroAbono" value="0" />
 
                 <div class="form-row">
 
@@ -225,7 +316,7 @@
 
                     <div class="form-group col-md-3">
                         <label for="txtMontoAbono">Monto abono</label>
-                        <input type="number" id="txtMontoAbono" class="form-control" min="0" step="0.01" />
+                        <input type="text" id="txtMontoAbono" class="form-control" />
                     </div>
 
                     <div class="form-group col-md-4">
@@ -245,21 +336,19 @@
 
                 <div class="text-right mb-3">
                     <button type="button" class="btn btn-secondary" onclick="limpiarAbono()">
-                        Limpiar
+                        Limpiar abono
                     </button>
+
                     <button type="button" class="btn btn-primary" onclick="guardarAbonoCuentaPorCobrar()">
                         Guardar abono
                     </button>
                 </div>
 
-                <div class="alert alert-danger mt-2" id="mensajeErrorAbono" style="display:none;"></div>
-
-                <hr />
-
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered" id="tablaAbonos" style="width:100%;">
+                    <table class="table table-sm table-bordered" id="tablaAbonos">
                         <thead>
                             <tr>
+                                <th># Abono</th>
                                 <th>Fecha</th>
                                 <th>Monto</th>
                                 <th>Observación</th>
@@ -274,6 +363,10 @@
             </div>
 
             <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" onclick="recalcularSaldoCuenta()">
+                    Recalcular saldo
+                </button>
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
                 </button>
@@ -285,15 +378,16 @@
 
 @section scripts {
     <script>
-        var tablaCuentas = null;
-        var tablaAbonos = null;
-
         var listaCuentas = [];
-        var listaFacturas = [];
         var listaAbonos = [];
+        var listaFacturas = [];
 
         $(document).ready(function () {
             cargarCuentasPorCobrar();
+
+            $("#txtBuscarCuenta, #cboFiltroEstado, #cboFiltroEstadoCredito").on("keyup change", function () {
+                pintarTablaCuentas();
+            });
 
             $("#txtBuscarFactura").on("keypress", function (e) {
                 if (e.which === 13) {
@@ -301,33 +395,20 @@
                 }
             });
 
-            $("#ModalCuenta").on("hidden.bs.modal", function () {
-                $("#mensajeErrorCuenta").hide().text("");
-            });
-
-            $("#ModalAbonos").on("hidden.bs.modal", function () {
-                limpiarAbono();
-                $("#mensajeErrorAbono").hide().text("");
-            });
-
             $("#txtBuscarFactura").on("input", function () {
-                limpiarTextoBusqueda("txtBuscarFactura", "Solo se permiten letras, números, espacios y caracteres básicos.");
+                limpiarTextoGeneral("txtBuscarFactura", "Solo se permiten letras, números, espacios y caracteres básicos.");
             });
 
-            $("#txtMontoOriginal").on("input", function () {
-                limpiarNoDecimal("txtMontoOriginal", "Solo se permiten números y punto decimal en el monto original.");
-            });
-
-            $("#txtMontoAbono").on("input", function () {
-                limpiarNoDecimal("txtMontoAbono", "Solo se permiten números y punto decimal en el monto del abono.");
+            $("#txtMontoOriginal, #txtSaldoActual, #txtMontoAbono").on("input", function () {
+                limpiarDecimal(this.id, "Solo se permiten números y punto decimal.");
             });
 
             $("#txtObservacion").on("input", function () {
+                limpiarTextoGeneral("txtObservacion", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
                 if ($(this).val().length > 150) {
                     $(this).val($(this).val().substring(0, 150));
                     mostrarAyudaCampo("txtObservacion", "La observación no puede superar los 150 caracteres.");
-                } else {
-                    ocultarAyudaCampo("txtObservacion");
                 }
             });
 
@@ -336,8 +417,8 @@
                     $("#mensajeErrorCuenta").fadeOut(150);
                 }
 
-                if ($("#mensajeErrorAbono").is(":visible")) {
-                    $("#mensajeErrorAbono").fadeOut(150);
+                if ($("#mensajeExitoCuenta").is(":visible")) {
+                    $("#mensajeExitoCuenta").fadeOut(150);
                 }
             });
         });
@@ -352,22 +433,48 @@
                     pintarTablaCuentas();
                 },
                 error: function () {
-                    alert("Error al cargar las cuentas por cobrar.");
+                    mostrarMensajeOperacion("error", "Error al cargar las cuentas por cobrar.");
                 }
             });
         }
 
         function pintarTablaCuentas() {
-            if (tablaCuentas != null) {
-                tablaCuentas.clear().destroy();
-                tablaCuentas = null;
-            }
-
+            var filtro = $("#txtBuscarCuenta").val().toLowerCase();
+            var estadoFiltro = $("#cboFiltroEstado").val();
+            var estadoCreditoFiltro = $("#cboFiltroEstadoCredito").val();
             var tbody = $("#tablaCuentasPorCobrar tbody");
+
             tbody.empty();
 
+            if (listaCuentas.length === 0) {
+                tbody.append('<tr><td colspan="11" class="text-center text-muted">No hay cuentas por cobrar registradas.</td></tr>');
+                return;
+            }
+
             $.each(listaCuentas, function (i, item) {
-                var estado = obtenerBadgeEstado(item.Estado);
+                var cliente = item.ClienteNombre || "";
+                var identificacion = item.IdentificacionCliente || "";
+                var numeroFactura = item.NumeroFactura || "";
+                var estado = item.Estado || "";
+                var estadoCredito = item.EstadoCredito || "";
+
+                var texto = (cliente + " " + identificacion + " " + numeroFactura + " " + estado + " " + estadoCredito).toLowerCase();
+
+                if (texto.indexOf(filtro) === -1) {
+                    return;
+                }
+
+                if (estadoFiltro !== "" && estado !== estadoFiltro) {
+                    return;
+                }
+
+                if (estadoCreditoFiltro !== "" && estadoCredito !== estadoCreditoFiltro) {
+                    return;
+                }
+
+                var badgeEstado = obtenerBadgeEstadoCuenta(estado);
+                var badgeEstadoCredito = obtenerBadgeEstadoCredito(estadoCredito, item.DiasRestantes);
+                var diasTexto = obtenerTextoDiasRestantes(item.DiasRestantes, estadoCredito);
 
                 var activo = item.Activo
                     ? '<span class="badge badge-info">Sí</span>'
@@ -381,12 +488,12 @@
                     abrirModalCuenta(item);
                 });
 
-                var botonAbonos = $("<button>", {
+                var botonAbono = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-success mr-1",
-                    text: "Abonos"
+                    text: "Abonar"
                 }).on("click", function () {
-                    abrirModalAbonos(item);
+                    abrirModalCuenta(item);
                 });
 
                 var botonInactivar = $("<button>", {
@@ -394,123 +501,102 @@
                     class: "btn btn-sm btn-outline-danger",
                     text: "Inactivar"
                 }).on("click", function () {
-                    inactivarCuentaPorCobrar(item.IdCuentaPorCobrar);
+                    inactivarCuentaPorCobrar(item.IdentificacionCliente, item.NumeroFactura);
                 });
+
+                var fila = $("<tr>");
+                fila.append($("<td>").html(
+                    '<div>' + identificacion + ' - ' + cliente + '</div>' +
+                    '<div class="texto-tabla-secundario">Factura: ' + numeroFactura + '</div>'
+                ));
+                fila.append($("<td>", { class: "codigo-factura", text: numeroFactura }));
+                fila.append($("<td>").text(formatearFecha(item.FechaEmision)));
+                fila.append($("<td>").text(formatearFecha(item.FechaVencimiento)));
+                fila.append($("<td>").html(diasTexto));
+                fila.append($("<td>").text(formatearNumero(item.MontoOriginal)));
+                fila.append($("<td>").text(formatearNumero(item.SaldoActual)));
+                fila.append($("<td>").html(badgeEstado));
+                fila.append($("<td>").html(badgeEstadoCredito));
+                fila.append($("<td>").html(activo));
 
                 var acciones = $("<td>");
                 acciones.append(botonEditar);
-                acciones.append(botonAbonos);
-                acciones.append(botonInactivar);
 
-                var fila = $("<tr>");
-                fila.append($("<td>").text(item.NumeroFactura || ""));
-                fila.append($("<td>").text((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "")));
-                fila.append($("<td>").text(formatearFecha(item.FechaEmision)));
-                fila.append($("<td>").text(formatearFecha(item.FechaVencimiento)));
-                fila.append($("<td>").text("₡" + parseFloat(item.MontoOriginal || 0).toFixed(2)));
-                fila.append($("<td>").text("₡" + parseFloat(item.SaldoActual || 0).toFixed(2)));
-                fila.append($("<td>").html(estado));
-                fila.append($("<td>").html(activo));
-                fila.append(acciones);
-
-                tbody.append(fila);
-            });
-
-            tablaCuentas = $("#tablaCuentasPorCobrar").DataTable({
-                responsive: true,
-                pageLength: 10,
-                destroy: true,
-                order: [[2, "desc"]],
-                language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                if (item.Activo && parseFloat(item.SaldoActual || 0) > 0 && estado !== "Anulada") {
+                    acciones.append(botonAbono);
                 }
+
+                if (item.Activo && estado !== "Pagada") {
+                    acciones.append(botonInactivar);
+                }
+
+                fila.append(acciones);
+                tbody.append(fila);
             });
         }
 
         function abrirModalCuenta(json) {
-            $("#mensajeErrorCuenta").hide().text("");
+            limpiarErrores();
+            ocultarMensajeOperacion();
+            limpiarSeleccionFactura();
+            limpiarAbono();
 
-            $("#txtIdCuentaPorCobrar").val(0);
-            $("#txtIdFactura").val(0);
-            $("#txtIdentificacionCliente").val("");
+            $("#txtEsEdicionCuenta").val("false");
 
-            $("#txtBuscarFactura").val("");
-            $("#lblFacturaSeleccionada").text("Ninguna factura seleccionada.");
-            $("#contenedorResultadosFactura").hide();
-            $("#tbodyResultadosFactura").empty();
-
-            $("#txtClienteNombre").val("");
-            $("#txtNumeroFactura").val("");
-
-            $("#txtFechaEmision").val(convertirDateAInput(new Date()));
-
-            var fechaVencimiento = new Date();
-            fechaVencimiento.setDate(fechaVencimiento.getDate() + 30);
-            $("#txtFechaVencimiento").val(convertirDateAInput(fechaVencimiento));
-
-            $("#txtMontoOriginal").val("0.00");
-            $("#txtSaldoActual").val("0.00");
-            $("#cboEstado").val("Pendiente");
-            $("#cboActivo").val("true");
-
-            $("#txtBuscarFactura").prop("disabled", false);
-            $("#txtMontoOriginal").prop("readonly", false);
+            listaAbonos = [];
+            pintarTablaAbonos();
+            bloquearAbonos(true);
 
             $("#tituloModalCuenta").text("Nueva cuenta por cobrar");
+            $("#txtFechaEmision").val(convertirDateAInput(new Date()));
+            $("#txtFechaVencimiento").val(convertirDateAInput(sumarDias(new Date(), 30)));
+            $("#txtMontoOriginal").val("");
+            $("#txtSaldoActual").val("");
+            $("#cboEstadoCuenta").val("Pendiente");
+            $("#cboActivoCuenta").val("true");
+            $("#lblEstadoCreditoModal").html(obtenerBadgeEstadoCredito("Pendiente", 30));
+
+            $("#txtSaldoActual").prop("readonly", true);
 
             if (json != null) {
-                $("#txtIdCuentaPorCobrar").val(json.IdCuentaPorCobrar);
-                $("#txtIdFactura").val(json.IdFactura);
-                $("#txtIdentificacionCliente").val(json.IdentificacionCliente);
 
-                $("#txtBuscarFactura").val(json.NumeroFactura || "");
-                $("#lblFacturaSeleccionada").text("Factura seleccionada: " + (json.NumeroFactura || ""));
-                $("#txtClienteNombre").val((json.IdentificacionCliente || "") + " - " + (json.ClienteNombre || ""));
+                $("#txtEsEdicionCuenta").val("true");
+
+
+                $("#tituloModalCuenta").text("Editar cuenta por cobrar");
+
+                $("#txtIdentificacionCliente").val(json.IdentificacionCliente || "");
                 $("#txtNumeroFactura").val(json.NumeroFactura || "");
+
+                $("#txtClienteVisible").val((json.IdentificacionCliente || "") + " - " + (json.ClienteNombre || ""));
+                $("#txtNumeroFacturaVisible").val(json.NumeroFactura || "");
 
                 $("#txtFechaEmision").val(convertirFechaInput(json.FechaEmision));
                 $("#txtFechaVencimiento").val(convertirFechaInput(json.FechaVencimiento));
-                $("#txtMontoOriginal").val(parseFloat(json.MontoOriginal || 0).toFixed(2));
-                $("#txtSaldoActual").val(parseFloat(json.SaldoActual || 0).toFixed(2));
-                $("#cboEstado").val(json.Estado || "Pendiente");
-                $("#cboActivo").val(json.Activo ? "true" : "false");
+                $("#txtMontoOriginal").val(formatearNumero(json.MontoOriginal));
+                $("#txtSaldoActual").val(formatearNumero(json.SaldoActual));
+                $("#cboEstadoCuenta").val(json.Estado || "Pendiente");
+                $("#cboActivoCuenta").val(json.Activo ? "true" : "false");
 
-                $("#txtBuscarFactura").prop("disabled", true);
+                $("#lblEstadoCreditoModal").html(obtenerBadgeEstadoCredito(json.EstadoCredito || "", json.DiasRestantes));
 
-                $("#tituloModalCuenta").text("Editar cuenta por cobrar");
+                bloquearAbonos(false);
+                cargarAbonosCuenta(json.IdentificacionCliente, json.NumeroFactura);
             }
 
-            $("#ModalCuenta").modal("show");
+            $("#FormModalCuenta").modal("show");
         }
 
         function buscarFacturas() {
             var filtro = $("#txtBuscarFactura").val().trim().toLowerCase();
-
-            if (filtro.length < 2) {
-                mostrarErrorCuenta("Digite al menos 2 caracteres para buscar la factura.", "txtBuscarFactura");
-                return;
-            }
 
             $.ajax({
                 url: '@Url.Action("ListarFacturas", "Facturacion")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaFacturas = (respuesta.data || []).filter(function (x) {
-                        var texto = (
-                            (x.NumeroFactura || "") + " " +
-                            (x.ClienteNombre || "") + " " +
-                            (x.IdentificacionCliente || "")
-                        ).toLowerCase();
-
-                        return x.Activo === true &&
-                            x.Estado === "Emitida" &&
-                            parseFloat(x.TotalFactura || 0) > 0 &&
-                            texto.indexOf(filtro) !== -1;
-                    });
-
-                    pintarResultadosFacturas();
-                    $("#mensajeErrorCuenta").hide().text("");
+                    listaFacturas = respuesta.data || [];
+                    pintarResultadosFactura(filtro);
                 },
                 error: function () {
                     $("#mensajeErrorCuenta").text("Error al buscar facturas.").show();
@@ -518,208 +604,196 @@
             });
         }
 
-        function pintarResultadosFacturas() {
+        function pintarResultadosFactura(filtro) {
             var tbody = $("#tbodyResultadosFactura");
             tbody.empty();
 
-            if (listaFacturas.length === 0) {
-                tbody.append(
-                    '<tr>' +
-                        '<td colspan="6" class="text-center text-muted">' +
-                            'No se encontraron facturas emitidas.' +
-                        '</td>' +
-                    '</tr>'
-                );
-
-                $("#contenedorResultadosFactura").show();
-                return;
-            }
+            var encontrados = 0;
 
             $.each(listaFacturas, function (i, item) {
+                var numeroFactura = item.NumeroFactura || "";
+                var clienteNombre = item.ClienteNombre || "";
+                var identificacionCliente = item.IdentificacionCliente || "";
+                var estadoFactura = item.Estado || "";
+                var totalFactura = parseFloat(item.TotalFactura || 0);
+
+                var texto = (numeroFactura + " " + clienteNombre + " " + identificacionCliente).toLowerCase();
+
+                if (filtro !== "" && texto.indexOf(filtro) === -1) {
+                    return;
+                }
+
+                if (item.Activo !== true || estadoFactura !== "Emitida") {
+                    return;
+                }
+
+                encontrados++;
+
                 var boton = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-primary",
                     text: "Seleccionar"
                 }).on("click", function () {
-                    seleccionarFactura(item);
+                    seleccionarFacturaCuenta(item);
                 });
 
                 var fila = $("<tr>");
-                fila.append($("<td>").text(item.NumeroFactura || ""));
-                fila.append($("<td>").text((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || "")));
+                fila.append($("<td>", { class: "codigo-factura", text: numeroFactura }));
+                fila.append($("<td>").text(identificacionCliente + " - " + clienteNombre));
                 fila.append($("<td>").text(formatearFecha(item.FechaFactura)));
-                fila.append($("<td>").text("₡" + parseFloat(item.TotalFactura || 0).toFixed(2)));
-                fila.append($("<td>").html(obtenerBadgeEstado(item.Estado)));
+                fila.append($("<td>").text(formatearNumero(totalFactura)));
+                fila.append($("<td>").text(estadoFactura));
+                fila.append($("<td>").append(boton));
 
-                var acciones = $("<td>");
-                acciones.append(boton);
-
-                fila.append(acciones);
                 tbody.append(fila);
             });
+
+            if (encontrados === 0) {
+                tbody.append('<tr><td colspan="6" class="text-center text-muted">No se encontraron facturas emitidas disponibles.</td></tr>');
+            }
 
             $("#contenedorResultadosFactura").show();
         }
 
-        function seleccionarFactura(item) {
-            $("#txtIdFactura").val(item.IdFactura);
-            $("#txtIdentificacionCliente").val(item.IdentificacionCliente);
+        function seleccionarFacturaCuenta(item) {
+            var totalFactura = parseFloat(item.TotalFactura || 0);
 
-            $("#txtBuscarFactura").val(item.NumeroFactura || "");
-            $("#lblFacturaSeleccionada").text("Factura seleccionada: " + (item.NumeroFactura || ""));
-            $("#txtClienteNombre").val((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || ""));
+            $("#txtIdentificacionCliente").val(item.IdentificacionCliente || "");
             $("#txtNumeroFactura").val(item.NumeroFactura || "");
 
-            $("#txtFechaEmision").val(convertirFechaInput(item.FechaFactura));
-            $("#txtMontoOriginal").val(parseFloat(item.TotalFactura || 0).toFixed(2));
-            $("#txtSaldoActual").val(parseFloat(item.TotalFactura || 0).toFixed(2));
+            $("#txtClienteVisible").val((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || ""));
+            $("#txtNumeroFacturaVisible").val(item.NumeroFactura || "");
+
+            $("#txtMontoOriginal").val(formatearNumero(totalFactura));
+            $("#txtSaldoActual").val(formatearNumero(totalFactura));
 
             $("#contenedorResultadosFactura").hide();
+            $("#txtBuscarFactura").val("");
+        }
+
+        function limpiarSeleccionFactura() {
+            $("#txtIdentificacionCliente").val("");
+            $("#txtNumeroFactura").val("");
+            $("#txtClienteVisible").val("");
+            $("#txtNumeroFacturaVisible").val("");
+            $("#txtBuscarFactura").val("");
+            $("#contenedorResultadosFactura").hide();
+            $("#tbodyResultadosFactura").empty();
         }
 
         function guardarCuentaPorCobrar() {
-    $("#mensajeErrorCuenta").hide().text("");
+            $("#mensajeErrorCuenta").hide().text("");
+            $("#mensajeExitoCuenta").hide().text("");
 
-    var montoTexto = $("#txtMontoOriginal").val().trim();
+            var obj = {
+                IdentificacionCliente: $("#txtIdentificacionCliente").val().trim(),
+                NumeroFactura: $("#txtNumeroFactura").val().trim(),
+                FechaEmision: $("#txtFechaEmision").val(),
+                FechaVencimiento: $("#txtFechaVencimiento").val(),
+                MontoOriginal: parseFloat($("#txtMontoOriginal").val()),
+                SaldoActual: parseFloat($("#txtSaldoActual").val()),
+                Estado: $("#cboEstadoCuenta").val(),
+                Activo: $("#cboActivoCuenta").val() === "true"
+            };
 
-    var obj = {
-        IdCuentaPorCobrar: parseInt($("#txtIdCuentaPorCobrar").val()),
-        IdentificacionCliente: $("#txtIdentificacionCliente").val(),
-        IdFactura: parseInt($("#txtIdFactura").val()),
-        FechaEmision: $("#txtFechaEmision").val(),
-        FechaVencimiento: $("#txtFechaVencimiento").val(),
-        MontoOriginal: montoTexto === "" ? 0 : parseFloat(montoTexto),
-        Estado: $("#cboEstado").val(),
-        Activo: $("#cboActivo").val() === "true"
-    };
+            if (isNaN(obj.MontoOriginal)) obj.MontoOriginal = 0;
+            if (isNaN(obj.SaldoActual)) obj.SaldoActual = obj.MontoOriginal;
 
-    if (isNaN(obj.IdCuentaPorCobrar)) {
-        obj.IdCuentaPorCobrar = 0;
-    }
-
-    if (obj.IdentificacionCliente === "") {
-        mostrarErrorCuenta("Debe seleccionar un cliente mediante una factura.", "txtBuscarFactura");
-        return;
-    }
-
-    if (obj.IdFactura === 0 || isNaN(obj.IdFactura)) {
-        mostrarErrorCuenta("Debe seleccionar una factura.", "txtBuscarFactura");
-        return;
-    }
-
-    if (obj.FechaEmision === "") {
-        mostrarErrorCuenta("Debe ingresar la fecha de emisión.", "txtFechaEmision");
-        return;
-    }
-
-    var mensajeFechaEmision = validarFechaNoFutura(obj.FechaEmision, "La fecha de emisión no puede ser futura.");
-    if (mensajeFechaEmision !== "") {
-        mostrarErrorCuenta(mensajeFechaEmision, "txtFechaEmision");
-        return;
-    }
-
-    if (obj.FechaVencimiento === "") {
-        mostrarErrorCuenta("Debe ingresar la fecha de vencimiento.", "txtFechaVencimiento");
-        return;
-    }
-
-    var mensajeFechas = validarFechaVencimiento(obj.FechaEmision, obj.FechaVencimiento);
-    if (mensajeFechas !== "") {
-        mostrarErrorCuenta(mensajeFechas, "txtFechaVencimiento");
-        return;
-    }
-
-    var mensajeMonto = validarDecimalMayorCero(montoTexto, "el monto original");
-    if (mensajeMonto !== "") {
-        mostrarErrorCuenta(mensajeMonto, "txtMontoOriginal");
-        return;
-    }
-
-    if (obj.Estado === "" || obj.Estado === null) {
-        mostrarErrorCuenta("Debe seleccionar un estado.", "cboEstado");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarCuentaPorCobrar", "GestionarCuentasPorCobrar")',
-        type: "POST",
-        data: JSON.stringify({ obj: obj }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#ModalCuenta").modal("hide");
-                cargarCuentasPorCobrar();
-            } else {
-                $("#mensajeErrorCuenta").text(respuesta.mensaje).show();
-            }
-        },
-        error: function () {
-            $("#mensajeErrorCuenta").text("Error al guardar la cuenta por cobrar.").show();
-        }
-    });
-}
-
-        function inactivarCuentaPorCobrar(idCuentaPorCobrar) {
-            if (!confirm("¿Desea inactivar esta cuenta por cobrar?")) {
+            if (obj.IdentificacionCliente === "") {
+                mostrarErrorCuenta("Debe seleccionar un cliente/factura.", "txtBuscarFactura");
                 return;
             }
 
+            if (obj.NumeroFactura === "") {
+                mostrarErrorCuenta("Debe seleccionar una factura.", "txtBuscarFactura");
+                return;
+            }
+
+            if (obj.FechaEmision === "") {
+                mostrarErrorCuenta("Debe ingresar la fecha de emisión.", "txtFechaEmision");
+                return;
+            }
+
+            if (obj.FechaVencimiento === "") {
+                mostrarErrorCuenta("Debe ingresar la fecha de vencimiento.", "txtFechaVencimiento");
+                return;
+            }
+
+            if (new Date(obj.FechaVencimiento + "T00:00:00") < new Date(obj.FechaEmision + "T00:00:00")) {
+                mostrarErrorCuenta("La fecha de vencimiento no puede ser menor que la fecha de emisión.", "txtFechaVencimiento");
+                return;
+            }
+
+            if (obj.MontoOriginal <= 0) {
+                mostrarErrorCuenta("El monto original debe ser mayor a cero.", "txtMontoOriginal");
+                return;
+            }
+            var esEdicion = $("#txtEsEdicionCuenta").val() === "true";
+
             $.ajax({
-                url: '@Url.Action("InactivarCuentaPorCobrar", "GestionarCuentasPorCobrar")',
+                url: '@Url.Action("GuardarCuentaPorCobrar", "GestionarCuentasPorCobrar")',
                 type: "POST",
-                data: JSON.stringify({ idCuentaPorCobrar: idCuentaPorCobrar }),
+                data: JSON.stringify({
+                    obj: obj,
+                    esEdicion: esEdicion
+                }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (respuesta.resultado) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+
+                        bloquearAbonos(false);
                         cargarCuentasPorCobrar();
+                        cargarAbonosCuenta(obj.IdentificacionCliente, obj.NumeroFactura);
+
+                        if (esEdicion) {
+                            mostrarMensajeModal("exito", "Cuenta por cobrar actualizada correctamente.");
+                            mostrarMensajeOperacion("exito", "Cuenta por cobrar actualizada correctamente.");
+                        } else {
+                            $("#txtEsEdicionCuenta").val("true");
+                            mostrarMensajeModal("exito", "Cuenta por cobrar registrada correctamente.");
+                            mostrarMensajeOperacion("exito", "Cuenta por cobrar registrada correctamente.");
+                        }
+
                     } else {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeModal("error", respuesta.mensaje || "No se pudo guardar la cuenta por cobrar.");
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar la cuenta por cobrar.");
+                    mostrarMensajeModal("error", "Error al guardar la cuenta por cobrar.");
                 }
             });
         }
 
-        function abrirModalAbonos(item) {
-            $("#txtIdCuentaAbono").val(item.IdCuentaPorCobrar);
-            $("#lblAbonoFactura").text(item.NumeroFactura || "");
-            $("#lblAbonoCliente").text((item.IdentificacionCliente || "") + " - " + (item.ClienteNombre || ""));
-            $("#lblAbonoSaldo").text(parseFloat(item.SaldoActual || 0).toFixed(2));
-
-            limpiarAbono();
-            cargarAbonosCuentaPorCobrar(item.IdCuentaPorCobrar);
-
-            $("#ModalAbonos").modal("show");
-        }
-
-        function cargarAbonosCuentaPorCobrar(idCuentaPorCobrar) {
+        function cargarAbonosCuenta(identificacionCliente, numeroFactura) {
             $.ajax({
-                url: '@Url.Action("ListarAbonosCuentaPorCobrar", "GestionarCuentasPorCobrar")',
+                url: '@Url.Action("ListarAbonosCuentaPorCobrarPorCuenta", "GestionarCuentasPorCobrar")',
                 type: "GET",
-                data: { idCuentaPorCobrar: idCuentaPorCobrar },
+                data: {
+                    identificacionCliente: identificacionCliente,
+                    numeroFactura: numeroFactura
+                },
                 dataType: "json",
                 success: function (respuesta) {
                     listaAbonos = respuesta.data || [];
                     pintarTablaAbonos();
+                    actualizarResumenCuenta();
                 },
                 error: function () {
-                    alert("Error al cargar los abonos.");
+                    $("#mensajeErrorCuenta").text("Error al cargar los abonos.").show();
                 }
             });
         }
 
         function pintarTablaAbonos() {
-            if (tablaAbonos != null) {
-                tablaAbonos.clear().destroy();
-                tablaAbonos = null;
-            }
-
             var tbody = $("#tablaAbonos tbody");
             tbody.empty();
+
+            if (listaAbonos.length === 0) {
+                tbody.append('<tr><td colspan="6" class="text-center text-muted">No hay abonos registrados.</td></tr>');
+                actualizarResumenCuenta();
+                return;
+            }
 
             $.each(listaAbonos, function (i, item) {
                 var activo = item.Activo
@@ -739,121 +813,166 @@
                     class: "btn btn-sm btn-outline-danger",
                     text: "Inactivar"
                 }).on("click", function () {
-                    inactivarAbonoCuentaPorCobrar(item.IdAbonoCuentaPorCobrar);
+                    inactivarAbono(item.IdentificacionCliente, item.NumeroFactura, item.NumeroAbono);
                 });
 
                 var acciones = $("<td>");
                 acciones.append(botonEditar);
-                acciones.append(botonInactivar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
 
                 var fila = $("<tr>");
+                fila.append($("<td>").text(item.NumeroAbono));
                 fila.append($("<td>").text(formatearFecha(item.FechaAbono)));
-                fila.append($("<td>").text("₡" + parseFloat(item.MontoAbono || 0).toFixed(2)));
+                fila.append($("<td>").text(formatearNumero(item.MontoAbono)));
                 fila.append($("<td>").text(item.Observacion || ""));
                 fila.append($("<td>").html(activo));
                 fila.append(acciones);
 
                 tbody.append(fila);
             });
+        }
 
-            tablaAbonos = $("#tablaAbonos").DataTable({
-                responsive: true,
-                pageLength: 5,
-                destroy: true,
-                order: [[0, "desc"]],
-                language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        function actualizarResumenCuenta() {
+            var montoOriginal = parseFloat($("#txtMontoOriginal").val() || 0);
+            var saldoActual = parseFloat($("#txtSaldoActual").val() || 0);
+
+            var montoPagado = montoOriginal - saldoActual;
+
+            if (isNaN(montoPagado) || montoPagado < 0) {
+                montoPagado = 0;
+            }
+
+            $("#lblMontoOriginal").text("Monto original: " + formatearNumero(montoOriginal));
+            $("#lblMontoPagado").text("Pagado: " + formatearNumero(montoPagado));
+            $("#lblSaldoActual").text("Saldo: " + formatearNumero(saldoActual));
+        }
+
+        function guardarAbonoCuentaPorCobrar() {
+            $("#mensajeErrorCuenta").hide().text("");
+            $("#mensajeExitoCuenta").hide().text("");
+
+            var obj = {
+                IdentificacionCliente: $("#txtIdentificacionCliente").val().trim(),
+                NumeroFactura: $("#txtNumeroFactura").val().trim(),
+                NumeroAbono: parseInt($("#txtNumeroAbono").val()),
+                FechaAbono: $("#txtFechaAbono").val(),
+                MontoAbono: parseFloat($("#txtMontoAbono").val()),
+                Observacion: $("#txtObservacion").val().trim(),
+                Activo: $("#cboActivoAbono").val() === "true"
+            };
+
+            if (isNaN(obj.NumeroAbono)) obj.NumeroAbono = 0;
+            if (isNaN(obj.MontoAbono)) obj.MontoAbono = 0;
+
+            if (obj.IdentificacionCliente === "" || obj.NumeroFactura === "") {
+                mostrarErrorCuenta("Primero debe seleccionar o guardar una cuenta por cobrar.", "txtNumeroFacturaVisible");
+                return;
+            }
+
+            if (obj.FechaAbono === "") {
+                mostrarErrorCuenta("Debe ingresar la fecha del abono.", "txtFechaAbono");
+                return;
+            }
+
+            if (obj.MontoAbono <= 0) {
+                mostrarErrorCuenta("El monto del abono debe ser mayor a cero.", "txtMontoAbono");
+                return;
+            }
+
+            if (obj.Observacion.length > 150) {
+                mostrarErrorCuenta("La observación no puede superar los 150 caracteres.", "txtObservacion");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarAbonoCuentaPorCobrar", "GestionarCuentasPorCobrar")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        var esEdicionAbono = obj.NumeroAbono > 0;
+
+                        limpiarAbono();
+                        cargarCuentasPorCobrar();
+                        refrescarCuentaActual(obj.IdentificacionCliente, obj.NumeroFactura);
+
+                        if (esEdicionAbono) {
+                            mostrarMensajeModal("exito", "Abono actualizado correctamente.");
+                            mostrarMensajeOperacion("exito", "Abono actualizado correctamente.");
+                        } else {
+                            mostrarMensajeModal("exito", "Abono registrado correctamente.");
+                            mostrarMensajeOperacion("exito", "Abono registrado correctamente.");
+                        }
+                    } else {
+                        mostrarMensajeModal("error", respuesta.mensaje || "No se pudo guardar el abono.");
+                    }
+                },
+                error: function () {
+                    mostrarMensajeModal("error", "Error al guardar el abono.");
                 }
             });
         }
 
-        function limpiarAbono() {
-            $("#txtIdAbonoCuentaPorCobrar").val(0);
-            $("#txtFechaAbono").val(convertirDateAInput(new Date()));
-            $("#txtMontoAbono").val("");
-            $("#txtObservacion").val("");
-            $("#cboActivoAbono").val("true");
-            $("#mensajeErrorAbono").hide().text("");
+        function refrescarCuentaActual(identificacionCliente, numeroFactura) {
+            $.ajax({
+                url: '@Url.Action("ObtenerCuentaPorCobrar", "GestionarCuentasPorCobrar")',
+                type: "GET",
+                data: {
+                    identificacionCliente: identificacionCliente,
+                    numeroFactura: numeroFactura
+                },
+                dataType: "json",
+                success: function (respuesta) {
+                    var item = respuesta.data;
+
+                    if (item != null) {
+                        $("#txtMontoOriginal").val(formatearNumero(item.MontoOriginal));
+                        $("#txtSaldoActual").val(formatearNumero(item.SaldoActual));
+                        $("#cboEstadoCuenta").val(item.Estado);
+                        $("#cboActivoCuenta").val(item.Activo ? "true" : "false");
+                        $("#lblEstadoCreditoModal").html(obtenerBadgeEstadoCredito(item.EstadoCredito || "", item.DiasRestantes));
+
+                        cargarAbonosCuenta(identificacionCliente, numeroFactura);
+                    }
+                }
+            });
         }
 
         function editarAbono(item) {
-            $("#txtIdAbonoCuentaPorCobrar").val(item.IdAbonoCuentaPorCobrar);
+            $("#txtNumeroAbono").val(item.NumeroAbono);
             $("#txtFechaAbono").val(convertirFechaInput(item.FechaAbono));
-            $("#txtMontoAbono").val(parseFloat(item.MontoAbono || 0).toFixed(2));
+            $("#txtMontoAbono").val(formatearNumero(item.MontoAbono));
             $("#txtObservacion").val(item.Observacion || "");
             $("#cboActivoAbono").val(item.Activo ? "true" : "false");
         }
 
-       function guardarAbonoCuentaPorCobrar() {
-    $("#mensajeErrorAbono").hide().text("");
-
-    var idCuentaPorCobrar = parseInt($("#txtIdCuentaAbono").val());
-    var montoTexto = $("#txtMontoAbono").val().trim();
-
-    var obj = {
-        IdAbonoCuentaPorCobrar: parseInt($("#txtIdAbonoCuentaPorCobrar").val()),
-        IdCuentaPorCobrar: idCuentaPorCobrar,
-        FechaAbono: $("#txtFechaAbono").val(),
-        MontoAbono: montoTexto === "" ? 0 : parseFloat(montoTexto),
-        Observacion: $("#txtObservacion").val().trim(),
-        Activo: $("#cboActivoAbono").val() === "true"
-    };
-
-    if (isNaN(obj.IdAbonoCuentaPorCobrar)) {
-        obj.IdAbonoCuentaPorCobrar = 0;
-    }
-
-    if (obj.IdCuentaPorCobrar === 0 || isNaN(obj.IdCuentaPorCobrar)) {
-        mostrarErrorAbono("Debe seleccionar una cuenta por cobrar.", "txtIdCuentaAbono");
-        return;
-    }
-
-    if (obj.FechaAbono === "") {
-        mostrarErrorAbono("Debe ingresar la fecha del abono.", "txtFechaAbono");
-        return;
-    }
-
-    var mensajeFecha = validarFechaNoFutura(obj.FechaAbono, "La fecha del abono no puede ser futura.");
-    if (mensajeFecha !== "") {
-        mostrarErrorAbono(mensajeFecha, "txtFechaAbono");
-        return;
-    }
-
-    var mensajeMonto = validarDecimalMayorCero(montoTexto, "el monto del abono");
-    if (mensajeMonto !== "") {
-        mostrarErrorAbono(mensajeMonto, "txtMontoAbono");
-        return;
-    }
-
-    if (obj.Observacion.length > 150) {
-        mostrarErrorAbono("La observación no puede superar los 150 caracteres.", "txtObservacion");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarAbonoCuentaPorCobrar", "GestionarCuentasPorCobrar")',
-        type: "POST",
-        data: JSON.stringify({ obj: obj }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                limpiarAbono();
-                cargarAbonosCuentaPorCobrar(idCuentaPorCobrar);
-                cargarCuentasPorCobrar();
-            } else {
-                $("#mensajeErrorAbono").text(respuesta.mensaje).show();
-            }
-        },
-        error: function () {
-            $("#mensajeErrorAbono").text("Error al guardar el abono.").show();
+        function limpiarAbono() {
+            $("#txtNumeroAbono").val("0");
+            $("#txtFechaAbono").val(convertirDateAInput(new Date()));
+            $("#txtMontoAbono").val("");
+            $("#txtObservacion").val("");
+            $("#cboActivoAbono").val("true");
         }
-    });
-}
 
-        function inactivarAbonoCuentaPorCobrar(idAbonoCuentaPorCobrar) {
-            var idCuentaPorCobrar = parseInt($("#txtIdCuentaAbono").val());
+        function bloquearAbonos(bloquear) {
+            $("#txtFechaAbono").prop("disabled", bloquear);
+            $("#txtMontoAbono").prop("disabled", bloquear);
+            $("#txtObservacion").prop("disabled", bloquear);
+            $("#cboActivoAbono").prop("disabled", bloquear);
 
+            if (bloquear) {
+                $("#textoAyudaAbono").text("Para registrar abonos, primero guarde o seleccione una cuenta por cobrar.");
+            } else {
+                $("#textoAyudaAbono").text("Registre los abonos realizados por el cliente.");
+            }
+        }
+
+        function inactivarAbono(identificacionCliente, numeroFactura, numeroAbono) {
             if (!confirm("¿Desea inactivar este abono?")) {
                 return;
             }
@@ -861,96 +980,217 @@
             $.ajax({
                 url: '@Url.Action("InactivarAbonoCuentaPorCobrar", "GestionarCuentasPorCobrar")',
                 type: "POST",
-                data: JSON.stringify({ idAbonoCuentaPorCobrar: idAbonoCuentaPorCobrar }),
+                data: JSON.stringify({
+                    identificacionCliente: identificacionCliente,
+                    numeroFactura: numeroFactura,
+                    numeroAbono: numeroAbono
+                }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         limpiarAbono();
-                        cargarAbonosCuentaPorCobrar(idCuentaPorCobrar);
                         cargarCuentasPorCobrar();
+                        refrescarCuentaActual(identificacionCliente, numeroFactura);
+
+                        mostrarMensajeModal("exito", "Abono inactivado correctamente.");
+                        mostrarMensajeOperacion("exito", "Abono inactivado correctamente.");
                     } else {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeModal("error", respuesta.mensaje || "No se pudo inactivar el abono.");
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el abono.");
+                    mostrarMensajeModal("error", "Error al inactivar el abono.");
                 }
             });
         }
 
-        function obtenerBadgeEstado(estado) {
-            if (estado === "Pagada" || estado === "Emitida") {
-                return '<span class="badge badge-success">' + estado + '</span>';
+        function recalcularSaldoCuenta() {
+            var identificacionCliente = $("#txtIdentificacionCliente").val().trim();
+            var numeroFactura = $("#txtNumeroFactura").val().trim();
+
+            if (identificacionCliente === "" || numeroFactura === "") {
+                mostrarErrorCuenta("Debe seleccionar una cuenta por cobrar.", "txtNumeroFacturaVisible");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("RecalcularSaldoCuentaPorCobrar", "GestionarCuentasPorCobrar")',
+                type: "POST",
+                data: JSON.stringify({
+                    identificacionCliente: identificacionCliente,
+                    numeroFactura: numeroFactura
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarCuentasPorCobrar();
+                        refrescarCuentaActual(identificacionCliente, numeroFactura);
+
+                        mostrarMensajeModal("exito", respuesta.mensaje || "Saldo recalculado correctamente.");
+                        mostrarMensajeOperacion("exito", "Saldo recalculado correctamente.");
+                    } else {
+                        mostrarMensajeModal("error", respuesta.mensaje || "No se pudo recalcular el saldo.");
+                    }
+                },
+                error: function () {
+                    mostrarMensajeModal("error", "Error al recalcular el saldo.");
+                }
+            });
+        }
+
+        function inactivarCuentaPorCobrar(identificacionCliente, numeroFactura) {
+            if (!confirm("¿Desea inactivar esta cuenta por cobrar?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("InactivarCuentaPorCobrar", "GestionarCuentasPorCobrar")',
+                type: "POST",
+                data: JSON.stringify({
+                    identificacionCliente: identificacionCliente,
+                    numeroFactura: numeroFactura
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarCuentasPorCobrar();
+                        mostrarMensajeOperacion("exito", "Cuenta por cobrar inactivada correctamente.");
+                    } else {
+                        mostrarMensajeOperacion("error", respuesta.mensaje || "No se pudo inactivar la cuenta por cobrar.");
+                    }
+                },
+                error: function () {
+                    mostrarMensajeOperacion("error", "Error al inactivar la cuenta por cobrar.");
+                }
+            });
+        }
+
+        function obtenerBadgeEstadoCuenta(estado) {
+            if (estado === "Pagada") {
+                return '<span class="badge badge-success">Pagada</span>';
             }
 
             if (estado === "Parcial") {
-                return '<span class="badge badge-info">Parcial</span>';
-            }
-
-            if (estado === "Vencida") {
-                return '<span class="badge badge-danger">Vencida</span>';
+                return '<span class="badge badge-warning">Parcial</span>';
             }
 
             if (estado === "Anulada") {
-                return '<span class="badge badge-secondary">Anulada</span>';
+                return '<span class="badge badge-danger">Anulada</span>';
             }
 
-            return '<span class="badge badge-warning">' + (estado || "Pendiente") + '</span>';
+            return '<span class="badge badge-info">' + estado + '</span>';
         }
 
-        function formatearFecha(valor) {
-            if (!valor) {
-                return "";
+        function obtenerBadgeEstadoCredito(estadoCredito, diasRestantes) {
+            diasRestantes = parseInt(diasRestantes);
+
+            if (isNaN(diasRestantes)) {
+                diasRestantes = 0;
             }
 
-            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
-
-            if (isNaN(fecha.getTime())) {
-                fecha = new Date(valor);
+            if (estadoCredito === "Pagada") {
+                return '<span class="badge badge-success">Pagada</span>';
             }
 
-            return convertirDateAInput(fecha);
+            if (estadoCredito === "Vencida") {
+                return '<span class="badge badge-danger">Vencida</span>';
+            }
+
+            if (estadoCredito === "Por vencer") {
+                return '<span class="badge badge-warning">Por vencer</span>';
+            }
+
+            if (estadoCredito === "Anulada") {
+                return '<span class="badge badge-danger">Anulada</span>';
+            }
+
+            if (estadoCredito === "Inactiva") {
+                return '<span class="badge badge-secondary">Inactiva</span>';
+            }
+
+            return '<span class="badge badge-info">Pendiente</span>';
         }
 
-        function convertirFechaInput(valor) {
-            if (!valor) {
-                return "";
+        function obtenerTextoDiasRestantes(diasRestantes, estadoCredito) {
+            diasRestantes = parseInt(diasRestantes);
+
+            if (isNaN(diasRestantes)) {
+                diasRestantes = 0;
             }
 
-            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
-
-            if (isNaN(fecha.getTime())) {
-                fecha = new Date(valor);
+            if (estadoCredito === "Pagada") {
+                return '<span class="texto-pagado">Pagada</span>';
             }
 
-            return convertirDateAInput(fecha);
+            if (estadoCredito === "Vencida") {
+                return '<span class="texto-vencido">' + Math.abs(diasRestantes) + ' día(s) vencida</span>';
+            }
+
+            if (estadoCredito === "Por vencer") {
+                if (diasRestantes === 0) {
+                    return '<span class="texto-por-vencer">Vence hoy</span>';
+                }
+
+                return '<span class="texto-por-vencer">' + diasRestantes + ' día(s)</span>';
+            }
+
+            if (diasRestantes === 0) {
+                return '<span class="texto-por-vencer">Vence hoy</span>';
+            }
+
+            return diasRestantes + ' día(s)';
         }
 
-        function convertirDateAInput(fecha) {
-            var anio = fecha.getFullYear();
-            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
-            var dia = ("0" + fecha.getDate()).slice(-2);
+        function mostrarMensajeOperacion(tipo, mensaje) {
+            var contenedor = $("#mensajeOperacion");
 
-            return anio + "-" + mes + "-" + dia;
+            contenedor
+                .removeClass("exito error advertencia")
+                .addClass(tipo)
+                .html(mensaje)
+                .fadeIn(150);
+
+            setTimeout(function () {
+                contenedor.fadeOut(300);
+            }, 5000);
         }
+
+        function ocultarMensajeOperacion() {
+            $("#mensajeOperacion")
+                .removeClass("exito error advertencia")
+                .hide()
+                .html("");
+        }
+
+        function mostrarMensajeModal(tipo, mensaje) {
+            $("#mensajeErrorCuenta").hide().text("");
+            $("#mensajeExitoCuenta").hide().text("");
+
+            if (tipo === "exito") {
+                $("#mensajeExitoCuenta").text(mensaje).show();
+            } else {
+                $("#mensajeErrorCuenta").text(mensaje).show();
+            }
+        }
+
 
         function mostrarErrorCuenta(mensaje, idCampo) {
             $("#mensajeErrorCuenta").text(mensaje).show();
 
-            if (idCampo) {
+            if (idCampo && $("#" + idCampo).length > 0) {
                 mostrarAyudaCampo(idCampo, mensaje);
                 $("#" + idCampo).focus();
             }
         }
 
-        function mostrarErrorAbono(mensaje, idCampo) {
-            $("#mensajeErrorAbono").text(mensaje).show();
-
-            if (idCampo) {
-                mostrarAyudaCampo(idCampo, mensaje);
-                $("#" + idCampo).focus();
-            }
+        function limpiarErrores() {
+            $("#mensajeErrorCuenta").hide().text("");
+            $("#mensajeExitoCuenta").hide().text("");
+            $(".campo-ayuda-error").hide().text("");
+            $(".input-error-suave").removeClass("input-error-suave");
         }
 
         function mostrarAyudaCampo(idCampo, mensaje) {
@@ -973,7 +1213,7 @@
             campo.removeClass("input-error-suave");
         }
 
-        function limpiarNoDecimal(idCampo, mensaje) {
+        function limpiarDecimal(idCampo, mensaje) {
             var campo = $("#" + idCampo);
             var valorOriginal = campo.val();
             var valorLimpio = valorOriginal.replace(/[^0-9.]/g, "");
@@ -991,10 +1231,10 @@
             }
         }
 
-        function limpiarTextoBusqueda(idCampo, mensaje) {
+        function limpiarTextoGeneral(idCampo, mensaje) {
             var campo = $("#" + idCampo);
             var valorOriginal = campo.val();
-            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/]/g, "");
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
 
             if (valorOriginal !== valorLimpio) {
                 campo.val(valorLimpio);
@@ -1004,63 +1244,46 @@
             }
         }
 
-        function validarDecimalMayorCero(texto, nombreCampo) {
-            if (texto === "") {
-                return "Debe ingresar " + nombreCampo + ".";
-            }
-
-            if (!/^[0-9]+(\.[0-9]+)?$/.test(texto)) {
-                return "Debe ingresar un valor válido para " + nombreCampo + ".";
-            }
-
-            var numero = parseFloat(texto);
+        function formatearNumero(valor) {
+            var numero = parseFloat(valor);
 
             if (isNaN(numero)) {
-                return "Debe ingresar un valor válido para " + nombreCampo + ".";
+                return "0.00";
             }
 
-            if (numero <= 0) {
-                return nombreCampo + " debe ser mayor a cero.";
-            }
-
-            return "";
+            return numero.toFixed(2);
         }
 
-        function validarFechaNoFutura(fechaTexto, mensaje) {
-            if (fechaTexto === "") {
+        function formatearFecha(valor) {
+            if (!valor) {
                 return "";
             }
 
-            var fecha = new Date(fechaTexto + "T00:00:00");
-            var hoy = new Date();
+            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
 
             if (isNaN(fecha.getTime())) {
-                return "Debe ingresar una fecha válida.";
+                fecha = new Date(valor);
             }
 
-            hoy.setHours(0, 0, 0, 0);
-
-            if (fecha > hoy) {
-                return mensaje;
-            }
-
-            return "";
+            return convertirDateAInput(fecha);
         }
 
-        function validarFechaVencimiento(fechaEmisionTexto, fechaVencimientoTexto) {
-            var fechaEmision = new Date(fechaEmisionTexto + "T00:00:00");
-            var fechaVencimiento = new Date(fechaVencimientoTexto + "T00:00:00");
-
-            if (isNaN(fechaEmision.getTime()) || isNaN(fechaVencimiento.getTime())) {
-                return "Debe ingresar fechas válidas.";
-            }
-
-            if (fechaVencimiento < fechaEmision) {
-                return "La fecha de vencimiento no puede ser menor que la fecha de emisión.";
-            }
-
-            return "";
+        function convertirFechaInput(valor) {
+            return formatearFecha(valor);
         }
-        
+
+        function convertirDateAInput(fecha) {
+            var anio = fecha.getFullYear();
+            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+            var dia = ("0" + fecha.getDate()).slice(-2);
+
+            return anio + "-" + mes + "-" + dia;
+        }
+
+        function sumarDias(fecha, dias) {
+            var nuevaFecha = new Date(fecha);
+            nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+            return nuevaFecha;
+        }
     </script>
 }

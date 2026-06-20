@@ -1,5 +1,4 @@
-﻿using CapaEntidad.personas;
-using CapaEntidad.Personas;
+﻿using CapaEntidad.Personas;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -30,13 +29,64 @@ namespace CapaDatos.personas
                             {
                                 Identificacion = dr["Identificacion"].ToString(),
                                 DireccionCorreo = dr["DireccionCorreo"].ToString(),
+                                DireccionCorreoAnterior = dr["DireccionCorreo"].ToString(),
+
                                 IdTipoCorreo = Convert.ToInt32(dr["IdTipoCorreo"]),
                                 TipoCorreoNombre = dr["TipoCorreoNombre"].ToString(),
+
                                 EsPrincipal = Convert.ToBoolean(dr["EsPrincipal"]),
                                 Activo = Convert.ToBoolean(dr["Activo"]),
+
                                 Nombre = dr["Nombre"].ToString(),
                                 PrimerApellido = dr["PrimerApellido"].ToString(),
-                                SegundoApellido = dr["SegundoApellido"] == DBNull.Value ? "" : dr["SegundoApellido"].ToString()
+                                SegundoApellido = dr["SegundoApellido"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<Correo>();
+            }
+
+            return lista;
+        }
+
+        public List<Correo> ListarPorPersona(string identificacion)
+        {
+            List<Correo> lista = new List<Correo>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Persona.sp_Correo_ListarPorPersona", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Identificacion", identificacion ?? "");
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new Correo()
+                            {
+                                Identificacion = dr["Identificacion"].ToString(),
+                                DireccionCorreo = dr["DireccionCorreo"].ToString(),
+                                DireccionCorreoAnterior = dr["DireccionCorreo"].ToString(),
+
+                                IdTipoCorreo = Convert.ToInt32(dr["IdTipoCorreo"]),
+                                TipoCorreoNombre = dr["TipoCorreoNombre"].ToString(),
+
+                                EsPrincipal = Convert.ToBoolean(dr["EsPrincipal"]),
+                                Activo = Convert.ToBoolean(dr["Activo"]),
+
+                                Nombre = dr["Nombre"].ToString(),
+                                PrimerApellido = dr["PrimerApellido"].ToString(),
+                                SegundoApellido = dr["SegundoApellido"].ToString()
                             });
                         }
                     }
@@ -86,7 +136,7 @@ namespace CapaDatos.personas
             return resultado;
         }
 
-        public bool EditarDesdeCliente(string correoAnterior, Correo obj, out string Mensaje)
+        public bool Editar(Correo obj, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -95,12 +145,12 @@ namespace CapaDatos.personas
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("Persona.sp_Correo_EditarDesdeCliente", oconexion);
+                    SqlCommand cmd = new SqlCommand("Persona.sp_Correo_Editar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@CorreoAnterior", correoAnterior);
-                    cmd.Parameters.AddWithValue("@CorreoNuevo", obj.DireccionCorreo);
                     cmd.Parameters.AddWithValue("@Identificacion", obj.Identificacion);
+                    cmd.Parameters.AddWithValue("@DireccionCorreoAnterior", obj.DireccionCorreoAnterior);
+                    cmd.Parameters.AddWithValue("@DireccionCorreoNuevo", obj.DireccionCorreo);
                     cmd.Parameters.AddWithValue("@IdTipoCorreo", obj.IdTipoCorreo);
                     cmd.Parameters.AddWithValue("@EsPrincipal", obj.EsPrincipal);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
@@ -136,8 +186,8 @@ namespace CapaDatos.personas
                     SqlCommand cmd = new SqlCommand("Persona.sp_Correo_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@Identificacion", identificacion);
-                    cmd.Parameters.AddWithValue("@DireccionCorreo", direccionCorreo);
+                    cmd.Parameters.AddWithValue("@Identificacion", identificacion ?? "");
+                    cmd.Parameters.AddWithValue("@DireccionCorreo", direccionCorreo ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

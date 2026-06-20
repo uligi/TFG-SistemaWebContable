@@ -1,5 +1,4 @@
 ﻿using CapaEntidad.Inventario;
-using CapaEntidad.Catalogos;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,26 +25,7 @@ namespace CapaDatos.Inventario
                     {
                         while (dr.Read())
                         {
-                            lista.Add(new Producto()
-                            {
-                                IdProducto = Convert.ToInt32(dr["IdProducto"]),
-                                CodigoProducto = dr["CodigoProducto"].ToString(),
-                                NombreProducto = dr["NombreProducto"].ToString(),
-
-                                IdTipoProducto = Convert.ToInt32(dr["IdTipoProducto"]),
-                                TipoProductoNombre = dr["TipoProductoNombre"].ToString(),
-
-                                IdImpuesto = Convert.ToInt32(dr["IdImpuesto"]),
-                                ImpuestoNombre = dr["ImpuestoNombre"].ToString(),
-                                PorcentajeImpuesto = Convert.ToDecimal(dr["PorcentajeImpuesto"]),
-
-                                Descripcion = dr["Descripcion"] == DBNull.Value ? "" : dr["Descripcion"].ToString(),
-                                PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]),
-                                StockActual = Convert.ToDecimal(dr["StockActual"]),
-                                FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
-                                FechaModificacion = dr["FechaModificacion"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaModificacion"]),
-                                Activo = Convert.ToBoolean(dr["Activo"])
-                            });
+                            lista.Add(MapearProducto(dr));
                         }
                     }
                 }
@@ -58,15 +38,15 @@ namespace CapaDatos.Inventario
             return lista;
         }
 
-        public List<TipoProducto> ListarTipoProductosActivos()
+        public List<Producto> ListarActivos()
         {
-            List<TipoProducto> lista = new List<TipoProducto>();
+            List<Producto> lista = new List<Producto>();
 
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("Inventario.sp_TipoProducto_ListarActivos", oconexion);
+                    SqlCommand cmd = new SqlCommand("Inventario.sp_Producto_ListarActivos", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     oconexion.Open();
@@ -75,29 +55,56 @@ namespace CapaDatos.Inventario
                     {
                         while (dr.Read())
                         {
-                            lista.Add(new TipoProducto()
-                            {
-                                IdTipoProducto = Convert.ToInt32(dr["IdTipoProducto"]),
-                                TipoProductoNombre = dr["Nombre"].ToString(),
-                                Descripcion = dr["Descripcion"] == DBNull.Value ? "" : dr["Descripcion"].ToString(),
-                                Activo = Convert.ToBoolean(dr["Activo"])
-                            });
+                            lista.Add(MapearProducto(dr));
                         }
                     }
                 }
             }
             catch
             {
-                lista = new List<TipoProducto>();
+                lista = new List<Producto>();
             }
 
             return lista;
         }
 
-        public int Registrar(Producto obj, out string Mensaje)
+        public Producto Obtener(string codigoProducto)
+        {
+            Producto obj = null;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Inventario.sp_Producto_Obtener", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@CodigoProducto", codigoProducto ?? "");
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            obj = MapearProducto(dr);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                obj = null;
+            }
+
+            return obj;
+        }
+
+        public int Registrar(Producto obj, out string Mensaje, out string CodigoProductoGenerado)
         {
             int resultado = 0;
             Mensaje = string.Empty;
+            CodigoProductoGenerado = string.Empty;
 
             try
             {
@@ -106,10 +113,10 @@ namespace CapaDatos.Inventario
                     SqlCommand cmd = new SqlCommand("Inventario.sp_Producto_Registrar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@NombreProducto", obj.NombreProducto);
+                    cmd.Parameters.AddWithValue("@NombreProducto", obj.NombreProducto ?? "");
                     cmd.Parameters.AddWithValue("@IdTipoProducto", obj.IdTipoProducto);
                     cmd.Parameters.AddWithValue("@IdImpuesto", obj.IdImpuesto);
-                    cmd.Parameters.AddWithValue("@Descripcion", string.IsNullOrWhiteSpace(obj.Descripcion) ? (object)DBNull.Value : obj.Descripcion);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
                     cmd.Parameters.AddWithValue("@PrecioVenta", obj.PrecioVenta);
                     cmd.Parameters.AddWithValue("@StockActual", obj.StockActual);
 
@@ -122,16 +129,14 @@ namespace CapaDatos.Inventario
 
                     resultado = Convert.ToInt32(cmd.Parameters["@Resultado"].Value);
                     Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-
-                    obj.CodigoProducto = cmd.Parameters["@CodigoProductoGenerado"].Value == DBNull.Value
-                        ? string.Empty
-                        : cmd.Parameters["@CodigoProductoGenerado"].Value.ToString();
+                    CodigoProductoGenerado = cmd.Parameters["@CodigoProductoGenerado"].Value.ToString();
                 }
             }
             catch (Exception ex)
             {
                 resultado = 0;
                 Mensaje = ex.Message;
+                CodigoProductoGenerado = string.Empty;
             }
 
             return resultado;
@@ -149,12 +154,11 @@ namespace CapaDatos.Inventario
                     SqlCommand cmd = new SqlCommand("Inventario.sp_Producto_Editar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdProducto", obj.IdProducto);
-                    cmd.Parameters.AddWithValue("@CodigoProducto", obj.CodigoProducto);
-                    cmd.Parameters.AddWithValue("@NombreProducto", obj.NombreProducto);
+                    cmd.Parameters.AddWithValue("@CodigoProducto", obj.CodigoProducto ?? "");
+                    cmd.Parameters.AddWithValue("@NombreProducto", obj.NombreProducto ?? "");
                     cmd.Parameters.AddWithValue("@IdTipoProducto", obj.IdTipoProducto);
-                    cmd.Parameters.AddWithValue("@Descripcion", string.IsNullOrWhiteSpace(obj.Descripcion) ? (object)DBNull.Value : obj.Descripcion);
                     cmd.Parameters.AddWithValue("@IdImpuesto", obj.IdImpuesto);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
                     cmd.Parameters.AddWithValue("@PrecioVenta", obj.PrecioVenta);
                     cmd.Parameters.AddWithValue("@StockActual", obj.StockActual);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
@@ -178,7 +182,7 @@ namespace CapaDatos.Inventario
             return resultado;
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool AjustarStock(string codigoProducto, decimal cantidad, string tipoMovimiento, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -187,10 +191,12 @@ namespace CapaDatos.Inventario
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("Inventario.sp_Producto_Inactivar", oconexion);
+                    SqlCommand cmd = new SqlCommand("Inventario.sp_Producto_AjustarStock", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdProducto", id);
+                    cmd.Parameters.AddWithValue("@CodigoProducto", codigoProducto ?? "");
+                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@TipoMovimiento", tipoMovimiento ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -209,6 +215,64 @@ namespace CapaDatos.Inventario
             }
 
             return resultado;
+        }
+
+        public bool Inactivar(string codigoProducto, out string Mensaje)
+        {
+            bool resultado = false;
+            Mensaje = string.Empty;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Inventario.sp_Producto_Inactivar", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@CodigoProducto", codigoProducto ?? "");
+
+                    cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+
+                    oconexion.Open();
+                    cmd.ExecuteNonQuery();
+
+                    resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
+                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                Mensaje = ex.Message;
+            }
+
+            return resultado;
+        }
+
+        private Producto MapearProducto(SqlDataReader dr)
+        {
+            return new Producto()
+            {
+                CodigoProducto = dr["CodigoProducto"].ToString(),
+                NombreProducto = dr["NombreProducto"].ToString(),
+
+                IdTipoProducto = Convert.ToInt32(dr["IdTipoProducto"]),
+                TipoProductoNombre = dr["TipoProductoNombre"].ToString(),
+
+                IdImpuesto = Convert.ToInt32(dr["IdImpuesto"]),
+                ImpuestoNombre = dr["ImpuestoNombre"].ToString(),
+                PorcentajeImpuesto = Convert.ToDecimal(dr["PorcentajeImpuesto"]),
+
+                Descripcion = dr["Descripcion"].ToString(),
+                PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]),
+                StockActual = Convert.ToDecimal(dr["StockActual"]),
+
+                FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
+                FechaModificacion = Convert.ToDateTime(dr["FechaModificacion"]),
+
+                Activo = Convert.ToBoolean(dr["Activo"])
+            };
         }
     }
 }

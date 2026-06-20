@@ -29,7 +29,7 @@ namespace CapaDatos.Catalogos
                             {
                                 IdTipoDeObservacion = Convert.ToInt32(dr["IdTipoDeObservacion"]),
                                 Tipo_Observacion = dr["TipoDeObservacion"].ToString(),
-                                Descripcion = dr["Descripcion"] == DBNull.Value ? "" : dr["Descripcion"].ToString(),
+                                Descripcion = dr["Descripcion"].ToString(),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
                         }
@@ -57,7 +57,7 @@ namespace CapaDatos.Catalogos
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@TipoDeObservacion", obj.Tipo_Observacion);
-                    cmd.Parameters.AddWithValue("@Descripcion", string.IsNullOrWhiteSpace(obj.Descripcion) ? (object)DBNull.Value : obj.Descripcion);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -92,7 +92,7 @@ namespace CapaDatos.Catalogos
 
                     cmd.Parameters.AddWithValue("@IdTipoDeObservacion", obj.IdTipoDeObservacion);
                     cmd.Parameters.AddWithValue("@TipoDeObservacion", obj.Tipo_Observacion);
-                    cmd.Parameters.AddWithValue("@Descripcion", string.IsNullOrWhiteSpace(obj.Descripcion) ? (object)DBNull.Value : obj.Descripcion);
+                    cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion ?? "");
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -114,7 +114,7 @@ namespace CapaDatos.Catalogos
             return resultado;
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idTipoDeObservacion, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -126,7 +126,7 @@ namespace CapaDatos.Catalogos
                     SqlCommand cmd = new SqlCommand("Catalogos.sp_TipoDeObservacion_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdTipoDeObservacion", id);
+                    cmd.Parameters.AddWithValue("@IdTipoDeObservacion", idTipoDeObservacion);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

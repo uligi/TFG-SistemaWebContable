@@ -1,6 +1,7 @@
 ﻿using CapaDatos.Proveedores;
 using CapaEntidad.Proveedores;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace CapaNegocio.Proveedores
 {
@@ -13,91 +14,138 @@ namespace CapaNegocio.Proveedores
             return objCapaDato.Listar();
         }
 
+        public List<TelefonoProveedor> ListarPorProveedor(string identificacionProveedor)
+        {
+            identificacionProveedor = identificacionProveedor == null ? "" : identificacionProveedor.Trim();
+
+            if (identificacionProveedor == "")
+            {
+                return new List<TelefonoProveedor>();
+            }
+
+            return objCapaDato.ListarPorProveedor(identificacionProveedor);
+        }
+
         public int Registrar(TelefonoProveedor obj, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(obj.IdentificacionProveedor))
-            {
-                Mensaje = "Debe seleccionar un proveedor.";
-                return 0;
-            }
+            PrepararDatos(obj);
 
-            if (string.IsNullOrWhiteSpace(obj.NumeroTelefono))
-            {
-                Mensaje = "El número de teléfono es obligatorio.";
-                return 0;
-            }
+            string error = Validar(obj, false);
 
-            if (obj.NumeroTelefono.Length > 45)
+            if (error != "")
             {
-                Mensaje = "El número de teléfono no puede superar los 45 caracteres.";
-                return 0;
-            }
-
-            if (obj.IdTipoTelefono == 0)
-            {
-                Mensaje = "Debe seleccionar un tipo de teléfono.";
+                Mensaje = error;
                 return 0;
             }
 
             return objCapaDato.Registrar(obj, out Mensaje);
         }
 
-        public bool Editar(string numeroAnterior, TelefonoProveedor obj, out string Mensaje)
+        public bool Editar(TelefonoProveedor obj, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(numeroAnterior))
+            PrepararDatos(obj);
+
+            string error = Validar(obj, true);
+
+            if (error != "")
             {
-                Mensaje = "Debe seleccionar un teléfono válido.";
+                Mensaje = error;
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(obj.IdentificacionProveedor))
-            {
-                Mensaje = "Debe seleccionar un proveedor.";
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(obj.NumeroTelefono))
-            {
-                Mensaje = "El número de teléfono es obligatorio.";
-                return false;
-            }
-
-            if (obj.NumeroTelefono.Length > 45)
-            {
-                Mensaje = "El número de teléfono no puede superar los 45 caracteres.";
-                return false;
-            }
-
-            if (obj.IdTipoTelefono == 0)
-            {
-                Mensaje = "Debe seleccionar un tipo de teléfono.";
-                return false;
-            }
-
-            return objCapaDato.Editar(numeroAnterior, obj, out Mensaje);
+            return objCapaDato.Editar(obj, out Mensaje);
         }
 
         public bool Inactivar(string identificacionProveedor, string numeroTelefono, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(identificacionProveedor))
+            identificacionProveedor = identificacionProveedor == null ? "" : identificacionProveedor.Trim();
+            numeroTelefono = numeroTelefono == null ? "" : numeroTelefono.Trim();
+
+            if (identificacionProveedor == "")
             {
                 Mensaje = "Debe seleccionar un proveedor válido.";
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(numeroTelefono))
+            if (identificacionProveedor.Length > 45)
+            {
+                Mensaje = "La identificación del proveedor no puede superar los 45 caracteres.";
+                return false;
+            }
+
+            if (numeroTelefono == "")
             {
                 Mensaje = "Debe seleccionar un teléfono válido.";
                 return false;
             }
 
+            if (!Regex.IsMatch(numeroTelefono, @"^[0-9]{8,15}$"))
+            {
+                Mensaje = "El teléfono debe contener solo números y tener entre 8 y 15 dígitos.";
+                return false;
+            }
+
             return objCapaDato.Inactivar(identificacionProveedor, numeroTelefono, out Mensaje);
+        }
+
+        private void PrepararDatos(TelefonoProveedor obj)
+        {
+            obj.IdentificacionProveedor = obj.IdentificacionProveedor == null ? "" : obj.IdentificacionProveedor.Trim();
+            obj.RazonSocial = obj.RazonSocial == null ? "" : obj.RazonSocial.Trim();
+
+            obj.NumeroTelefono = obj.NumeroTelefono == null ? "" : obj.NumeroTelefono.Trim();
+            obj.NumeroTelefonoAnterior = obj.NumeroTelefonoAnterior == null ? "" : obj.NumeroTelefonoAnterior.Trim();
+
+            obj.TipoTelefonoNombre = obj.TipoTelefonoNombre == null ? "" : obj.TipoTelefonoNombre.Trim();
+        }
+
+        private string Validar(TelefonoProveedor obj, bool esEdicion)
+        {
+            if (string.IsNullOrWhiteSpace(obj.IdentificacionProveedor))
+            {
+                return "Debe seleccionar un proveedor.";
+            }
+
+            if (obj.IdentificacionProveedor.Length > 45)
+            {
+                return "La identificación del proveedor no puede superar los 45 caracteres.";
+            }
+
+            if (esEdicion)
+            {
+                if (string.IsNullOrWhiteSpace(obj.NumeroTelefonoAnterior))
+                {
+                    return "Debe seleccionar un teléfono válido.";
+                }
+
+                if (!Regex.IsMatch(obj.NumeroTelefonoAnterior, @"^[0-9]{8,15}$"))
+                {
+                    return "El teléfono anterior debe contener solo números y tener entre 8 y 15 dígitos.";
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(obj.NumeroTelefono))
+            {
+                return "El número de teléfono es obligatorio.";
+            }
+
+            if (!Regex.IsMatch(obj.NumeroTelefono, @"^[0-9]{8,15}$"))
+            {
+                return "El teléfono debe contener solo números y tener entre 8 y 15 dígitos.";
+            }
+
+            if (obj.IdTipoTelefono <= 0)
+            {
+                return "Debe seleccionar un tipo de teléfono.";
+            }
+
+            return "";
         }
     }
 }

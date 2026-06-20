@@ -3,7 +3,49 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h4 class="font-weight-bold py-3 mb-0">Gestionar Asientos Contables</h4>
+<style>
+    .campo-ayuda-error {
+        display: none;
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .input-error-suave {
+        border-color: #d9534f !important;
+    }
+
+    .texto-tabla-secundario {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .codigo-asiento,
+    .codigo-cuenta {
+        font-family: Consolas, monospace;
+        font-weight: bold;
+    }
+
+    .bloque-detalle {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 12px;
+        margin-top: 15px;
+    }
+
+    .resumen-cuadre {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .tabla-detalle th,
+    .tabla-detalle td {
+        vertical-align: middle !important;
+    }
+</style>
+
+<h4 class="font-weight-bold py-3 mb-0">Gestión de Asientos Contables</h4>
 
 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
     <ol class="breadcrumb">
@@ -13,7 +55,7 @@
             </a>
         </li>
         <li class="breadcrumb-item">Contabilidad</li>
-        <li class="breadcrumb-item active">Asientos Contables</li>
+        <li class="breadcrumb-item active">Asientos contables</li>
     </ol>
 </div>
 
@@ -21,48 +63,40 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h6 class="mb-0">Lista de asientos contables</h6>
 
-        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
+        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAsiento(null)">
             Nuevo asiento
         </button>
     </div>
 
     <div class="card-body">
-
-        <div class="form-row mb-3">
-            <div class="col-md-5">
-                <input type="text" id="txtBuscar" class="form-control" placeholder="Buscar por número, tipo, concepto o período...">
-            </div>
-        </div>
-
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaAsientos">
+            <table class="table table-striped table-bordered nowrap" id="tablaAsientos" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Número</th>
-                        <th>Fecha</th>
                         <th>Período</th>
+                        <th>Fecha</th>
                         <th>Tipo</th>
                         <th>Concepto</th>
                         <th>Total debe</th>
                         <th>Total haber</th>
                         <th>Cuadre</th>
                         <th>Estado</th>
-                        <th style="width:250px;">Acciones</th>
+                        <th style="width:230px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
-
     </div>
 </div>
 
-<div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="FormModalAsiento" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
 
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="tituloModal">Nuevo asiento contable</h5>
+                <h5 class="modal-title" id="tituloModalAsiento">Nuevo asiento contable</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -70,141 +104,177 @@
 
             <div class="modal-body">
 
-                <input type="hidden" id="txtIdAsientoContable" value="0" />
+                <input type="hidden" id="txtNumeroAsiento" value="" />
 
-                <h6 class="font-weight-bold">Encabezado del asiento</h6>
+                <div class="alert alert-danger mt-2" id="mensajeErrorAsiento" style="display:none;"></div>
+                <div class="alert alert-success mt-2" id="mensajeExitoAsiento" style="display:none;"></div>
 
-                <div class="form-row">
+                <h6 class="font-weight-bold mb-3">Encabezado del asiento</h6>
 
-                    <div class="form-group col-md-3">
-                        <label for="txtNumeroAsiento">Número de asiento</label>
-                        <input type="text" id="txtNumeroAsiento" class="form-control" readonly placeholder="Se genera automáticamente" />
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="cboPeriodoContable">Período contable</label>
-                        <select id="cboPeriodoContable" class="form-control">
-                            <option value="0">Seleccione un período</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="txtFechaAsiento">Fecha del asiento</label>
-                        <input type="date" id="txtFechaAsiento" class="form-control" />
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="txtTipoAsiento">Tipo de asiento</label>
-                        <input type="text" id="txtTipoAsiento" class="form-control" maxlength="45" placeholder="Ej: Diario, Ajuste" />
-                    </div>
-
+                <div class="form-group">
+                    <label for="txtNumeroAsientoVisible">Número de asiento</label>
+                    <input type="text" id="txtNumeroAsientoVisible" class="form-control codigo-asiento" disabled />
+                    <small class="form-text text-muted">El número se genera automáticamente al guardar.</small>
                 </div>
 
-                <div class="form-row">
-
-                    <div class="form-group col-md-9">
-                        <label for="txtConcepto">Concepto</label>
-                        <input type="text" id="txtConcepto" class="form-control" maxlength="45" />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cboPeriodoContable">Período contable</label>
+                            <select id="cboPeriodoContable" class="form-control">
+                                <option value="">Seleccione</option>
+                            </select>
+                            <small class="form-text text-muted">Solo se muestran períodos abiertos.</small>
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-3">
-                        <label for="cboActivo">Estado</label>
-                        <select id="cboActivo" class="form-control">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="txtFechaAsiento">Fecha asiento</label>
+                            <input type="date" id="txtFechaAsiento" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="txtTipoAsiento">Tipo asiento</label>
+                            <input type="text" id="txtTipoAsiento" class="form-control" maxlength="45" autocomplete="off" placeholder="Manual, Ajuste, Venta, Gasto..." />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtConcepto">Concepto</label>
+                    <input type="text" id="txtConcepto" class="form-control" maxlength="150" autocomplete="off" />
+                </div>
+
+                <div class="form-group" id="grupoActivoAsiento">
+                    <label for="cboActivoAsiento">Estado</label>
+                    <select id="cboActivoAsiento" class="form-control">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="bloque-detalle">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="font-weight-bold mb-0">Detalle del asiento</h6>
+
+                        <div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm mr-1" onclick="validarCuadreAsiento()">
+                                Validar cuadre
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="recalcularTotalesAsiento()">
+                                Recalcular totales
+                            </button>
+                        </div>
+                    </div>
+
+                    <small class="text-muted d-block mb-3">
+                        Para agregar líneas, primero guarde el asiento.
+                    </small>
+
+                    <input type="hidden" id="txtNumeroLinea" value="0" />
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-2">
+                                <label for="cboCuentaContable">Cuenta contable</label>
+                                <select id="cboCuentaContable" class="form-control">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="txtDebe">Debe</label>
+                                <input type="text" id="txtDebe" class="form-control" autocomplete="off" value="0.00" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group mb-2">
+                                <label for="txtHaber">Haber</label>
+                                <input type="text" id="txtHaber" class="form-control" autocomplete="off" value="0.00" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group mb-2">
+                                <label for="txtDescripcionLinea">Descripción línea</label>
+                                <input type="text" id="txtDescripcionLinea" class="form-control" maxlength="150" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-1 d-flex align-items-end">
+                            <div class="form-group mb-2 w-100">
+                                <button type="button" class="btn btn-primary btn-block" onclick="guardarDetalleAsiento()">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="grupoActivoDetalle">
+                        <label for="cboActivoDetalle">Estado línea</label>
+                        <select id="cboActivoDetalle" class="form-control">
                             <option value="true">Activo</option>
                             <option value="false">Inactivo</option>
                         </select>
                     </div>
 
-                </div>
+                    <div class="alert alert-danger mt-2" id="mensajeErrorDetalle" style="display:none;"></div>
 
-                <div class="alert alert-danger mt-2" id="mensajeError" style="display:none;"></div>
-
-                <div class="text-right mb-3">
-                    <button type="button" class="btn btn-primary" onclick="guardarAsientoContable()">
-                        Guardar encabezado
-                    </button>
-                </div>
-
-                <hr />
-
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="font-weight-bold mb-0">Detalle del asiento</h6>
-
-                    <div>
-                        <span class="badge badge-info mr-2" id="lblTotalDebe">Debe: 0.00</span>
-                        <span class="badge badge-info mr-2" id="lblTotalHaber">Haber: 0.00</span>
-                        <span class="badge badge-secondary" id="lblDiferencia">Diferencia: 0.00</span>
-                    </div>
-                </div>
-
-                <small class="form-text text-muted mb-3" id="textoAyudaDetalle">
-                    Para agregar líneas, primero guarde el encabezado del asiento.
-                </small>
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-4">
-                        <label for="cboCuentaContable">Cuenta contable</label>
-                        <select id="cboCuentaContable" class="form-control">
-                            <option value="0">Seleccione una cuenta</option>
-                        </select>
+                    <div class="row mt-3 mb-2">
+                        <div class="col-md-4">
+                            <div class="resumen-cuadre">
+                                Total debe: <span id="lblTotalDebe">₡0.00</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="resumen-cuadre">
+                                Total haber: <span id="lblTotalHaber">₡0.00</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="resumen-cuadre">
+                                Diferencia: <span id="lblDiferencia">₡0.00</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-2">
-                        <label for="txtDebe">Debe</label>
-                        <input type="number" id="txtDebe" class="form-control" min="0" step="0.01" />
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered tabla-detalle" id="tablaDetalles" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Línea</th>
+                                    <th>Cuenta</th>
+                                    <th>Debe</th>
+                                    <th>Haber</th>
+                                    <th>Descripción</th>
+                                    <th>Estado</th>
+                                    <th style="width:160px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
 
-                    <div class="form-group col-md-2">
-                        <label for="txtHaber">Haber</label>
-                        <input type="number" id="txtHaber" class="form-control" min="0" step="0.01" />
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="txtDescripcionLinea">Descripción línea</label>
-                        <input type="text" id="txtDescripcionLinea" class="form-control" maxlength="150" />
-                    </div>
-
-                </div>
-
-                <input type="hidden" id="txtIdDetalleAsientoContable" value="0" />
-
-                <div class="text-right mb-3">
-                    <button type="button" class="btn btn-secondary" id="btnLimpiarDetalle" onclick="limpiarDetalle()">
-                        Limpiar detalle
-                    </button>
-                    <button type="button" class="btn btn-primary" id="btnGuardarDetalle" onclick="guardarDetalleAsientoContable()">
-                        Guardar detalle
-                    </button>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered" id="tablaDetalles">
-                        <thead>
-                            <tr>
-                                <th>Cuenta</th>
-                                <th>Debe</th>
-                                <th>Haber</th>
-                                <th>Descripción</th>
-                                <th>Estado</th>
-                                <th style="width:170px;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-
-                <div class="text-right mt-3">
-                    <button type="button" class="btn btn-outline-success" onclick="validarCuadreAsiento()">
-                        Validar cuadre
-                    </button>
                 </div>
 
             </div>
 
             <div class="modal-footer">
+                <small class="text-muted mr-auto">
+                    El asiento debe tener al menos dos líneas y debe quedar cuadrado.
+                </small>
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarAsiento()">
+                    Guardar asiento
                 </button>
             </div>
 
@@ -218,24 +288,104 @@
         var listaDetalles = [];
         var listaPeriodos = [];
         var listaCuentas = [];
+        var tablaAsientos = null;
 
         $(document).ready(function () {
-            cargarAsientosContables();
-            cargarPeriodosContables();
+            cargarPeriodosAbiertos();
             cargarCuentasParaMovimientos();
+            cargarAsientos();
 
-            $("#txtBuscar").on("keyup", function () {
-                pintarTablaAsientos();
+            $("#txtTipoAsiento").on("input", function () {
+                limpiarTextoGeneral("txtTipoAsiento", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 45) {
+                    $(this).val($(this).val().substring(0, 45));
+                    mostrarAyudaCampo("txtTipoAsiento", "El tipo de asiento no puede superar los 45 caracteres.");
+                }
+            });
+
+            $("#txtConcepto").on("input", function () {
+                limpiarTextoGeneral("txtConcepto", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 150) {
+                    $(this).val($(this).val().substring(0, 150));
+                    mostrarAyudaCampo("txtConcepto", "El concepto no puede superar los 150 caracteres.");
+                }
+            });
+
+            $("#txtDescripcionLinea").on("input", function () {
+                limpiarTextoGeneral("txtDescripcionLinea", "Solo se permiten letras, números, espacios y caracteres básicos.");
+
+                if ($(this).val().length > 150) {
+                    $(this).val($(this).val().substring(0, 150));
+                    mostrarAyudaCampo("txtDescripcionLinea", "La descripción de la línea no puede superar los 150 caracteres.");
+                }
+            });
+
+            $("#txtDebe, #txtHaber").on("input", function () {
+                var valor = $(this).val();
+
+                valor = valor.replace(",", ".");
+                valor = valor.replace(/[^0-9.]/g, "");
+
+                var partes = valor.split(".");
+                if (partes.length > 2) {
+                    valor = partes[0] + "." + partes.slice(1).join("");
+                }
+
+                $(this).val(valor);
+            });
+
+            $("#txtDebe").on("keyup change", function () {
+                var debe = parseFloat($(this).val());
+
+                if (!isNaN(debe) && debe > 0) {
+                    $("#txtHaber").val("0.00");
+                }
+            });
+
+            $("#txtHaber").on("keyup change", function () {
+                var haber = parseFloat($(this).val());
+
+                if (!isNaN(haber) && haber > 0) {
+                    $("#txtDebe").val("0.00");
+                }
+            });
+
+            $("#cboPeriodoContable").on("change", function () {
+                var periodo = obtenerPeriodoSeleccionado();
+
+                if (periodo != null && $("#txtFechaAsiento").val() === "") {
+                    $("#txtFechaAsiento").val(formatearFechaInput(periodo.FechaInicio));
+                }
+            });
+
+            $("input, select, textarea").on("change keyup", function () {
+                if ($("#mensajeErrorAsiento").is(":visible")) {
+                    $("#mensajeErrorAsiento").fadeOut(150);
+                }
+
+                if ($("#mensajeExitoAsiento").is(":visible")) {
+                    $("#mensajeExitoAsiento").fadeOut(150);
+                }
+
+                if ($("#mensajeErrorDetalle").is(":visible")) {
+                    $("#mensajeErrorDetalle").fadeOut(150);
+                }
+            });
+
+            $("#FormModalAsiento").on("hidden.bs.modal", function () {
+                limpiarErrores();
             });
         });
 
-        function cargarAsientosContables() {
+        function cargarAsientos() {
             $.ajax({
                 url: '@Url.Action("ListarAsientosContables", "GestionarAsientoContable")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaAsientos = respuesta.data;
+                    listaAsientos = respuesta.data || [];
                     pintarTablaAsientos();
                 },
                 error: function () {
@@ -244,27 +394,111 @@
             });
         }
 
-        function cargarPeriodosContables() {
+        function pintarTablaAsientos() {
+            if (tablaAsientos != null) {
+                tablaAsientos.clear().destroy();
+                tablaAsientos = null;
+            }
+
+            var tbody = $("#tablaAsientos tbody");
+            tbody.empty();
+
+            $.each(listaAsientos, function (i, item) {
+                var numeroAsiento = item.NumeroAsiento || "";
+                var periodo = obtenerNombreMes(item.Mes) + " " + item.Anio;
+                var fecha = formatearFechaTexto(item.FechaAsiento);
+                var tipo = item.TipoAsiento || "";
+                var concepto = item.Concepto || "";
+
+                var totalDebe = formatearMoneda(item.TotalDebe);
+                var totalHaber = formatearMoneda(item.TotalHaber);
+
+                var estaCuadrado = parseFloat(item.TotalDebe) === parseFloat(item.TotalHaber) && parseFloat(item.TotalDebe) > 0;
+
+                var cuadre = estaCuadrado
+                    ? '<span class="badge badge-success">Cuadrado</span>'
+                    : '<span class="badge badge-warning">Descuadrado</span>';
+
+                var estado = item.Activo
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-secondary">Inactivo</span>';
+
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1 mb-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModalAsiento(item);
+                });
+
+                var botonValidar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-secondary mr-1 mb-1",
+                    text: "Validar"
+                }).on("click", function () {
+                    validarCuadreAsientoDesdeTabla(item.NumeroAsiento);
+                });
+
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger mb-1",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarAsiento(item.NumeroAsiento);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+                acciones.append(botonValidar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var celdaNumero = $("<td>");
+                celdaNumero.append($("<div>", {
+                    class: "codigo-asiento",
+                    text: numeroAsiento
+                }));
+                celdaNumero.append($("<div>", {
+                    class: "texto-tabla-secundario",
+                    text: "Estado período: " + (item.EstadoPeriodo || "-")
+                }));
+
+                var fila = $("<tr>");
+                fila.append(celdaNumero);
+                fila.append($("<td>").text(periodo));
+                fila.append($("<td>").text(fecha));
+                fila.append($("<td>").text(tipo));
+                fila.append($("<td>").text(concepto));
+                fila.append($("<td>").text(totalDebe));
+                fila.append($("<td>").text(totalHaber));
+                fila.append($("<td>").html(cuadre));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
+
+                tbody.append(fila);
+            });
+
+            tablaAsientos = $("#tablaAsientos").DataTable({
+                responsive: true,
+                pageLength: 10,
+                destroy: true,
+                order: [[2, "desc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+        }
+
+        function cargarPeriodosAbiertos() {
             $.ajax({
-                url: '@Url.Action("ListarPeriodosContablesActivos", "GestionarPeriodoContable")',
+                url: '@Url.Action("ListarPeriodosContablesAbiertos", "GestionarPeriodoContable")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaPeriodos = respuesta.data;
-
-                    $("#cboPeriodoContable").empty();
-                    $("#cboPeriodoContable").append('<option value="0">Seleccione un período</option>');
-
-                    $.each(listaPeriodos, function (i, item) {
-                        if (item.Estado === "Abierto") {
-                            $("#cboPeriodoContable").append(
-                                $("<option>", {
-                                    value: item.IdPeriodoContable,
-                                    text: item.Anio + " - " + obtenerNombreMes(item.Mes)
-                                })
-                            );
-                        }
-                    });
+                    listaPeriodos = respuesta.data || [];
+                    pintarComboPeriodos();
                 },
                 error: function () {
                     alert("Error al cargar los períodos contables.");
@@ -272,25 +506,31 @@
             });
         }
 
+        function pintarComboPeriodos() {
+            $("#cboPeriodoContable").empty();
+            $("#cboPeriodoContable").append('<option value="">Seleccione</option>');
+
+            $.each(listaPeriodos, function (i, item) {
+                var valor = item.Anio + "|" + item.Mes;
+                var texto = obtenerNombreMes(item.Mes) + " " + item.Anio;
+
+                $("#cboPeriodoContable").append(
+                    $("<option>", {
+                        value: valor,
+                        text: texto
+                    })
+                );
+            });
+        }
+
         function cargarCuentasParaMovimientos() {
             $.ajax({
-                url: '@Url.Action("ListarCuentasParaMovimientos", "GestionarAsientoContable")',
+                url: '@Url.Action("ListarCuentasContablesParaMovimientos", "GestionarCuentaContable")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaCuentas = respuesta.data;
-
-                    $("#cboCuentaContable").empty();
-                    $("#cboCuentaContable").append('<option value="0">Seleccione una cuenta</option>');
-
-                    $.each(listaCuentas, function (i, item) {
-                        $("#cboCuentaContable").append(
-                            $("<option>", {
-                                value: item.IdCuentaContable,
-                                text: item.CodigoCuenta + " - " + item.NombreCuenta
-                            })
-                        );
-                    });
+                    listaCuentas = respuesta.data || [];
+                    pintarComboCuentas();
                 },
                 error: function () {
                     alert("Error al cargar las cuentas contables.");
@@ -298,147 +538,114 @@
             });
         }
 
-        function pintarTablaAsientos() {
-            var filtro = $("#txtBuscar").val().toLowerCase();
-            var tbody = $("#tablaAsientos tbody");
+        function pintarComboCuentas() {
+            $("#cboCuentaContable").empty();
+            $("#cboCuentaContable").append('<option value="">Seleccione</option>');
 
-            tbody.empty();
-
-            if (listaAsientos.length === 0) {
-                tbody.append(`
-                    <tr>
-                        <td colspan="10" class="text-center text-muted">
-                            No hay asientos contables registrados.
-                        </td>
-                    </tr>
-                `);
-                return;
-            }
-
-            $.each(listaAsientos, function (i, item) {
-                var numero = item.NumeroAsiento || "";
-                var tipo = item.TipoAsiento || "";
-                var concepto = item.Concepto || "";
-                var periodo = item.Anio + " - " + obtenerNombreMes(item.Mes);
-
-                var texto = (numero + " " + tipo + " " + concepto + " " + periodo).toLowerCase();
-
-                if (texto.indexOf(filtro) === -1) {
-                    return;
-                }
-
-                var totalDebe = parseFloat(item.TotalDebe || 0);
-                var totalHaber = parseFloat(item.TotalHaber || 0);
-                var diferencia = totalDebe - totalHaber;
-
-                var cuadre = totalDebe > 0 && totalDebe === totalHaber
-                    ? '<span class="badge badge-success">Cuadrado</span>'
-                    : '<span class="badge badge-warning">Pendiente</span>';
-
-                var estado = item.Activo
-                    ? '<span class="badge badge-info">Activo</span>'
-                    : '<span class="badge badge-secondary">Inactivo</span>';
-
-                var fila = `
-                    <tr>
-                        <td>${numero}</td>
-                        <td>${formatearFecha(item.FechaAsiento)}</td>
-                        <td>${periodo}</td>
-                        <td>${tipo}</td>
-                        <td>${concepto}</td>
-                        <td>${totalDebe.toFixed(2)}</td>
-                        <td>${totalHaber.toFixed(2)}</td>
-                        <td>${cuadre}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='abrirModal(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-success" onclick="validarCuadreDesdeTabla(${item.IdAsientoContable})">
-                                Validar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarAsientoContable(${item.IdAsientoContable})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
-
-                tbody.append(fila);
+            $.each(listaCuentas, function (i, item) {
+                $("#cboCuentaContable").append(
+                    $("<option>", {
+                        value: item.CodigoCuenta,
+                        text: item.CodigoCuenta + " - " + item.NombreCuenta
+                    })
+                );
             });
         }
 
-        function abrirModal(json) {
-            $("#mensajeError").hide().text("");
+        function abrirModalAsiento(json) {
+            limpiarErrores();
 
-            $("#txtIdAsientoContable").val(0);
-            $("#txtNumeroAsiento").val("");
-            $("#cboPeriodoContable").val(0);
-            $("#txtFechaAsiento").val(convertirDateAInput(new Date()));
-            $("#txtTipoAsiento").val("");
-            $("#txtConcepto").val("");
-            $("#cboActivo").val("true");
-            $("#tituloModal").text("Nuevo asiento contable");
-
-            limpiarDetalle();
             listaDetalles = [];
             pintarDetalles();
-            bloquearDetalle(true);
+
+            $("#txtNumeroAsiento").val("");
+            $("#txtNumeroAsientoVisible").val("Se generará automáticamente");
+
+            $("#cboPeriodoContable").val("");
+            $("#txtFechaAsiento").val(convertirFechaInput(new Date()));
+            $("#txtTipoAsiento").val("Manual");
+            $("#txtConcepto").val("");
+
+            $("#cboActivoAsiento").val("true");
+            $("#grupoActivoAsiento").hide();
+
+            limpiarFormularioDetalle();
+
+            $("#tituloModalAsiento").text("Nuevo asiento contable");
 
             if (json != null) {
-                $("#txtIdAsientoContable").val(json.IdAsientoContable);
                 $("#txtNumeroAsiento").val(json.NumeroAsiento || "");
-                $("#cboPeriodoContable").val(json.IdPeriodoContable);
-                $("#txtFechaAsiento").val(convertirFechaInput(json.FechaAsiento));
+                $("#txtNumeroAsientoVisible").val(json.NumeroAsiento || "");
+
+                $("#cboPeriodoContable").val(json.Anio + "|" + json.Mes);
+                $("#txtFechaAsiento").val(formatearFechaInput(json.FechaAsiento));
                 $("#txtTipoAsiento").val(json.TipoAsiento || "");
                 $("#txtConcepto").val(json.Concepto || "");
-                $("#cboActivo").val(json.Activo ? "true" : "false");
-                $("#tituloModal").text("Editar asiento contable");
 
-                bloquearDetalle(false);
-                cargarDetallesAsiento(json.IdAsientoContable);
+                $("#cboActivoAsiento").val(json.Activo ? "true" : "false");
+                $("#grupoActivoAsiento").show();
+
+                $("#tituloModalAsiento").text("Editar asiento contable");
+
+                cargarDetallesAsiento(json.NumeroAsiento);
             }
 
-            $("#FormModal").modal("show");
+            $("#FormModalAsiento").modal("show");
         }
 
-        function guardarAsientoContable() {
-            var obj = {
-                IdAsientoContable: parseInt($("#txtIdAsientoContable").val()),
-                IdPeriodoContable: parseInt($("#cboPeriodoContable").val()),
-                FechaAsiento: $("#txtFechaAsiento").val(),
-                TipoAsiento: $("#txtTipoAsiento").val().trim(),
-                Concepto: $("#txtConcepto").val().trim(),
-                Activo: $("#cboActivo").val() === "true"
-            };
+        function guardarAsiento() {
+            $("#mensajeErrorAsiento").hide().text("");
+            $("#mensajeExitoAsiento").hide().text("");
 
-            if (obj.IdPeriodoContable === 0 || isNaN(obj.IdPeriodoContable)) {
-                $("#mensajeError").text("Debe seleccionar un período contable.").show();
+            var periodo = obtenerPeriodoSeleccionado();
+
+            if (periodo == null) {
+                mostrarErrorAsiento("Debe seleccionar un período contable.", "cboPeriodoContable");
                 return;
             }
 
+            var obj = {
+                NumeroAsiento: $("#txtNumeroAsiento").val().trim(),
+                Anio: periodo.Anio,
+                Mes: periodo.Mes,
+                FechaAsiento: $("#txtFechaAsiento").val(),
+                TipoAsiento: $("#txtTipoAsiento").val().trim(),
+                Concepto: $("#txtConcepto").val().trim(),
+                Activo: $("#cboActivoAsiento").val() === "true"
+            };
+
             if (obj.FechaAsiento === "") {
-                $("#mensajeError").text("Debe ingresar la fecha del asiento.").show();
+                mostrarErrorAsiento("Debe ingresar la fecha del asiento.", "txtFechaAsiento");
                 return;
             }
 
             if (obj.TipoAsiento === "") {
-                $("#mensajeError").text("Debe ingresar el tipo de asiento.").show();
+                mostrarErrorAsiento("Debe ingresar el tipo de asiento.", "txtTipoAsiento");
+                return;
+            }
+
+            if (!validarTextoGeneral(obj.TipoAsiento)) {
+                mostrarErrorAsiento("El tipo de asiento solo puede contener letras, números, espacios y caracteres básicos.", "txtTipoAsiento");
                 return;
             }
 
             if (obj.TipoAsiento.length > 45) {
-                $("#mensajeError").text("El tipo de asiento no puede superar los 45 caracteres.").show();
+                mostrarErrorAsiento("El tipo de asiento no puede superar los 45 caracteres.", "txtTipoAsiento");
                 return;
             }
 
             if (obj.Concepto === "") {
-                $("#mensajeError").text("Debe ingresar el concepto del asiento.").show();
+                mostrarErrorAsiento("Debe ingresar el concepto del asiento.", "txtConcepto");
                 return;
             }
 
-            if (obj.Concepto.length > 45) {
-                $("#mensajeError").text("El concepto no puede superar los 45 caracteres.").show();
+            if (!validarTextoGeneral(obj.Concepto)) {
+                mostrarErrorAsiento("El concepto solo puede contener letras, números, espacios y caracteres básicos.", "txtConcepto");
+                return;
+            }
+
+            if (obj.Concepto.length > 150) {
+                mostrarErrorAsiento("El concepto no puede superar los 150 caracteres.", "txtConcepto");
                 return;
             }
 
@@ -449,40 +656,40 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        var idGenerado = respuesta.resultado;
-
-                        if (obj.IdAsientoContable === 0) {
-                            $("#txtIdAsientoContable").val(idGenerado);
-                            bloquearDetalle(false);
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        if (obj.NumeroAsiento === "") {
+                            $("#txtNumeroAsiento").val(respuesta.numeroAsiento || "");
+                            $("#txtNumeroAsientoVisible").val(respuesta.numeroAsiento || "");
+                            $("#grupoActivoAsiento").show();
+                            $("#tituloModalAsiento").text("Editar asiento contable");
+                            $("#mensajeExitoAsiento").text("Asiento guardado correctamente. Ya puede agregar líneas.").show();
+                        } else {
+                            $("#mensajeExitoAsiento").text("Asiento actualizado correctamente.").show();
                         }
 
-                        $("#mensajeError").hide().text("");
-                        cargarAsientosContables();
-
-                        alert(respuesta.mensaje);
+                        cargarAsientos();
                     } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
+                        $("#mensajeErrorAsiento").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
-                    $("#mensajeError").text("Error al guardar el asiento contable.").show();
+                    $("#mensajeErrorAsiento").text("Error al guardar el asiento contable.").show();
                 }
             });
         }
 
-        function cargarDetallesAsiento(idAsientoContable) {
+        function cargarDetallesAsiento(numeroAsiento) {
             $.ajax({
-                url: '@Url.Action("ListarDetallesAsientoContable", "GestionarAsientoContable")',
+                url: '@Url.Action("ListarDetallesAsientoContablePorAsiento", "GestionarAsientoContable")',
                 type: "GET",
-                data: { idAsientoContable: idAsientoContable },
+                data: { numeroAsiento: numeroAsiento },
                 dataType: "json",
                 success: function (respuesta) {
-                    listaDetalles = respuesta.data;
+                    listaDetalles = respuesta.data || [];
                     pintarDetalles();
                 },
                 error: function () {
-                    alert("Error al cargar los detalles del asiento.");
+                    $("#mensajeErrorDetalle").text("Error al cargar los detalles del asiento.").show();
                 }
             });
         }
@@ -494,145 +701,109 @@
             var totalDebe = 0;
             var totalHaber = 0;
 
-            if (listaDetalles.length === 0) {
-                tbody.append(`
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">
-                            No hay líneas registradas.
-                        </td>
-                    </tr>
-                `);
-                actualizarTotalesDetalle(0, 0);
-                return;
-            }
-
             $.each(listaDetalles, function (i, item) {
-                var debe = parseFloat(item.Debe || 0);
-                var haber = parseFloat(item.Haber || 0);
-
                 if (item.Activo) {
-                    totalDebe += debe;
-                    totalHaber += haber;
+                    totalDebe += parseFloat(item.Debe || 0);
+                    totalHaber += parseFloat(item.Haber || 0);
                 }
 
+                var cuenta = (item.CodigoCuenta || "") + " - " + (item.NombreCuenta || "");
+
                 var estado = item.Activo
-                    ? '<span class="badge badge-info">Activo</span>'
+                    ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var cuenta = item.CodigoCuenta + " - " + item.NombreCuenta;
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    editarDetalle(item);
+                });
 
-                var fila = `
-                    <tr>
-                        <td>${cuenta}</td>
-                        <td>${debe.toFixed(2)}</td>
-                        <td>${haber.toFixed(2)}</td>
-                        <td>${item.DescripcionLinea || ""}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick='editarDetalle(${JSON.stringify(item)})'>
-                                Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarDetalleAsiento(${item.IdDetalleAsientoContable})">
-                                Inactivar
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarDetalle(item.NumeroAsiento, item.NumeroLinea);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.NumeroLinea));
+                fila.append($("<td>", { class: "codigo-cuenta", text: cuenta }));
+                fila.append($("<td>").text(formatearMoneda(item.Debe)));
+                fila.append($("<td>").text(formatearMoneda(item.Haber)));
+                fila.append($("<td>").text(item.DescripcionLinea || ""));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
             });
 
-            actualizarTotalesDetalle(totalDebe, totalHaber);
+            $("#lblTotalDebe").text(formatearMoneda(totalDebe));
+            $("#lblTotalHaber").text(formatearMoneda(totalHaber));
+            $("#lblDiferencia").text(formatearMoneda(Math.abs(totalDebe - totalHaber)));
         }
 
-        function actualizarTotalesDetalle(totalDebe, totalHaber) {
-            var diferencia = totalDebe - totalHaber;
+        function guardarDetalleAsiento() {
+            $("#mensajeErrorDetalle").hide().text("");
 
-            $("#lblTotalDebe").text("Debe: " + totalDebe.toFixed(2));
-            $("#lblTotalHaber").text("Haber: " + totalHaber.toFixed(2));
-            $("#lblDiferencia").text("Diferencia: " + diferencia.toFixed(2));
+            var numeroAsiento = $("#txtNumeroAsiento").val().trim();
 
-            if (diferencia === 0 && totalDebe > 0) {
-                $("#lblDiferencia").removeClass().addClass("badge badge-success");
-            } else {
-                $("#lblDiferencia").removeClass().addClass("badge badge-warning");
-            }
-        }
-
-        function bloquearDetalle(bloquear) {
-            $("#cboCuentaContable").prop("disabled", bloquear);
-            $("#txtDebe").prop("disabled", bloquear);
-            $("#txtHaber").prop("disabled", bloquear);
-            $("#txtDescripcionLinea").prop("disabled", bloquear);
-            $("#btnGuardarDetalle").prop("disabled", bloquear);
-            $("#btnLimpiarDetalle").prop("disabled", bloquear);
-
-            if (bloquear) {
-                $("#textoAyudaDetalle").text("Para agregar líneas, primero guarde el encabezado del asiento.");
-            } else {
-                $("#textoAyudaDetalle").text("Agregue las líneas del asiento. El total debe debe ser igual al total haber.");
-            }
-        }
-
-        function limpiarDetalle() {
-            $("#txtIdDetalleAsientoContable").val(0);
-            $("#cboCuentaContable").val(0);
-            $("#txtDebe").val("");
-            $("#txtHaber").val("");
-            $("#txtDescripcionLinea").val("");
-        }
-
-        function editarDetalle(item) {
-            $("#txtIdDetalleAsientoContable").val(item.IdDetalleAsientoContable);
-            $("#cboCuentaContable").val(item.IdCuentaContable);
-            $("#txtDebe").val(item.Debe);
-            $("#txtHaber").val(item.Haber);
-            $("#txtDescripcionLinea").val(item.DescripcionLinea || "");
-        }
-
-        function guardarDetalleAsientoContable() {
-            var idAsientoContable = parseInt($("#txtIdAsientoContable").val());
-
-            var debe = $("#txtDebe").val() === "" ? 0 : parseFloat($("#txtDebe").val());
-            var haber = $("#txtHaber").val() === "" ? 0 : parseFloat($("#txtHaber").val());
-
-            var obj = {
-                IdDetalleAsientoContable: parseInt($("#txtIdDetalleAsientoContable").val()),
-                IdAsientoContable: idAsientoContable,
-                IdCuentaContable: parseInt($("#cboCuentaContable").val()),
-                Debe: debe,
-                Haber: haber,
-                DescripcionLinea: $("#txtDescripcionLinea").val().trim(),
-                Activo: true
-            };
-
-            if (obj.IdAsientoContable === 0 || isNaN(obj.IdAsientoContable)) {
-                $("#mensajeError").text("Primero debe guardar el encabezado del asiento.").show();
+            if (numeroAsiento === "") {
+                $("#mensajeErrorDetalle").text("Primero debe guardar el asiento contable.").show();
                 return;
             }
 
-            if (obj.IdCuentaContable === 0 || isNaN(obj.IdCuentaContable)) {
-                $("#mensajeError").text("Debe seleccionar una cuenta contable.").show();
+            var obj = {
+                NumeroAsiento: numeroAsiento,
+                NumeroLinea: parseInt($("#txtNumeroLinea").val()),
+                CodigoCuenta: $("#cboCuentaContable").val(),
+                Debe: parseFloat($("#txtDebe").val()),
+                Haber: parseFloat($("#txtHaber").val()),
+                DescripcionLinea: $("#txtDescripcionLinea").val().trim(),
+                Activo: $("#cboActivoDetalle").val() === "true"
+            };
+
+            if (isNaN(obj.NumeroLinea)) obj.NumeroLinea = 0;
+            if (isNaN(obj.Debe)) obj.Debe = 0;
+            if (isNaN(obj.Haber)) obj.Haber = 0;
+
+            if (obj.CodigoCuenta == null || obj.CodigoCuenta === "") {
+                $("#mensajeErrorDetalle").text("Debe seleccionar una cuenta contable.").show();
                 return;
             }
 
             if (obj.Debe < 0 || obj.Haber < 0) {
-                $("#mensajeError").text("Los montos no pueden ser negativos.").show();
+                $("#mensajeErrorDetalle").text("Los montos de debe y haber no pueden ser negativos.").show();
                 return;
             }
 
             if (obj.Debe === 0 && obj.Haber === 0) {
-                $("#mensajeError").text("Debe ingresar un monto en debe o en haber.").show();
+                $("#mensajeErrorDetalle").text("Debe ingresar un monto en debe o en haber.").show();
                 return;
             }
 
             if (obj.Debe > 0 && obj.Haber > 0) {
-                $("#mensajeError").text("Una línea no puede tener debe y haber al mismo tiempo.").show();
+                $("#mensajeErrorDetalle").text("No puede ingresar monto en debe y haber al mismo tiempo.").show();
                 return;
             }
 
             if (obj.DescripcionLinea.length > 150) {
-                $("#mensajeError").text("La descripción de la línea no puede superar los 150 caracteres.").show();
+                $("#mensajeErrorDetalle").text("La descripción de la línea no puede superar los 150 caracteres.").show();
+                return;
+            }
+
+            if (obj.DescripcionLinea !== "" && !validarTextoGeneral(obj.DescripcionLinea)) {
+                $("#mensajeErrorDetalle").text("La descripción de la línea solo puede contener letras, números, espacios y caracteres básicos.").show();
                 return;
             }
 
@@ -643,24 +814,42 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        $("#mensajeError").hide().text("");
-                        limpiarDetalle();
-                        cargarDetallesAsiento(idAsientoContable);
-                        cargarAsientosContables();
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        limpiarFormularioDetalle();
+                        cargarDetallesAsiento(numeroAsiento);
+                        cargarAsientos();
                     } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
+                        $("#mensajeErrorDetalle").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
-                    $("#mensajeError").text("Error al guardar el detalle del asiento.").show();
+                    $("#mensajeErrorDetalle").text("Error al guardar el detalle del asiento.").show();
                 }
             });
         }
 
-        function inactivarDetalleAsiento(idDetalleAsientoContable) {
-            var idAsientoContable = parseInt($("#txtIdAsientoContable").val());
+        function editarDetalle(item) {
+            $("#txtNumeroLinea").val(item.NumeroLinea);
+            $("#cboCuentaContable").val(item.CodigoCuenta);
+            $("#txtDebe").val(formatearNumero(item.Debe));
+            $("#txtHaber").val(formatearNumero(item.Haber));
+            $("#txtDescripcionLinea").val(item.DescripcionLinea || "");
+            $("#cboActivoDetalle").val(item.Activo ? "true" : "false");
+            $("#grupoActivoDetalle").show();
+        }
 
+        function limpiarFormularioDetalle() {
+            $("#txtNumeroLinea").val("0");
+            $("#cboCuentaContable").val("");
+            $("#txtDebe").val("0.00");
+            $("#txtHaber").val("0.00");
+            $("#txtDescripcionLinea").val("");
+            $("#cboActivoDetalle").val("true");
+            $("#grupoActivoDetalle").hide();
+            $("#mensajeErrorDetalle").hide().text("");
+        }
+
+        function inactivarDetalle(numeroAsiento, numeroLinea) {
             if (!confirm("¿Desea inactivar esta línea del asiento?")) {
                 return;
             }
@@ -668,38 +857,111 @@
             $.ajax({
                 url: '@Url.Action("InactivarDetalleAsientoContable", "GestionarAsientoContable")',
                 type: "POST",
-                data: JSON.stringify({ idDetalleAsientoContable: idDetalleAsientoContable }),
+                data: JSON.stringify({
+                    numeroAsiento: numeroAsiento,
+                    numeroLinea: numeroLinea
+                }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        limpiarDetalle();
-                        cargarDetallesAsiento(idAsientoContable);
-                        cargarAsientosContables();
+                        limpiarFormularioDetalle();
+                        cargarDetallesAsiento(numeroAsiento);
+                        cargarAsientos();
                     } else {
-                        alert(respuesta.mensaje);
+                        $("#mensajeErrorDetalle").text(respuesta.mensaje).show();
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el detalle del asiento.");
+                    $("#mensajeErrorDetalle").text("Error al inactivar la línea.").show();
                 }
             });
         }
 
-        function inactivarAsientoContable(idAsientoContable) {
-            if (!confirm("¿Desea inactivar este asiento contable?")) {
+        function validarCuadreAsiento() {
+            var numeroAsiento = $("#txtNumeroAsiento").val().trim();
+
+            if (numeroAsiento === "") {
+                $("#mensajeErrorAsiento").text("Primero debe guardar el asiento contable.").show();
+                return;
+            }
+
+            validarCuadreAsientoDesdeTabla(numeroAsiento);
+        }
+
+        function validarCuadreAsientoDesdeTabla(numeroAsiento) {
+            $.ajax({
+                url: '@Url.Action("ValidarCuadreAsientoContable", "GestionarAsientoContable")',
+                type: "POST",
+                data: JSON.stringify({ numeroAsiento: numeroAsiento }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        alert(respuesta.mensaje);
+                    } else {
+                        alert(respuesta.mensaje);
+                    }
+
+                    cargarAsientos();
+
+                    if ($("#txtNumeroAsiento").val().trim() === numeroAsiento) {
+                        cargarDetallesAsiento(numeroAsiento);
+                    }
+                },
+                error: function () {
+                    alert("Error al validar el cuadre del asiento.");
+                }
+            });
+        }
+
+        function recalcularTotalesAsiento() {
+            var numeroAsiento = $("#txtNumeroAsiento").val().trim();
+
+            if (numeroAsiento === "") {
+                $("#mensajeErrorAsiento").text("Primero debe guardar el asiento contable.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("RecalcularTotalesAsientoContable", "GestionarAsientoContable")',
+                type: "POST",
+                data: JSON.stringify({ numeroAsiento: numeroAsiento }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        $("#mensajeExitoAsiento").text(respuesta.mensaje).show();
+                        cargarDetallesAsiento(numeroAsiento);
+                        cargarAsientos();
+                    } else {
+                        $("#mensajeErrorAsiento").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorAsiento").text("Error al recalcular totales.").show();
+                }
+            });
+        }
+
+        function inactivarAsiento(numeroAsiento) {
+            if (!confirm("¿Desea inactivar este asiento contable? También se inactivarán sus líneas.")) {
                 return;
             }
 
             $.ajax({
                 url: '@Url.Action("InactivarAsientoContable", "GestionarAsientoContable")',
                 type: "POST",
-                data: JSON.stringify({ idAsientoContable: idAsientoContable }),
+                data: JSON.stringify({ numeroAsiento: numeroAsiento }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        cargarAsientosContables();
+                        cargarAsientos();
+
+                        if ($("#txtNumeroAsiento").val().trim() === numeroAsiento) {
+                            $("#FormModalAsiento").modal("hide");
+                        }
                     } else {
                         alert(respuesta.mensaje);
                     }
@@ -710,32 +972,132 @@
             });
         }
 
-        function validarCuadreAsiento() {
-            var idAsientoContable = parseInt($("#txtIdAsientoContable").val());
+        function obtenerPeriodoSeleccionado() {
+            var valor = $("#cboPeriodoContable").val();
 
-            if (idAsientoContable === 0 || isNaN(idAsientoContable)) {
-                $("#mensajeError").text("Debe guardar primero el asiento.").show();
-                return;
+            if (valor == null || valor === "") {
+                return null;
             }
 
-            validarCuadreDesdeTabla(idAsientoContable);
+            var partes = valor.split("|");
+
+            if (partes.length !== 2) {
+                return null;
+            }
+
+            var anio = parseInt(partes[0]);
+            var mes = parseInt(partes[1]);
+
+            if (isNaN(anio) || isNaN(mes)) {
+                return null;
+            }
+
+            for (var i = 0; i < listaPeriodos.length; i++) {
+                if (parseInt(listaPeriodos[i].Anio) === anio && parseInt(listaPeriodos[i].Mes) === mes) {
+                    return listaPeriodos[i];
+                }
+            }
+
+            return {
+                Anio: anio,
+                Mes: mes
+            };
         }
 
-        function validarCuadreDesdeTabla(idAsientoContable) {
-            $.ajax({
-                url: '@Url.Action("ValidarCuadreAsientoContable", "GestionarAsientoContable")',
-                type: "POST",
-                data: JSON.stringify({ idAsientoContable: idAsientoContable }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    alert(respuesta.mensaje);
-                    cargarAsientosContables();
-                },
-                error: function () {
-                    alert("Error al validar el cuadre del asiento.");
-                }
-            });
+        function mostrarErrorAsiento(mensaje, idCampo) {
+            $("#mensajeErrorAsiento").text(mensaje).show();
+
+            if (idCampo) {
+                mostrarAyudaCampo(idCampo, mensaje);
+                $("#" + idCampo).focus();
+            }
+        }
+
+        function mostrarAyudaCampo(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            if ($("#" + idMensaje).length === 0) {
+                campo.after('<small id="' + idMensaje + '" class="campo-ayuda-error"></small>');
+            }
+
+            $("#" + idMensaje).text(mensaje).fadeIn(150);
+            campo.addClass("input-error-suave");
+        }
+
+        function ocultarAyudaCampo(idCampo) {
+            var campo = $("#" + idCampo);
+            var idMensaje = "msg_" + idCampo;
+
+            $("#" + idMensaje).fadeOut(150);
+            campo.removeClass("input-error-suave");
+        }
+
+        function limpiarErrores() {
+            $("#mensajeErrorAsiento").hide().text("");
+            $("#mensajeExitoAsiento").hide().text("");
+            $("#mensajeErrorDetalle").hide().text("");
+            $(".campo-ayuda-error").hide().text("");
+            $(".input-error-suave").removeClass("input-error-suave");
+        }
+
+        function limpiarTextoGeneral(idCampo, mensaje) {
+            var campo = $("#" + idCampo);
+            var valorOriginal = campo.val();
+            var valorLimpio = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]/g, "");
+
+            if (valorOriginal !== valorLimpio) {
+                campo.val(valorLimpio);
+                mostrarAyudaCampo(idCampo, mensaje);
+            } else {
+                ocultarAyudaCampo(idCampo);
+            }
+        }
+
+        function validarTextoGeneral(valor) {
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
+        }
+
+        function convertirFechaInput(fecha) {
+            var mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+            var dia = fecha.getDate().toString().padStart(2, "0");
+
+            return fecha.getFullYear() + "-" + mes + "-" + dia;
+        }
+
+        function formatearFechaInput(valor) {
+            if (valor == null || valor === "") {
+                return "";
+            }
+
+            if (typeof valor === "string" && valor.indexOf("/Date(") === 0) {
+                var ticks = parseInt(valor.replace("/Date(", "").replace(")/", ""));
+                var fecha = new Date(ticks);
+
+                return convertirFechaInput(fecha);
+            }
+
+            if (typeof valor === "string" && valor.length >= 10) {
+                return valor.substring(0, 10);
+            }
+
+            return "";
+        }
+
+        function formatearFechaTexto(valor) {
+            var fechaInput = formatearFechaInput(valor);
+
+            if (fechaInput === "") {
+                return "-";
+            }
+
+            var partes = fechaInput.split("-");
+
+            if (partes.length !== 3) {
+                return fechaInput;
+            }
+
+            return partes[2] + "/" + partes[1] + "/" + partes[0];
         }
 
         function obtenerNombreMes(mes) {
@@ -756,40 +1118,27 @@
             }
         }
 
-        function formatearFecha(valor) {
-            if (!valor) {
-                return "";
+        function formatearNumero(valor) {
+            var numero = parseFloat(valor);
+
+            if (isNaN(numero)) {
+                return "0.00";
             }
 
-            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
-
-            if (isNaN(fecha.getTime())) {
-                fecha = new Date(valor);
-            }
-
-            return convertirDateAInput(fecha);
+            return numero.toFixed(2);
         }
 
-        function convertirFechaInput(valor) {
-            if (!valor) {
-                return "";
+        function formatearMoneda(valor) {
+            var numero = parseFloat(valor);
+
+            if (isNaN(numero)) {
+                numero = 0;
             }
 
-            var fecha = new Date(parseInt(valor.replace("/Date(", "").replace(")/", "")));
-
-            if (isNaN(fecha.getTime())) {
-                fecha = new Date(valor);
-            }
-
-            return convertirDateAInput(fecha);
-        }
-
-        function convertirDateAInput(fecha) {
-            var anio = fecha.getFullYear();
-            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
-            var dia = ("0" + fecha.getDate()).slice(-2);
-
-            return anio + "-" + mes + "-" + dia;
+            return "₡" + numero.toLocaleString("es-CR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
     </script>
 }

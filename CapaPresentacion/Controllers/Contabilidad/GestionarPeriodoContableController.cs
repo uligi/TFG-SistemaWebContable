@@ -1,11 +1,13 @@
 ﻿using CapaEntidad.Contabilidad;
 using CapaNegocio.Contabilidad;
+using CapaPresentacion.Filtros;
 using System.Web.Mvc;
 
 namespace CapaPresentacion.Controllers.Contabilidad
 {
     public class GestionarPeriodoContableController : Controller
     {
+        [PermisoAuthorize(CodigoModulo = "PERIODO_CONTABLE")]
         public ActionResult PeriodosContables()
         {
             return View();
@@ -26,10 +28,17 @@ namespace CapaPresentacion.Controllers.Contabilidad
         }
 
         [HttpGet]
-        public JsonResult ListarPeriodoContableAbierto()
+        public JsonResult ListarPeriodosContablesAbiertos()
         {
-            var lista = new CN_PeriodoContable().ListarAbierto();
+            var lista = new CN_PeriodoContable().ListarAbiertos();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerPeriodoContable(int anio, int mes)
+        {
+            var obj = new CN_PeriodoContable().Obtener(anio, mes);
+            return Json(new { data = obj }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -38,7 +47,9 @@ namespace CapaPresentacion.Controllers.Contabilidad
             object resultado;
             string mensaje = string.Empty;
 
-            if (obj.IdPeriodoContable == 0)
+            PeriodoContable periodoExistente = new CN_PeriodoContable().Obtener(obj.Anio, obj.Mes);
+
+            if (periodoExistente == null)
             {
                 resultado = new CN_PeriodoContable().Registrar(obj, out mensaje);
             }
@@ -47,33 +58,47 @@ namespace CapaPresentacion.Controllers.Contabilidad
                 resultado = new CN_PeriodoContable().Editar(obj, out mensaje);
             }
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult CerrarPeriodoContable(int idPeriodoContable)
+        public JsonResult CerrarPeriodoContable(int anio, int mes)
         {
             string mensaje = string.Empty;
 
             bool resultado = new CN_PeriodoContable().Cerrar(
-                idPeriodoContable,
+                anio,
+                mes,
                 out mensaje
             );
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult InactivarPeriodoContable(int idPeriodoContable)
+        public JsonResult InactivarPeriodoContable(int anio, int mes)
         {
             string mensaje = string.Empty;
 
             bool resultado = new CN_PeriodoContable().Inactivar(
-                idPeriodoContable,
+                anio,
+                mes,
                 out mensaje
             );
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

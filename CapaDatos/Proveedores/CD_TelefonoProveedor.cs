@@ -29,9 +29,58 @@ namespace CapaDatos.Proveedores
                             {
                                 IdentificacionProveedor = dr["IdentificacionProveedor"].ToString(),
                                 RazonSocial = dr["RazonSocial"].ToString(),
+
                                 NumeroTelefono = dr["NumeroTelefono"].ToString(),
+                                NumeroTelefonoAnterior = dr["NumeroTelefono"].ToString(),
+
                                 IdTipoTelefono = Convert.ToInt32(dr["IdTipoTelefono"]),
                                 TipoTelefonoNombre = dr["TipoTelefonoNombre"].ToString(),
+
+                                EsPrincipal = Convert.ToBoolean(dr["EsPrincipal"]),
+                                Activo = Convert.ToBoolean(dr["Activo"])
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<TelefonoProveedor>();
+            }
+
+            return lista;
+        }
+
+        public List<TelefonoProveedor> ListarPorProveedor(string identificacionProveedor)
+        {
+            List<TelefonoProveedor> lista = new List<TelefonoProveedor>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Persona.sp_TelefonoProveedor_ListarPorProveedor", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@IdentificacionProveedor", identificacionProveedor ?? "");
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new TelefonoProveedor()
+                            {
+                                IdentificacionProveedor = dr["IdentificacionProveedor"].ToString(),
+                                RazonSocial = dr["RazonSocial"].ToString(),
+
+                                NumeroTelefono = dr["NumeroTelefono"].ToString(),
+                                NumeroTelefonoAnterior = dr["NumeroTelefono"].ToString(),
+
+                                IdTipoTelefono = Convert.ToInt32(dr["IdTipoTelefono"]),
+                                TipoTelefonoNombre = dr["TipoTelefonoNombre"].ToString(),
+
                                 EsPrincipal = Convert.ToBoolean(dr["EsPrincipal"]),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
@@ -83,7 +132,7 @@ namespace CapaDatos.Proveedores
             return resultado;
         }
 
-        public bool Editar(string numeroAnterior, TelefonoProveedor obj, out string Mensaje)
+        public bool Editar(TelefonoProveedor obj, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -96,7 +145,7 @@ namespace CapaDatos.Proveedores
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@IdentificacionProveedor", obj.IdentificacionProveedor);
-                    cmd.Parameters.AddWithValue("@NumeroTelefonoAnterior", numeroAnterior);
+                    cmd.Parameters.AddWithValue("@NumeroTelefonoAnterior", obj.NumeroTelefonoAnterior);
                     cmd.Parameters.AddWithValue("@NumeroTelefonoNuevo", obj.NumeroTelefono);
                     cmd.Parameters.AddWithValue("@IdTipoTelefono", obj.IdTipoTelefono);
                     cmd.Parameters.AddWithValue("@EsPrincipal", obj.EsPrincipal);
@@ -133,8 +182,8 @@ namespace CapaDatos.Proveedores
                     SqlCommand cmd = new SqlCommand("Persona.sp_TelefonoProveedor_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdentificacionProveedor", identificacionProveedor);
-                    cmd.Parameters.AddWithValue("@NumeroTelefono", numeroTelefono);
+                    cmd.Parameters.AddWithValue("@IdentificacionProveedor", identificacionProveedor ?? "");
+                    cmd.Parameters.AddWithValue("@NumeroTelefono", numeroTelefono ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

@@ -1,7 +1,7 @@
 ﻿using CapaDatos.Presupuesto;
 using CapaEntidad.Presupuesto;
-using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace CapaNegocio.Presupuesto
 {
@@ -14,19 +14,32 @@ namespace CapaNegocio.Presupuesto
             return objCapaDato.Listar();
         }
 
+        public PresupuestoMensual Obtener(int anio, int mes)
+        {
+            if (anio < 2000 || anio > 2100)
+            {
+                return null;
+            }
+
+            if (mes < 1 || mes > 12)
+            {
+                return null;
+            }
+
+            return objCapaDato.Obtener(anio, mes);
+        }
+
         public int Registrar(PresupuestoMensual obj, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (obj.Anio < 2000 || obj.Anio > 2100)
-            {
-                Mensaje = "Debe ingresar un año válido.";
-                return 0;
-            }
+            PrepararDatos(obj);
 
-            if (obj.Mes < 1 || obj.Mes > 12)
+            string error = Validar(obj);
+
+            if (error != "")
             {
-                Mensaje = "Debe seleccionar un mes válido.";
+                Mensaje = error;
                 return 0;
             }
 
@@ -37,60 +50,146 @@ namespace CapaNegocio.Presupuesto
         {
             Mensaje = string.Empty;
 
-            if (obj.IdPresupuestoMensual == 0)
-            {
-                Mensaje = "Debe seleccionar un presupuesto válido.";
-                return false;
-            }
+            PrepararDatos(obj);
 
-            if (obj.Anio < 2000 || obj.Anio > 2100)
-            {
-                Mensaje = "Debe ingresar un año válido.";
-                return false;
-            }
+            string error = Validar(obj);
 
-            if (obj.Mes < 1 || obj.Mes > 12)
+            if (error != "")
             {
-                Mensaje = "Debe seleccionar un mes válido.";
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(obj.Estado))
-            {
-                Mensaje = "Debe seleccionar un estado.";
-                return false;
-            }
-
-            obj.Estado = obj.Estado.Trim();
-
-            if (obj.Estado != "Borrador" &&
-                obj.Estado != "Aprobado" &&
-                obj.Estado != "Cerrado" &&
-                obj.Estado != "Anulado")
-            {
-                Mensaje = "El estado debe ser Borrador, Aprobado, Cerrado o Anulado.";
+                Mensaje = error;
                 return false;
             }
 
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int idPresupuestoMensual, out string Mensaje)
+        public bool Inactivar(int anio, int mes, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (idPresupuestoMensual == 0)
+            if (anio < 2000 || anio > 2100)
             {
-                Mensaje = "Debe seleccionar un presupuesto válido.";
+                Mensaje = "Debe ingresar un año válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(idPresupuestoMensual, out Mensaje);
+            if (mes < 1 || mes > 12)
+            {
+                Mensaje = "Debe ingresar un mes válido.";
+                return false;
+            }
+
+            return objCapaDato.Inactivar(anio, mes, out Mensaje);
         }
 
-        public List<ResumenPresupuestoMensual> ResumenVsReal(int idPresupuestoMensual)
+        public bool Cerrar(int anio, int mes, out string Mensaje)
         {
-            return objCapaDato.ResumenVsReal(idPresupuestoMensual);
+            Mensaje = string.Empty;
+
+            if (anio < 2000 || anio > 2100)
+            {
+                Mensaje = "Debe ingresar un año válido.";
+                return false;
+            }
+
+            if (mes < 1 || mes > 12)
+            {
+                Mensaje = "Debe ingresar un mes válido.";
+                return false;
+            }
+
+            return objCapaDato.Cerrar(anio, mes, out Mensaje);
+        }
+
+        public bool Reabrir(int anio, int mes, out string Mensaje)
+        {
+            Mensaje = string.Empty;
+
+            if (anio < 2000 || anio > 2100)
+            {
+                Mensaje = "Debe ingresar un año válido.";
+                return false;
+            }
+
+            if (mes < 1 || mes > 12)
+            {
+                Mensaje = "Debe ingresar un mes válido.";
+                return false;
+            }
+
+            return objCapaDato.Reabrir(anio, mes, out Mensaje);
+        }
+
+        public List<ResumenPresupuestoMensual> ResumenVsReal(int anio, int mes)
+        {
+            if (anio < 2000 || anio > 2100)
+            {
+                return new List<ResumenPresupuestoMensual>();
+            }
+
+            if (mes < 1 || mes > 12)
+            {
+                return new List<ResumenPresupuestoMensual>();
+            }
+
+            return objCapaDato.ResumenVsReal(anio, mes);
+        }
+
+        public ResumenPresupuestoMensual ResumenGeneral(int anio, int mes)
+        {
+            if (anio < 2000 || anio > 2100)
+            {
+                return new ResumenPresupuestoMensual();
+            }
+
+            if (mes < 1 || mes > 12)
+            {
+                return new ResumenPresupuestoMensual();
+            }
+
+            return objCapaDato.ResumenGeneral(anio, mes);
+        }
+
+        private void PrepararDatos(PresupuestoMensual obj)
+        {
+            obj.Estado = obj.Estado == null ? "" : obj.Estado.Trim();
+
+            if (obj.Estado == "")
+            {
+                obj.Estado = "Abierto";
+            }
+
+            obj.MesNombre = obj.MesNombre == null ? "" : obj.MesNombre.Trim();
+        }
+
+        private string Validar(PresupuestoMensual obj)
+        {
+            if (obj.Anio < 2000 || obj.Anio > 2100)
+            {
+                return "Debe ingresar un año válido.";
+            }
+
+            if (obj.Mes < 1 || obj.Mes > 12)
+            {
+                return "Debe ingresar un mes válido.";
+            }
+
+            if (string.IsNullOrWhiteSpace(obj.Estado))
+            {
+                return "Debe ingresar el estado.";
+            }
+
+            if (obj.Estado.Length > 45)
+            {
+                return "El estado no puede superar los 45 caracteres.";
+            }
+
+            if (!Regex.IsMatch(obj.Estado, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$"))
+            {
+                return "El estado solo puede contener letras, números, espacios y caracteres básicos.";
+            }
+
+            return "";
         }
     }
 }

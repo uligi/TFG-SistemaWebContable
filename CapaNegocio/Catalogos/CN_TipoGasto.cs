@@ -28,6 +28,9 @@ namespace CapaNegocio.Catalogos
                 return 0;
             }
 
+            obj.Nombre = obj.Nombre.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Nombre.Length > 45)
             {
                 Mensaje = "El nombre del tipo de gasto no puede superar los 45 caracteres.";
@@ -53,7 +56,7 @@ namespace CapaNegocio.Catalogos
         {
             Mensaje = string.Empty;
 
-            if (obj.IdTipoGasto == 0)
+            if (obj.IdTipoGasto <= 0)
             {
                 Mensaje = "Debe seleccionar un tipo de gasto válido.";
                 return false;
@@ -64,6 +67,9 @@ namespace CapaNegocio.Catalogos
                 Mensaje = "El nombre del tipo de gasto es obligatorio.";
                 return false;
             }
+
+            obj.Nombre = obj.Nombre.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
 
             if (obj.Nombre.Length > 45)
             {
@@ -86,17 +92,17 @@ namespace CapaNegocio.Catalogos
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idTipoGasto, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (idTipoGasto <= 0)
             {
                 Mensaje = "Debe seleccionar un tipo de gasto válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(idTipoGasto, out Mensaje);
         }
     }
 }

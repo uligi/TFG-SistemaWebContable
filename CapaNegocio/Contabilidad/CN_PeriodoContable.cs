@@ -19,56 +19,37 @@ namespace CapaNegocio.Contabilidad
             return objCapaDato.ListarActivos();
         }
 
-        public List<PeriodoContable> ListarAbierto()
+        public List<PeriodoContable> ListarAbiertos()
         {
-            return objCapaDato.ListarAbierto();
+            return objCapaDato.ListarAbiertos();
+        }
+
+        public PeriodoContable Obtener(int anio, int mes)
+        {
+            if (anio < 2000 || anio > 2100)
+            {
+                return null;
+            }
+
+            if (mes < 1 || mes > 12)
+            {
+                return null;
+            }
+
+            return objCapaDato.Obtener(anio, mes);
         }
 
         public int Registrar(PeriodoContable obj, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (obj.Anio < 2000 || obj.Anio > 2100)
-            {
-                Mensaje = "Debe ingresar un año válido.";
-                return 0;
-            }
+            PrepararDatos(obj);
 
-            if (obj.Mes < 1 || obj.Mes > 12)
-            {
-                Mensaje = "Debe ingresar un mes válido.";
-                return 0;
-            }
+            string error = Validar(obj, false);
 
-            if (obj.FechaInicio == DateTime.MinValue)
+            if (error != "")
             {
-                Mensaje = "Debe ingresar la fecha de inicio.";
-                return 0;
-            }
-
-            if (obj.FechaFin == DateTime.MinValue)
-            {
-                Mensaje = "Debe ingresar la fecha final.";
-                return 0;
-            }
-
-            if (obj.FechaInicio > obj.FechaFin)
-            {
-                Mensaje = "La fecha de inicio no puede ser mayor que la fecha final.";
-                return 0;
-            }
-
-            if (string.IsNullOrWhiteSpace(obj.Estado))
-            {
-                Mensaje = "Debe seleccionar el estado del período.";
-                return 0;
-            }
-
-            obj.Estado = obj.Estado.Trim();
-
-            if (obj.Estado != "Abierto" && obj.Estado != "Cerrado")
-            {
-                Mensaje = "El estado debe ser Abierto o Cerrado.";
+                Mensaje = error;
                 return 0;
             }
 
@@ -79,83 +60,108 @@ namespace CapaNegocio.Contabilidad
         {
             Mensaje = string.Empty;
 
-            if (obj.IdPeriodoContable == 0)
-            {
-                Mensaje = "Debe seleccionar un período contable válido.";
-                return false;
-            }
+            PrepararDatos(obj);
 
-            if (obj.Anio < 2000 || obj.Anio > 2100)
-            {
-                Mensaje = "Debe ingresar un año válido.";
-                return false;
-            }
+            string error = Validar(obj, true);
 
-            if (obj.Mes < 1 || obj.Mes > 12)
+            if (error != "")
             {
-                Mensaje = "Debe ingresar un mes válido.";
-                return false;
-            }
-
-            if (obj.FechaInicio == DateTime.MinValue)
-            {
-                Mensaje = "Debe ingresar la fecha de inicio.";
-                return false;
-            }
-
-            if (obj.FechaFin == DateTime.MinValue)
-            {
-                Mensaje = "Debe ingresar la fecha final.";
-                return false;
-            }
-
-            if (obj.FechaInicio > obj.FechaFin)
-            {
-                Mensaje = "La fecha de inicio no puede ser mayor que la fecha final.";
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(obj.Estado))
-            {
-                Mensaje = "Debe seleccionar el estado del período.";
-                return false;
-            }
-
-            obj.Estado = obj.Estado.Trim();
-
-            if (obj.Estado != "Abierto" && obj.Estado != "Cerrado")
-            {
-                Mensaje = "El estado debe ser Abierto o Cerrado.";
+                Mensaje = error;
                 return false;
             }
 
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Cerrar(int idPeriodoContable, out string Mensaje)
+        public bool Cerrar(int anio, int mes, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (idPeriodoContable == 0)
+            if (anio < 2000 || anio > 2100)
             {
-                Mensaje = "Debe seleccionar un período contable válido.";
+                Mensaje = "Debe seleccionar un año válido.";
                 return false;
             }
 
-            return objCapaDato.Cerrar(idPeriodoContable, out Mensaje);
+            if (mes < 1 || mes > 12)
+            {
+                Mensaje = "Debe seleccionar un mes válido.";
+                return false;
+            }
+
+            return objCapaDato.Cerrar(anio, mes, out Mensaje);
         }
 
-        public bool Inactivar(int idPeriodoContable, out string Mensaje)
+        public bool Inactivar(int anio, int mes, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (idPeriodoContable == 0)
+            if (anio < 2000 || anio > 2100)
             {
-                Mensaje = "Debe seleccionar un período contable válido.";
+                Mensaje = "Debe seleccionar un año válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(idPeriodoContable, out Mensaje);
+            if (mes < 1 || mes > 12)
+            {
+                Mensaje = "Debe seleccionar un mes válido.";
+                return false;
+            }
+
+            return objCapaDato.Inactivar(anio, mes, out Mensaje);
+        }
+
+        private void PrepararDatos(PeriodoContable obj)
+        {
+            obj.Estado = obj.Estado == null ? "" : obj.Estado.Trim();
+
+            if (obj.Estado == "")
+            {
+                obj.Estado = "Abierto";
+            }
+        }
+
+        private string Validar(PeriodoContable obj, bool esEdicion)
+        {
+            if (obj.Anio < 2000 || obj.Anio > 2100)
+            {
+                return "Debe ingresar un año válido.";
+            }
+
+            if (obj.Mes < 1 || obj.Mes > 12)
+            {
+                return "Debe ingresar un mes válido.";
+            }
+
+            if (obj.FechaInicio == DateTime.MinValue)
+            {
+                return "Debe ingresar la fecha de inicio.";
+            }
+
+            if (obj.FechaFin == DateTime.MinValue)
+            {
+                return "Debe ingresar la fecha final.";
+            }
+
+            if (obj.FechaInicio > obj.FechaFin)
+            {
+                return "La fecha de inicio no puede ser mayor que la fecha final.";
+            }
+
+            if (obj.Estado != "Abierto" && obj.Estado != "Cerrado")
+            {
+                return "El estado debe ser Abierto o Cerrado.";
+            }
+
+            if (!esEdicion)
+            {
+                if (obj.Activo == false)
+                {
+                    obj.Activo = true;
+                }
+            }
+
+            return "";
         }
     }
 }

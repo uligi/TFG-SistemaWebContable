@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Tipos de Gasto";
+    ViewBag.Title = "TipoGasto";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
 
@@ -26,7 +26,7 @@
             </a>
         </li>
         <li class="breadcrumb-item">Catálogos</li>
-        <li class="breadcrumb-item active">Tipos de Gasto</li>
+        <li class="breadcrumb-item active">Tipos de gasto</li>
     </ol>
 </div>
 
@@ -35,16 +35,13 @@
         <h6 class="mb-0">Lista de tipos de gasto</h6>
 
         <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
-            Nuevo tipo de gasto
+            Nuevo tipo
         </button>
     </div>
 
     <div class="card-body">
-
-
-
         <div class="table-responsive">
-            <table class="table table-striped table-bordered nowrap" id="tablaTiposGasto" style="width:100%;">
+            <table class="table table-striped table-bordered nowrap" id="tablaTipoGastos" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Tipo de gasto</th>
@@ -56,7 +53,6 @@
                 <tbody></tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -113,11 +109,11 @@
 
 @section scripts {
     <script>
-        var listaTiposGasto = [];
-        var tablaTiposGasto = null;
+        var listaTipoGastos = [];
+        var tablaTipoGastos = null;
 
         $(document).ready(function () {
-            cargarTiposGasto();
+            cargarTipoGastos();
 
             $("#txtNombre").on("input", function () {
                 limpiarTextoCatalogo("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
@@ -150,13 +146,13 @@
             });
         });
 
-        function cargarTiposGasto() {
+        function cargarTipoGastos() {
             $.ajax({
-                url: '@Url.Action("ListarTiposGasto", "Catalogos")',
+                url: '@Url.Action("ListarTipoGastos", "Catalogos")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaTiposGasto = respuesta.data || [];
+                    listaTipoGastos = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -166,23 +162,22 @@
         }
 
         function pintarTabla() {
-            if (tablaTiposGasto != null) {
-                tablaTiposGasto.clear().destroy();
-                tablaTiposGasto = null;
+            if (tablaTipoGastos != null) {
+                tablaTipoGastos.clear().destroy();
+                tablaTipoGastos = null;
             }
 
-            var tbody = $("#tablaTiposGasto tbody");
+            var tbody = $("#tablaTipoGastos tbody");
             tbody.empty();
 
-            $.each(listaTiposGasto, function (i, item) {
+            $.each(listaTipoGastos, function (i, item) {
                 var nombre = item.Nombre || "";
                 var descripcion = item.Descripcion || "";
+                var descripcionMostrar = descripcion === "" ? "-" : descripcion;
 
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
-
-                var descripcionMostrar = descripcion === "" ? "-" : descripcion;
 
                 var botonEditar = $("<button>", {
                     type: "button",
@@ -202,7 +197,10 @@
 
                 var acciones = $("<td>");
                 acciones.append(botonEditar);
-                acciones.append(botonInactivar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
 
                 var fila = $("<tr>");
                 fila.append($("<td>").text(nombre));
@@ -213,7 +211,7 @@
                 tbody.append(fila);
             });
 
-            tablaTiposGasto = $("#tablaTiposGasto").DataTable({
+            tablaTipoGastos = $("#tablaTipoGastos").DataTable({
                 responsive: true,
                 pageLength: 10,
                 destroy: true,
@@ -261,7 +259,7 @@
             }
 
             if (obj.Nombre === "") {
-                mostrarError("Debe ingresar el tipo de gasto.", "txtNombre");
+                mostrarError("Debe ingresar el nombre del tipo de gasto.", "txtNombre");
                 return;
             }
 
@@ -297,9 +295,9 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
-                    if (respuesta.resultado) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
-                        cargarTiposGasto();
+                        cargarTipoGastos();
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -310,7 +308,7 @@
             });
         }
 
-        function inactivarTipoGasto(id) {
+        function inactivarTipoGasto(idTipoGasto) {
             if (!confirm("¿Desea inactivar este tipo de gasto?")) {
                 return;
             }
@@ -318,12 +316,12 @@
             $.ajax({
                 url: '@Url.Action("InactivarTipoGasto", "Catalogos")',
                 type: "POST",
-                data: JSON.stringify({ id: id }),
+                data: JSON.stringify({ idTipoGasto: idTipoGasto }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        cargarTiposGasto();
+                        cargarTipoGastos();
                     } else {
                         alert(respuesta.mensaje);
                     }

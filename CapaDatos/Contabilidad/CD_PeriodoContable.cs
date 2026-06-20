@@ -27,7 +27,6 @@ namespace CapaDatos.Contabilidad
                         {
                             lista.Add(new PeriodoContable()
                             {
-                                IdPeriodoContable = Convert.ToInt32(dr["IdPeriodoContable"]),
                                 Anio = Convert.ToInt32(dr["Anio"]),
                                 Mes = Convert.ToInt32(dr["Mes"]),
                                 FechaInicio = Convert.ToDateTime(dr["FechaInicio"]),
@@ -66,7 +65,6 @@ namespace CapaDatos.Contabilidad
                         {
                             lista.Add(new PeriodoContable()
                             {
-                                IdPeriodoContable = Convert.ToInt32(dr["IdPeriodoContable"]),
                                 Anio = Convert.ToInt32(dr["Anio"]),
                                 Mes = Convert.ToInt32(dr["Mes"]),
                                 FechaInicio = Convert.ToDateTime(dr["FechaInicio"]),
@@ -86,7 +84,7 @@ namespace CapaDatos.Contabilidad
             return lista;
         }
 
-        public List<PeriodoContable> ListarAbierto()
+        public List<PeriodoContable> ListarAbiertos()
         {
             List<PeriodoContable> lista = new List<PeriodoContable>();
 
@@ -94,7 +92,7 @@ namespace CapaDatos.Contabilidad
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("Contabilidad.sp_PeriodoContable_ListarAbierto", oconexion);
+                    SqlCommand cmd = new SqlCommand("Contabilidad.sp_PeriodoContable_ListarAbiertos", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     oconexion.Open();
@@ -105,7 +103,6 @@ namespace CapaDatos.Contabilidad
                         {
                             lista.Add(new PeriodoContable()
                             {
-                                IdPeriodoContable = Convert.ToInt32(dr["IdPeriodoContable"]),
                                 Anio = Convert.ToInt32(dr["Anio"]),
                                 Mes = Convert.ToInt32(dr["Mes"]),
                                 FechaInicio = Convert.ToDateTime(dr["FechaInicio"]),
@@ -123,6 +120,47 @@ namespace CapaDatos.Contabilidad
             }
 
             return lista;
+        }
+
+        public PeriodoContable Obtener(int anio, int mes)
+        {
+            PeriodoContable obj = null;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("Contabilidad.sp_PeriodoContable_Obtener", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Anio", anio);
+                    cmd.Parameters.AddWithValue("@Mes", mes);
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            obj = new PeriodoContable()
+                            {
+                                Anio = Convert.ToInt32(dr["Anio"]),
+                                Mes = Convert.ToInt32(dr["Mes"]),
+                                FechaInicio = Convert.ToDateTime(dr["FechaInicio"]),
+                                FechaFin = Convert.ToDateTime(dr["FechaFin"]),
+                                Estado = dr["Estado"].ToString(),
+                                Activo = Convert.ToBoolean(dr["Activo"])
+                            };
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                obj = null;
+            }
+
+            return obj;
         }
 
         public int Registrar(PeriodoContable obj, out string Mensaje)
@@ -141,7 +179,7 @@ namespace CapaDatos.Contabilidad
                     cmd.Parameters.AddWithValue("@Mes", obj.Mes);
                     cmd.Parameters.AddWithValue("@FechaInicio", obj.FechaInicio);
                     cmd.Parameters.AddWithValue("@FechaFin", obj.FechaFin);
-                    cmd.Parameters.AddWithValue("@Estado", obj.Estado);
+                    cmd.Parameters.AddWithValue("@Estado", obj.Estado ?? "");
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -174,12 +212,11 @@ namespace CapaDatos.Contabilidad
                     SqlCommand cmd = new SqlCommand("Contabilidad.sp_PeriodoContable_Editar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdPeriodoContable", obj.IdPeriodoContable);
                     cmd.Parameters.AddWithValue("@Anio", obj.Anio);
                     cmd.Parameters.AddWithValue("@Mes", obj.Mes);
                     cmd.Parameters.AddWithValue("@FechaInicio", obj.FechaInicio);
                     cmd.Parameters.AddWithValue("@FechaFin", obj.FechaFin);
-                    cmd.Parameters.AddWithValue("@Estado", obj.Estado);
+                    cmd.Parameters.AddWithValue("@Estado", obj.Estado ?? "");
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -201,7 +238,7 @@ namespace CapaDatos.Contabilidad
             return resultado;
         }
 
-        public bool Cerrar(int idPeriodoContable, out string Mensaje)
+        public bool Cerrar(int anio, int mes, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -213,7 +250,8 @@ namespace CapaDatos.Contabilidad
                     SqlCommand cmd = new SqlCommand("Contabilidad.sp_PeriodoContable_Cerrar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdPeriodoContable", idPeriodoContable);
+                    cmd.Parameters.AddWithValue("@Anio", anio);
+                    cmd.Parameters.AddWithValue("@Mes", mes);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -234,7 +272,7 @@ namespace CapaDatos.Contabilidad
             return resultado;
         }
 
-        public bool Inactivar(int idPeriodoContable, out string Mensaje)
+        public bool Inactivar(int anio, int mes, out string Mensaje)
         {
             bool resultado = false;
             Mensaje = string.Empty;
@@ -246,7 +284,8 @@ namespace CapaDatos.Contabilidad
                     SqlCommand cmd = new SqlCommand("Contabilidad.sp_PeriodoContable_Inactivar", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdPeriodoContable", idPeriodoContable);
+                    cmd.Parameters.AddWithValue("@Anio", anio);
+                    cmd.Parameters.AddWithValue("@Mes", mes);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;

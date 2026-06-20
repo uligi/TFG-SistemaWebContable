@@ -23,13 +23,16 @@ namespace CapaNegocio.Catalogos
                 return 0;
             }
 
+            obj.Tipo_Factura = obj.Tipo_Factura.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Tipo_Factura.Length > 45)
             {
                 Mensaje = "El nombre del tipo de factura no puede superar los 45 caracteres.";
                 return 0;
             }
 
-            if (!string.IsNullOrWhiteSpace(obj.Descripcion) && obj.Descripcion.Length > 150)
+            if (obj.Descripcion.Length > 150)
             {
                 Mensaje = "La descripción no puede superar los 150 caracteres.";
                 return 0;
@@ -42,7 +45,7 @@ namespace CapaNegocio.Catalogos
         {
             Mensaje = string.Empty;
 
-            if (obj.IdTipoFactura == 0)
+            if (obj.IdTipoFactura <= 0)
             {
                 Mensaje = "Debe seleccionar un tipo de factura válido.";
                 return false;
@@ -54,13 +57,16 @@ namespace CapaNegocio.Catalogos
                 return false;
             }
 
+            obj.Tipo_Factura = obj.Tipo_Factura.Trim();
+            obj.Descripcion = obj.Descripcion == null ? "" : obj.Descripcion.Trim();
+
             if (obj.Tipo_Factura.Length > 45)
             {
                 Mensaje = "El nombre del tipo de factura no puede superar los 45 caracteres.";
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(obj.Descripcion) && obj.Descripcion.Length > 150)
+            if (obj.Descripcion.Length > 150)
             {
                 Mensaje = "La descripción no puede superar los 150 caracteres.";
                 return false;
@@ -69,17 +75,17 @@ namespace CapaNegocio.Catalogos
             return objCapaDato.Editar(obj, out Mensaje);
         }
 
-        public bool Inactivar(int id, out string Mensaje)
+        public bool Inactivar(int idTipoFactura, out string Mensaje)
         {
             Mensaje = string.Empty;
 
-            if (id == 0)
+            if (idTipoFactura <= 0)
             {
                 Mensaje = "Debe seleccionar un tipo de factura válido.";
                 return false;
             }
 
-            return objCapaDato.Inactivar(id, out Mensaje);
+            return objCapaDato.Inactivar(idTipoFactura, out Mensaje);
         }
     }
 }

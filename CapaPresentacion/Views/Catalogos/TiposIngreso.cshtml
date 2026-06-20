@@ -1,7 +1,8 @@
 ﻿@{
-    ViewBag.Title = "Tipos de Ingreso";
+    ViewBag.Title = "TipoIngreso";
     Layout = "~/Views/Shared/_LayoutMantenimientos.cshtml";
 }
+
 <style>
     .campo-ayuda-error {
         display: none;
@@ -25,7 +26,7 @@
             </a>
         </li>
         <li class="breadcrumb-item">Catálogos</li>
-        <li class="breadcrumb-item active">Tipos de Ingreso</li>
+        <li class="breadcrumb-item active">Tipos de ingreso</li>
     </ol>
 </div>
 
@@ -34,13 +35,13 @@
         <h6 class="mb-0">Lista de tipos de ingreso</h6>
 
         <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
-            Nuevo tipo de ingreso
+            Nuevo tipo
         </button>
     </div>
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="tablaTiposIngreso" style="width:100%">
+            <table class="table table-striped table-bordered nowrap" id="tablaTipoIngresos" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Tipo de ingreso</th>
@@ -108,11 +109,11 @@
 
 @section scripts {
     <script>
-        var tablaData;
-        var listaTiposIngreso = [];
+        var listaTipoIngresos = [];
+        var tablaTipoIngresos = null;
 
         $(document).ready(function () {
-            cargarTiposIngreso();
+            cargarTipoIngresos();
 
             $("#txtNombre").on("input", function () {
                 limpiarTextoCatalogo("txtNombre", "Solo se permiten letras, números, espacios y caracteres básicos.");
@@ -145,13 +146,13 @@
             });
         });
 
-        function cargarTiposIngreso() {
+        function cargarTipoIngresos() {
             $.ajax({
-                url: '@Url.Action("ListarTiposIngreso", "Catalogos")',
+                url: '@Url.Action("ListarTipoIngresos", "Catalogos")',
                 type: "GET",
                 dataType: "json",
                 success: function (respuesta) {
-                    listaTiposIngreso = respuesta.data;
+                    listaTipoIngresos = respuesta.data || [];
                     pintarTabla();
                 },
                 error: function () {
@@ -161,55 +162,67 @@
         }
 
         function pintarTabla() {
-            if ($.fn.DataTable.isDataTable("#tablaTiposIngreso")) {
-                $("#tablaTiposIngreso").DataTable().destroy();
+            if (tablaTipoIngresos != null) {
+                tablaTipoIngresos.clear().destroy();
+                tablaTipoIngresos = null;
             }
 
-            var tbody = $("#tablaTiposIngreso tbody");
+            var tbody = $("#tablaTipoIngresos tbody");
             tbody.empty();
 
-            $.each(listaTiposIngreso, function (i, item) {
+            $.each(listaTipoIngresos, function (i, item) {
                 var nombre = item.Nombre || "";
                 var descripcion = item.Descripcion || "";
+                var descripcionMostrar = descripcion === "" ? "-" : descripcion;
 
                 var estado = item.Activo
                     ? '<span class="badge badge-success">Activo</span>'
                     : '<span class="badge badge-secondary">Inactivo</span>';
 
-                var botonInactivar = item.Activo
-                    ? `<button type="button" class="btn btn-sm btn-outline-danger" onclick="inactivarTipoIngreso(${item.IdTipoIngreso})">Inactivar</button>`
-                    : `<button type="button" class="btn btn-sm btn-outline-secondary" disabled>Inactivo</button>`;
+                var botonEditar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-primary mr-1",
+                    text: "Editar"
+                }).on("click", function () {
+                    abrirModal(item);
+                });
 
-                var fila = `
-                    <tr>
-                        <td>${nombre}</td>
-                        <td>${descripcion}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="abrirModal(${i})">
-                                Editar
-                            </button>
-                            ${botonInactivar}
-                        </td>
-                    </tr>
-                `;
+                var botonInactivar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Inactivar"
+                }).on("click", function () {
+                    inactivarTipoIngreso(item.IdTipoIngreso);
+                });
+
+                var acciones = $("<td>");
+                acciones.append(botonEditar);
+
+                if (item.Activo) {
+                    acciones.append(botonInactivar);
+                }
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(nombre));
+                fila.append($("<td>").text(descripcionMostrar));
+                fila.append($("<td>").html(estado));
+                fila.append(acciones);
 
                 tbody.append(fila);
             });
 
-            tablaData = $("#tablaTiposIngreso").DataTable({
+            tablaTipoIngresos = $("#tablaTipoIngresos").DataTable({
                 responsive: true,
-                ordering: true,
                 pageLength: 10,
-                lengthChange: true,
-                searching: true,
+                destroy: true,
+                order: [[0, "asc"]],
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 }
             });
         }
 
-        function abrirModal(index) {
+        function abrirModal(json) {
             $("#mensajeError").hide().text("");
             ocultarAyudaCampo("txtNombre");
             ocultarAyudaCampo("txtDescripcion");
@@ -220,9 +233,7 @@
             $("#cboActivo").val("true");
             $("#tituloModal").text("Nuevo tipo de ingreso");
 
-            if (index != null) {
-                var json = listaTiposIngreso[index];
-
+            if (json != null) {
                 $("#txtIdTipoIngreso").val(json.IdTipoIngreso);
                 $("#txtNombre").val(json.Nombre || "");
                 $("#txtDescripcion").val(json.Descripcion || "");
@@ -234,70 +245,70 @@
         }
 
         function guardarTipoIngreso() {
-    $("#mensajeError").hide().text("");
+            $("#mensajeError").hide().text("");
 
-    var obj = {
-        IdTipoIngreso: parseInt($("#txtIdTipoIngreso").val()),
-        Nombre: $("#txtNombre").val().trim(),
-        Descripcion: $("#txtDescripcion").val().trim(),
-        Activo: $("#cboActivo").val() === "true"
-    };
+            var obj = {
+                IdTipoIngreso: parseInt($("#txtIdTipoIngreso").val()),
+                Nombre: $("#txtNombre").val().trim(),
+                Descripcion: $("#txtDescripcion").val().trim(),
+                Activo: $("#cboActivo").val() === "true"
+            };
 
-    if (isNaN(obj.IdTipoIngreso)) {
-        obj.IdTipoIngreso = 0;
-    }
-
-    if (obj.Nombre === "") {
-        mostrarError("Debe ingresar el tipo de ingreso.", "txtNombre");
-        return;
-    }
-
-    if (!validarTextoCatalogo(obj.Nombre)) {
-        mostrarError("El tipo de ingreso solo puede contener letras, números, espacios y caracteres básicos.", "txtNombre");
-        return;
-    }
-
-    if (obj.Nombre.length > 45) {
-        mostrarError("El tipo de ingreso no puede superar los 45 caracteres.", "txtNombre");
-        return;
-    }
-
-    if (obj.Descripcion === "") {
-        mostrarError("Debe ingresar la descripción.", "txtDescripcion");
-        return;
-    }
-
-    if (!validarTextoCatalogo(obj.Descripcion)) {
-        mostrarError("La descripción solo puede contener letras, números, espacios y caracteres básicos.", "txtDescripcion");
-        return;
-    }
-
-    if (obj.Descripcion.length > 255) {
-        mostrarError("La descripción no puede superar los 255 caracteres.", "txtDescripcion");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("GuardarTipoIngreso", "Catalogos")',
-        type: "POST",
-        data: JSON.stringify({ obj: obj }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#FormModal").modal("hide");
-                cargarTiposIngreso();
-            } else {
-                $("#mensajeError").text(respuesta.mensaje).show();
+            if (isNaN(obj.IdTipoIngreso)) {
+                obj.IdTipoIngreso = 0;
             }
-        },
-        error: function () {
-            $("#mensajeError").text("Error al guardar el tipo de ingreso.").show();
-        }
-    });
-}
 
-        function inactivarTipoIngreso(id) {
+            if (obj.Nombre === "") {
+                mostrarError("Debe ingresar el nombre del tipo de ingreso.", "txtNombre");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Nombre)) {
+                mostrarError("El tipo de ingreso solo puede contener letras, números, espacios y caracteres básicos.", "txtNombre");
+                return;
+            }
+
+            if (obj.Nombre.length > 45) {
+                mostrarError("El tipo de ingreso no puede superar los 45 caracteres.", "txtNombre");
+                return;
+            }
+
+            if (obj.Descripcion === "") {
+                mostrarError("Debe ingresar la descripción.", "txtDescripcion");
+                return;
+            }
+
+            if (!validarTextoCatalogo(obj.Descripcion)) {
+                mostrarError("La descripción solo puede contener letras, números, espacios y caracteres básicos.", "txtDescripcion");
+                return;
+            }
+
+            if (obj.Descripcion.length > 255) {
+                mostrarError("La descripción no puede superar los 255 caracteres.", "txtDescripcion");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GuardarTipoIngreso", "Catalogos")',
+                type: "POST",
+                data: JSON.stringify({ obj: obj }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        $("#FormModal").modal("hide");
+                        cargarTipoIngresos();
+                    } else {
+                        $("#mensajeError").text(respuesta.mensaje).show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeError").text("Error al guardar el tipo de ingreso.").show();
+                }
+            });
+        }
+
+        function inactivarTipoIngreso(idTipoIngreso) {
             if (!confirm("¿Desea inactivar este tipo de ingreso?")) {
                 return;
             }
@@ -305,12 +316,12 @@
             $.ajax({
                 url: '@Url.Action("InactivarTipoIngreso", "Catalogos")',
                 type: "POST",
-                data: JSON.stringify({ id: id }),
+                data: JSON.stringify({ idTipoIngreso: idTipoIngreso }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        cargarTiposIngreso();
+                        cargarTipoIngresos();
                     } else {
                         alert(respuesta.mensaje);
                     }
@@ -320,6 +331,7 @@
                 }
             });
         }
+
         function mostrarError(mensaje, idCampo) {
             $("#mensajeError").text(mensaje).show();
 

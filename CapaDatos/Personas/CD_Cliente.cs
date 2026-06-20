@@ -1,5 +1,4 @@
-﻿
-using CapaEntidad.Personas;
+﻿using CapaEntidad.Personas;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,26 +30,26 @@ namespace CapaDatos.personas
                                 Identificacion = dr["Identificacion"].ToString(),
                                 Nombre = dr["Nombre"].ToString(),
                                 PrimerApellido = dr["PrimerApellido"].ToString(),
-                                SegundoApellido = dr["SegundoApellido"] == DBNull.Value ? "" : dr["SegundoApellido"].ToString(),
-                                FechaNacimiento = dr["FechaNacimiento"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaNacimiento"]),
+                                SegundoApellido = dr["SegundoApellido"].ToString(),
+                                FechaNacimiento = Convert.ToDateTime(dr["FechaNacimiento"]),
 
-                                IdDistrito = dr["IdDistrito"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdDistrito"]),
-                                DistritoNombre = dr["DistritoNombre"] == DBNull.Value ? "" : dr["DistritoNombre"].ToString(),
+                                CodigoDistrito = Convert.ToInt32(dr["CodigoDistrito"]),
+                                DistritoNombre = dr["DistritoNombre"].ToString(),
 
-                                IdCanton = dr["IdCanton"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdCanton"]),
-                                CantonNombre = dr["CantonNombre"] == DBNull.Value ? "" : dr["CantonNombre"].ToString(),
+                                CodigoCanton = Convert.ToInt32(dr["CodigoCanton"]),
+                                CantonNombre = dr["CantonNombre"].ToString(),
 
-                                IdProvincia = dr["IdProvincia"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IdProvincia"]),
-                                ProvinciaNombre = dr["ProvinciaNombre"] == DBNull.Value ? "" : dr["ProvinciaNombre"].ToString(),
+                                CodigoProvincia = Convert.ToInt32(dr["CodigoProvincia"]),
+                                ProvinciaNombre = dr["ProvinciaNombre"].ToString(),
 
-                                Direccion = dr["Direccion"] == DBNull.Value ? "" : dr["Direccion"].ToString(),
+                                Direccion = dr["Direccion"].ToString(),
 
                                 CodigoCliente = dr["CodigoCliente"].ToString(),
-                                LimiteCredito = dr["LimiteCredito"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(dr["LimiteCredito"]),
-                                DiasCredito = dr["DiasCredito"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["DiasCredito"]),
+                                LimiteCredito = Convert.ToDecimal(dr["LimiteCredito"]),
+                                DiasCredito = Convert.ToInt32(dr["DiasCredito"]),
 
                                 FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
-                                FechaModificacion = dr["FechaModificacion"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["FechaModificacion"]),
+                                FechaModificacion = Convert.ToDateTime(dr["FechaModificacion"]),
                                 Activo = Convert.ToBoolean(dr["Activo"])
                             });
                         }
@@ -80,12 +79,12 @@ namespace CapaDatos.personas
                     cmd.Parameters.AddWithValue("@Identificacion", obj.Identificacion);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("@PrimerApellido", obj.PrimerApellido);
-                    cmd.Parameters.AddWithValue("@SegundoApellido", string.IsNullOrWhiteSpace(obj.SegundoApellido) ? (object)DBNull.Value : obj.SegundoApellido);
+                    cmd.Parameters.AddWithValue("@SegundoApellido", obj.SegundoApellido ?? "");
                     cmd.Parameters.AddWithValue("@FechaNacimiento", obj.FechaNacimiento.HasValue ? (object)obj.FechaNacimiento.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@IdDistrito", obj.IdDistrito.HasValue ? (object)obj.IdDistrito.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Direccion", string.IsNullOrWhiteSpace(obj.Direccion) ? (object)DBNull.Value : obj.Direccion);
-                    cmd.Parameters.AddWithValue("@LimiteCredito", obj.LimiteCredito.HasValue ? (object)obj.LimiteCredito.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@DiasCredito", obj.DiasCredito.HasValue ? (object)obj.DiasCredito.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", obj.CodigoDistrito);
+                    cmd.Parameters.AddWithValue("@Direccion", obj.Direccion ?? "");
+                    cmd.Parameters.AddWithValue("@LimiteCredito", obj.LimiteCredito);
+                    cmd.Parameters.AddWithValue("@DiasCredito", obj.DiasCredito);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
@@ -121,12 +120,12 @@ namespace CapaDatos.personas
                     cmd.Parameters.AddWithValue("@Identificacion", obj.Identificacion);
                     cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("@PrimerApellido", obj.PrimerApellido);
-                    cmd.Parameters.AddWithValue("@SegundoApellido", string.IsNullOrWhiteSpace(obj.SegundoApellido) ? (object)DBNull.Value : obj.SegundoApellido);
+                    cmd.Parameters.AddWithValue("@SegundoApellido", obj.SegundoApellido ?? "");
                     cmd.Parameters.AddWithValue("@FechaNacimiento", obj.FechaNacimiento.HasValue ? (object)obj.FechaNacimiento.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@IdDistrito", obj.IdDistrito.HasValue ? (object)obj.IdDistrito.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Direccion", string.IsNullOrWhiteSpace(obj.Direccion) ? (object)DBNull.Value : obj.Direccion);
-                    cmd.Parameters.AddWithValue("@LimiteCredito", obj.LimiteCredito.HasValue ? (object)obj.LimiteCredito.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@DiasCredito", obj.DiasCredito.HasValue ? (object)obj.DiasCredito.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@CodigoDistrito", obj.CodigoDistrito);
+                    cmd.Parameters.AddWithValue("@Direccion", obj.Direccion ?? "");
+                    cmd.Parameters.AddWithValue("@LimiteCredito", obj.LimiteCredito);
+                    cmd.Parameters.AddWithValue("@DiasCredito", obj.DiasCredito);
                     cmd.Parameters.AddWithValue("@Activo", obj.Activo);
 
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
