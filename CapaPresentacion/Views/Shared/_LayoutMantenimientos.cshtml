@@ -25,8 +25,8 @@
             background: #f3f6fb;
         }
         /* ==============================
-           MENÚ LATERAL - ALTO CONTRASTE
-           ============================== */
+                MENÚ LATERAL - ALTO CONTRASTE
+                ============================== */
 
         #layout-sidenav {
             background: #07111f !important;
@@ -319,8 +319,8 @@
             }
         }
         /* ==============================
-   SCROLL EN MENÚ LATERAL
-   ============================== */
+        SCROLL EN MENÚ LATERAL
+        ============================== */
 
         #layout-sidenav {
             height: 100vh !important;
@@ -351,6 +351,22 @@
                     #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb:hover {
                         background: #64748b;
                     }
+
+        /* ==============================
+        MENSAJES GLOBALES DEL SISTEMA
+        ============================== */
+
+        .mensaje-flotante-sistema {
+            position: fixed;
+            top: 82px;
+            right: 24px;
+            z-index: 99999;
+            min-width: 280px;
+            max-width: 420px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
     </style>
 </head>
 
@@ -407,9 +423,12 @@
             nombreUsuario = User.Identity.Name;
         }
 
+        bool esAdministradorSistema = !string.IsNullOrWhiteSpace(nombreRol)
+         && nombreRol.ToLower().Contains("administrador");
+
         string inicialUsuario = !string.IsNullOrWhiteSpace(nombreUsuario)
-            ? nombreUsuario.Substring(0, 1).ToUpper()
-            : "U";
+        ? nombreUsuario.Substring(0, 1).ToUpper()
+        : "U";
     }
 
     <div class="page-loader">
@@ -840,10 +859,47 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalConfirmacionSistema" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="tituloConfirmacionSistema">Confirmar acción</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p id="textoConfirmacionSistema" class="mb-0"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="button" class="btn btn-danger" id="btnAceptarConfirmacionSistema">
+                        Aceptar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/datatables")
     @Scripts.Render("~/bundles/morris")
+
+    <script>
+    window.esAdministradorSistema = @esAdministradorSistema.ToString().ToLower();
+    </script>
+
+    <script src="~/Scripts/js/sistema-global.js"></script>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>
+
