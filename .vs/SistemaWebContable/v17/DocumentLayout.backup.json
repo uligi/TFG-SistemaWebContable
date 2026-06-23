@@ -682,7 +682,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -704,9 +704,22 @@
               "RelativeDocumentMoniker": "CapaNegocio\\Contabilidad\\CN_AsientoAutomatico.cs",
               "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Contabilidad\\CN_AsientoAutomatico.cs",
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_AsientoAutomatico.cs",
-              "ViewState": "AgIAANkBAAAAAAAAAAAowP0BAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAABsCAAAAAAAAAAAkwDcCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-19T13:51:13.206Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GestionarCuentasPorPagarController.cs",
+              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
+              "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
+              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
+              "RelativeToolTip": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAowIYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T21:33:10.628Z",
               "EditorCaption": ""
             },
             {
@@ -720,19 +733,6 @@
               "ViewState": "AgIAAEwAAAAAAAAAAAAQwHIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-08T21:29:36.086Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "GestionarCuentasPorPagarController.cs",
-              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
-              "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
-              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
-              "RelativeToolTip": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
-              "ViewState": "AgIAANgAAAAAAAAAAAAowPkAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:33:10.628Z",
               "EditorCaption": ""
             },
             {
