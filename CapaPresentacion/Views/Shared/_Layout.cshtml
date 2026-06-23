@@ -17,331 +17,348 @@
     @Scripts.Render("~/bundles/modernizr")
 
     <style>
-        body {
-            background: #f3f6fb;
-        }
+             body {
+                 background: #f3f6fb;
+             }
 
-        .layout-content {
-            background: #f3f6fb;
-        }
-        /* ==============================
-           MENÚ LATERAL - ALTO CONTRASTE
-           ============================== */
+             .layout-content {
+                 background: #f3f6fb;
+             }
+             /* ==============================
+                MENÚ LATERAL - ALTO CONTRASTE
+                ============================== */
 
-        #layout-sidenav {
-            background: #07111f !important;
-            color: #ffffff !important;
-            border-right: 1px solid #1e293b;
-        }
+             #layout-sidenav {
+                 background: #07111f !important;
+                 color: #ffffff !important;
+                 border-right: 1px solid #1e293b;
+             }
 
-            #layout-sidenav .app-brand {
-                background: #020617 !important;
-                border-bottom: 1px solid #1e293b;
-            }
+                 #layout-sidenav .app-brand {
+                     background: #020617 !important;
+                     border-bottom: 1px solid #1e293b;
+                 }
 
-            #layout-sidenav .brand-logo {
-                background: #2563eb !important;
-                color: #ffffff !important;
-                box-shadow: 0 0 0 3px rgba(37, 99, 235, .25);
-            }
+                 #layout-sidenav .brand-logo {
+                     background: #2563eb !important;
+                     color: #ffffff !important;
+                     box-shadow: 0 0 0 3px rgba(37, 99, 235, .25);
+                 }
 
-            #layout-sidenav .brand-text-main {
-                color: #ffffff !important;
-                font-size: 15px;
-                font-weight: 800;
-            }
+                 #layout-sidenav .brand-text-main {
+                     color: #ffffff !important;
+                     font-size: 15px;
+                     font-weight: 800;
+                 }
 
-            #layout-sidenav .brand-text-sub {
-                color: #cbd5e1 !important;
-                font-size: 12px;
-            }
+                 #layout-sidenav .brand-text-sub {
+                     color: #cbd5e1 !important;
+                     font-size: 12px;
+                 }
 
-            #layout-sidenav .sidenav-header {
-                color: #93c5fd !important;
-                font-size: 11px;
-                font-weight: 800 !important;
-                text-transform: uppercase;
-                letter-spacing: .09em;
-                padding: 18px 20px 8px 20px;
-            }
+                 #layout-sidenav .sidenav-header {
+                     color: #93c5fd !important;
+                     font-size: 11px;
+                     font-weight: 800 !important;
+                     text-transform: uppercase;
+                     letter-spacing: .09em;
+                     padding: 18px 20px 8px 20px;
+                 }
 
-            #layout-sidenav .sidenav-divider {
-                border-color: #1e293b !important;
-                margin: 8px 18px !important;
-            }
+                 #layout-sidenav .sidenav-divider {
+                     border-color: #1e293b !important;
+                     margin: 8px 18px !important;
+                 }
 
-            #layout-sidenav .sidenav-link {
-                color: #e5e7eb !important;
-                font-weight: 600;
-                margin: 2px 10px;
-                border-radius: 10px;
-            }
+                 #layout-sidenav .sidenav-link {
+                     color: #e5e7eb !important;
+                     font-weight: 600;
+                     margin: 2px 10px;
+                     border-radius: 10px;
+                 }
 
-                #layout-sidenav .sidenav-link div {
-                    color: #e5e7eb !important;
-                }
+                     #layout-sidenav .sidenav-link div {
+                         color: #e5e7eb !important;
+                     }
 
-            #layout-sidenav .sidenav-icon {
-                color: #bfdbfe !important;
-                opacity: 1 !important;
-            }
+                 #layout-sidenav .sidenav-icon {
+                     color: #bfdbfe !important;
+                     opacity: 1 !important;
+                 }
 
-            #layout-sidenav .sidenav-link:hover {
-                background: #1d4ed8 !important;
-                color: #ffffff !important;
-            }
+                 #layout-sidenav .sidenav-link:hover {
+                     background: #1d4ed8 !important;
+                     color: #ffffff !important;
+                 }
 
-                #layout-sidenav .sidenav-link:hover div,
-                #layout-sidenav .sidenav-link:hover .sidenav-icon {
-                    color: #ffffff !important;
-                }
+                     #layout-sidenav .sidenav-link:hover div,
+                     #layout-sidenav .sidenav-link:hover .sidenav-icon {
+                         color: #ffffff !important;
+                     }
 
-            #layout-sidenav .sidenav-item.active > .sidenav-link,
-            #layout-sidenav .sidenav-item.open > .sidenav-link {
-                background: #2563eb !important;
-                color: #ffffff !important;
-                box-shadow: inset 4px 0 0 #facc15;
-            }
+                 #layout-sidenav .sidenav-item.active > .sidenav-link,
+                 #layout-sidenav .sidenav-item.open > .sidenav-link {
+                     background: #2563eb !important;
+                     color: #ffffff !important;
+                     box-shadow: inset 4px 0 0 #facc15;
+                 }
 
-                #layout-sidenav .sidenav-item.active > .sidenav-link div,
-                #layout-sidenav .sidenav-item.open > .sidenav-link div,
-                #layout-sidenav .sidenav-item.active > .sidenav-link .sidenav-icon,
-                #layout-sidenav .sidenav-item.open > .sidenav-link .sidenav-icon {
-                    color: #ffffff !important;
-                }
+                     #layout-sidenav .sidenav-item.active > .sidenav-link div,
+                     #layout-sidenav .sidenav-item.open > .sidenav-link div,
+                     #layout-sidenav .sidenav-item.active > .sidenav-link .sidenav-icon,
+                     #layout-sidenav .sidenav-item.open > .sidenav-link .sidenav-icon {
+                         color: #ffffff !important;
+                     }
 
-            #layout-sidenav .sidenav-menu {
-                background: #0f172a !important;
-                margin: 4px 10px 8px 10px;
-                border-radius: 10px;
-                padding: 6px 0;
-                border: 1px solid #1e293b;
-            }
+                 #layout-sidenav .sidenav-menu {
+                     background: #0f172a !important;
+                     margin: 4px 10px 8px 10px;
+                     border-radius: 10px;
+                     padding: 6px 0;
+                     border: 1px solid #1e293b;
+                 }
 
-                #layout-sidenav .sidenav-menu .sidenav-link {
-                    color: #dbeafe !important;
-                    font-size: 13px;
-                    margin: 2px 6px;
-                    padding-left: 18px !important;
-                }
+                     #layout-sidenav .sidenav-menu .sidenav-link {
+                         color: #dbeafe !important;
+                         font-size: 13px;
+                         margin: 2px 6px;
+                         padding-left: 18px !important;
+                     }
 
-                    #layout-sidenav .sidenav-menu .sidenav-link:hover {
-                        background: #334155 !important;
-                        color: #ffffff !important;
-                    }
+                         #layout-sidenav .sidenav-menu .sidenav-link:hover {
+                             background: #334155 !important;
+                             color: #ffffff !important;
+                         }
 
-                #layout-sidenav .sidenav-menu .sidenav-item.active > .sidenav-link {
-                    background: #1d4ed8 !important;
-                    color: #ffffff !important;
-                    box-shadow: inset 4px 0 0 #facc15;
-                }
+                     #layout-sidenav .sidenav-menu .sidenav-item.active > .sidenav-link {
+                         background: #1d4ed8 !important;
+                         color: #ffffff !important;
+                         box-shadow: inset 4px 0 0 #facc15;
+                     }
 
-        .menu-section-label {
-            display: block;
-            padding: 3px 18px 6px 18px;
-            color: #94a3b8;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-        }
-        .container-p-y {
-            padding-top: 1.5rem !important;
-            padding-bottom: 1.5rem !important;
-        }
+             .menu-section-label {
+                 display: block;
+                 padding: 3px 18px 6px 18px;
+                 color: #94a3b8;
+                 font-size: 11px;
+                 font-weight: 700;
+                 text-transform: uppercase;
+                 letter-spacing: .06em;
+             }
 
-        .app-brand {
-            height: 72px;
-            display: flex;
-            align-items: center;
-            padding: 0 22px;
-            background: rgba(255,255,255,0.04);
-        }
+             .container-p-y {
+                 padding-top: 1.5rem !important;
+                 padding-bottom: 1.5rem !important;
+             }
 
-        .brand-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff;
-            text-decoration: none;
-        }
+             .app-brand {
+                 height: 72px;
+                 display: flex;
+                 align-items: center;
+                 padding: 0 22px;
+                 background: rgba(255,255,255,0.04);
+             }
 
-            .brand-box:hover {
-                color: #fff;
-                text-decoration: none;
-            }
+             .brand-box {
+                 display: flex;
+                 align-items: center;
+                 gap: 12px;
+                 color: #fff;
+                 text-decoration: none;
+             }
 
-        .brand-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #fff;
-            font-size: 18px;
-        }
+                 .brand-box:hover {
+                     color: #fff;
+                     text-decoration: none;
+                 }
 
-        .brand-text-main {
-            display: block;
-            font-weight: 700;
-            font-size: 15px;
-            line-height: 1.1;
-        }
+             .brand-logo {
+                 width: 42px;
+                 height: 42px;
+                 border-radius: 14px;
+                 background: rgba(255,255,255,0.12);
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+                 font-weight: 700;
+                 color: #fff;
+                 font-size: 18px;
+             }
 
-        .brand-text-sub {
-            display: block;
-            font-size: 12px;
-            color: rgba(255,255,255,0.62);
-            margin-top: 3px;
-        }
+             .brand-text-main {
+                 display: block;
+                 font-weight: 700;
+                 font-size: 15px;
+                 line-height: 1.1;
+             }
 
-        .sidenav-header {
-            color: rgba(255,255,255,0.48) !important;
-            padding-top: 14px;
-            padding-bottom: 8px;
-            letter-spacing: .06em;
-        }
+             .brand-text-sub {
+                 display: block;
+                 font-size: 12px;
+                 color: rgba(255,255,255,0.62);
+                 margin-top: 3px;
+             }
 
-        .sidenav-divider {
-            border-color: rgba(255,255,255,0.08) !important;
-        }
+             .sidenav-header {
+                 color: rgba(255,255,255,0.48) !important;
+                 padding-top: 14px;
+                 padding-bottom: 8px;
+                 letter-spacing: .06em;
+             }
 
-        .layout-navbar {
-            min-height: 66px;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
-        }
+             .sidenav-divider {
+                 border-color: rgba(255,255,255,0.08) !important;
+             }
 
-        .navbar-page-title {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.2;
-        }
+             .layout-navbar {
+                 min-height: 66px;
+                 border-bottom: 1px solid #e2e8f0;
+                 box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+             }
 
-            .navbar-page-title strong {
-                color: #0f172a;
-                font-size: 16px;
-            }
+             .navbar-page-title {
+                 display: flex;
+                 flex-direction: column;
+                 line-height: 1.2;
+             }
 
-            .navbar-page-title span {
-                color: #64748b;
-                font-size: 12px;
-                margin-top: 2px;
-            }
+                 .navbar-page-title strong {
+                     color: #0f172a;
+                     font-size: 16px;
+                 }
 
-        .user-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-        }
+                 .navbar-page-title span {
+                     color: #64748b;
+                     font-size: 12px;
+                     margin-top: 2px;
+                 }
 
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #1d4ed8;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-        }
+             .user-box {
+                 display: flex;
+                 align-items: center;
+                 gap: 10px;
+                 padding: 6px 12px;
+                 border-radius: 999px;
+                 background: #f8fafc;
+                 border: 1px solid #e2e8f0;
+             }
 
-        .user-info {
-            line-height: 1.1;
-        }
+             .user-avatar {
+                 width: 32px;
+                 height: 32px;
+                 border-radius: 50%;
+                 background: #1d4ed8;
+                 color: #fff;
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+                 font-size: 14px;
+                 font-weight: 700;
+             }
 
-            .user-info strong {
-                display: block;
-                color: #0f172a;
-                font-size: 13px;
-            }
+             .user-info {
+                 line-height: 1.1;
+             }
 
-            .user-info span {
-                display: block;
-                color: #64748b;
-                font-size: 11px;
-                margin-top: 2px;
-            }
+                 .user-info strong {
+                     display: block;
+                     color: #0f172a;
+                     font-size: 13px;
+                 }
 
-        .logout-link {
-            color: #dc2626 !important;
-            font-weight: 600;
-            border-radius: 10px;
-            padding: 8px 12px !important;
-        }
+                 .user-info span {
+                     display: block;
+                     color: #64748b;
+                     font-size: 11px;
+                     margin-top: 2px;
+                 }
 
-            .logout-link:hover {
-                background: #fee2e2;
-                color: #991b1b !important;
-            }
+             .logout-link {
+                 color: #dc2626 !important;
+                 font-weight: 600;
+                 border-radius: 10px;
+                 padding: 8px 12px !important;
+             }
 
-        .content-shell {
-            animation: fadeInContent .22s ease-in-out;
-        }
+                 .logout-link:hover {
+                     background: #fee2e2;
+                     color: #991b1b !important;
+                 }
 
-        @@keyframes fadeInContent {
-            from {
-                opacity: 0;
-                transform: translateY(4px);
-            }
+             .content-shell {
+                 animation: fadeInContent .22s ease-in-out;
+             }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+             @@keyframes fadeInContent {
+                 from {
+                     opacity: 0;
+                     transform: translateY(4px);
+                 }
 
-        @@media (max-width: 768px) {
-            .user-info {
-                display: none;
-            }
+                 to {
+                     opacity: 1;
+                     transform: translateY(0);
+                 }
+             }
 
-            .navbar-page-title span {
-                display: none;
-            }
-        }
-        /* ==============================
-   SCROLL EN MENÚ LATERAL
-   ============================== */
+             @@media (max-width: 768px) {
+                 .user-info {
+                     display: none;
+                 }
 
-        #layout-sidenav {
-            height: 100vh !important;
-            overflow: hidden !important;
-        }
+                 .navbar-page-title span {
+                     display: none;
+                 }
+             }
+             /* ==============================
+        SCROLL EN MENÚ LATERAL
+        ============================== */
 
-            #layout-sidenav .sidenav-inner {
-                height: calc(100vh - 74px) !important;
-                overflow-y: auto !important;
-                overflow-x: hidden !important;
-                padding-bottom: 30px !important;
-            }
+             #layout-sidenav {
+                 height: 100vh !important;
+                 overflow: hidden !important;
+             }
 
-                /* Scrollbar visible y con buen contraste */
-                #layout-sidenav .sidenav-inner::-webkit-scrollbar {
-                    width: 8px;
-                }
+                 #layout-sidenav .sidenav-inner {
+                     height: calc(100vh - 74px) !important;
+                     overflow-y: auto !important;
+                     overflow-x: hidden !important;
+                     padding-bottom: 30px !important;
+                 }
 
-                #layout-sidenav .sidenav-inner::-webkit-scrollbar-track {
-                    background: #020617;
-                }
+                     /* Scrollbar visible y con buen contraste */
+                     #layout-sidenav .sidenav-inner::-webkit-scrollbar {
+                         width: 8px;
+                     }
 
-                #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb {
-                    background: #475569;
-                    border-radius: 10px;
-                }
+                     #layout-sidenav .sidenav-inner::-webkit-scrollbar-track {
+                         background: #020617;
+                     }
 
-                    #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb:hover {
-                        background: #64748b;
-                    }
+                     #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb {
+                         background: #475569;
+                         border-radius: 10px;
+                     }
+
+                         #layout-sidenav .sidenav-inner::-webkit-scrollbar-thumb:hover {
+                             background: #64748b;
+                         }
+
+             /* ==============================
+        MENSAJES GLOBALES DEL SISTEMA
+        ============================== */
+
+             .mensaje-flotante-sistema {
+                 position: fixed;
+                 top: 82px;
+                 right: 24px;
+                 z-index: 99999;
+                 min-width: 280px;
+                 max-width: 420px;
+                 border-radius: 8px;
+                 font-size: 14px;
+                 font-weight: 600;
+             }
     </style>
 </head>
 
@@ -399,10 +416,12 @@
         {
             nombreUsuario = User.Identity.Name;
         }
+        bool esAdministradorSistema = !string.IsNullOrWhiteSpace(nombreRol)
+        && nombreRol.ToLower().Contains("administrador");
 
         string inicialUsuario = !string.IsNullOrWhiteSpace(nombreUsuario)
-            ? nombreUsuario.Substring(0, 1).ToUpper()
-            : "U";
+        ? nombreUsuario.Substring(0, 1).ToUpper()
+        : "U";
     }
 
     <div class="page-loader">
@@ -621,7 +640,7 @@
                             </a>
                         </li>
                     }
-                    
+
                     @if (puedeVerAlguno(new[] { "CONSULTAS", "REPORTES" }))
                     {
                         <li class="sidenav-divider mb-1"></li>
@@ -716,10 +735,77 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalConfirmacionSistema" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="tituloConfirmacionSistema">Confirmar acción</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p id="textoConfirmacionSistema" class="mb-0"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="button" class="btn btn-danger" id="btnAceptarConfirmacionSistema">
+                        Aceptar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalConfirmacionSistema" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="tituloConfirmacionSistema">Confirmar acción</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p id="textoConfirmacionSistema" class="mb-0"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="button" class="btn btn-danger" id="btnAceptarConfirmacionSistema">
+                        Aceptar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/datatables")
     @Scripts.Render("~/bundles/morris")
+
+    <script>
+    window.esAdministradorSistema = @esAdministradorSistema.ToString().ToLower();
+    </script>
+
+    <script src="~/Scripts/js/sistema-global.js"></script>
+
     @RenderSection("scripts", required: false)
+</body>
+</html>
 </body>
 </html>
