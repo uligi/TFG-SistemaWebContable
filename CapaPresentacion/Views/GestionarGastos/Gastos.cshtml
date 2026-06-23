@@ -674,8 +674,7 @@
                         cargarAbonosCuentaPorPagar();
 
                         mostrarMensajeSistema(respuesta.mensaje || "Gasto guardado correctamente.", "exito");
-                        cargarGastos();
-                        cargarAbonosCuentaPorPagar();
+
                     } else {
                         $("#mensajeErrorGasto").text(respuesta.mensaje).show();
                     }
