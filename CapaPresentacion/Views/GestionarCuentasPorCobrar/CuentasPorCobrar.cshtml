@@ -496,10 +496,10 @@
                     abrirModalCuenta(item);
                 });
 
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarCuentaPorCobrar(item.IdentificacionCliente, item.NumeroFactura);
                 });
@@ -527,7 +527,7 @@
                 }
 
                 if (item.Activo && estado !== "Pagada") {
-                    acciones.append(botonInactivar);
+                    acciones.append(botonEstado);
                 }
 
                 fila.append(acciones);
@@ -808,10 +808,10 @@
                     editarAbono(item);
                 });
 
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarAbono(item.IdentificacionCliente, item.NumeroFactura, item.NumeroAbono);
                 });
@@ -820,7 +820,7 @@
                 acciones.append(botonEditar);
 
                 if (item.Activo) {
-                    acciones.append(botonInactivar);
+                    acciones.append(botonEstado);
                 }
 
                 var fila = $("<tr>");
@@ -973,10 +973,18 @@
         }
 
         function inactivarAbono(identificacionCliente, numeroFactura, numeroAbono) {
-            if (!confirm("¿Desea inactivar este abono?")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este abono"),
+                function () {
+                    ejecutarInactivarAbono(identificacionCliente, numeroFactura, numeroAbono);
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
 
+        function ejecutarInactivarAbono(identificacionCliente, numeroFactura, numeroAbono) {
             $.ajax({
                 url: '@Url.Action("InactivarAbonoCuentaPorCobrar", "GestionarCuentasPorCobrar")',
                 type: "POST",
@@ -993,14 +1001,13 @@
                         cargarCuentasPorCobrar();
                         refrescarCuentaActual(identificacionCliente, numeroFactura);
 
-                        mostrarMensajeModal("exito", "Abono inactivado correctamente.");
-                        mostrarMensajeOperacion("exito", "Abono inactivado correctamente.");
+                        mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Abono"), "exito", "#mensajeOperacion");
                     } else {
-                        mostrarMensajeModal("error", respuesta.mensaje || "No se pudo inactivar el abono.");
+                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el abono.", "error", "#mensajeOperacion");
                     }
                 },
                 error: function () {
-                    mostrarMensajeModal("error", "Error al inactivar el abono.");
+                    mostrarMensajeSistema("Error al procesar el abono.", "error", "#mensajeOperacion");
                 }
             });
         }
@@ -1041,10 +1048,18 @@
         }
 
         function inactivarCuentaPorCobrar(identificacionCliente, numeroFactura) {
-            if (!confirm("¿Desea inactivar esta cuenta por cobrar?")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "esta cuenta por cobrar"),
+                function () {
+                    ejecutarInactivarCuentaPorCobrar(identificacionCliente, numeroFactura);
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
 
+        function ejecutarInactivarCuentaPorCobrar(identificacionCliente, numeroFactura) {
             $.ajax({
                 url: '@Url.Action("InactivarCuentaPorCobrar", "GestionarCuentasPorCobrar")',
                 type: "POST",
@@ -1057,17 +1072,16 @@
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         cargarCuentasPorCobrar();
-                        mostrarMensajeOperacion("exito", "Cuenta por cobrar inactivada correctamente.");
+                        mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Cuenta por cobrar"), "exito", "#mensajeOperacion");
                     } else {
-                        mostrarMensajeOperacion("error", respuesta.mensaje || "No se pudo inactivar la cuenta por cobrar.");
+                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar la cuenta por cobrar.", "error", "#mensajeOperacion");
                     }
                 },
                 error: function () {
-                    mostrarMensajeOperacion("error", "Error al inactivar la cuenta por cobrar.");
+                    mostrarMensajeSistema("Error al procesar la cuenta por cobrar.", "error", "#mensajeOperacion");
                 }
             });
         }
-
         function obtenerBadgeEstadoCuenta(estado) {
             if (estado === "Pagada") {
                 return '<span class="badge badge-success">Pagada</span>';
