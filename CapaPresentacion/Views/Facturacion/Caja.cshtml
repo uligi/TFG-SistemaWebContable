@@ -1,6 +1,13 @@
-﻿@{
+﻿@using CapaEntidad.Seguridad
+
+@{
     ViewBag.Title = "Caja";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    UsuarioSesion usuarioSesion = Session["UsuarioSesion"] as UsuarioSesion;
+
+    string identificacionEmpleadoCaja = usuarioSesion != null ? usuarioSesion.Identificacion : "";
+    string nombreEmpleadoCaja = usuarioSesion != null ? usuarioSesion.NombreCompleto : "";
 }
 
 <style>
@@ -132,9 +139,10 @@
                 <input type="text"
                        id="txtBuscarClienteCaja"
                        class="form-control"
-                       placeholder="Buscar cliente por cédula o nombre..."
-                       value="Consumidor final" />
-
+                       placeholder="Buscar cliente por cédula o nombre..." />
+                <small class="form-text text-muted" id="lblClienteSeleccionadoCaja">
+                    Cliente seleccionado: Consumidor final.
+                </small>
                 <div class="input-group-append">
                     <button type="button" class="btn btn-outline-primary" onclick="buscarClientesCaja()">
                         Buscar
@@ -162,6 +170,12 @@
             <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="abrirModalClienteCaja()">
                 Registrar cliente
             </button>
+        </div>
+
+        <div class="form-group">
+            <label>Cajero</label>
+            <input type="hidden" id="txtIdentificacionEmpleadoCaja" value="@identificacionEmpleadoCaja" />
+            <input type="text" class="form-control" value="@identificacionEmpleadoCaja - @nombreEmpleadoCaja" readonly />
         </div>
 
         <div class="form-group">
@@ -325,6 +339,25 @@
             });
         }
 
+        function obtenerFechaActualCaja() {
+            var fecha = new Date();
+            var anio = fecha.getFullYear();
+            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+            var dia = ("0" + fecha.getDate()).slice(-2);
+
+            return anio + "-" + mes + "-" + dia;
+        }
+
+        function ejecutarAjaxCaja(url, datos) {
+            return $.ajax({
+                url: url,
+                type: "POST",
+                data: JSON.stringify(datos),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8"
+            });
+        }
+
         function cargarTiposFacturaCaja() {
             $.ajax({
                 url: '@Url.Action("ListarTiposFacturaActivos", "Facturacion")',
@@ -348,12 +381,202 @@
             });
         }
 
-        function buscarProductosCaja() {
-            mostrarMensajeSistema("Base de caja cargada correctamente. Falta conectar búsqueda de productos.", "advertencia", "#mensajeOperacion");
+         function buscarProductosCaja() {
+            var filtro = $("#txtBuscarProductoCaja").val().trim();
+
+            if (filtro.length < 2) {
+                mostrarMensajeSistema("Digite al menos 2 caracteres para buscar el producto.", "advertencia", "#mensajeOperacion");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("BuscarProductosFactura", "Facturacion")',
+                type: "GET",
+                data: { filtro: filtro },
+                dataType: "json",
+                success: function (respuesta) {
+                    pintarProductosCaja(respuesta.data || []);
+                },
+                error: function () {
+                    mostrarMensajeSistema("Error al buscar productos.", "error", "#mensajeOperacion");
+                }
+            });
+        }
+
+        function pintarProductosCaja(lista) {
+            var tbody = $("#tbodyResultadosProductoCaja");
+            tbody.empty();
+
+            if (lista.length === 0) {
+                tbody.append('<tr><td colspan="5" class="text-center text-muted">No se encontraron productos disponibles.</td></tr>');
+                $("#contenedorResultadosProductoCaja").show();
+                return;
+            }
+
+            $.each(lista, function (i, item) {
+                var boton = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-primary",
+                    text: "Agregar"
+                }).on("click", function () {
+                    agregarProductoCaja(item);
+                });
+
+                var fila = $("<tr>");
+                fila.append($("<td>", { class: "codigo-producto", text: item.CodigoProducto || "" }));
+                fila.append($("<td>").text(item.NombreProducto || ""));
+                fila.append($("<td>").text(formatearNumeroCaja(item.PrecioVenta)));
+                fila.append($("<td>").text(formatearNumeroCaja(item.StockActual)));
+                fila.append($("<td>").append(boton));
+
+                tbody.append(fila);
+            });
+
+            $("#contenedorResultadosProductoCaja").show();
+        }
+
+        function agregarProductoCaja(item) {
+            var codigo = item.CodigoProducto || "";
+
+            var existente = productosCaja.find(function (p) {
+                return p.CodigoProducto === codigo;
+            });
+
+            if (existente) {
+                existente.Cantidad = existente.Cantidad + 1;
+            } else {
+                productosCaja.push({
+                    CodigoProducto: codigo,
+                    NombreProducto: item.NombreProducto || "",
+                    IdImpuesto: item.IdImpuesto || 0,
+                    PrecioUnitario: parseFloat(item.PrecioVenta || 0),
+                    PorcentajeImpuesto: parseFloat(item.PorcentajeImpuesto || item.ImpuestoPorcentaje || 0),
+                    Cantidad: 1,
+                    StockActual: parseFloat(item.StockActual || 0)
+                });
+            }
+
+            $("#txtBuscarProductoCaja").val("");
+            $("#contenedorResultadosProductoCaja").hide();
+
+            pintarVentaCaja();
         }
 
         function cobrarCaja() {
-            mostrarMensajeSistema("Base de caja cargada correctamente. Falta conectar guardado y emisión.", "advertencia", "#mensajeOperacion");
+            if (productosCaja.length === 0) {
+                mostrarMensajeSistema("Debe agregar al menos un producto antes de cobrar.", "advertencia", "#mensajeOperacion");
+                return;
+            }
+
+            var identificacionCliente = $("#txtIdentificacionClienteCaja").val();
+            var idTipoPago = parseInt($("#cboTipoPagoCaja").val());
+            var idTipoFactura = parseInt($("#cboTipoFacturaCaja").val());
+            var identificacionEmpleado = $("#txtIdentificacionEmpleadoCaja").val();
+
+            if (!identificacionCliente || identificacionCliente === "") {
+                mostrarMensajeSistema("Debe seleccionar un cliente.", "advertencia", "#mensajeOperacion");
+                return;
+            }
+
+            if (isNaN(idTipoPago) || idTipoPago <= 0) {
+                mostrarMensajeSistema("Debe seleccionar un tipo de pago.", "advertencia", "#mensajeOperacion");
+                return;
+            }
+
+            if (isNaN(idTipoFactura) || idTipoFactura <= 0) {
+                mostrarMensajeSistema("Debe seleccionar un tipo de factura.", "advertencia", "#mensajeOperacion");
+                return;
+            }
+
+            if (!identificacionEmpleado || identificacionEmpleado === "") {
+                mostrarMensajeSistema("Debe seleccionar un empleado.", "advertencia", "#mensajeOperacion");
+                return;
+            }
+
+            var factura = {
+                NumeroFactura: "",
+                IdentificacionCliente: identificacionCliente,
+                IdentificacionEmpleado: identificacionEmpleado,
+                IdTipoPago: idTipoPago,
+                IdTipoFactura: idTipoFactura,
+                FechaFactura: obtenerFechaActualCaja(),
+                Estado: "Borrador",
+                Activo: true
+            };
+
+            mostrarMensajeSistema("Procesando venta...", "advertencia", "#mensajeOperacion");
+
+            ejecutarAjaxCaja('@Url.Action("GuardarFactura", "Facturacion")', { obj: factura })
+                .done(function (respuestaFactura) {
+                    if (respuestaFactura.resultado == 0 || respuestaFactura.resultado === false) {
+                        mostrarMensajeSistema(respuestaFactura.mensaje || "No se pudo guardar la factura.", "error", "#mensajeOperacion");
+                        return;
+                    }
+
+                    var numeroFactura = respuestaFactura.numeroFactura || "";
+
+                    if (numeroFactura === "") {
+                        mostrarMensajeSistema("No se pudo obtener el número de factura generado.", "error", "#mensajeOperacion");
+                        return;
+                    }
+
+                    guardarDetallesCaja(numeroFactura);
+                })
+                .fail(function () {
+                    mostrarMensajeSistema("Error al guardar la factura.", "error", "#mensajeOperacion");
+                });
+        }
+
+        function guardarDetallesCaja(numeroFactura) {
+            var llamadas = [];
+
+            $.each(productosCaja, function (i, item) {
+                var detalle = {
+                    NumeroFactura: numeroFactura,
+                    CodigoProducto: item.CodigoProducto,
+                    IdImpuesto: parseInt(item.IdImpuesto || 0),
+                    IdDescuento: 1,
+                    DescripcionItem: item.NombreProducto,
+                    Cantidad: parseFloat(item.Cantidad || 0),
+                    PrecioUnitario: parseFloat(item.PrecioUnitario || 0),
+                    PorcentajeImpuesto: parseFloat(item.PorcentajeImpuesto || 0),
+                    PorcentajeDescuento: 0,
+                    Activo: true
+                };
+
+                llamadas.push(
+                    ejecutarAjaxCaja('@Url.Action("GuardarDetalleFactura", "Facturacion")', { obj: detalle })
+                );
+            });
+
+            $.when.apply($, llamadas)
+                .done(function () {
+                    emitirFacturaCaja(numeroFactura);
+                })
+                .fail(function () {
+                    mostrarMensajeSistema("La factura se guardó, pero ocurrió un error al guardar los productos.", "error", "#mensajeOperacion");
+                });
+        }
+
+        function emitirFacturaCaja(numeroFactura) {
+            ejecutarAjaxCaja('@Url.Action("EmitirFactura", "Facturacion")', { numeroFactura: numeroFactura })
+                .done(function (respuesta) {
+                    if (respuesta.resultado) {
+                        productosCaja = [];
+                        pintarVentaCaja();
+
+                        $("#txtIdentificacionClienteCaja").val("000000000");
+                        $("#txtBuscarClienteCaja").val("");
+                        $("#lblClienteSeleccionadoCaja").text("Cliente seleccionado: Consumidor final.");
+
+                        mostrarMensajeSistema(respuesta.mensaje || ("Factura " + numeroFactura + " emitida correctamente."), "exito", "#mensajeOperacion");
+                    } else {
+                        mostrarMensajeSistema(respuesta.mensaje || "La factura se guardó, pero no se pudo emitir.", "error", "#mensajeOperacion");
+                    }
+                })
+                .fail(function () {
+                    mostrarMensajeSistema("La factura se guardó, pero ocurrió un error al emitirla.", "error", "#mensajeOperacion");
+                });
         }
 
         function cancelarVentaCaja() {
@@ -371,13 +594,91 @@
                 actualizarTotalesCaja();
                 return;
             }
+
+            $.each(productosCaja, function (i, item) {
+                var totalLinea = item.Cantidad * item.PrecioUnitario;
+
+                var inputCantidad = $("<input>", {
+                    type: "number",
+                    class: "form-control form-control-sm",
+                    min: "1",
+                    value: item.Cantidad
+                }).on("change keyup", function () {
+                    var nuevaCantidad = parseFloat($(this).val());
+
+                    if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
+                        nuevaCantidad = 1;
+                    }
+
+                    item.Cantidad = nuevaCantidad;
+                    pintarVentaCaja();
+                });
+
+                var botonEliminar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Quitar"
+                }).on("click", function () {
+                    productosCaja.splice(i, 1);
+                    pintarVentaCaja();
+                });
+
+                var fila = $("<tr>");
+                fila.append($("<td>").html(
+                    '<strong>' + (item.NombreProducto || "") + '</strong><br/>' +
+                    '<span class="texto-tabla-secundario">' + (item.CodigoProducto || "") + '</span>'
+                ));
+                fila.append($("<td>").append(inputCantidad));
+                fila.append($("<td>").text(formatearNumeroCaja(item.PrecioUnitario)));
+                fila.append($("<td>").text(formatearNumeroCaja(totalLinea)));
+                fila.append($("<td>").append(botonEliminar));
+
+                tbody.append(fila);
+            });
+
+            actualizarTotalesCaja();
         }
 
         function actualizarTotalesCaja() {
-            $("#lblSubtotalCaja").text("₡0.00");
-            $("#lblImpuestoCaja").text("₡0.00");
-            $("#lblDescuentoCaja").text("₡0.00");
-            $("#lblTotalCaja").text("₡0.00");
+            var subtotal = 0;
+            var impuesto = 0;
+            var descuento = 0;
+            var total = 0;
+
+            $.each(productosCaja, function (i, item) {
+                var cantidad = parseFloat(item.Cantidad || 0);
+                var precio = parseFloat(item.PrecioUnitario || 0);
+                var porcentajeImpuesto = parseFloat(item.PorcentajeImpuesto || 0);
+
+                var totalLinea = cantidad * precio;
+                var baseLinea = porcentajeImpuesto > 0
+                    ? totalLinea / (1 + (porcentajeImpuesto / 100))
+                    : totalLinea;
+
+                var impuestoLinea = totalLinea - baseLinea;
+
+                subtotal += baseLinea;
+                impuesto += impuestoLinea;
+                total += totalLinea;
+            });
+
+            $("#lblSubtotalCaja").text("₡" + formatearNumeroCaja(subtotal));
+            $("#lblImpuestoCaja").text("₡" + formatearNumeroCaja(impuesto));
+            $("#lblDescuentoCaja").text("₡" + formatearNumeroCaja(descuento));
+            $("#lblTotalCaja").text("₡" + formatearNumeroCaja(total));
+        }
+
+        function formatearNumeroCaja(valor) {
+            var numero = parseFloat(valor);
+
+            if (isNaN(numero)) {
+                return "0.00";
+            }
+
+            return numero.toLocaleString("es-CR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
 
         function buscarClientesCaja() {
