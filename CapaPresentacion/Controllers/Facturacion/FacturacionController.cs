@@ -538,5 +538,111 @@ namespace CapaPresentacion.Controllers.Facturacion
                 correo = correo
             }, JsonRequestBehavior.AllowGet);
         }
+
+
+        [HttpGet]
+        public JsonResult ObtenerContactoClienteCaja(string identificacion)
+        {
+            identificacion = string.IsNullOrWhiteSpace(identificacion) ? "" : identificacion.Trim();
+
+            var telefono = new CN_Telefono().ListarPorPersona(identificacion)
+                .Where(x => x.Activo)
+                .OrderByDescending(x => x.EsPrincipal)
+                .FirstOrDefault();
+
+            var correo = new CN_Correo().ListarPorPersona(identificacion)
+                .Where(x => x.Activo)
+                .OrderByDescending(x => x.EsPrincipal)
+                .FirstOrDefault();
+
+            return Json(new
+            {
+                telefono = telefono != null ? telefono.NumeroTelefono : "",
+                correo = correo != null ? correo.DireccionCorreo : ""
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult RegistrarContactoClienteCaja(string identificacion, string telefono, string correo)
+        {
+            identificacion = string.IsNullOrWhiteSpace(identificacion) ? "" : identificacion.Trim();
+            telefono = string.IsNullOrWhiteSpace(telefono) ? "" : telefono.Trim();
+            correo = string.IsNullOrWhiteSpace(correo) ? "" : correo.Trim().ToLower();
+
+            if (identificacion == "" || identificacion == "000000000")
+            {
+                return Json(new
+                {
+                    resultado = false,
+                    mensaje = "Debe seleccionar un cliente válido."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            if (telefono == "" && correo == "")
+            {
+                return Json(new
+                {
+                    resultado = false,
+                    mensaje = "Debe ingresar al menos un teléfono o un correo."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            string mensajeTelefono = string.Empty;
+            string mensajeCorreo = string.Empty;
+
+            if (telefono != "")
+            {
+                Telefono objTelefono = new Telefono
+                {
+                    Identificacion = identificacion,
+                    NumeroTelefono = telefono,
+                    NumeroTelefonoAnterior = "",
+                    IdTipoTelefono = 1,
+                    EsPrincipal = true,
+                    Activo = true
+                };
+
+                int resultadoTelefono = new CN_Telefono().Registrar(objTelefono, out mensajeTelefono);
+
+                if (resultadoTelefono == 0)
+                {
+                    return Json(new
+                    {
+                        resultado = false,
+                        mensaje = mensajeTelefono
+                    }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            if (correo != "")
+            {
+                Correo objCorreo = new Correo
+                {
+                    Identificacion = identificacion,
+                    DireccionCorreo = correo,
+                    DireccionCorreoAnterior = "",
+                    IdTipoCorreo = 1,
+                    EsPrincipal = true,
+                    Activo = true
+                };
+
+                int resultadoCorreo = new CN_Correo().Registrar(objCorreo, out mensajeCorreo);
+
+                if (resultadoCorreo == 0)
+                {
+                    return Json(new
+                    {
+                        resultado = false,
+                        mensaje = mensajeCorreo
+                    }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            return Json(new
+            {
+                resultado = true,
+                mensaje = "Contacto registrado correctamente."
+            }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

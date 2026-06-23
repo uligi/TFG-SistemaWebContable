@@ -167,9 +167,17 @@
                 </div>
             </div>
 
-            <small class="form-text text-muted" id="lblClienteSeleccionadoCaja">
-                Cliente seleccionado: Consumidor final.
+            <small class="form-text text-muted" id="lblContactoClienteCaja">
+                Correo: No registrado | Teléfono: No registrado
             </small>
+
+            <button type="button"
+                    class="btn btn-outline-info btn-sm mt-2"
+                    id="btnAgregarContactoClienteCaja"
+                    onclick="abrirModalContactoClienteCaja()"
+                    style="display:none;">
+                Agregar correo / teléfono
+            </button>
 
             <div class="table-responsive mt-2" id="contenedorResultadosClienteCaja" style="display:none;">
                 <table class="table table-sm table-bordered mb-0">
@@ -330,7 +338,7 @@
 </div>
 
 <div class="modal fade" id="ModalFacturaEmitidaCaja" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
             <div class="modal-header bg-success text-white">
@@ -346,34 +354,114 @@
                     La venta fue procesada correctamente.
                 </div>
 
-                <p class="mb-1"><strong>Número de factura:</strong></p>
-                <h4 class="codigo-factura" id="lblFacturaEmitidaCaja">-</h4>
+                <div id="areaImpresionFacturaCaja">
 
-                <hr />
+                    <div class="text-center mb-3">
+                        <h4 class="mb-0">Abastecedor Las Graditas</h4>
+                        <small>Comprobante de factura</small>
+                    </div>
 
-                <p class="mb-1"><strong>Cliente:</strong></p>
-                <p id="lblClienteFacturaEmitidaCaja">Consumidor final</p>
+                    <hr />
 
-                <p class="mb-1"><strong>Correo:</strong></p>
-                <p id="lblCorreoFacturaEmitidaCaja">No registrado</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Número de factura:</strong></p>
+                            <h5 class="codigo-factura" id="lblFacturaEmitidaCaja">-</h5>
+                        </div>
 
-                <p class="mb-1"><strong>Teléfono:</strong></p>
-                <p id="lblTelefonoFacturaEmitidaCaja">No registrado</p>
+                        <div class="col-md-6 text-md-right">
+                            <p class="mb-1"><strong>Fecha:</strong></p>
+                            <p id="lblFechaFacturaEmitidaCaja">-</p>
+                        </div>
+                    </div>
 
-                <p class="mb-1"><strong>Total:</strong></p>
-                <h3 id="lblTotalFacturaEmitidaCaja">₡0.00</h3>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Cliente:</strong></p>
+                            <p id="lblClienteFacturaEmitidaCaja">Consumidor final</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Cajero:</strong></p>
+                            <p id="lblCajeroFacturaEmitidaCaja">-</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Correo:</strong></p>
+                            <p id="lblCorreoFacturaEmitidaCaja">No registrado</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Teléfono:</strong></p>
+                            <p id="lblTelefonoFacturaEmitidaCaja">No registrado</p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <h6 class="font-weight-bold">Detalle de factura</h6>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-right">Cantidad</th>
+                                    <th class="text-right">Precio</th>
+                                    <th class="text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyDetalleFacturaEmitidaCaja"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6"></div>
+
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between">
+                                <span>Subtotal:</span>
+                                <strong id="lblSubtotalFacturaEmitidaCaja">₡0.00</strong>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <span>IVA:</span>
+                                <strong id="lblImpuestoFacturaEmitidaCaja">₡0.00</strong>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <span>Descuento:</span>
+                                <strong id="lblDescuentoFacturaEmitidaCaja">₡0.00</strong>
+                            </div>
+
+                            <hr />
+
+                            <div class="d-flex justify-content-between">
+                                <span class="h5">Total:</span>
+                                <strong class="h5" id="lblTotalFacturaEmitidaCaja">₡0.00</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
 
                 <hr />
 
                 <div class="alert alert-info mb-0" id="mensajeEnvioCorreoCaja">
-                    Si el cliente registró correo, puede indicarle que la factura quedó asociada a ese correo.
+                    Si el cliente registró correo, puede enviarle el detalle de la factura.
                 </div>
 
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary" onclick="imprimirFacturaCaja()">
-                    Imprimir comprobante
+                    Imprimir factura
+                </button>
+
+                <button type="button" class="btn btn-outline-info" id="btnEnviarCorreoFacturaCaja" onclick="enviarFacturaPorCorreoCaja()">
+                    Enviar por correo
                 </button>
 
                 <button type="button" class="btn btn-success" data-dismiss="modal">
@@ -385,9 +473,66 @@
     </div>
 </div>
 
+<div class="modal fade" id="ModalContactoClienteCaja" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Agregar contacto al cliente</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="alert alert-danger" id="mensajeErrorContactoClienteCaja" style="display:none;"></div>
+
+                <p class="mb-1"><strong>Cliente seleccionado:</strong></p>
+                <p id="lblClienteContactoCaja" class="text-muted">-</p>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text"
+                           id="txtTelefonoContactoClienteCaja"
+                           class="form-control"
+                           maxlength="8"
+                           placeholder="Ejemplo: 88889999" />
+                </div>
+
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input type="text"
+                           id="txtCorreoContactoClienteCaja"
+                           class="form-control"
+                           maxlength="255"
+                           placeholder="cliente@correo.com" />
+                </div>
+
+                <small class="form-text text-muted">
+                    Puede registrar solo teléfono, solo correo o ambos.
+                </small>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="guardarContactoClienteCaja()">
+                    Guardar contacto
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         var productosCaja = [];
+        var ultimaFacturaCaja = null;
 
         $(document).ready(function () {
             cargarTiposPagoCaja();
@@ -410,6 +555,10 @@
             });
 
             $("#txtIdentificacionClienteNuevoCaja").on("input", function () {
+                this.value = this.value.replace(/[^0-9]/g, "");
+            });
+
+            $("#txtTelefonoContactoClienteCaja").on("input", function () {
                 this.value = this.value.replace(/[^0-9]/g, "");
             });
         });
@@ -704,6 +853,15 @@
 
             $("#txtTelefonoClienteCaja").val("");
             $("#txtCorreoClienteCaja").val("");
+
+            $("#lblContactoClienteCaja").text("Correo: No registrado | Teléfono: No registrado");
+
+            if ((item.Identificacion || "") !== "" && item.Identificacion !== "000000000") {
+                $("#btnAgregarContactoClienteCaja").show();
+                cargarContactoClienteCaja(item.Identificacion);
+            } else {
+                $("#btnAgregarContactoClienteCaja").hide();
+            }
         }
 
         function abrirModalClienteCaja() {
@@ -915,10 +1073,28 @@
         }
 
         function emitirFacturaCaja(numeroFactura) {
+            var productosProcesados = JSON.parse(JSON.stringify(productosCaja));
+
+            var datosFacturaProcesada = {
+                NumeroFactura: numeroFactura,
+                Fecha: obtenerFechaActualCaja(),
+                Cliente: $("#lblClienteSeleccionadoCaja").text().replace("Cliente seleccionado:", "").trim(),
+                Correo: $("#txtCorreoClienteCaja").val().trim(),
+                Telefono: $("#txtTelefonoClienteCaja").val().trim(),
+                Cajero: $("#txtIdentificacionEmpleadoCaja").val() + " - " + "@nombreEmpleadoCaja",
+                Productos: productosProcesados,
+                Subtotal: $("#lblSubtotalCaja").text(),
+                Impuesto: $("#lblImpuestoCaja").text(),
+                Descuento: $("#lblDescuentoCaja").text(),
+                Total: $("#lblTotalCaja").text()
+            };
+
             ejecutarAjaxCaja('@Url.Action("EmitirFactura", "Facturacion")', { numeroFactura: numeroFactura })
                 .done(function (respuesta) {
                     if (respuesta.resultado) {
-                        mostrarFacturaEmitidaCaja(numeroFactura);
+                        ultimaFacturaCaja = datosFacturaProcesada;
+
+                        mostrarFacturaEmitidaCaja();
 
                         productosCaja = [];
                         pintarVentaCaja();
@@ -928,6 +1104,14 @@
                         $("#txtCorreoClienteCaja").val("");
                         $("#txtTelefonoClienteCaja").val("");
                         $("#lblClienteSeleccionadoCaja").text("Cliente seleccionado: Consumidor final.");
+
+                        if ($("#lblContactoClienteCaja").length) {
+                            $("#lblContactoClienteCaja").text("Correo: No registrado | Teléfono: No registrado");
+                        }
+
+                        if ($("#btnAgregarContactoClienteCaja").length) {
+                            $("#btnAgregarContactoClienteCaja").hide();
+                        }
 
                         mostrarMensajeSistema(respuesta.mensaje || ("Factura " + numeroFactura + " emitida correctamente."), "exito", "#mensajeOperacion");
                     } else {
@@ -939,32 +1123,60 @@
                 });
         }
 
-        function mostrarFacturaEmitidaCaja(numeroFactura) {
-            var clienteTexto = $("#lblClienteSeleccionadoCaja").text().replace("Cliente seleccionado:", "").trim();
-            var correo = $("#txtCorreoClienteCaja").val().trim();
-            var telefono = $("#txtTelefonoClienteCaja").val().trim();
-            var total = $("#lblTotalCaja").text();
-
-            if (clienteTexto === "") {
-                clienteTexto = "Consumidor final";
+        function mostrarFacturaEmitidaCaja() {
+            if (ultimaFacturaCaja == null) {
+                mostrarMensajeSistema("No hay información de factura para mostrar.", "error", "#mensajeOperacion");
+                return;
             }
 
-            $("#lblFacturaEmitidaCaja").text(numeroFactura);
-            $("#lblClienteFacturaEmitidaCaja").text(clienteTexto);
-            $("#lblCorreoFacturaEmitidaCaja").text(correo === "" ? "No registrado" : correo);
-            $("#lblTelefonoFacturaEmitidaCaja").text(telefono === "" ? "No registrado" : telefono);
-            $("#lblTotalFacturaEmitidaCaja").text(total);
+            var factura = ultimaFacturaCaja;
 
-            if (correo !== "") {
+            $("#lblFacturaEmitidaCaja").text(factura.NumeroFactura || "-");
+            $("#lblFechaFacturaEmitidaCaja").text(factura.Fecha || "-");
+            $("#lblClienteFacturaEmitidaCaja").text(factura.Cliente || "Consumidor final");
+            $("#lblCorreoFacturaEmitidaCaja").text(factura.Correo === "" ? "No registrado" : factura.Correo);
+            $("#lblTelefonoFacturaEmitidaCaja").text(factura.Telefono === "" ? "No registrado" : factura.Telefono);
+            $("#lblCajeroFacturaEmitidaCaja").text(factura.Cajero || "-");
+
+            $("#lblSubtotalFacturaEmitidaCaja").text(factura.Subtotal || "₡0.00");
+            $("#lblImpuestoFacturaEmitidaCaja").text(factura.Impuesto || "₡0.00");
+            $("#lblDescuentoFacturaEmitidaCaja").text(factura.Descuento || "₡0.00");
+            $("#lblTotalFacturaEmitidaCaja").text(factura.Total || "₡0.00");
+
+            var tbody = $("#tbodyDetalleFacturaEmitidaCaja");
+            tbody.empty();
+
+            $.each(factura.Productos || [], function (i, item) {
+                var cantidad = parseFloat(item.Cantidad || 0);
+                var precio = parseFloat(item.PrecioUnitario || 0);
+                var totalLinea = cantidad * precio;
+
+                var fila = $("<tr>");
+                fila.append($("<td>").html(
+                    '<strong>' + (item.NombreProducto || "") + '</strong><br/>' +
+                    '<span class="texto-tabla-secundario">' + (item.CodigoProducto || "") + '</span>'
+                ));
+                fila.append($("<td>", { class: "text-right", text: formatearNumeroCaja(cantidad) }));
+                fila.append($("<td>", { class: "text-right", text: "₡" + formatearNumeroCaja(precio) }));
+                fila.append($("<td>", { class: "text-right", text: "₡" + formatearNumeroCaja(totalLinea) }));
+
+                tbody.append(fila);
+            });
+
+            if (factura.Correo !== "") {
+                $("#btnEnviarCorreoFacturaCaja").prop("disabled", false);
+
                 $("#mensajeEnvioCorreoCaja")
                     .removeClass("alert-info alert-warning")
                     .addClass("alert-info")
-                    .text("El cliente tiene correo registrado: " + correo + ". Puede indicarle que la factura quedó asociada a ese correo.");
+                    .text("El cliente tiene correo registrado: " + factura.Correo + ". Puede enviarle el detalle de la factura.");
             } else {
+                $("#btnEnviarCorreoFacturaCaja").prop("disabled", true);
+
                 $("#mensajeEnvioCorreoCaja")
                     .removeClass("alert-info alert-warning")
                     .addClass("alert-warning")
-                    .text("El cliente no tiene correo registrado. Puede ofrecer registrar uno para futuras facturas.");
+                    .text("El cliente no tiene correo registrado. Agregue un correo al cliente antes de enviar la factura.");
             }
 
             $("#ModalFacturaEmitidaCaja").modal("show");
@@ -974,14 +1186,108 @@
             productosCaja = [];
             pintarVentaCaja();
 
-            $("#txtBuscarProductoCaja").val("");
-            $("#contenedorResultadosProductoCaja").hide();
+            $("#txtIdentificacionClienteCaja").val("000000000");
+            $("#txtBuscarClienteCaja").val("");
+            $("#txtCorreoClienteCaja").val("");
+            $("#txtTelefonoClienteCaja").val("");
+            $("#lblClienteSeleccionadoCaja").text("Cliente seleccionado: Consumidor final.");
+            $("#lblContactoClienteCaja").text("Correo: No registrado | Teléfono: No registrado");
+            $("#btnAgregarContactoClienteCaja").hide();
 
             mostrarMensajeSistema("Venta cancelada.", "exito", "#mensajeOperacion");
         }
 
         function imprimirFacturaCaja() {
-            window.print();
+            var contenido = document.getElementById("areaImpresionFacturaCaja").innerHTML;
+
+            var ventana = window.open("", "_blank", "width=800,height=600");
+
+            ventana.document.open();
+            ventana.document.write(`
+        <html>
+        <head>
+            <title>Factura</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    padding: 20px;
+                    color: #000;
+                }
+
+                h4, h5, h6 {
+                    margin: 0 0 8px 0;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 10px;
+                }
+
+                th, td {
+                    border: 1px solid #333;
+                    padding: 6px;
+                    font-size: 12px;
+                }
+
+                th {
+                    background: #f0f0f0;
+                }
+
+                .text-center {
+                    text-align: center;
+                }
+
+                .text-right {
+                    text-align: right;
+                }
+
+                .codigo-factura,
+                .codigo-producto {
+                    font-family: Consolas, monospace;
+                    font-weight: bold;
+                }
+
+                .texto-tabla-secundario {
+                    font-size: 11px;
+                    color: #555;
+                }
+
+                .row {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 20px;
+                }
+
+                .col-md-6 {
+                    width: 50%;
+                }
+
+                .d-flex {
+                    display: flex;
+                }
+
+                .justify-content-between {
+                    justify-content: space-between;
+                }
+
+                hr {
+                    border: 0;
+                    border-top: 1px solid #333;
+                    margin: 12px 0;
+                }
+            </style>
+        </head>
+        <body>
+            ${contenido}
+        </body>
+        </html>
+    `);
+            ventana.document.close();
+
+            ventana.focus();
+            ventana.print();
+            ventana.close();
         }
 
         function ejecutarAjaxCaja(url, datos) {
@@ -1030,6 +1336,177 @@
 
             var regexCorreo = new RegExp(patron);
             return regexCorreo.test(valor);
+        }
+
+        function cargarContactoClienteCaja(identificacion) {
+    if (!identificacion || identificacion === "" || identificacion === "000000000") {
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("ObtenerContactoClienteCaja", "Facturacion")',
+        type: "GET",
+        data: { identificacion: identificacion },
+        dataType: "json",
+        success: function (respuesta) {
+            var correo = respuesta.correo || "";
+            var telefono = respuesta.telefono || "";
+
+            $("#txtCorreoClienteCaja").val(correo);
+            $("#txtTelefonoClienteCaja").val(telefono);
+
+            $("#lblContactoClienteCaja").text(
+                "Correo: " + (correo === "" ? "No registrado" : correo) +
+                " | Teléfono: " + (telefono === "" ? "No registrado" : telefono)
+            );
+
+            if (correo === "" || telefono === "") {
+                $("#btnAgregarContactoClienteCaja").show();
+            } else {
+                $("#btnAgregarContactoClienteCaja").hide();
+            }
+        },
+        error: function () {
+            $("#txtCorreoClienteCaja").val("");
+            $("#txtTelefonoClienteCaja").val("");
+            $("#lblContactoClienteCaja").text("Correo: No registrado | Teléfono: No registrado");
+            $("#btnAgregarContactoClienteCaja").show();
+        }
+    });
+}
+
+function abrirModalContactoClienteCaja() {
+    var identificacion = $("#txtIdentificacionClienteCaja").val();
+
+    if (!identificacion || identificacion === "" || identificacion === "000000000") {
+        mostrarMensajeSistema("Debe seleccionar un cliente antes de agregar contacto.", "advertencia", "#mensajeOperacion");
+        return;
+    }
+
+    $("#mensajeErrorContactoClienteCaja").hide().text("");
+
+    $("#lblClienteContactoCaja").text($("#lblClienteSeleccionadoCaja").text().replace("Cliente seleccionado:", "").trim());
+
+    $("#txtTelefonoContactoClienteCaja").val($("#txtTelefonoClienteCaja").val());
+    $("#txtCorreoContactoClienteCaja").val($("#txtCorreoClienteCaja").val());
+
+    $("#ModalContactoClienteCaja").modal("show");
+}
+
+function guardarContactoClienteCaja() {
+    $("#mensajeErrorContactoClienteCaja").hide().text("");
+
+    var identificacion = $("#txtIdentificacionClienteCaja").val();
+    var telefono = $("#txtTelefonoContactoClienteCaja").val().trim();
+    var correo = $("#txtCorreoContactoClienteCaja").val().trim();
+
+    if (!identificacion || identificacion === "" || identificacion === "000000000") {
+        $("#mensajeErrorContactoClienteCaja").text("Debe seleccionar un cliente válido.").show();
+        return;
+    }
+
+    if (telefono === "" && correo === "") {
+        $("#mensajeErrorContactoClienteCaja").text("Debe ingresar al menos un teléfono o un correo.").show();
+        return;
+    }
+
+    if (telefono !== "" && !/^[0-9]{8}$/.test(telefono)) {
+        $("#mensajeErrorContactoClienteCaja").text("El teléfono debe contener exactamente 8 dígitos.").show();
+        return;
+    }
+
+    if (correo !== "" && !validarCorreo(correo)) {
+        $("#mensajeErrorContactoClienteCaja").text("Debe ingresar un correo válido.").show();
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("RegistrarContactoClienteCaja", "Facturacion")',
+        type: "POST",
+        data: JSON.stringify({
+            identificacion: identificacion,
+            telefono: telefono,
+            correo: correo
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#ModalContactoClienteCaja").modal("hide");
+
+                $("#txtTelefonoClienteCaja").val(telefono);
+                $("#txtCorreoClienteCaja").val(correo);
+
+                $("#lblContactoClienteCaja").text(
+                    "Correo: " + (correo === "" ? "No registrado" : correo) +
+                    " | Teléfono: " + (telefono === "" ? "No registrado" : telefono)
+                );
+
+                if (correo === "" || telefono === "") {
+                    $("#btnAgregarContactoClienteCaja").show();
+                } else {
+                    $("#btnAgregarContactoClienteCaja").hide();
+                }
+
+                mostrarMensajeSistema(respuesta.mensaje || "Contacto registrado correctamente.", "exito", "#mensajeOperacion");
+            } else {
+                $("#mensajeErrorContactoClienteCaja").text(respuesta.mensaje || "No se pudo registrar el contacto.").show();
+            }
+        },
+        error: function () {
+            $("#mensajeErrorContactoClienteCaja").text("Error al registrar el contacto.").show();
+        }
+    });
+        }
+
+        function enviarFacturaPorCorreoCaja() {
+            if (ultimaFacturaCaja == null) {
+                mostrarMensajeSistema("No hay factura para enviar.", "error", "#mensajeOperacion");
+                return;
+            }
+
+            var factura = ultimaFacturaCaja;
+
+            if (!factura.Correo || factura.Correo === "") {
+                mostrarMensajeSistema("El cliente no tiene correo registrado.", "advertencia", "#mensajeOperacion");
+                return;
+            }
+
+            var detalle = "";
+
+            $.each(factura.Productos || [], function (i, item) {
+                var cantidad = parseFloat(item.Cantidad || 0);
+                var precio = parseFloat(item.PrecioUnitario || 0);
+                var totalLinea = cantidad * precio;
+
+                detalle += "- " + (item.NombreProducto || "") +
+                    " | Cantidad: " + formatearNumeroCaja(cantidad) +
+                    " | Precio: ₡" + formatearNumeroCaja(precio) +
+                    " | Total: ₡" + formatearNumeroCaja(totalLinea) + "\n";
+            });
+
+            var asunto = "Factura " + factura.NumeroFactura + " - Abastecedor Las Graditas";
+
+            var cuerpo =
+                "Estimado cliente,\n\n" +
+                "Se adjunta el detalle de su factura:\n\n" +
+                "Número de factura: " + factura.NumeroFactura + "\n" +
+                "Fecha: " + factura.Fecha + "\n" +
+                "Cliente: " + factura.Cliente + "\n\n" +
+                "Detalle:\n" +
+                detalle + "\n" +
+                "Subtotal: " + factura.Subtotal + "\n" +
+                "IVA: " + factura.Impuesto + "\n" +
+                "Descuento: " + factura.Descuento + "\n" +
+                "Total: " + factura.Total + "\n\n" +
+                "Gracias por su compra.";
+
+            var url =
+                "mailto:" + encodeURIComponent(factura.Correo) +
+                "?subject=" + encodeURIComponent(asunto) +
+                "&body=" + encodeURIComponent(cuerpo);
+
+            window.location.href = url;
         }
     </script>
 }
