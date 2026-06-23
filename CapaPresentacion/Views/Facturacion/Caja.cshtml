@@ -1,0 +1,273 @@
+﻿@{
+    ViewBag.Title = "Caja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .caja-contenedor {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 18px;
+    }
+
+    .caja-panel {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        padding: 18px;
+    }
+
+    .caja-total {
+        font-size: 34px;
+        font-weight: 800;
+        text-align: right;
+        color: #1f7a3f;
+    }
+
+    .caja-buscador {
+        font-size: 18px;
+        height: 48px;
+    }
+
+    .caja-tabla-productos tbody td {
+        vertical-align: middle;
+    }
+
+    .caja-boton-cobrar {
+        height: 56px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .caja-resumen-linea {
+        display: flex;
+        justify-content: space-between;
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+        .caja-resumen-linea strong {
+            font-size: 18px;
+        }
+</style>
+
+<h4 class="font-weight-bold py-3 mb-0">Caja</h4>
+
+<div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="feather icon-home"></i>
+            </a>
+        </li>
+        <li class="breadcrumb-item">Facturación</li>
+        <li class="breadcrumb-item active">Caja</li>
+    </ol>
+</div>
+
+<div id="mensajeOperacion"></div>
+
+<div class="caja-contenedor">
+
+    <div class="caja-panel">
+        <h6 class="font-weight-bold mb-3">Venta actual</h6>
+
+        <div class="input-group mb-3">
+            <input type="text"
+                   id="txtBuscarProductoCaja"
+                   class="form-control caja-buscador"
+                   placeholder="Buscar producto por código o nombre..." />
+
+            <div class="input-group-append">
+                <button type="button" class="btn btn-primary" onclick="buscarProductosCaja()">
+                    Buscar
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive mb-3" id="contenedorResultadosProductoCaja" style="display:none;">
+            <table class="table table-sm table-bordered mb-0">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th style="width:100px;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyResultadosProductoCaja"></tbody>
+            </table>
+        </div>
+
+        <table class="table table-bordered caja-tabla-productos" id="tablaVentaCaja">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th style="width:100px;">Cantidad</th>
+                    <th style="width:120px;">Precio</th>
+                    <th style="width:120px;">Total</th>
+                    <th style="width:90px;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        No hay productos agregados.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="caja-panel">
+        <h6 class="font-weight-bold mb-3">Resumen</h6>
+
+        <div class="form-group">
+            <label>Cliente</label>
+            <input type="hidden" id="txtIdentificacionClienteCaja" value="000000000" />
+            <input type="text" id="txtClienteCaja" class="form-control" value="Consumidor final" readonly />
+        </div>
+
+        <div class="form-group">
+            <label>Tipo de pago</label>
+            <select id="cboTipoPagoCaja" class="form-control">
+                <option value="0">Seleccione</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Tipo de factura</label>
+            <select id="cboTipoFacturaCaja" class="form-control">
+                <option value="0">Seleccione</option>
+            </select>
+        </div>
+
+        <hr />
+
+        <div class="caja-resumen-linea">
+            <span>Subtotal</span>
+            <strong id="lblSubtotalCaja">₡0.00</strong>
+        </div>
+
+        <div class="caja-resumen-linea">
+            <span>IVA</span>
+            <strong id="lblImpuestoCaja">₡0.00</strong>
+        </div>
+
+        <div class="caja-resumen-linea">
+            <span>Descuento</span>
+            <strong id="lblDescuentoCaja">₡0.00</strong>
+        </div>
+
+        <hr />
+
+        <div class="caja-total" id="lblTotalCaja">
+            ₡0.00
+        </div>
+
+        <button type="button" class="btn btn-success btn-block caja-boton-cobrar mt-4" onclick="cobrarCaja()">
+            Cobrar / Emitir
+        </button>
+
+        <button type="button" class="btn btn-outline-danger btn-block mt-2" onclick="cancelarVentaCaja()">
+            Cancelar venta
+        </button>
+    </div>
+
+</div>
+
+@section scripts {
+    <script>
+        var productosCaja = [];
+
+        $(document).ready(function () {
+            cargarTiposPagoCaja();
+            cargarTiposFacturaCaja();
+
+            $("#txtBuscarProductoCaja").on("keypress", function (e) {
+                if (e.which === 13) {
+                    buscarProductosCaja();
+                }
+            });
+        });
+
+        function cargarTiposPagoCaja() {
+            $.ajax({
+                url: '@Url.Action("ListarTiposPagoActivos", "Facturacion")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoPagoCaja").empty().append('<option value="0">Seleccione</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboTipoPagoCaja").append(
+                            $("<option>", {
+                                value: item.IdTipoPago,
+                                text: item.Nombre || item.TipoPago || item.Descripcion
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    mostrarMensajeSistema("Error al cargar los tipos de pago.", "error", "#mensajeOperacion");
+                }
+            });
+        }
+
+        function cargarTiposFacturaCaja() {
+            $.ajax({
+                url: '@Url.Action("ListarTiposFacturaActivos", "Facturacion")',
+                type: "GET",
+                dataType: "json",
+                success: function (respuesta) {
+                    $("#cboTipoFacturaCaja").empty().append('<option value="0">Seleccione</option>');
+
+                    $.each(respuesta.data || [], function (i, item) {
+                        $("#cboTipoFacturaCaja").append(
+                            $("<option>", {
+                                value: item.IdTipoFactura,
+                                text: item.Nombre || item.TipoFactura || item.Descripcion
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    mostrarMensajeSistema("Error al cargar los tipos de factura.", "error", "#mensajeOperacion");
+                }
+            });
+        }
+
+        function buscarProductosCaja() {
+            mostrarMensajeSistema("Base de caja cargada correctamente. Falta conectar búsqueda de productos.", "advertencia", "#mensajeOperacion");
+        }
+
+        function cobrarCaja() {
+            mostrarMensajeSistema("Base de caja cargada correctamente. Falta conectar guardado y emisión.", "advertencia", "#mensajeOperacion");
+        }
+
+        function cancelarVentaCaja() {
+            productosCaja = [];
+            pintarVentaCaja();
+            mostrarMensajeSistema("Venta cancelada.", "exito", "#mensajeOperacion");
+        }
+
+        function pintarVentaCaja() {
+            var tbody = $("#tablaVentaCaja tbody");
+            tbody.empty();
+
+            if (productosCaja.length === 0) {
+                tbody.append('<tr><td colspan="5" class="text-center text-muted">No hay productos agregados.</td></tr>');
+                actualizarTotalesCaja();
+                return;
+            }
+        }
+
+        function actualizarTotalesCaja() {
+            $("#lblSubtotalCaja").text("₡0.00");
+            $("#lblImpuestoCaja").text("₡0.00");
+            $("#lblDescuentoCaja").text("₡0.00");
+            $("#lblTotalCaja").text("₡0.00");
+        }
+    </script>
+}

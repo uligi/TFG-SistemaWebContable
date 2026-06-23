@@ -14,6 +14,20 @@ namespace CapaPresentacion.Controllers.Facturacion
     {
         public ActionResult Facturas()
         {
+            var usuarioSesion = Session["UsuarioSesion"] as CapaEntidad.Seguridad.UsuarioSesion;
+
+            if (usuarioSesion != null &&
+                !string.IsNullOrWhiteSpace(usuarioSesion.NombreRol) &&
+                usuarioSesion.NombreRol.ToLower().Contains("cajero"))
+            {
+                return RedirectToAction("Caja");
+            }
+
+            return View();
+        }
+
+        public ActionResult Caja()
+        {
             return View();
         }
 
