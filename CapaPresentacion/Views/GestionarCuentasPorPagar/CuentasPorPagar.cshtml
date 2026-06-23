@@ -437,7 +437,7 @@
                     pintarTablaCuentas();
                 },
                 error: function () {
-                    alert("Error al cargar las cuentas por pagar.");
+                    mostrarMensajeSistema("Error al cargar las cuentas por pagar.", "error");
                 }
             });
         }
@@ -501,10 +501,10 @@
                     abrirModalCuenta(item);
                 });
 
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarCuentaPorPagar(item.IdentificacionProveedor, item.NumeroDocumento);
                 });
@@ -533,7 +533,7 @@
                 }
 
                 if (item.Activo && estado !== "Pagada") {
-                    acciones.append(botonInactivar);
+                    acciones.append(botonEstado);
                 }
 
                 fila.append(acciones);
@@ -769,10 +769,7 @@
 
                         cargarCuentasPorPagar();
 
-                        mostrarAyudaCampo("txtNumeroDocumento", respuesta.mensaje || "Cuenta por pagar guardada correctamente.");
-                        setTimeout(function () {
-                            ocultarAyudaCampo("txtNumeroDocumento");
-                        }, 2500);
+                        mostrarMensajeSistema(respuesta.mensaje || "Cuenta por pagar guardada correctamente.", "exito");
                     } else {
                         $("#mensajeErrorCuenta").text(respuesta.mensaje).show();
                     }
@@ -826,10 +823,10 @@
                     editarAbono(item);
                 });
 
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarAbono(item.IdentificacionProveedor, item.NumeroDocumento, item.NumeroAbono);
                 });
@@ -838,7 +835,7 @@
                 acciones.append(botonEditar);
 
                 if (item.Activo) {
-                    acciones.append(botonInactivar);
+                    acciones.append(botonEstado);
                 }
 
                 var fila = $("<tr>");
@@ -983,10 +980,18 @@
         }
 
         function inactivarAbono(identificacionProveedor, numeroDocumento, numeroAbono) {
-            if (!confirm("¿Desea inactivar este abono?")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este abono"),
+                function () {
+                    ejecutarInactivarAbono(identificacionProveedor, numeroDocumento, numeroAbono);
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
 
+        function ejecutarInactivarAbono(identificacionProveedor, numeroDocumento, numeroAbono) {
             $.ajax({
                 url: '@Url.Action("InactivarAbonoCuentaPorPagar", "GestionarCuentasPorPagar")',
                 type: "POST",
@@ -1002,12 +1007,13 @@
                         limpiarAbono();
                         cargarCuentasPorPagar();
                         refrescarCuentaActual(identificacionProveedor, numeroDocumento);
+                        mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Abono"), "exito");
                     } else {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el abono.", "error");
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el abono.");
+                    mostrarMensajeSistema("Error al procesar el abono.", "error");
                 }
             });
         }
@@ -1046,10 +1052,18 @@
         }
 
         function inactivarCuentaPorPagar(identificacionProveedor, numeroDocumento) {
-            if (!confirm("¿Desea inactivar esta cuenta por pagar?")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "esta cuenta por pagar"),
+                function () {
+                    ejecutarInactivarCuentaPorPagar(identificacionProveedor, numeroDocumento);
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
 
+        function ejecutarInactivarCuentaPorPagar(identificacionProveedor, numeroDocumento) {
             $.ajax({
                 url: '@Url.Action("InactivarCuentaPorPagar", "GestionarCuentasPorPagar")',
                 type: "POST",
@@ -1062,16 +1076,16 @@
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         cargarCuentasPorPagar();
+                        mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Cuenta por pagar"), "exito");
                     } else {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar la cuenta por pagar.", "error");
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar la cuenta por pagar.");
+                    mostrarMensajeSistema("Error al procesar la cuenta por pagar.", "error");
                 }
             });
         }
-
         function obtenerBadgeEstadoCuenta(estado) {
             if (estado === "Pagada") {
                 return '<span class="badge badge-success">Pagada</span>';
