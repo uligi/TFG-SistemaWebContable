@@ -326,7 +326,7 @@
                     pintarTablaIngresos();
                 },
                 error: function () {
-                    alert("Error al cargar los ingresos.");
+                    mostrarMensajeSistema("Error al cargar los ingresos.", "error");
                 }
             });
         }
@@ -349,7 +349,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de ingreso.");
+                    mostrarMensajeSistema("Error al cargar los tipos de ingreso.", "error");
                 }
             });
         }
@@ -375,7 +375,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar las cuentas contables.");
+                    mostrarMensajeSistema("Error al cargar las cuentas contables.", "error");
                 }
             });
         }
@@ -423,10 +423,10 @@
                     abrirModalIngreso(item);
                 });
 
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarIngreso(item.NumeroIngreso);
                 });
@@ -435,7 +435,7 @@
                 acciones.append(botonEditar);
 
                 if (item.Activo) {
-                    acciones.append(botonInactivar);
+                    acciones.append(botonEstado);
                 }
 
                 var fila = $("<tr>");
@@ -780,10 +780,18 @@
         }
 
         function inactivarIngreso(numeroIngreso) {
-            if (!confirm("¿Desea inactivar este ingreso?")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este ingreso"),
+                function () {
+                    ejecutarInactivarIngreso(numeroIngreso);
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
 
+        function ejecutarInactivarIngreso(numeroIngreso) {
             $.ajax({
                 url: '@Url.Action("InactivarIngreso", "GestionarIngresos")',
                 type: "POST",
@@ -793,12 +801,13 @@
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         cargarIngresos();
+                        mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Ingreso"), "exito");
                     } else {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el ingreso.", "error");
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el ingreso.");
+                    mostrarMensajeSistema("Error al procesar el ingreso.", "error");
                 }
             });
         }
