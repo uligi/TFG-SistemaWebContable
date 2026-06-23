@@ -1,0 +1,26 @@
+CREATE SCHEMA Ubicacion;
+GO
+
+CREATE SCHEMA Persona;
+GO
+
+CREATE SCHEMA Proveedor;
+GO
+
+CREATE SCHEMA Inventario;
+GO
+
+CREATE SCHEMA Contabilidad;
+GO
+
+CREATE SCHEMA Seguridad;
+GO
+
+CREATE SCHEMA Reportes;
+GO
+
+CREATE SCHEMA Consultas;
+GO
+
+CREATE SCHEMA Mantenimientos;
+GO
