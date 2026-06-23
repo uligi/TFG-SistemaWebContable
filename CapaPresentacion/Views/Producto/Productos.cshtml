@@ -309,7 +309,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los productos.");
+                    mostrarMensajeSistema("Error al cargar los productos.", "error");
                 }
             });
         }
@@ -344,10 +344,10 @@
                     abrirModal(item);
                 });
 
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarProducto(item.CodigoProducto);
                 });
@@ -356,7 +356,7 @@
                 acciones.append(botonEditar);
 
                 if (item.Activo) {
-                    acciones.append(botonInactivar);
+                    acciones.append(botonEstado);
                 }
 
                 var celdaProducto = $("<td>");
@@ -409,7 +409,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de producto.");
+                    mostrarMensajeSistema("Error al cargar los tipos de producto.", "error");
                 }
             });
         }
@@ -435,7 +435,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los impuestos.");
+                    mostrarMensajeSistema("Error al cargar los impuestos.", "error");
                 }
             });
         }
@@ -550,6 +550,7 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarProductos();
+                        mostrarMensajeSistema("Producto guardado correctamente.", "exito");
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -560,11 +561,19 @@
             });
         }
 
-        function inactivarProducto(codigoProducto) {
-            if (!confirm("¿Desea inactivar este producto?")) {
-                return;
-            }
+         function inactivarProducto(codigoProducto) {
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este producto"),
+                function () {
+                    ejecutarInactivarProducto(codigoProducto);
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
 
+        function ejecutarInactivarProducto(codigoProducto) {
             $.ajax({
                 url: '@Url.Action("InactivarProducto", "Producto")',
                 type: "POST",
@@ -574,12 +583,13 @@
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         cargarProductos();
+                        mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Producto"), "exito");
                     } else {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el producto.", "error");
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el producto.");
+                    mostrarMensajeSistema("Error al procesar el producto.", "error");
                 }
             });
         }
