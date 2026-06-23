@@ -317,6 +317,7 @@
     <Content Include="Scripts\js\pages\tables_bootstrap-table.js" />
     <Content Include="Scripts\js\pages\ui_button-groups.js" />
     <Content Include="Scripts\js\sidenav.js" />
+    <Content Include="Scripts\js\sistema-global.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

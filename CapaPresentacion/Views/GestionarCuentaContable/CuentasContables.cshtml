@@ -403,7 +403,7 @@
                     cargarComboCuentaPadre();
                 },
                 error: function () {
-                    alert("Error al cargar las cuentas contables.");
+                    mostrarMensajeSistema("Error al cargar las cuentas contables.", "error", "#mensajeOperacion");
                 }
             });
         }
@@ -559,15 +559,15 @@
             acciones.append(botonEditar);
 
             if (cuenta.Activo) {
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-outline-danger btn-sm",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarCuenta(cuenta.CodigoCuenta);
                 });
 
-                acciones.append(botonInactivar);
+                acciones.append(botonEstado);
             }
 
             fila.append(botonToggle);
@@ -641,10 +641,10 @@
                     abrirModal(item);
                 });
 
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarCuenta(item.CodigoCuenta);
                 });
@@ -653,7 +653,7 @@
                 acciones.append(botonEditar);
 
                 if (item.Activo) {
-                    acciones.append(botonInactivar);
+                    acciones.append(botonEstado);
                 }
 
                 var celdaCodigo = $("<td>", {
@@ -760,7 +760,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de cuenta contable.");
+                    mostrarMensajeSistema("Error al cargar los tipos de cuenta contable.", "error", "#mensajeOperacion");
                 }
             });
         }
@@ -786,7 +786,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar las naturalezas de cuenta contable.");
+                    mostrarMensajeSistema("Error al cargar las naturalezas de cuenta contable.", "error", "#mensajeOperacion");
                 }
             });
         }
@@ -967,9 +967,9 @@
                         cargarCuentas();
 
                         if (esEdicion) {
-                            mostrarMensajeOperacion("exito", "Cuenta contable actualizada correctamente.");
+                            mostrarMensajeSistema("Cuenta contable actualizada correctamente.", "exito", "#mensajeOperacion");
                         } else {
-                            mostrarMensajeOperacion("exito", "Cuenta contable registrada correctamente.");
+                            mostrarMensajeSistema("Cuenta contable registrada correctamente.", "exito", "#mensajeOperacion");
                         }
                     } else {
                         $("#mensajeError").text(respuesta.mensaje || "No se pudo guardar la cuenta contable.").show();
@@ -982,10 +982,18 @@
         }
 
         function inactivarCuenta(codigoCuenta) {
-            if (!confirm("¿Desea inactivar esta cuenta contable?")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "esta cuenta contable"),
+                function () {
+                    ejecutarInactivarCuenta(codigoCuenta);
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
 
+        function ejecutarInactivarCuenta(codigoCuenta) {
             $.ajax({
                 url: '@Url.Action("InactivarCuentaContable", "GestionarCuentaContable")',
                 type: "POST",
@@ -995,16 +1003,18 @@
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         cargarCuentas();
-                        mostrarMensajeOperacion("exito", "Cuenta contable inactivada correctamente.");
+                        mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Cuenta contable"), "exito", "#mensajeOperacion");
                     } else {
-                        mostrarMensajeOperacion("error", respuesta.mensaje || "No se pudo inactivar la cuenta contable.");
+                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar la cuenta contable.", "error", "#mensajeOperacion");
                     }
                 },
                 error: function () {
-                    mostrarMensajeOperacion("error", "Error al inactivar la cuenta contable.");
+                    mostrarMensajeSistema("Error al procesar la cuenta contable.", "error", "#mensajeOperacion");
                 }
             });
         }
+
+
         function tieneCuentasHijas(codigoCuenta) {
             var tieneHijas = false;
 
