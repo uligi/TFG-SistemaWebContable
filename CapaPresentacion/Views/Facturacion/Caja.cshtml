@@ -56,6 +56,23 @@
         .caja-resumen-linea strong {
             font-size: 18px;
         }
+
+    .codigo-factura,
+    .codigo-producto {
+        font-family: Consolas, monospace;
+        font-weight: bold;
+    }
+
+    .texto-tabla-secundario {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    @@media (max-width: 992px) {
+        .caja-contenedor {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <h4 class="font-weight-bold py-3 mb-0">Caja</h4>
@@ -134,15 +151,15 @@
             <label>Cliente</label>
 
             <input type="hidden" id="txtIdentificacionClienteCaja" value="000000000" />
+            <input type="hidden" id="txtCorreoClienteCaja" value="" />
+            <input type="hidden" id="txtTelefonoClienteCaja" value="" />
 
             <div class="input-group">
                 <input type="text"
                        id="txtBuscarClienteCaja"
                        class="form-control"
                        placeholder="Buscar cliente por cédula o nombre..." />
-                <small class="form-text text-muted" id="lblClienteSeleccionadoCaja">
-                    Cliente seleccionado: Consumidor final.
-                </small>
+
                 <div class="input-group-append">
                     <button type="button" class="btn btn-outline-primary" onclick="buscarClientesCaja()">
                         Buscar
@@ -173,12 +190,6 @@
         </div>
 
         <div class="form-group">
-            <label>Cajero</label>
-            <input type="hidden" id="txtIdentificacionEmpleadoCaja" value="@identificacionEmpleadoCaja" />
-            <input type="text" class="form-control" value="@identificacionEmpleadoCaja - @nombreEmpleadoCaja" readonly />
-        </div>
-
-        <div class="form-group">
             <label>Tipo de pago</label>
             <select id="cboTipoPagoCaja" class="form-control">
                 <option value="0">Seleccione</option>
@@ -190,6 +201,12 @@
             <select id="cboTipoFacturaCaja" class="form-control">
                 <option value="0">Seleccione</option>
             </select>
+        </div>
+
+        <div class="form-group">
+            <label>Cajero</label>
+            <input type="hidden" id="txtIdentificacionEmpleadoCaja" value="@identificacionEmpleadoCaja" />
+            <input type="text" class="form-control" value="@identificacionEmpleadoCaja - @nombreEmpleadoCaja" readonly />
         </div>
 
         <hr />
@@ -227,7 +244,7 @@
 </div>
 
 <div class="modal fade" id="ModalClienteCaja" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
             <div class="modal-header bg-dark text-white">
@@ -241,43 +258,60 @@
 
                 <div class="alert alert-danger" id="mensajeErrorClienteCaja" style="display:none;"></div>
 
-                <div class="form-group">
-                    <label>Identificación</label>
-                    <input type="text" id="txtIdentificacionClienteNuevoCaja" class="form-control" maxlength="11" />
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Identificación</label>
+                        <input type="text" id="txtIdentificacionClienteNuevoCaja" class="form-control" maxlength="11" />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Nombre</label>
+                        <input type="text" id="txtNombreClienteNuevoCaja" class="form-control" maxlength="45" />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Primer apellido</label>
+                        <input type="text" id="txtPrimerApellidoClienteNuevoCaja" class="form-control" maxlength="45" />
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" id="txtNombreClienteNuevoCaja" class="form-control" maxlength="45" />
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Segundo apellido</label>
+                        <input type="text" id="txtSegundoApellidoClienteNuevoCaja" class="form-control" maxlength="45" />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Teléfono</label>
+                        <input type="text" id="txtTelefonoClienteNuevoCaja" class="form-control" maxlength="8" placeholder="Ejemplo: 88889999" />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Correo</label>
+                        <input type="text" id="txtCorreoClienteNuevoCaja" class="form-control" maxlength="255" placeholder="cliente@correo.com" />
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Primer apellido</label>
-                    <input type="text" id="txtPrimerApellidoClienteNuevoCaja" class="form-control" maxlength="45" />
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Fecha de nacimiento</label>
+                        <input type="date" id="txtFechaNacimientoClienteNuevoCaja" class="form-control" />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Código de distrito</label>
+                        <input type="number" id="txtCodigoDistritoClienteNuevoCaja" class="form-control" placeholder="Código de distrito" />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Dirección</label>
+                        <input type="text" id="txtDireccionClienteNuevoCaja" class="form-control" maxlength="250" />
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Segundo apellido</label>
-                    <input type="text" id="txtSegundoApellidoClienteNuevoCaja" class="form-control" maxlength="45" />
-                </div>
-
-                <div class="form-group">
-                    <label>Fecha de nacimiento</label>
-                    <input type="date" id="txtFechaNacimientoClienteNuevoCaja" class="form-control" />
-                </div>
-
-                <div class="form-group">
-                    <label>Distrito</label>
-                    <input type="number" id="txtCodigoDistritoClienteNuevoCaja" class="form-control" placeholder="Código de distrito" />
-                    <small class="form-text text-muted">
-                        Por ahora se ingresa el código de distrito. Luego podemos cambiarlo por combo Provincia / Cantón / Distrito.
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label>Dirección</label>
-                    <input type="text" id="txtDireccionClienteNuevoCaja" class="form-control" maxlength="250" />
-                </div>
+                <small class="form-text text-muted">
+                    El teléfono y correo son opcionales, pero permiten asociar la factura al contacto del cliente.
+                </small>
 
             </div>
 
@@ -288,6 +322,62 @@
 
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalFacturaEmitidaCaja" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Factura emitida correctamente</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="alert alert-success">
+                    La venta fue procesada correctamente.
+                </div>
+
+                <p class="mb-1"><strong>Número de factura:</strong></p>
+                <h4 class="codigo-factura" id="lblFacturaEmitidaCaja">-</h4>
+
+                <hr />
+
+                <p class="mb-1"><strong>Cliente:</strong></p>
+                <p id="lblClienteFacturaEmitidaCaja">Consumidor final</p>
+
+                <p class="mb-1"><strong>Correo:</strong></p>
+                <p id="lblCorreoFacturaEmitidaCaja">No registrado</p>
+
+                <p class="mb-1"><strong>Teléfono:</strong></p>
+                <p id="lblTelefonoFacturaEmitidaCaja">No registrado</p>
+
+                <p class="mb-1"><strong>Total:</strong></p>
+                <h3 id="lblTotalFacturaEmitidaCaja">₡0.00</h3>
+
+                <hr />
+
+                <div class="alert alert-info mb-0" id="mensajeEnvioCorreoCaja">
+                    Si el cliente registró correo, puede indicarle que la factura quedó asociada a ese correo.
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" onclick="imprimirFacturaCaja()">
+                    Imprimir comprobante
+                </button>
+
+                <button type="button" class="btn btn-success" data-dismiss="modal">
+                    Nueva venta
                 </button>
             </div>
 
@@ -314,6 +404,14 @@
                     buscarClientesCaja();
                 }
             });
+
+            $("#txtTelefonoClienteNuevoCaja").on("input", function () {
+                this.value = this.value.replace(/[^0-9]/g, "");
+            });
+
+            $("#txtIdentificacionClienteNuevoCaja").on("input", function () {
+                this.value = this.value.replace(/[^0-9]/g, "");
+            });
         });
 
         function cargarTiposPagoCaja() {
@@ -328,7 +426,7 @@
                         $("#cboTipoPagoCaja").append(
                             $("<option>", {
                                 value: item.IdTipoPago,
-                                text: item.Nombre || item.TipoPago || item.Descripcion
+                                text: item.Nombre || item.Descripcion
                             })
                         );
                     });
@@ -336,25 +434,6 @@
                 error: function () {
                     mostrarMensajeSistema("Error al cargar los tipos de pago.", "error", "#mensajeOperacion");
                 }
-            });
-        }
-
-        function obtenerFechaActualCaja() {
-            var fecha = new Date();
-            var anio = fecha.getFullYear();
-            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
-            var dia = ("0" + fecha.getDate()).slice(-2);
-
-            return anio + "-" + mes + "-" + dia;
-        }
-
-        function ejecutarAjaxCaja(url, datos) {
-            return $.ajax({
-                url: url,
-                type: "POST",
-                data: JSON.stringify(datos),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8"
             });
         }
 
@@ -381,7 +460,7 @@
             });
         }
 
-         function buscarProductosCaja() {
+        function buscarProductosCaja() {
             var filtro = $("#txtBuscarProductoCaja").val().trim();
 
             if (filtro.length < 2) {
@@ -443,6 +522,11 @@
             });
 
             if (existente) {
+                if (existente.Cantidad + 1 > existente.StockActual) {
+                    mostrarMensajeSistema("No hay stock suficiente para agregar más unidades.", "advertencia", "#mensajeOperacion");
+                    return;
+                }
+
                 existente.Cantidad = existente.Cantidad + 1;
             } else {
                 productosCaja.push({
@@ -460,6 +544,278 @@
             $("#contenedorResultadosProductoCaja").hide();
 
             pintarVentaCaja();
+        }
+
+        function pintarVentaCaja() {
+            var tbody = $("#tablaVentaCaja tbody");
+            tbody.empty();
+
+            if (productosCaja.length === 0) {
+                tbody.append('<tr><td colspan="5" class="text-center text-muted">No hay productos agregados.</td></tr>');
+                actualizarTotalesCaja();
+                return;
+            }
+
+            $.each(productosCaja, function (i, item) {
+                var totalLinea = item.Cantidad * item.PrecioUnitario;
+
+                var inputCantidad = $("<input>", {
+                    type: "number",
+                    class: "form-control form-control-sm",
+                    min: "1",
+                    value: item.Cantidad
+                }).on("change", function () {
+                    var nuevaCantidad = parseFloat($(this).val());
+
+                    if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
+                        nuevaCantidad = 1;
+                    }
+
+                    if (nuevaCantidad > item.StockActual) {
+                        nuevaCantidad = item.StockActual;
+                        mostrarMensajeSistema("No hay stock suficiente para esa cantidad.", "advertencia", "#mensajeOperacion");
+                    }
+
+                    item.Cantidad = nuevaCantidad;
+                    pintarVentaCaja();
+                });
+
+                var botonEliminar = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-danger",
+                    text: "Quitar"
+                }).on("click", function () {
+                    productosCaja.splice(i, 1);
+                    pintarVentaCaja();
+                });
+
+                var fila = $("<tr>");
+                fila.append($("<td>").html(
+                    '<strong>' + (item.NombreProducto || "") + '</strong><br/>' +
+                    '<span class="texto-tabla-secundario">' + (item.CodigoProducto || "") + '</span>'
+                ));
+                fila.append($("<td>").append(inputCantidad));
+                fila.append($("<td>").text(formatearNumeroCaja(item.PrecioUnitario)));
+                fila.append($("<td>").text(formatearNumeroCaja(totalLinea)));
+                fila.append($("<td>").append(botonEliminar));
+
+                tbody.append(fila);
+            });
+
+            actualizarTotalesCaja();
+        }
+
+        function actualizarTotalesCaja() {
+            var subtotal = 0;
+            var impuesto = 0;
+            var descuento = 0;
+            var total = 0;
+
+            $.each(productosCaja, function (i, item) {
+                var cantidad = parseFloat(item.Cantidad || 0);
+                var precio = parseFloat(item.PrecioUnitario || 0);
+                var porcentajeImpuesto = parseFloat(item.PorcentajeImpuesto || 0);
+
+                var totalLinea = cantidad * precio;
+                var baseLinea = porcentajeImpuesto > 0
+                    ? totalLinea / (1 + (porcentajeImpuesto / 100))
+                    : totalLinea;
+
+                var impuestoLinea = totalLinea - baseLinea;
+
+                subtotal += baseLinea;
+                impuesto += impuestoLinea;
+                total += totalLinea;
+            });
+
+            $("#lblSubtotalCaja").text("₡" + formatearNumeroCaja(subtotal));
+            $("#lblImpuestoCaja").text("₡" + formatearNumeroCaja(impuesto));
+            $("#lblDescuentoCaja").text("₡" + formatearNumeroCaja(descuento));
+            $("#lblTotalCaja").text("₡" + formatearNumeroCaja(total));
+        }
+
+        function buscarClientesCaja() {
+            var filtro = $("#txtBuscarClienteCaja").val().trim();
+
+            if (filtro.length < 2) {
+                mostrarMensajeSistema("Digite al menos 2 caracteres para buscar el cliente.", "advertencia", "#mensajeOperacion");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("BuscarClientesFactura", "Facturacion")',
+                type: "GET",
+                data: { filtro: filtro },
+                dataType: "json",
+                success: function (respuesta) {
+                    pintarClientesCaja(respuesta.data || []);
+                },
+                error: function () {
+                    mostrarMensajeSistema("Error al buscar clientes.", "error", "#mensajeOperacion");
+                }
+            });
+        }
+
+        function pintarClientesCaja(lista) {
+            var tbody = $("#tbodyResultadosClienteCaja");
+            tbody.empty();
+
+            if (lista.length === 0) {
+                tbody.append('<tr><td colspan="3" class="text-center text-muted">No se encontraron clientes.</td></tr>');
+                $("#contenedorResultadosClienteCaja").show();
+                return;
+            }
+
+            $.each(lista, function (i, item) {
+                var nombreCompleto =
+                    (item.Nombre || "") + " " +
+                    (item.PrimerApellido || "") + " " +
+                    (item.SegundoApellido || "");
+
+                var boton = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-primary",
+                    text: "Seleccionar"
+                }).on("click", function () {
+                    seleccionarClienteCaja(item);
+                });
+
+                var fila = $("<tr>");
+                fila.append($("<td>").text(item.Identificacion || ""));
+                fila.append($("<td>").text(nombreCompleto.trim()));
+                fila.append($("<td>").append(boton));
+
+                tbody.append(fila);
+            });
+
+            $("#contenedorResultadosClienteCaja").show();
+        }
+
+        function seleccionarClienteCaja(item) {
+            var nombreCompleto =
+                (item.Nombre || "") + " " +
+                (item.PrimerApellido || "") + " " +
+                (item.SegundoApellido || "");
+
+            $("#txtIdentificacionClienteCaja").val(item.Identificacion || "");
+            $("#txtBuscarClienteCaja").val(nombreCompleto.trim());
+            $("#lblClienteSeleccionadoCaja").text("Cliente seleccionado: " + (item.Identificacion || "") + " - " + nombreCompleto.trim());
+            $("#contenedorResultadosClienteCaja").hide();
+
+            $("#txtTelefonoClienteCaja").val("");
+            $("#txtCorreoClienteCaja").val("");
+        }
+
+        function abrirModalClienteCaja() {
+            $("#mensajeErrorClienteCaja").hide().text("");
+
+            $("#txtIdentificacionClienteNuevoCaja").val("");
+            $("#txtNombreClienteNuevoCaja").val("");
+            $("#txtPrimerApellidoClienteNuevoCaja").val("");
+            $("#txtSegundoApellidoClienteNuevoCaja").val("");
+            $("#txtTelefonoClienteNuevoCaja").val("");
+            $("#txtCorreoClienteNuevoCaja").val("");
+            $("#txtFechaNacimientoClienteNuevoCaja").val("");
+            $("#txtCodigoDistritoClienteNuevoCaja").val("");
+            $("#txtDireccionClienteNuevoCaja").val("");
+
+            $("#ModalClienteCaja").modal("show");
+        }
+
+        function registrarClienteCaja() {
+            $("#mensajeErrorClienteCaja").hide().text("");
+
+            var telefono = $("#txtTelefonoClienteNuevoCaja").val().trim();
+            var correo = $("#txtCorreoClienteNuevoCaja").val().trim();
+
+            var obj = {
+                Identificacion: $("#txtIdentificacionClienteNuevoCaja").val().trim(),
+                Nombre: $("#txtNombreClienteNuevoCaja").val().trim(),
+                PrimerApellido: $("#txtPrimerApellidoClienteNuevoCaja").val().trim(),
+                SegundoApellido: $("#txtSegundoApellidoClienteNuevoCaja").val().trim(),
+                FechaNacimiento: $("#txtFechaNacimientoClienteNuevoCaja").val(),
+                CodigoDistrito: parseInt($("#txtCodigoDistritoClienteNuevoCaja").val()),
+                Direccion: $("#txtDireccionClienteNuevoCaja").val().trim(),
+                LimiteCredito: 0,
+                DiasCredito: 0,
+                Activo: true
+            };
+
+            if (isNaN(obj.CodigoDistrito)) {
+                obj.CodigoDistrito = 0;
+            }
+
+            if (obj.Identificacion === "") {
+                $("#mensajeErrorClienteCaja").text("Debe ingresar la identificación.").show();
+                return;
+            }
+
+            if (obj.Nombre === "") {
+                $("#mensajeErrorClienteCaja").text("Debe ingresar el nombre.").show();
+                return;
+            }
+
+            if (obj.PrimerApellido === "") {
+                $("#mensajeErrorClienteCaja").text("Debe ingresar el primer apellido.").show();
+                return;
+            }
+
+            if (telefono !== "" && !/^[0-9]{8}$/.test(telefono)) {
+                $("#mensajeErrorClienteCaja").text("El teléfono debe contener exactamente 8 dígitos.").show();
+                return;
+            }
+
+            if (correo !== "" && !validarCorreo(correo)) {
+                $("#mensajeErrorClienteCaja").text("Debe ingresar un correo válido.").show();
+                return;
+            }
+
+            if (obj.FechaNacimiento === "") {
+                $("#mensajeErrorClienteCaja").text("Debe ingresar la fecha de nacimiento.").show();
+                return;
+            }
+
+            if (obj.CodigoDistrito <= 0) {
+                $("#mensajeErrorClienteCaja").text("Debe ingresar el código de distrito.").show();
+                return;
+            }
+
+            if (obj.Direccion === "") {
+                $("#mensajeErrorClienteCaja").text("Debe ingresar la dirección.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("RegistrarClienteCaja", "Facturacion")',
+                type: "POST",
+                data: JSON.stringify({
+                    obj: obj,
+                    telefono: telefono,
+                    correo: correo
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado != 0 && respuesta.resultado !== false) {
+                        $("#ModalClienteCaja").modal("hide");
+
+                        $("#txtTelefonoClienteCaja").val(telefono);
+                        $("#txtCorreoClienteCaja").val(correo);
+
+                        seleccionarClienteCaja(obj);
+
+                        $("#txtTelefonoClienteCaja").val(telefono);
+                        $("#txtCorreoClienteCaja").val(correo);
+
+                        mostrarMensajeSistema(respuesta.mensaje || "Cliente registrado correctamente.", "exito", "#mensajeOperacion");
+                    } else {
+                        $("#mensajeErrorClienteCaja").text(respuesta.mensaje || "No se pudo registrar el cliente.").show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorClienteCaja").text("Error al registrar el cliente.").show();
+                }
+            });
         }
 
         function cobrarCaja() {
@@ -489,7 +845,7 @@
             }
 
             if (!identificacionEmpleado || identificacionEmpleado === "") {
-                mostrarMensajeSistema("Debe seleccionar un empleado.", "advertencia", "#mensajeOperacion");
+                mostrarMensajeSistema("No se pudo identificar el empleado que inició sesión.", "error", "#mensajeOperacion");
                 return;
             }
 
@@ -562,11 +918,15 @@
             ejecutarAjaxCaja('@Url.Action("EmitirFactura", "Facturacion")', { numeroFactura: numeroFactura })
                 .done(function (respuesta) {
                     if (respuesta.resultado) {
+                        mostrarFacturaEmitidaCaja(numeroFactura);
+
                         productosCaja = [];
                         pintarVentaCaja();
 
                         $("#txtIdentificacionClienteCaja").val("000000000");
                         $("#txtBuscarClienteCaja").val("");
+                        $("#txtCorreoClienteCaja").val("");
+                        $("#txtTelefonoClienteCaja").val("");
                         $("#lblClienteSeleccionadoCaja").text("Cliente seleccionado: Consumidor final.");
 
                         mostrarMensajeSistema(respuesta.mensaje || ("Factura " + numeroFactura + " emitida correctamente."), "exito", "#mensajeOperacion");
@@ -579,93 +939,68 @@
                 });
         }
 
+        function mostrarFacturaEmitidaCaja(numeroFactura) {
+            var clienteTexto = $("#lblClienteSeleccionadoCaja").text().replace("Cliente seleccionado:", "").trim();
+            var correo = $("#txtCorreoClienteCaja").val().trim();
+            var telefono = $("#txtTelefonoClienteCaja").val().trim();
+            var total = $("#lblTotalCaja").text();
+
+            if (clienteTexto === "") {
+                clienteTexto = "Consumidor final";
+            }
+
+            $("#lblFacturaEmitidaCaja").text(numeroFactura);
+            $("#lblClienteFacturaEmitidaCaja").text(clienteTexto);
+            $("#lblCorreoFacturaEmitidaCaja").text(correo === "" ? "No registrado" : correo);
+            $("#lblTelefonoFacturaEmitidaCaja").text(telefono === "" ? "No registrado" : telefono);
+            $("#lblTotalFacturaEmitidaCaja").text(total);
+
+            if (correo !== "") {
+                $("#mensajeEnvioCorreoCaja")
+                    .removeClass("alert-info alert-warning")
+                    .addClass("alert-info")
+                    .text("El cliente tiene correo registrado: " + correo + ". Puede indicarle que la factura quedó asociada a ese correo.");
+            } else {
+                $("#mensajeEnvioCorreoCaja")
+                    .removeClass("alert-info alert-warning")
+                    .addClass("alert-warning")
+                    .text("El cliente no tiene correo registrado. Puede ofrecer registrar uno para futuras facturas.");
+            }
+
+            $("#ModalFacturaEmitidaCaja").modal("show");
+        }
+
         function cancelarVentaCaja() {
             productosCaja = [];
             pintarVentaCaja();
+
+            $("#txtBuscarProductoCaja").val("");
+            $("#contenedorResultadosProductoCaja").hide();
+
             mostrarMensajeSistema("Venta cancelada.", "exito", "#mensajeOperacion");
         }
 
-        function pintarVentaCaja() {
-            var tbody = $("#tablaVentaCaja tbody");
-            tbody.empty();
-
-            if (productosCaja.length === 0) {
-                tbody.append('<tr><td colspan="5" class="text-center text-muted">No hay productos agregados.</td></tr>');
-                actualizarTotalesCaja();
-                return;
-            }
-
-            $.each(productosCaja, function (i, item) {
-                var totalLinea = item.Cantidad * item.PrecioUnitario;
-
-                var inputCantidad = $("<input>", {
-                    type: "number",
-                    class: "form-control form-control-sm",
-                    min: "1",
-                    value: item.Cantidad
-                }).on("change keyup", function () {
-                    var nuevaCantidad = parseFloat($(this).val());
-
-                    if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
-                        nuevaCantidad = 1;
-                    }
-
-                    item.Cantidad = nuevaCantidad;
-                    pintarVentaCaja();
-                });
-
-                var botonEliminar = $("<button>", {
-                    type: "button",
-                    class: "btn btn-sm btn-outline-danger",
-                    text: "Quitar"
-                }).on("click", function () {
-                    productosCaja.splice(i, 1);
-                    pintarVentaCaja();
-                });
-
-                var fila = $("<tr>");
-                fila.append($("<td>").html(
-                    '<strong>' + (item.NombreProducto || "") + '</strong><br/>' +
-                    '<span class="texto-tabla-secundario">' + (item.CodigoProducto || "") + '</span>'
-                ));
-                fila.append($("<td>").append(inputCantidad));
-                fila.append($("<td>").text(formatearNumeroCaja(item.PrecioUnitario)));
-                fila.append($("<td>").text(formatearNumeroCaja(totalLinea)));
-                fila.append($("<td>").append(botonEliminar));
-
-                tbody.append(fila);
-            });
-
-            actualizarTotalesCaja();
+        function imprimirFacturaCaja() {
+            window.print();
         }
 
-        function actualizarTotalesCaja() {
-            var subtotal = 0;
-            var impuesto = 0;
-            var descuento = 0;
-            var total = 0;
-
-            $.each(productosCaja, function (i, item) {
-                var cantidad = parseFloat(item.Cantidad || 0);
-                var precio = parseFloat(item.PrecioUnitario || 0);
-                var porcentajeImpuesto = parseFloat(item.PorcentajeImpuesto || 0);
-
-                var totalLinea = cantidad * precio;
-                var baseLinea = porcentajeImpuesto > 0
-                    ? totalLinea / (1 + (porcentajeImpuesto / 100))
-                    : totalLinea;
-
-                var impuestoLinea = totalLinea - baseLinea;
-
-                subtotal += baseLinea;
-                impuesto += impuestoLinea;
-                total += totalLinea;
+        function ejecutarAjaxCaja(url, datos) {
+            return $.ajax({
+                url: url,
+                type: "POST",
+                data: JSON.stringify(datos),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8"
             });
+        }
 
-            $("#lblSubtotalCaja").text("₡" + formatearNumeroCaja(subtotal));
-            $("#lblImpuestoCaja").text("₡" + formatearNumeroCaja(impuesto));
-            $("#lblDescuentoCaja").text("₡" + formatearNumeroCaja(descuento));
-            $("#lblTotalCaja").text("₡" + formatearNumeroCaja(total));
+        function obtenerFechaActualCaja() {
+            var fecha = new Date();
+            var anio = fecha.getFullYear();
+            var mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+            var dia = ("0" + fecha.getDate()).slice(-2);
+
+            return anio + "-" + mes + "-" + dia;
         }
 
         function formatearNumeroCaja(valor) {
@@ -681,162 +1016,20 @@
             });
         }
 
-        function buscarClientesCaja() {
-    var filtro = $("#txtBuscarClienteCaja").val().trim();
-
-    if (filtro.length < 2) {
-        mostrarMensajeSistema("Digite al menos 2 caracteres para buscar el cliente.", "advertencia", "#mensajeOperacion");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("BuscarClientesFactura", "Facturacion")',
-        type: "GET",
-        data: { filtro: filtro },
-        dataType: "json",
-        success: function (respuesta) {
-            pintarClientesCaja(respuesta.data || []);
-        },
-        error: function () {
-            mostrarMensajeSistema("Error al buscar clientes.", "error", "#mensajeOperacion");
-        }
-    });
-}
-
-function pintarClientesCaja(lista) {
-    var tbody = $("#tbodyResultadosClienteCaja");
-    tbody.empty();
-
-    if (lista.length === 0) {
-        tbody.append('<tr><td colspan="3" class="text-center text-muted">No se encontraron clientes.</td></tr>');
-        $("#contenedorResultadosClienteCaja").show();
-        return;
-    }
-
-    $.each(lista, function (i, item) {
-        var nombreCompleto =
-            (item.Nombre || "") + " " +
-            (item.PrimerApellido || "") + " " +
-            (item.SegundoApellido || "");
-
-        var boton = $("<button>", {
-            type: "button",
-            class: "btn btn-sm btn-primary",
-            text: "Seleccionar"
-        }).on("click", function () {
-            seleccionarClienteCaja(item);
-        });
-
-        var fila = $("<tr>");
-        fila.append($("<td>").text(item.Identificacion || ""));
-        fila.append($("<td>").text(nombreCompleto.trim()));
-        fila.append($("<td>").append(boton));
-
-        tbody.append(fila);
-    });
-
-    $("#contenedorResultadosClienteCaja").show();
-}
-
-function seleccionarClienteCaja(item) {
-    var nombreCompleto =
-        (item.Nombre || "") + " " +
-        (item.PrimerApellido || "") + " " +
-        (item.SegundoApellido || "");
-
-    $("#txtIdentificacionClienteCaja").val(item.Identificacion || "");
-    $("#txtBuscarClienteCaja").val(nombreCompleto.trim());
-    $("#lblClienteSeleccionadoCaja").text("Cliente seleccionado: " + (item.Identificacion || "") + " - " + nombreCompleto.trim());
-    $("#contenedorResultadosClienteCaja").hide();
-}
-
-function abrirModalClienteCaja() {
-    $("#mensajeErrorClienteCaja").hide().text("");
-
-    $("#txtIdentificacionClienteNuevoCaja").val("");
-    $("#txtNombreClienteNuevoCaja").val("");
-    $("#txtPrimerApellidoClienteNuevoCaja").val("");
-    $("#txtSegundoApellidoClienteNuevoCaja").val("");
-    $("#txtFechaNacimientoClienteNuevoCaja").val("");
-    $("#txtCodigoDistritoClienteNuevoCaja").val("");
-    $("#txtDireccionClienteNuevoCaja").val("");
-
-    $("#ModalClienteCaja").modal("show");
-}
-
-function registrarClienteCaja() {
-    $("#mensajeErrorClienteCaja").hide().text("");
-
-    var obj = {
-        Identificacion: $("#txtIdentificacionClienteNuevoCaja").val().trim(),
-        Nombre: $("#txtNombreClienteNuevoCaja").val().trim(),
-        PrimerApellido: $("#txtPrimerApellidoClienteNuevoCaja").val().trim(),
-        SegundoApellido: $("#txtSegundoApellidoClienteNuevoCaja").val().trim(),
-        FechaNacimiento: $("#txtFechaNacimientoClienteNuevoCaja").val(),
-        CodigoDistrito: parseInt($("#txtCodigoDistritoClienteNuevoCaja").val()),
-        Direccion: $("#txtDireccionClienteNuevoCaja").val().trim(),
-        LimiteCredito: 0,
-        DiasCredito: 0,
-        Activo: true
-    };
-
-    if (isNaN(obj.CodigoDistrito)) {
-        obj.CodigoDistrito = 0;
-    }
-
-    if (obj.Identificacion === "") {
-        $("#mensajeErrorClienteCaja").text("Debe ingresar la identificación.").show();
-        return;
-    }
-
-    if (obj.Nombre === "") {
-        $("#mensajeErrorClienteCaja").text("Debe ingresar el nombre.").show();
-        return;
-    }
-
-    if (obj.PrimerApellido === "") {
-        $("#mensajeErrorClienteCaja").text("Debe ingresar el primer apellido.").show();
-        return;
-    }
-
-    if (obj.FechaNacimiento === "") {
-        $("#mensajeErrorClienteCaja").text("Debe ingresar la fecha de nacimiento.").show();
-        return;
-    }
-
-    if (obj.CodigoDistrito <= 0) {
-        $("#mensajeErrorClienteCaja").text("Debe ingresar el código de distrito.").show();
-        return;
-    }
-
-    if (obj.Direccion === "") {
-        $("#mensajeErrorClienteCaja").text("Debe ingresar la dirección.").show();
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("RegistrarClienteCaja", "Facturacion")',
-        type: "POST",
-        data: JSON.stringify({ obj: obj }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado != 0 && respuesta.resultado !== false) {
-                $("#ModalClienteCaja").modal("hide");
-
-                seleccionarClienteCaja(obj);
-
-                mostrarMensajeSistema(respuesta.mensaje || "Cliente registrado correctamente.", "exito", "#mensajeOperacion");
-            } else {
-                $("#mensajeErrorClienteCaja").text(respuesta.mensaje || "No se pudo registrar el cliente.").show();
+        function validarCorreo(valor) {
+            if (valor == null) {
+                return false;
             }
-        },
-        error: function () {
-            $("#mensajeErrorClienteCaja").text("Error al registrar el cliente.").show();
-        }
-    });
-        }
 
+            valor = valor.trim().toLowerCase();
 
+            var arroba = String.fromCharCode(64);
+            var patron = "^[^\\s" + arroba + "]+"
+                + arroba
+                + "[^\\s" + arroba + "]+\\.[^\\s" + arroba + "]+$";
+
+            var regexCorreo = new RegExp(patron);
+            return regexCorreo.test(valor);
+        }
     </script>
 }

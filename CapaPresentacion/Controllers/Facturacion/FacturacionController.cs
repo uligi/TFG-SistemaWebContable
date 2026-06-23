@@ -8,6 +8,7 @@ using CapaPresentacion.Filtros;
 using System.Linq;
 using System.Web.Mvc;
 
+
 namespace CapaPresentacion.Controllers.Facturacion
 {
     [PermisoAuthorize(CodigoModulo = "FACTURAS")]
@@ -467,7 +468,7 @@ namespace CapaPresentacion.Controllers.Facturacion
         //-------------CAJA---------------
 
         [HttpPost]
-        public JsonResult RegistrarClienteCaja(Cliente obj)
+        public JsonResult RegistrarClienteCaja(Cliente obj, string telefono, string correo)
         {
             string mensaje = string.Empty;
 
@@ -484,13 +485,57 @@ namespace CapaPresentacion.Controllers.Facturacion
             obj.DiasCredito = 0;
             obj.Activo = true;
 
-            int resultado = new CN_Cliente().Registrar(obj, out mensaje);
+            int resultadoCliente = new CN_Cliente().Registrar(obj, out mensaje);
+
+            if (resultadoCliente == 0)
+            {
+                return Json(new
+                {
+                    resultado = 0,
+                    mensaje = mensaje
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            string mensajeTelefono = string.Empty;
+            string mensajeCorreo = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(telefono))
+            {
+                Telefono objTelefono = new Telefono
+                {
+                    Identificacion = obj.Identificacion,
+                    NumeroTelefono = telefono.Trim(),
+                    NumeroTelefonoAnterior = "",
+                    IdTipoTelefono = 1,
+                    EsPrincipal = true,
+                    Activo = true
+                };
+
+                new CN_Telefono().Registrar(objTelefono, out mensajeTelefono);
+            }
+
+            if (!string.IsNullOrWhiteSpace(correo))
+            {
+                Correo objCorreo = new Correo
+                {
+                    Identificacion = obj.Identificacion,
+                    DireccionCorreo = correo.Trim(),
+                    DireccionCorreoAnterior = "",
+                    IdTipoCorreo = 1,
+                    EsPrincipal = true,
+                    Activo = true
+                };
+
+                new CN_Correo().Registrar(objCorreo, out mensajeCorreo);
+            }
 
             return Json(new
             {
-                resultado = resultado,
-                mensaje = mensaje,
-                cliente = obj
+                resultado = resultadoCliente,
+                mensaje = "Cliente registrado correctamente.",
+                cliente = obj,
+                telefono = telefono,
+                correo = correo
             }, JsonRequestBehavior.AllowGet);
         }
     }
