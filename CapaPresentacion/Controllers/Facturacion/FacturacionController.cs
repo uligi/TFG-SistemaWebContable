@@ -1,4 +1,5 @@
 ﻿using CapaEntidad.Facturacion;
+using CapaEntidad.Personas;
 using CapaNegocio.Catalogos;
 using CapaNegocio.Facturacion;
 using CapaNegocio.Inventario;
@@ -460,6 +461,37 @@ namespace CapaPresentacion.Controllers.Facturacion
                 .ToList();
 
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        //-------------CAJA---------------
+
+        [HttpPost]
+        public JsonResult RegistrarClienteCaja(Cliente obj)
+        {
+            string mensaje = string.Empty;
+
+            if (obj == null)
+            {
+                return Json(new
+                {
+                    resultado = 0,
+                    mensaje = "Debe ingresar los datos del cliente."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            obj.LimiteCredito = 0;
+            obj.DiasCredito = 0;
+            obj.Activo = true;
+
+            int resultado = new CN_Cliente().Registrar(obj, out mensaje);
+
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje,
+                cliente = obj
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }
