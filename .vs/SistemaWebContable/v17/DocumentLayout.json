@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\ul13m\\documents\\github\\tfg-sistemawebcontable\\capapresentacion\\views\\facturacion\\caja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\facturacion\\caja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\controllers\\facturacion\\facturacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\controllers\\facturacion\\facturacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{766F18AE-7DA2-48B7-8476-FF3EAEF82DD3}|CapaEntidad\\CapaEntidad.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capaentidad\\facturacion\\facturacorreocaja.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -702,7 +702,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -731,33 +731,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "FacturacionController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
               "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
-              "ViewState": "AgIAACECAAAAAAAAAAA3wMwCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADECAAAAAAAAAAAqwOQCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-08T01:31:24.749Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Caja.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
               "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
               "RelativeToolTip": "CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
-              "ViewState": "AgIAAN8FAAAAAAAAAAAYwAQGAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAcFAAAAAAAAAAAMwCEFAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-06-23T20:52:20.554Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Web.config",
               "RelativeDocumentMoniker": "CapaPresentacion\\Web.config",
@@ -899,7 +899,8 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAIgBAAAAAAAAAAAMwGgBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T14:25:05.383Z"
+              "WhenOpened": "2026-06-08T14:25:05.383Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -1727,7 +1728,8 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Home\\SinPermiso.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T15:15:30.994Z"
+              "WhenOpened": "2026-06-10T15:15:30.994Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",

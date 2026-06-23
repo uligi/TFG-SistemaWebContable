@@ -714,6 +714,31 @@ namespace CapaPresentacion.Controllers.Facturacion
             }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult ListarUltimasFacturasCaja()
+        {
+            var usuarioSesion = Session["UsuarioSesion"] as CapaEntidad.Seguridad.UsuarioSesion;
 
+            if (usuarioSesion == null || string.IsNullOrWhiteSpace(usuarioSesion.Identificacion))
+            {
+                return Json(new { data = new object[] { } }, JsonRequestBehavior.AllowGet);
+            }
+
+            string identificacionEmpleado = usuarioSesion.Identificacion;
+
+            var lista = new CN_Factura().Listar()
+                .Where(x =>
+                    x.Activo == true &&
+                    x.Estado == "Emitida" &&
+                    x.IdentificacionEmpleado == identificacionEmpleado
+                )
+                .OrderByDescending(x => x.FechaFactura)
+                .Take(10)
+                .ToList();
+
+            return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+
+
+        }
     }
 }

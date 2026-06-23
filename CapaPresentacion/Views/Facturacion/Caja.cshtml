@@ -251,6 +251,41 @@
 
 </div>
 
+
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Últimas facturas emitidas</h6>
+
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="cargarUltimasFacturasCaja()">
+            Actualizar
+        </button>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered" id="tablaUltimasFacturasCaja">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th style="width:220px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            No hay facturas recientes.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="ModalClienteCaja" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -537,6 +572,7 @@
         $(document).ready(function () {
             cargarTiposPagoCaja();
             cargarTiposFacturaCaja();
+            cargarUltimasFacturasCaja();
 
             $("#txtBuscarProductoCaja").on("keypress", function (e) {
                 if (e.which === 13) {
@@ -804,6 +840,186 @@
                 }
             });
         }
+
+        function cargarUltimasFacturasCaja() {
+    $.ajax({
+        url: '@Url.Action("ListarUltimasFacturasCaja", "Facturacion")',
+        type: "GET",
+        dataType: "json",
+        success: function (respuesta) {
+            pintarUltimasFacturasCaja(respuesta.data || []);
+        },
+        error: function () {
+            mostrarMensajeSistema("Error al cargar las últimas facturas.", "error", "#mensajeOperacion");
+        }
+    });
+}
+
+function pintarUltimasFacturasCaja(lista) {
+    var tbody = $("#tablaUltimasFacturasCaja tbody");
+    tbody.empty();
+
+    if (lista.length === 0) {
+        tbody.append('<tr><td colspan="6" class="text-center text-muted">No hay facturas recientes.</td></tr>');
+        return;
+    }
+
+    $.each(lista, function (i, item) {
+        var numeroFactura = item.NumeroFactura || "";
+        var fecha = formatearFechaCaja(item.FechaFactura);
+        var cliente = item.ClienteNombre || item.NombreCliente || item.IdentificacionCliente || "Cliente no indicado";
+        var total = "₡" + formatearNumeroCaja(item.TotalFactura || 0);
+        var estado = item.Estado || "";
+
+        var btnVer = $("<button>", {
+            type: "button",
+            class: "btn btn-sm btn-outline-primary mr-1",
+            text: "Ver"
+        }).on("click", function () {
+            abrirFacturaAnteriorCaja(numeroFactura);
+        });
+
+        var btnCorreo = $("<button>", {
+            type: "button",
+            class: "btn btn-sm btn-outline-info",
+            text: "Enviar correo"
+        }).on("click", function () {
+            abrirFacturaAnteriorCaja(numeroFactura, true);
+        });
+
+        var acciones = $("<td>");
+        acciones.append(btnVer);
+        acciones.append(btnCorreo);
+
+        var fila = $("<tr>");
+        fila.append($("<td>", { class: "codigo-factura", text: numeroFactura }));
+        fila.append($("<td>").text(fecha));
+        fila.append($("<td>").text(cliente));
+        fila.append($("<td>").text(total));
+        fila.append($("<td>").html('<span class="badge badge-success">' + estado + '</span>'));
+        fila.append(acciones);
+
+        tbody.append(fila);
+    });
+}
+
+function abrirFacturaAnteriorCaja(numeroFactura, enviarCorreoDespues) {
+    if (!numeroFactura || numeroFactura === "") {
+        mostrarMensajeSistema("Debe seleccionar una factura válida.", "advertencia", "#mensajeOperacion");
+        return;
+    }
+
+    $.when(
+        $.ajax({
+            url: '@Url.Action("ObtenerFactura", "Facturacion")',
+            type: "GET",
+            data: { numeroFactura: numeroFactura },
+            dataType: "json"
+        }),
+        $.ajax({
+            url: '@Url.Action("ListarDetallesFactura", "Facturacion")',
+            type: "GET",
+            data: { numeroFactura: numeroFactura },
+            dataType: "json"
+        })
+    ).done(function (respuestaFactura, respuestaDetalle) {
+        var factura = respuestaFactura[0].data;
+        var detalles = respuestaDetalle[0].data || [];
+
+        if (factura == null) {
+            mostrarMensajeSistema("No se encontró la factura seleccionada.", "error", "#mensajeOperacion");
+            return;
+        }
+
+        cargarContactoFacturaAnteriorCaja(factura, detalles, enviarCorreoDespues === true);
+    }).fail(function () {
+        mostrarMensajeSistema("Error al cargar la factura seleccionada.", "error", "#mensajeOperacion");
+    });
+}
+
+function cargarContactoFacturaAnteriorCaja(factura, detalles, enviarCorreoDespues) {
+    $.ajax({
+        url: '@Url.Action("ObtenerContactoClienteCaja", "Facturacion")',
+        type: "GET",
+        data: { identificacion: factura.IdentificacionCliente },
+        dataType: "json",
+        success: function (contacto) {
+            prepararFacturaAnteriorCaja(factura, detalles, contacto || {}, enviarCorreoDespues);
+        },
+        error: function () {
+            prepararFacturaAnteriorCaja(factura, detalles, {}, enviarCorreoDespues);
+        }
+    });
+}
+
+function prepararFacturaAnteriorCaja(factura, detalles, contacto, enviarCorreoDespues) {
+    var productos = [];
+
+    $.each(detalles || [], function (i, item) {
+        if (item.Activo === false) {
+            return;
+        }
+
+        productos.push({
+            CodigoProducto: item.CodigoProducto || "",
+            NombreProducto: item.NombreProducto || "",
+            Cantidad: parseFloat(item.Cantidad || 0),
+            PrecioUnitario: parseFloat(item.PrecioUnitario || 0),
+            PorcentajeImpuesto: parseFloat(item.PorcentajeImpuesto || 0)
+        });
+    });
+
+    var cliente =
+        (factura.IdentificacionCliente || "") + " - " +
+        (factura.ClienteNombre || factura.NombreCliente || "");
+
+    ultimaFacturaCaja = {
+        NumeroFactura: factura.NumeroFactura || "",
+        Fecha: formatearFechaCaja(factura.FechaFactura),
+        Cliente: cliente.trim(),
+        Correo: contacto.correo || "",
+        Telefono: contacto.telefono || "",
+        Cajero: (factura.IdentificacionEmpleado || "") + " - " + (factura.EmpleadoNombre || factura.NombreEmpleado || ""),
+        Productos: productos,
+        Subtotal: "₡" + formatearNumeroCaja(factura.Subtotal || 0),
+        Impuesto: "₡" + formatearNumeroCaja(factura.TotalImpuesto || 0),
+        Descuento: "₡" + formatearNumeroCaja(factura.TotalDescuento || 0),
+        Total: "₡" + formatearNumeroCaja(factura.TotalFactura || 0)
+    };
+
+    mostrarFacturaEmitidaCaja();
+
+    if (enviarCorreoDespues === true) {
+        if (ultimaFacturaCaja.Correo === "") {
+            mostrarMensajeSistema("El cliente no tiene correo registrado. Puede agregarlo desde la sección del cliente antes de enviar.", "advertencia", "#mensajeOperacion");
+            return;
+        }
+
+        enviarFacturaPorCorreoCaja();
+    }
+}
+
+function formatearFechaCaja(valor) {
+    if (!valor) {
+        return "";
+    }
+
+    var fechaTexto = valor.toString();
+
+    if (fechaTexto.indexOf("/Date(") === 0) {
+        var milisegundos = parseInt(fechaTexto.replace("/Date(", "").replace(")/", ""));
+        var fecha = new Date(milisegundos);
+        return fecha.getFullYear() + "-" +
+            ("0" + (fecha.getMonth() + 1)).slice(-2) + "-" +
+            ("0" + fecha.getDate()).slice(-2);
+    }
+
+    if (fechaTexto.length >= 10) {
+        return fechaTexto.substring(0, 10);
+    }
+
+    return fechaTexto;
+}
 
         function pintarClientesCaja(lista) {
             var tbody = $("#tbodyResultadosClienteCaja");
@@ -1095,6 +1311,8 @@
                         ultimaFacturaCaja = datosFacturaProcesada;
 
                         mostrarFacturaEmitidaCaja();
+                        cargarUltimasFacturasCaja();
+
 
                         productosCaja = [];
                         pintarVentaCaja();
