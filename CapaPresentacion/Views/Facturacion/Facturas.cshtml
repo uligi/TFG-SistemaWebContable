@@ -337,10 +337,104 @@
     </div>
 </div>
 
+<div class="modal fade" id="ModalEnviarCorreoFactura" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Enviar factura por correo</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="alert alert-danger" id="mensajeErrorCorreoFactura" style="display:none;"></div>
+                <div class="alert alert-success" id="mensajeExitoCorreoFactura" style="display:none;"></div>
+
+                <input type="hidden" id="txtNumeroFacturaCorreo" />
+                <input type="hidden" id="txtTelefonoFacturaCorreo" />
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Número de factura</label>
+                        <input type="text" id="txtNumeroFacturaCorreoVisible" class="form-control codigo-factura" readonly />
+                    </div>
+
+                    <div class="form-group col-md-8">
+                        <label>Cliente</label>
+                        <input type="text" id="txtClienteFacturaCorreo" class="form-control" readonly />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Correo destino</label>
+                    <input type="text"
+                           id="txtCorreoDestinoFactura"
+                           class="form-control"
+                           maxlength="255"
+                           placeholder="cliente@correo.com" />
+
+                    <small class="form-text text-muted">
+                        Si el cliente no tiene correo registrado, puede ingresar uno aquí y guardarlo como contacto del cliente.
+                    </small>
+                </div>
+
+                <div class="alert alert-warning" id="mensajeSinCorreoFactura" style="display:none;">
+                    El cliente no tiene correo registrado. Ingrese un correo para poder enviar la factura.
+                </div>
+
+                <hr />
+
+                <h6 class="font-weight-bold">Detalle de factura</h6>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-right">Cantidad</th>
+                                <th class="text-right">Precio</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyDetalleCorreoFactura"></tbody>
+                    </table>
+                </div>
+
+                <div class="text-right">
+                    <p class="mb-1">Subtotal: <strong id="lblSubtotalCorreoFactura">₡0.00</strong></p>
+                    <p class="mb-1">IVA: <strong id="lblImpuestoCorreoFactura">₡0.00</strong></p>
+                    <p class="mb-1">Descuento: <strong id="lblDescuentoCorreoFactura">₡0.00</strong></p>
+                    <h5>Total: <strong id="lblTotalCorreoFactura">₡0.00</strong></h5>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" onclick="guardarCorreoClienteFactura()">
+                    Guardar correo al cliente
+                </button>
+
+                <button type="button" class="btn btn-info" id="btnEnviarCorreoFacturaNormal" onclick="enviarCorreoFacturaNormal()">
+                    Enviar factura
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         var listaFacturas = [];
         var listaDetalles = [];
+        var facturaCorreoActual = null;
 
         $(document).ready(function () {
             cargarFacturas();
@@ -407,7 +501,7 @@
                     pintarTablaFacturas();
                 },
                 error: function () {
-                    alert("Error al cargar las facturas.");
+                    mostrarMensajeSistema("Error al cargar las facturas.", "error");
                 }
             });
         }
@@ -436,7 +530,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los empleados.");
+                    mostrarMensajeSistema("Error al cargar los empleados.", "error");
                 }
             });
         }
@@ -459,7 +553,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de factura.");
+                    mostrarMensajeSistema("Error al cargar los tipos de factura.", "error");
                 }
             });
         }
@@ -482,7 +576,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de pago.");
+                    mostrarMensajeSistema("Error al cargar los tipos de pago.", "error");
                 }
             });
         }
@@ -507,7 +601,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los descuentos.");
+                    mostrarMensajeSistema("Error al cargar los descuentos.", "error");
                 }
             });
         }
@@ -569,6 +663,14 @@
                     inactivarFactura(item.NumeroFactura);
                 });
 
+                var botonCorreo = $("<button>", {
+                    type: "button",
+                    class: "btn btn-sm btn-outline-info",
+                    text: "Correo"
+                }).on("click", function () {
+                    abrirEnvioCorreoFactura(numero);
+                });
+
                 var fila = $("<tr>");
                 fila.append($("<td>", { class: "codigo-factura", text: numero }));
                 fila.append($("<td>").text(formatearFecha(item.FechaFactura)));
@@ -589,6 +691,9 @@
 
                 if (item.Activo && estadoTexto !== "Anulada") {
                     acciones.append(botonAnular);
+                }
+                if (item.Activo && estadoTexto === "Emitida") {
+                    acciones.append(botonCorreo);
                 }
 
                 fila.append(acciones);
@@ -1364,5 +1469,270 @@
 
             return "";
         }
+
+        function abrirEnvioCorreoFactura(numeroFactura) {
+    $("#mensajeErrorCorreoFactura").hide().text("");
+    $("#mensajeExitoCorreoFactura").hide().text("");
+    $("#mensajeSinCorreoFactura").hide();
+
+    facturaCorreoActual = null;
+
+    $.when(
+        $.ajax({
+            url: '@Url.Action("ObtenerFactura", "Facturacion")',
+            type: "GET",
+            data: { numeroFactura: numeroFactura },
+            dataType: "json"
+        }),
+        $.ajax({
+            url: '@Url.Action("ListarDetallesFactura", "Facturacion")',
+            type: "GET",
+            data: { numeroFactura: numeroFactura },
+            dataType: "json"
+        })
+    ).done(function (respuestaFactura, respuestaDetalle) {
+        var factura = respuestaFactura[0].data;
+        var detalles = respuestaDetalle[0].data || [];
+
+        if (factura == null) {
+            mostrarMensajeSistema("No se encontró la factura seleccionada.", "error");
+            return;
+        }
+
+        cargarContactoCorreoFactura(factura, detalles);
+    }).fail(function () {
+        mostrarMensajeSistema("Error al cargar la información de la factura.", "error");
+    });
+}
+
+function cargarContactoCorreoFactura(factura, detalles) {
+    $.ajax({
+        url: '@Url.Action("ObtenerContactoClienteCaja", "Facturacion")',
+        type: "GET",
+        data: { identificacion: factura.IdentificacionCliente },
+        dataType: "json",
+        success: function (contacto) {
+            prepararModalCorreoFactura(factura, detalles, contacto || {});
+        },
+        error: function () {
+            prepararModalCorreoFactura(factura, detalles, {});
+        }
+    });
+}
+
+        function prepararModalCorreoFactura(factura, detalles, contacto) {
+            var productos = [];
+
+            $.each(detalles || [], function (i, item) {
+                if (item.Activo === false) {
+                    return;
+                }
+
+                var cantidad = parseFloat(item.Cantidad || 0);
+                var precio = parseFloat(item.PrecioUnitario || 0);
+                var totalLinea = cantidad * precio;
+
+                productos.push({
+                    CodigoProducto: item.CodigoProducto || "",
+                    NombreProducto: item.NombreProducto || "",
+                    Cantidad: cantidad,
+                    PrecioUnitario: precio,
+                    TotalLinea: totalLinea
+                });
+            });
+
+            facturaCorreoActual = {
+                NumeroFactura: factura.NumeroFactura || "",
+                Fecha: formatearFecha(factura.FechaFactura),
+                IdentificacionCliente: factura.IdentificacionCliente || "",
+                Cliente: ((factura.IdentificacionCliente || "") + " - " + (factura.ClienteNombre || "")).trim(),
+                Correo: contacto.correo || "",
+                Telefono: contacto.telefono || "",
+                Cajero: ((factura.IdentificacionEmpleado || "") + " - " + (factura.EmpleadoNombre || "")).trim(),
+                Productos: productos,
+                Subtotal: "₡" + parseFloat(factura.Subtotal || 0).toFixed(2),
+                Impuesto: "₡" + parseFloat(factura.TotalImpuesto || 0).toFixed(2),
+                Descuento: "₡" + parseFloat(factura.TotalDescuento || 0).toFixed(2),
+                Total: "₡" + parseFloat(factura.TotalFactura || 0).toFixed(2)
+            };
+
+            pintarModalCorreoFactura();
+        }
+
+        function pintarModalCorreoFactura() {
+            if (facturaCorreoActual == null) {
+                return;
+            }
+
+            $("#txtNumeroFacturaCorreo").val(facturaCorreoActual.NumeroFactura);
+            $("#txtNumeroFacturaCorreoVisible").val(facturaCorreoActual.NumeroFactura);
+            $("#txtClienteFacturaCorreo").val(facturaCorreoActual.Cliente);
+            $("#txtCorreoDestinoFactura").val(facturaCorreoActual.Correo);
+            $("#txtTelefonoFacturaCorreo").val(facturaCorreoActual.Telefono);
+
+            if (facturaCorreoActual.Correo === "") {
+                $("#mensajeSinCorreoFactura").show();
+            } else {
+                $("#mensajeSinCorreoFactura").hide();
+            }
+
+            var tbody = $("#tbodyDetalleCorreoFactura");
+            tbody.empty();
+
+            $.each(facturaCorreoActual.Productos || [], function (i, item) {
+                var fila = $("<tr>");
+                fila.append($("<td>").text((item.CodigoProducto || "") + " - " + (item.NombreProducto || "")));
+                fila.append($("<td>", { class: "text-right", text: parseFloat(item.Cantidad || 0).toFixed(2) }));
+                fila.append($("<td>", { class: "text-right", text: "₡" + parseFloat(item.PrecioUnitario || 0).toFixed(2) }));
+                fila.append($("<td>", { class: "text-right", text: "₡" + parseFloat(item.TotalLinea || 0).toFixed(2) }));
+
+                tbody.append(fila);
+            });
+
+            $("#lblSubtotalCorreoFactura").text(facturaCorreoActual.Subtotal);
+            $("#lblImpuestoCorreoFactura").text(facturaCorreoActual.Impuesto);
+            $("#lblDescuentoCorreoFactura").text(facturaCorreoActual.Descuento);
+            $("#lblTotalCorreoFactura").text(facturaCorreoActual.Total);
+
+            $("#ModalEnviarCorreoFactura").modal("show");
+        }
+
+        function guardarCorreoClienteFactura() {
+    $("#mensajeErrorCorreoFactura").hide().text("");
+    $("#mensajeExitoCorreoFactura").hide().text("");
+
+    if (facturaCorreoActual == null) {
+        $("#mensajeErrorCorreoFactura").text("No hay factura seleccionada.").show();
+        return;
+    }
+
+    var correo = $("#txtCorreoDestinoFactura").val().trim();
+    var telefono = $("#txtTelefonoFacturaCorreo").val().trim();
+
+    if (correo === "") {
+        $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo.").show();
+        return;
+    }
+
+    if (!validarCorreoFactura(correo)) {
+        $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo válido.").show();
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("RegistrarContactoClienteCaja", "Facturacion")',
+        type: "POST",
+        data: JSON.stringify({
+            identificacion: facturaCorreoActual.IdentificacionCliente,
+            telefono: telefono,
+            correo: correo
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                facturaCorreoActual.Correo = correo;
+
+                $("#mensajeSinCorreoFactura").hide();
+                $("#mensajeExitoCorreoFactura").text(respuesta.mensaje || "Correo guardado correctamente.").show();
+            } else {
+                $("#mensajeErrorCorreoFactura").text(respuesta.mensaje || "No se pudo guardar el correo.").show();
+            }
+        },
+        error: function () {
+            $("#mensajeErrorCorreoFactura").text("Error al guardar el correo del cliente.").show();
+        }
+    });
+        }
+
+        function enviarCorreoFacturaNormal() {
+    $("#mensajeErrorCorreoFactura").hide().text("");
+    $("#mensajeExitoCorreoFactura").hide().text("");
+
+    if (facturaCorreoActual == null) {
+        $("#mensajeErrorCorreoFactura").text("No hay factura seleccionada.").show();
+        return;
+    }
+
+    var correo = $("#txtCorreoDestinoFactura").val().trim();
+
+    if (correo === "") {
+        $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo destino.").show();
+        return;
+    }
+
+    if (!validarCorreoFactura(correo)) {
+        $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo válido.").show();
+        return;
+    }
+
+    facturaCorreoActual.Correo = correo;
+
+    var detalles = [];
+
+    $.each(facturaCorreoActual.Productos || [], function (i, item) {
+        detalles.push({
+            CodigoProducto: item.CodigoProducto || "",
+            NombreProducto: item.NombreProducto || "",
+            Cantidad: parseFloat(item.Cantidad || 0).toFixed(2),
+            Precio: "₡" + parseFloat(item.PrecioUnitario || 0).toFixed(2),
+            TotalLinea: "₡" + parseFloat(item.TotalLinea || 0).toFixed(2)
+        });
+    });
+
+    var obj = {
+        CorreoDestino: facturaCorreoActual.Correo,
+        NumeroFactura: facturaCorreoActual.NumeroFactura,
+        Cliente: facturaCorreoActual.Cliente,
+        Fecha: facturaCorreoActual.Fecha,
+        Cajero: facturaCorreoActual.Cajero,
+        Subtotal: facturaCorreoActual.Subtotal,
+        Impuesto: facturaCorreoActual.Impuesto,
+        Descuento: facturaCorreoActual.Descuento,
+        Total: facturaCorreoActual.Total,
+        Detalles: detalles
+    };
+
+    $("#btnEnviarCorreoFacturaNormal").prop("disabled", true).text("Enviando...");
+
+    $.ajax({
+        url: '@Url.Action("EnviarFacturaCorreoCaja", "Facturacion")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                $("#mensajeExitoCorreoFactura").text(respuesta.mensaje || "Factura enviada correctamente.").show();
+                mostrarMensajeSistema(respuesta.mensaje || "Factura enviada correctamente.", "exito");
+            } else {
+                $("#mensajeErrorCorreoFactura").text(respuesta.mensaje || "No se pudo enviar la factura.").show();
+            }
+        },
+        error: function () {
+            $("#mensajeErrorCorreoFactura").text("Error al enviar la factura por correo.").show();
+        },
+        complete: function () {
+            $("#btnEnviarCorreoFacturaNormal").prop("disabled", false).text("Enviar factura");
+        }
+    });
+        }
+
+        function validarCorreoFactura(valor) {
+            if (valor == null) {
+                return false;
+            }
+
+            valor = valor.trim().toLowerCase();
+
+            var arroba = String.fromCharCode(64);
+            var patron = "^[^\\s" + arroba + "]+"
+                + arroba
+                + "[^\\s" + arroba + "]+\\.[^\\s" + arroba + "]+$";
+
+            var regexCorreo = new RegExp(patron);
+            return regexCorreo.test(valor);
+        }
+
     </script>
 }
