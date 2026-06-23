@@ -3,12 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\ul13m\\documents\\github\\tfg-sistemawebcontable\\capapresentacion\\views\\facturacion\\caja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\facturacion\\caja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\controllers\\facturacion\\facturacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\controllers\\facturacion\\facturacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{766F18AE-7DA2-48B7-8476-FF3EAEF82DD3}|CapaEntidad\\CapaEntidad.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capaentidad\\facturacion\\facturacorreocaja.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{766F18AE-7DA2-48B7-8476-FF3EAEF82DD3}|CapaEntidad\\CapaEntidad.csproj|solutionrelative:capaentidad\\facturacion\\facturacorreocaja.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B2B75B07-40BA-43A5-9B7D-7D4D8E043863}|CapaNegocio\\CapaNegocio.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capanegocio\\facturacion\\cn_correofactura.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B2B75B07-40BA-43A5-9B7D-7D4D8E043863}|CapaNegocio\\CapaNegocio.csproj|solutionrelative:capanegocio\\facturacion\\cn_correofactura.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\views\\persona\\clientes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -51,11 +63,11 @@
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\ul13m\\documents\\github\\tfg-sistemawebcontable\\capapresentacion\\scripts\\js\\sistema-global.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\scripts\\js\\sistema-global.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\scripts\\js\\sistema-global.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\ul13m\\documents\\github\\tfg-sistemawebcontable\\capapresentacion\\controllers\\cuentas\\gestionarcuentasporpagarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\controllers\\cuentas\\gestionarcuentasporpagarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\controllers\\cuentas\\gestionarcuentasporpagarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -690,7 +702,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -706,33 +718,72 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Caja.cshtml",
-              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
-              "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
-              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
-              "RelativeToolTip": "CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
-              "ViewState": "AgIAALkFAAAAAAAAAAAcwOUFAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-23T20:52:20.554Z",
+              "DocumentIndex": 4,
+              "Title": "CN_CorreoFactura.cs",
+              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Facturacion\\CN_CorreoFactura.cs",
+              "RelativeDocumentMoniker": "CapaNegocio\\Facturacion\\CN_CorreoFactura.cs",
+              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Facturacion\\CN_CorreoFactura.cs",
+              "RelativeToolTip": "CapaNegocio\\Facturacion\\CN_CorreoFactura.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAQwCEAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-23T23:20:43.315Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "FacturacionController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
               "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIUCAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAACECAAAAAAAAAAA3wMwCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-08T01:31:24.749Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Caja.cshtml",
+              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
+              "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
+              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
+              "RelativeToolTip": "CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
+              "ViewState": "AgIAAN8FAAAAAAAAAAAYwAQGAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-23T20:52:20.554Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Web.config",
+              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Web.config",
+              "RelativeDocumentMoniker": "CapaPresentacion\\Web.config",
+              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Web.config",
+              "RelativeToolTip": "CapaPresentacion\\Web.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2026-06-23T22:05:05.124Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "FacturaCorreoCaja.cs",
+              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Facturacion\\FacturaCorreoCaja.cs",
+              "RelativeDocumentMoniker": "CapaEntidad\\Facturacion\\FacturaCorreoCaja.cs",
+              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Facturacion\\FacturaCorreoCaja.cs",
+              "RelativeToolTip": "CapaEntidad\\Facturacion\\FacturaCorreoCaja.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-23T23:21:45.526Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "Facturas.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Facturas.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Facturacion\\Facturas.cshtml",
@@ -740,12 +791,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Facturacion\\Facturas.cshtml",
               "ViewState": "AgIAABYFAAAAAAAAAAAMwCwFAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T01:33:35.984Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T01:33:35.984Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "Clientes.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Persona\\Clientes.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Persona\\Clientes.cshtml",
@@ -753,12 +803,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Persona\\Clientes.cshtml",
               "ViewState": "AgIAAJAFAAAAAAAAAAAMwKoFAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T19:39:56.212Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:39:56.212Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "CuentasPorCobrar.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarCuentasPorCobrar\\CuentasPorCobrar.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarCuentasPorCobrar\\CuentasPorCobrar.cshtml",
@@ -766,12 +815,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarCuentasPorCobrar\\CuentasPorCobrar.cshtml",
               "ViewState": "AgIAAA8EAAAAAAAAAAAcwBgEAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T14:13:02.819Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:13:02.819Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "CuentasPorPagar.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarCuentasPorPagar\\CuentasPorPagar.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarCuentasPorPagar\\CuentasPorPagar.cshtml",
@@ -779,12 +827,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarCuentasPorPagar\\CuentasPorPagar.cshtml",
               "ViewState": "AgIAAO0CAAAAAAAAAAAMwAMDAAB4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T21:36:01.895Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:36:01.895Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "Gastos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarGastos\\Gastos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarGastos\\Gastos.cshtml",
@@ -792,12 +839,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarGastos\\Gastos.cshtml",
               "ViewState": "AgIAAI4CAAAAAAAAAAAMwKQCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T22:14:28.221Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T22:14:28.221Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "Ingresos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
@@ -805,12 +851,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
               "ViewState": "AgIAAOECAAAAAAAAAAAMwKwCAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T18:58:16.67Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T18:58:16.67Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "CuentasContables.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarCuentaContable\\CuentasContables.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarCuentaContable\\CuentasContables.cshtml",
@@ -818,12 +863,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarCuentaContable\\CuentasContables.cshtml",
               "ViewState": "AgIAALMDAAAAAAAAAAAnwMwDAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T23:39:53.377Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:39:53.377Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "Productos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Producto\\Productos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Producto\\Productos.cshtml",
@@ -831,12 +875,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Producto\\Productos.cshtml",
               "ViewState": "AgIAABgCAAAAAAAAAAAMwCwCAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T00:09:23.924Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:09:23.924Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "_LayoutMantenimientos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Shared\\_LayoutMantenimientos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Shared\\_LayoutMantenimientos.cshtml",
@@ -844,12 +887,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Shared\\_LayoutMantenimientos.cshtml",
               "ViewState": "AgIAAGQDAAAAAAAAAAAcwIkDAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T16:23:46.409Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T16:23:46.409Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Shared\\_Layout.cshtml",
@@ -857,12 +899,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAIgBAAAAAAAAAAAMwGgBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T14:25:05.383Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:25:05.383Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "sistema-global.js",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Scripts\\js\\sistema-global.js",
               "RelativeDocumentMoniker": "CapaPresentacion\\Scripts\\js\\sistema-global.js",
@@ -870,12 +911,11 @@
               "RelativeToolTip": "CapaPresentacion\\Scripts\\js\\sistema-global.js",
               "ViewState": "AgIAAGoAAAAAAAAAAAAmwJQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-06-23T19:31:49.291Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T19:31:49.291Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "GestionarCuentasPorPagarController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
@@ -883,12 +923,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
               "ViewState": "AgIAAFwAAAAAAAAAAAAowIYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:33:10.628Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:33:10.628Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "CN_AsientoAutomatico.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Contabilidad\\CN_AsientoAutomatico.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Contabilidad\\CN_AsientoAutomatico.cs",
@@ -896,12 +935,11 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_AsientoAutomatico.cs",
               "ViewState": "AgIAABsCAAAAAAAAAAAkwDcCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T13:51:13.206Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T13:51:13.206Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "AbonoCuentaPorPagar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\CuentasPorPagar\\AbonoCuentaPorPagar.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\CuentasPorPagar\\AbonoCuentaPorPagar.cs",
@@ -909,12 +947,11 @@
               "RelativeToolTip": "CapaEntidad\\CuentasPorPagar\\AbonoCuentaPorPagar.cs",
               "ViewState": "AgIAAEwAAAAAAAAAAAAQwHIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:29:36.086Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:29:36.086Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "GestionarCuentasPorCobrarController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorCobrarController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorCobrarController.cs",
@@ -922,12 +959,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorCobrarController.cs",
               "ViewState": "AgIAAJoAAAAAAAAAAAAgwKoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:11:58.965Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:11:58.965Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 20,
               "Title": "GestionarGastosController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Contabilidad\\GestionarGastosController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarGastosController.cs",
@@ -935,12 +971,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarGastosController.cs",
               "ViewState": "AgIAAJMAAAAAAAAAAAAwwJwAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T22:02:04.962Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T22:02:04.962Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
               "Title": "CD_ReferenciaAsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Contabilidad\\CD_ReferenciaAsientoContable.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Contabilidad\\CD_ReferenciaAsientoContable.cs",
@@ -948,12 +983,11 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_ReferenciaAsientoContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T14:11:07.043Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T14:11:07.043Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "GestionarIngresosController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Contabilidad\\GestionarIngresosController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarIngresosController.cs",
@@ -961,12 +995,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarIngresosController.cs",
               "ViewState": "AgIAAJ8AAAAAAAAAAAAMwMIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T18:56:58.514Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T18:56:58.514Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 23,
               "Title": "CN_ReferenciaAsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Contabilidad\\CN_ReferenciaAsientoContable.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Contabilidad\\CN_ReferenciaAsientoContable.cs",
@@ -974,12 +1007,11 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_ReferenciaAsientoContable.cs",
               "ViewState": "AgIAAEEAAAAAAAAAAAAowGgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T14:12:25.831Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T14:12:25.831Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 26,
               "Title": "ReferenciaAsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Contabilidad\\ReferenciaAsientoContable.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Contabilidad\\ReferenciaAsientoContable.cs",
@@ -987,12 +1019,11 @@
               "RelativeToolTip": "CapaEntidad\\Contabilidad\\ReferenciaAsientoContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T14:10:12.609Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T14:10:12.609Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 27,
               "Title": "CN_AsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Contabilidad\\CN_AsientoContable.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Contabilidad\\CN_AsientoContable.cs",
@@ -1000,12 +1031,11 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_AsientoContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAO4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:27:26.861Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:27:26.861Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 29,
               "Title": "AsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Contabilidad\\AsientoContable.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Contabilidad\\AsientoContable.cs",
@@ -1013,12 +1043,11 @@
               "RelativeToolTip": "CapaEntidad\\Contabilidad\\AsientoContable.cs",
               "ViewState": "AgIAAE4AAAAAAAAAAAA8wGMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:23:18.772Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:23:18.772Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 30,
               "Title": "CN_Consultas.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Consultas\\CN_Consultas.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Consultas\\CN_Consultas.cs",
@@ -1026,12 +1055,11 @@
               "RelativeToolTip": "CapaNegocio\\Consultas\\CN_Consultas.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFEBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:48:14.773Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:48:14.773Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 25,
               "Title": "CD_ConfiguracionCuentaContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Contabilidad\\CD_ConfiguracionCuentaContable.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Contabilidad\\CD_ConfiguracionCuentaContable.cs",
@@ -1039,12 +1067,11 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_ConfiguracionCuentaContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:42:52.618Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:42:52.618Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 24,
               "Title": "CD_AsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Contabilidad\\CD_AsientoContable.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Contabilidad\\CD_AsientoContable.cs",
@@ -1052,12 +1079,11 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_AsientoContable.cs",
               "ViewState": "AgIAABEBAAAAAAAAAAAmwDEBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:24:38.591Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:24:38.591Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 28,
               "Title": "AsientosContables.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarAsientoContable\\AsientosContables.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarAsientoContable\\AsientosContables.cshtml",
@@ -1065,12 +1091,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarAsientoContable\\AsientosContables.cshtml",
               "ViewState": "AgIAAHcDAAAAAAAAAABRwHcEAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T00:58:20.002Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:58:20.002Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 31,
               "Title": "CN_DetallePresupuestoMensual.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Presupuesto\\CN_DetallePresupuestoMensual.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Presupuesto\\CN_DetallePresupuestoMensual.cs",
@@ -1078,12 +1103,11 @@
               "RelativeToolTip": "CapaNegocio\\Presupuesto\\CN_DetallePresupuestoMensual.cs",
               "ViewState": "AgIAAMAAAAAAAAAAAAAuwOMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:55:11.136Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:55:11.136Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 32,
               "Title": "CN_Gasto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Movimientos\\CN_Gasto.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Movimientos\\CN_Gasto.cs",
@@ -1091,12 +1115,11 @@
               "RelativeToolTip": "CapaNegocio\\Movimientos\\CN_Gasto.cs",
               "ViewState": "AgIAAAEBAAAAAAAAAAAmwC8BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T22:10:43.757Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T22:10:43.757Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 33,
               "Title": "CN_DetalleFactura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Facturacion\\CN_DetalleFactura.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Facturacion\\CN_DetalleFactura.cs",
@@ -1104,12 +1127,11 @@
               "RelativeToolTip": "CapaNegocio\\Facturacion\\CN_DetalleFactura.cs",
               "ViewState": "AgIAAMkAAAAAAAAAAAAmwOkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T01:30:04.757Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T01:30:04.757Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 34,
               "Title": "GestionarAsientoContableController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Contabilidad\\GestionarAsientoContableController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarAsientoContableController.cs",
@@ -1117,12 +1139,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarAsientoContableController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:57:01.724Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:57:01.724Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 35,
               "Title": "Empleados.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Persona\\Empleados.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Persona\\Empleados.cshtml",
@@ -1130,12 +1151,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Persona\\Empleados.cshtml",
               "ViewState": "AgIAAFcGAAAAAAAAAAAcwG4GAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T19:24:33.203Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:24:33.203Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 36,
               "Title": "GestionarCuentaContableController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentaContableController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentaContableController.cs",
@@ -1143,12 +1163,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentaContableController.cs",
               "ViewState": "AgIAADEAAAAAAAAAAAAYwFMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:38:30.522Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:38:30.522Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 37,
               "Title": "ConfiguracionCuentaContable.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\ConfiguracionCuentaContable\\ConfiguracionCuentaContable.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\ConfiguracionCuentaContable\\ConfiguracionCuentaContable.cshtml",
@@ -1156,12 +1175,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\ConfiguracionCuentaContable\\ConfiguracionCuentaContable.cshtml",
               "ViewState": "AgIAADwAAAAAAAAAAAAYwGcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T23:44:26.108Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:44:26.108Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 38,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Home\\Index.cshtml",
@@ -1169,12 +1187,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAH8CAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-18T20:32:56.38Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T20:32:56.38Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 39,
               "Title": "Mantenimientos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Home\\Mantenimientos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Home\\Mantenimientos.cshtml",
@@ -1182,12 +1199,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Home\\Mantenimientos.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-18T20:32:59.781Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T20:32:59.781Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 40,
               "Title": "CD_CuentaContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Contabilidad\\CD_CuentaContable.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Contabilidad\\CD_CuentaContable.cs",
@@ -1195,12 +1211,11 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_CuentaContable.cs",
               "ViewState": "AgIAABQBAAAAAAAAAAAmwC4BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:36:05.134Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:36:05.134Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 41,
               "Title": "CN_Telefono.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Personas\\CN_Telefono.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Personas\\CN_Telefono.cs",
@@ -1208,12 +1223,11 @@
               "RelativeToolTip": "CapaNegocio\\Personas\\CN_Telefono.cs",
               "ViewState": "AgIAAGsAAAAAAAAAAAAmwJUAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:31:45.028Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:31:45.028Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 42,
               "Title": "CN_Empleado.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Personas\\CN_Empleado.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Personas\\CN_Empleado.cs",
@@ -1221,12 +1235,11 @@
               "RelativeToolTip": "CapaNegocio\\Personas\\CN_Empleado.cs",
               "ViewState": "AgIAAIYAAAAAAAAAAAAiwAwBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:56:24.828Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:56:24.828Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 43,
               "Title": "CN_Cliente.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Personas\\CN_Cliente.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Personas\\CN_Cliente.cs",
@@ -1234,12 +1247,11 @@
               "RelativeToolTip": "CapaNegocio\\Personas\\CN_Cliente.cs",
               "ViewState": "AgIAAEQAAAAAAAAAAAAmwLYAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T18:46:41.507Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T18:46:41.507Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 44,
               "Title": "Provincia.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Ubicacion\\Provincia.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Ubicacion\\Provincia.cshtml",
@@ -1247,12 +1259,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Ubicacion\\Provincia.cshtml",
               "ViewState": "AgIAALcAAAAAAAAAAAAAAMkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-18T17:32:27.177Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T17:32:27.177Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 47,
               "Title": "CD_Provincia.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Ubicacion\\CD_Provincia.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Ubicacion\\CD_Provincia.cs",
@@ -1260,12 +1271,11 @@
               "RelativeToolTip": "CapaDatos\\Ubicacion\\CD_Provincia.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAxwAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T03:28:46.017Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T03:28:46.017Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 50,
               "Title": "Canton.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Ubicacion\\Canton.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Ubicacion\\Canton.cshtml",
@@ -1273,12 +1283,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Ubicacion\\Canton.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-18T03:28:52.019Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T03:28:52.019Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 48,
               "Title": "Provincia.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Ubicacion\\Provincia.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Ubicacion\\Provincia.cs",
@@ -1286,12 +1295,11 @@
               "RelativeToolTip": "CapaEntidad\\Ubicacion\\Provincia.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T17:22:02.487Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T17:22:02.487Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 46,
               "Title": "CN_Provincia.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Ubicacion\\CN_Provincia.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Ubicacion\\CN_Provincia.cs",
@@ -1299,12 +1307,11 @@
               "RelativeToolTip": "CapaNegocio\\Ubicacion\\CN_Provincia.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T17:25:28.079Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T17:25:28.079Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 45,
               "Title": "UbicacionController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Mantenimientos\\UbicacionController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Mantenimientos\\UbicacionController.cs",
@@ -1312,12 +1319,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\UbicacionController.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:57:57.15Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:57:57.15Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 49,
               "Title": "BundleConfig.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\App_Start\\BundleConfig.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\App_Start\\BundleConfig.cs",
@@ -1325,12 +1331,11 @@
               "RelativeToolTip": "CapaPresentacion\\App_Start\\BundleConfig.cs",
               "ViewState": "AgIAABMAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T03:31:34.007Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T03:31:34.007Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 51,
               "Title": "Conexion.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Conexion\\Conexion.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Conexion\\Conexion.cs",
@@ -1338,12 +1343,11 @@
               "RelativeToolTip": "CapaDatos\\Conexion\\Conexion.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T02:44:39.899Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T02:44:39.899Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 52,
               "Title": "CN_Canton.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Ubicacion\\CN_Canton.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Ubicacion\\CN_Canton.cs",
@@ -1351,12 +1355,11 @@
               "RelativeToolTip": "CapaNegocio\\Ubicacion\\CN_Canton.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T00:40:29.55Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T00:40:29.55Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 53,
               "Title": "PersonaController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Mantenimientos\\PersonaController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Mantenimientos\\PersonaController.cs",
@@ -1364,12 +1367,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\PersonaController.cs",
               "ViewState": "AgIAAHsAAAAAAAAAAAAswPsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:32:22.288Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:32:22.288Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 54,
               "Title": "RouteConfig.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\App_Start\\RouteConfig.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\App_Start\\RouteConfig.cs",
@@ -1377,12 +1379,11 @@
               "RelativeToolTip": "CapaPresentacion\\App_Start\\RouteConfig.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T16:20:12.575Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T16:20:12.575Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 56,
               "Title": "HistorialCambio.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Seguridad\\HistorialCambio.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Seguridad\\HistorialCambio.cs",
@@ -1390,12 +1391,11 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\HistorialCambio.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-11T00:11:21.215Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-11T00:11:21.215Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 55,
               "Title": "CN_Recursos.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Recursos\\CN_Recursos.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Recursos\\CN_Recursos.cs",
@@ -1403,12 +1403,11 @@
               "RelativeToolTip": "CapaNegocio\\Recursos\\CN_Recursos.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAB4AAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:54:17.859Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:54:17.859Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 61,
               "Title": "ModuloSistema.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Seguridad\\ModuloSistema.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Seguridad\\ModuloSistema.cs",
@@ -1416,12 +1415,11 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\ModuloSistema.cs",
               "ViewState": "AgIAAA4AAAAAAAAAAAA3wCwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:07:48.217Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:07:48.217Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 65,
               "Title": "Rol.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Seguridad\\Rol.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Seguridad\\Rol.cshtml",
@@ -1429,12 +1427,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Seguridad\\Rol.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T17:43:58.022Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:43:58.022Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 62,
               "Title": "HistorialCambioConsulta.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Seguridad\\HistorialCambioConsulta.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Seguridad\\HistorialCambioConsulta.cs",
@@ -1442,12 +1439,11 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\HistorialCambioConsulta.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAIwAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:08:56.697Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:08:56.697Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 60,
               "Title": "PermisoRolModulo.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Seguridad\\PermisoRolModulo.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Seguridad\\PermisoRolModulo.cs",
@@ -1455,12 +1451,11 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\PermisoRolModulo.cs",
               "ViewState": "AgIAADEAAAAAAAAAAAAqwFkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:08:11.287Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:08:11.287Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 58,
               "Title": "CN_Rol.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Seguridad\\CN_Rol.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Seguridad\\CN_Rol.cs",
@@ -1468,12 +1463,11 @@
               "RelativeToolTip": "CapaNegocio\\Seguridad\\CN_Rol.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAFMAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T17:42:25.355Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:42:25.355Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 63,
               "Title": "RolPermiso.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Seguridad\\RolPermiso.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Seguridad\\RolPermiso.cshtml",
@@ -1481,12 +1475,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Seguridad\\RolPermiso.cshtml",
               "ViewState": "AgIAAE4AAAAAAAAAAAAMwGYAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T17:46:58.908Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:46:58.908Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 57,
               "Title": "CD_Seguridad.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Seguridad\\CD_Seguridad.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Seguridad\\CD_Seguridad.cs",
@@ -1494,12 +1487,11 @@
               "RelativeToolTip": "CapaDatos\\Seguridad\\CD_Seguridad.cs",
               "ViewState": "AgIAAD8AAAAAAAAAAAAYwDsAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:11:07.34Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:11:07.34Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 59,
               "Title": "CD_Impuesto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Catalogos\\CD_Impuesto.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Catalogos\\CD_Impuesto.cs",
@@ -1507,12 +1499,11 @@
               "RelativeToolTip": "CapaDatos\\Catalogos\\CD_Impuesto.cs",
               "ViewState": "AgIAAHkAAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-11T00:01:45.4Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-11T00:01:45.4Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 64,
               "Title": "Reportes.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Reportes\\Reportes.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Reportes\\Reportes.cshtml",
@@ -1520,12 +1511,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Reportes\\Reportes.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAQwAcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-09T18:17:36.843Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:17:36.843Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 66,
               "Title": "HistorialCambios.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Seguridad\\HistorialCambios.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Seguridad\\HistorialCambios.cshtml",
@@ -1533,12 +1523,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Seguridad\\HistorialCambios.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T17:16:05.87Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:16:05.87Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 67,
               "Title": "Telefono.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Persona\\Telefono.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Persona\\Telefono.cshtml",
@@ -1546,12 +1535,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Persona\\Telefono.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T17:57:09.631Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:57:09.631Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 68,
               "Title": "SeguridadController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Mantenimientos\\SeguridadController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Mantenimientos\\SeguridadController.cs",
@@ -1559,12 +1547,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\SeguridadController.cs",
               "ViewState": "AgIAADcAAAAAAAAAAAAkwFYAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:57:26.898Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:57:26.898Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 69,
               "Title": "CN_Seguridad.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Seguridad\\CN_Seguridad.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Seguridad\\CN_Seguridad.cs",
@@ -1572,12 +1559,11 @@
               "RelativeToolTip": "CapaNegocio\\Seguridad\\CN_Seguridad.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:12:10.527Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:12:10.527Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 70,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\HomeController.cs",
@@ -1585,12 +1571,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\HomeController.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAYwDkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:14:54.29Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:14:54.29Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 71,
               "Title": "CatalogosController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Mantenimientos\\CatalogosController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Mantenimientos\\CatalogosController.cs",
@@ -1598,12 +1583,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\CatalogosController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0CAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:48:55.57Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:48:55.57Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 69,
+              "DocumentIndex": 72,
               "Title": "CambiarClave.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Acceso\\CambiarClave.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Acceso\\CambiarClave.cshtml",
@@ -1611,12 +1595,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Acceso\\CambiarClave.cshtml",
               "ViewState": "AgIAAGQAAAAAAAAAAAAYwI8AAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T16:19:36.079Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T16:19:36.079Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 71,
+              "DocumentIndex": 74,
               "Title": "InicioSesion.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Acceso\\InicioSesion.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Acceso\\InicioSesion.cshtml",
@@ -1624,12 +1607,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Acceso\\InicioSesion.cshtml",
               "ViewState": "AgIAAHIBAAAAAAAAAAAnwIkBAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T16:18:32.983Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T16:18:32.983Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 70,
+              "DocumentIndex": 73,
               "Title": "AccesoController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Acceso\\AccesoController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Acceso\\AccesoController.cs",
@@ -1637,12 +1619,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Acceso\\AccesoController.cs",
               "ViewState": "AgIAAD8AAAAAAAAAAAAAAEwAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T14:43:06.673Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T14:43:06.673Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 72,
+              "DocumentIndex": 75,
               "Title": "UsuarioSesion.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Seguridad\\UsuarioSesion.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Seguridad\\UsuarioSesion.cs",
@@ -1650,12 +1631,11 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\UsuarioSesion.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAAwBEAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:08:34.604Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:08:34.604Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 73,
+              "DocumentIndex": 76,
               "Title": "ReportesController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Reportes\\ReportesController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Reportes\\ReportesController.cs",
@@ -1663,12 +1643,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Reportes\\ReportesController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:16:32.977Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:16:32.977Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 74,
+              "DocumentIndex": 77,
               "Title": "ProveedorController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Mantenimientos\\ProveedorController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Mantenimientos\\ProveedorController.cs",
@@ -1676,12 +1655,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\ProveedorController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:26:39.73Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:26:39.73Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 75,
+              "DocumentIndex": 78,
               "Title": "ProductoController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Mantenimientos\\ProductoController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Mantenimientos\\ProductoController.cs",
@@ -1689,12 +1667,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\ProductoController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:07:42.664Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:07:42.664Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 76,
+              "DocumentIndex": 79,
               "Title": "GestionarPresupuestoMensualController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Contabilidad\\GestionarPresupuestoMensualController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarPresupuestoMensualController.cs",
@@ -1702,12 +1679,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarPresupuestoMensualController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:14:42.199Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:14:42.199Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 77,
+              "DocumentIndex": 80,
               "Title": "GestionarPeriodoContableController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Contabilidad\\GestionarPeriodoContableController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarPeriodoContableController.cs",
@@ -1715,12 +1691,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarPeriodoContableController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:22:54.479Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:22:54.479Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 78,
+              "DocumentIndex": 81,
               "Title": "ConsultasController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Contabilidad\\ConsultasController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Contabilidad\\ConsultasController.cs",
@@ -1728,12 +1703,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\ConsultasController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:50:07.451Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:50:07.451Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 79,
+              "DocumentIndex": 82,
               "Title": "ConfiguracionCuentaContableController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Contabilidad\\ConfiguracionCuentaContableController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Contabilidad\\ConfiguracionCuentaContableController.cs",
@@ -1741,12 +1715,11 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\ConfiguracionCuentaContableController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:35:09.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:35:09.099Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 80,
+              "DocumentIndex": 83,
               "Title": "SinPermiso.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Home\\SinPermiso.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Home\\SinPermiso.cshtml",
@@ -1754,12 +1727,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Home\\SinPermiso.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T15:15:30.994Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:15:30.994Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 81,
+              "DocumentIndex": 84,
               "Title": "PermisoAuthorizeAttribute.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Filtros\\PermisoAuthorizeAttribute.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Filtros\\PermisoAuthorizeAttribute.cs",
@@ -1767,12 +1739,11 @@
               "RelativeToolTip": "CapaPresentacion\\Filtros\\PermisoAuthorizeAttribute.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:14:13.289Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:14:13.289Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 82,
+              "DocumentIndex": 85,
               "Title": "Global.asax.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Global.asax.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Global.asax.cs",
@@ -1780,12 +1751,11 @@
               "RelativeToolTip": "CapaPresentacion\\Global.asax.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T14:46:25.217Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T14:46:25.217Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 83,
+              "DocumentIndex": 86,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Web.config",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Web.config",
@@ -1793,12 +1763,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Web.config",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2026-06-10T14:46:14.265Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T14:46:14.265Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 84,
+              "DocumentIndex": 87,
               "Title": "Consultas.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Consultas\\Consultas.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Consultas\\Consultas.cshtml",
@@ -1806,12 +1775,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Consultas\\Consultas.cshtml",
               "ViewState": "AgIAAN4FAAAAAAAAAAAcwAoGAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-09T18:50:55.278Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:50:55.278Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 85,
+              "DocumentIndex": 88,
               "Title": "CD_Consultas.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Consultas\\CD_Consultas.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Consultas\\CD_Consultas.cs",
@@ -1819,12 +1787,11 @@
               "RelativeToolTip": "CapaDatos\\Consultas\\CD_Consultas.cs",
               "ViewState": "AgIAAHMBAAAAAAAAAAAqwJ4BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:46:49.581Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:46:49.581Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 86,
+              "DocumentIndex": 89,
               "Title": "ConsultaMovimientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Consultas\\ConsultaMovimientoContable.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Consultas\\ConsultaMovimientoContable.cs",
@@ -1832,12 +1799,11 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaMovimientoContable.cs",
               "ViewState": "AgIAABkAAAAAAAAAAAAqwEQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:45:24.239Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:45:24.239Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 87,
+              "DocumentIndex": 90,
               "Title": "ConsultaProveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Consultas\\ConsultaProveedor.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Consultas\\ConsultaProveedor.cs",
@@ -1845,12 +1811,11 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaProveedor.cs",
               "ViewState": "AgIAACAAAAAAAAAAAAAqwEsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:45:02.062Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:45:02.062Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 88,
+              "DocumentIndex": 91,
               "Title": "ConsultaCliente.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Consultas\\ConsultaCliente.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Consultas\\ConsultaCliente.cs",
@@ -1858,12 +1823,11 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaCliente.cs",
               "ViewState": "AgIAACgAAAAAAAAAAAAqwFMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:44:39.248Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:44:39.248Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 89,
+              "DocumentIndex": 92,
               "Title": "ConsultaProducto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Consultas\\ConsultaProducto.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Consultas\\ConsultaProducto.cs",
@@ -1871,12 +1835,11 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaProducto.cs",
               "ViewState": "AgIAAD0AAAAAAAAAAAAqwGgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:44:18.478Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:44:18.478Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 90,
+              "DocumentIndex": 93,
               "Title": "ConsultaCuentaPorPagar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Consultas\\ConsultaCuentaPorPagar.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Consultas\\ConsultaCuentaPorPagar.cs",
@@ -1884,12 +1847,11 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaCuentaPorPagar.cs",
               "ViewState": "AgIAAHgAAAAAAAAAAAAqwKMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:43:55.529Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:43:55.529Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 91,
+              "DocumentIndex": 94,
               "Title": "ConsultaCuentaPorCobrar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Consultas\\ConsultaCuentaPorCobrar.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Consultas\\ConsultaCuentaPorCobrar.cs",
@@ -1897,12 +1859,11 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaCuentaPorCobrar.cs",
               "ViewState": "AgIAAHYAAAAAAAAAAAAqwKEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:43:31.939Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:43:31.939Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 92,
+              "DocumentIndex": 95,
               "Title": "ConsultaDetalleFactura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Consultas\\ConsultaDetalleFactura.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Consultas\\ConsultaDetalleFactura.cs",
@@ -1910,12 +1871,11 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaDetalleFactura.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAqwFQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:43:09.564Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:43:09.564Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 93,
+              "DocumentIndex": 96,
               "Title": "ConsultaFactura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Consultas\\ConsultaFactura.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Consultas\\ConsultaFactura.cs",
@@ -1923,12 +1883,11 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaFactura.cs",
               "ViewState": "AgIAAE4AAAAAAAAAAAA8wHkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:42:45.744Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:42:45.744Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 94,
+              "DocumentIndex": 97,
               "Title": "CN_Reportes.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Reportes\\CN_Reportes.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Reportes\\CN_Reportes.cs",
@@ -1936,12 +1895,11 @@
               "RelativeToolTip": "CapaNegocio\\Reportes\\CN_Reportes.cs",
               "ViewState": "AgIAAFoAAAAAAAAAAAAqwHwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:15:58.604Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:15:58.604Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 96,
+              "DocumentIndex": 99,
               "Title": "ReporteFlujoDiario.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Reportes\\ReporteFlujoDiario.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Reportes\\ReporteFlujoDiario.cs",
@@ -1949,12 +1907,11 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteFlujoDiario.cs",
               "ViewState": "AgIAAD0AAAAAAAAAAAAqwGIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:14:05.762Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:14:05.762Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 97,
+              "DocumentIndex": 100,
               "Title": "ReporteClienteMasVenta.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Reportes\\ReporteClienteMasVenta.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Reportes\\ReporteClienteMasVenta.cs",
@@ -1962,12 +1919,11 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteClienteMasVenta.cs",
               "ViewState": "AgIAAEcAAAAAAAAAAAAqwHIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:13:45.048Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:13:45.048Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 95,
+              "DocumentIndex": 98,
               "Title": "CD_Reportes.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Reportes\\CD_Reportes.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Reportes\\CD_Reportes.cs",
@@ -1975,12 +1931,11 @@
               "RelativeToolTip": "CapaDatos\\Reportes\\CD_Reportes.cs",
               "ViewState": "AgIAADwBAAAAAAAAAAAowGYBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:04:16.653Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:04:16.653Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 98,
+              "DocumentIndex": 101,
               "Title": "ReporteProductoMasVendido.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Reportes\\ReporteProductoMasVendido.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Reportes\\ReporteProductoMasVendido.cs",
@@ -1988,12 +1943,11 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteProductoMasVendido.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAqwGcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:13:17.968Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:13:17.968Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 100,
+              "DocumentIndex": 103,
               "Title": "ReporteCuentaPorPagar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Reportes\\ReporteCuentaPorPagar.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Reportes\\ReporteCuentaPorPagar.cs",
@@ -2001,12 +1955,11 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteCuentaPorPagar.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAMYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:11:59.495Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:11:59.495Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 99,
+              "DocumentIndex": 102,
               "Title": "ReporteCuentaPorCobrar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Reportes\\ReporteCuentaPorCobrar.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Reportes\\ReporteCuentaPorCobrar.cs",
@@ -2014,12 +1967,11 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteCuentaPorCobrar.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAMQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:11:25.399Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:11:25.399Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 101,
+              "DocumentIndex": 104,
               "Title": "ReporteGasto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Reportes\\ReporteGasto.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Reportes\\ReporteGasto.cs",
@@ -2027,12 +1979,11 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteGasto.cs",
               "ViewState": "AgIAAFYAAAAAAAAAAAAmwIIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:10:28.68Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:10:28.68Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 102,
+              "DocumentIndex": 105,
               "Title": "ReporteIngreso.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Reportes\\ReporteIngreso.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Reportes\\ReporteIngreso.cs",
@@ -2040,12 +1991,11 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteIngreso.cs",
               "ViewState": "AgIAACMAAAAAAAAAAAAmwE8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:09:22.772Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:09:22.772Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 103,
+              "DocumentIndex": 106,
               "Title": "ReporteResumenFinanciero.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Reportes\\ReporteResumenFinanciero.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Reportes\\ReporteResumenFinanciero.cs",
@@ -2053,12 +2003,11 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteResumenFinanciero.cs",
               "ViewState": "AgIAAGkAAAAAAAAAAAA6wJUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:09:01.263Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:09:01.263Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 104,
+              "DocumentIndex": 107,
               "Title": "PresupuestoMensual.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
@@ -2066,12 +2015,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
               "ViewState": "AgIAAH8EAAAAAAAAAAAcwKsEAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-09T17:57:05.561Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:57:05.561Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 105,
+              "DocumentIndex": 108,
               "Title": "CN_PresupuestoMensual.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Presupuesto\\CN_PresupuestoMensual.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Presupuesto\\CN_PresupuestoMensual.cs",
@@ -2079,12 +2027,11 @@
               "RelativeToolTip": "CapaNegocio\\Presupuesto\\CN_PresupuestoMensual.cs",
               "ViewState": "AgIAAJkAAAAAAAAAAAAuwMIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:53:27.47Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:53:27.47Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 106,
+              "DocumentIndex": 109,
               "Title": "CD_DetallePresupuestoMensual.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Presupuesto\\CD_DetallePresupuestoMensual.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Presupuesto\\CD_DetallePresupuestoMensual.cs",
@@ -2092,12 +2039,11 @@
               "RelativeToolTip": "CapaDatos\\Presupuesto\\CD_DetallePresupuestoMensual.cs",
               "ViewState": "AgIAANIAAAAAAAAAAAAqwPoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:52:46.369Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:52:46.369Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 107,
+              "DocumentIndex": 110,
               "Title": "CD_PresupuestoMensual.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Presupuesto\\CD_PresupuestoMensual.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Presupuesto\\CD_PresupuestoMensual.cs",
@@ -2105,12 +2051,11 @@
               "RelativeToolTip": "CapaDatos\\Presupuesto\\CD_PresupuestoMensual.cs",
               "ViewState": "AgIAADcBAAAAAAAAAAAqwF8BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:52:14.342Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:52:14.342Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 108,
+              "DocumentIndex": 111,
               "Title": "ResumenPresupuestoMensual.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Presupuesto\\ResumenPresupuestoMensual.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Presupuesto\\ResumenPresupuestoMensual.cs",
@@ -2118,12 +2063,11 @@
               "RelativeToolTip": "CapaEntidad\\Presupuesto\\ResumenPresupuestoMensual.cs",
               "ViewState": "AgIAAE0AAAAAAAAAAAAwwLEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:51:15.879Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:51:15.879Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 109,
+              "DocumentIndex": 112,
               "Title": "DetallePresupuestoMensual.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Presupuesto\\DetallePresupuestoMensual.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Presupuesto\\DetallePresupuestoMensual.cs",
@@ -2131,12 +2075,11 @@
               "RelativeToolTip": "CapaEntidad\\Presupuesto\\DetallePresupuestoMensual.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAA+wF8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:50:32.507Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:50:32.507Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 110,
+              "DocumentIndex": 113,
               "Title": "PresupuestoMensual.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Presupuesto\\PresupuestoMensual.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Presupuesto\\PresupuestoMensual.cs",
@@ -2144,12 +2087,11 @@
               "RelativeToolTip": "CapaEntidad\\Presupuesto\\PresupuestoMensual.cs",
               "ViewState": "AgIAADAAAAAAAAAAAAAqwFsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:50:14.478Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:50:14.478Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 111,
+              "DocumentIndex": 114,
               "Title": "CN_CuentaPorPagar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\CuentasPorPagar\\CN_CuentaPorPagar.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\CuentasPorPagar\\CN_CuentaPorPagar.cs",
@@ -2157,12 +2099,11 @@
               "RelativeToolTip": "CapaNegocio\\CuentasPorPagar\\CN_CuentaPorPagar.cs",
               "ViewState": "AgIAAMIAAAAAAAAAAAAUwNoAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:32:00.352Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:32:00.352Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 112,
+              "DocumentIndex": 115,
               "Title": "CD_CuentaPorPagar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\CuentasPorPagar\\CD_CuentaPorPagar.cs",
               "RelativeDocumentMoniker": "CapaDatos\\CuentasPorPagar\\CD_CuentaPorPagar.cs",
@@ -2170,12 +2111,11 @@
               "RelativeToolTip": "CapaDatos\\CuentasPorPagar\\CD_CuentaPorPagar.cs",
               "ViewState": "AgIAAIcAAAAAAAAAAAA7wLAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:30:14.052Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:30:14.052Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 113,
+              "DocumentIndex": 116,
               "Title": "CD_Gasto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Movimientos\\CD_Gasto.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Movimientos\\CD_Gasto.cs",
@@ -2183,12 +2123,11 @@
               "RelativeToolTip": "CapaDatos\\Movimientos\\CD_Gasto.cs",
               "ViewState": "AgIAAOQAAAAAAAAAAAAmwBIBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T22:08:38.879Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T22:08:38.879Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 114,
+              "DocumentIndex": 117,
               "Title": "Gasto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Movimientos\\Gasto.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Movimientos\\Gasto.cs",
@@ -2196,12 +2135,11 @@
               "RelativeToolTip": "CapaEntidad\\Movimientos\\Gasto.cs",
               "ViewState": "AgIAAFgAAAAAAAAAAAAmwIYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T22:07:16.667Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T22:07:16.667Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 115,
+              "DocumentIndex": 118,
               "Title": "CN_AbonoCuentaPorPagar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\CuentasPorPagar\\CN_AbonoCuentaPorPagar.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\CuentasPorPagar\\CN_AbonoCuentaPorPagar.cs",
@@ -2209,12 +2147,11 @@
               "RelativeToolTip": "CapaNegocio\\CuentasPorPagar\\CN_AbonoCuentaPorPagar.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:32:40.445Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:32:40.445Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 116,
+              "DocumentIndex": 119,
               "Title": "CD_AbonoCuentaPorPagar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\CuentasPorPagar\\CD_AbonoCuentaPorPagar.cs",
               "RelativeDocumentMoniker": "CapaDatos\\CuentasPorPagar\\CD_AbonoCuentaPorPagar.cs",
@@ -2222,12 +2159,11 @@
               "RelativeToolTip": "CapaDatos\\CuentasPorPagar\\CD_AbonoCuentaPorPagar.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:31:15.573Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:31:15.573Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 117,
+              "DocumentIndex": 120,
               "Title": "CuentaPorPagar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\CuentasPorPagar\\CuentaPorPagar.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\CuentasPorPagar\\CuentaPorPagar.cs",
@@ -2235,12 +2171,11 @@
               "RelativeToolTip": "CapaEntidad\\CuentasPorPagar\\CuentaPorPagar.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:28:24.622Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:28:24.622Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 118,
+              "DocumentIndex": 121,
               "Title": "CuentaPorCobrar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\CuentasPorCobrar\\CuentaPorCobrar.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\CuentasPorCobrar\\CuentaPorCobrar.cs",
@@ -2248,12 +2183,11 @@
               "RelativeToolTip": "CapaEntidad\\CuentasPorCobrar\\CuentaPorCobrar.cs",
               "ViewState": "AgIAAIAAAAAAAAAAAAA3wK8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:06:17.303Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:06:17.303Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 119,
+              "DocumentIndex": 122,
               "Title": "CD_CuentaPorCobrar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\CuentasPorCobrar\\CD_CuentaPorCobrar.cs",
               "RelativeDocumentMoniker": "CapaDatos\\CuentasPorCobrar\\CD_CuentaPorCobrar.cs",
@@ -2261,12 +2195,11 @@
               "RelativeToolTip": "CapaDatos\\CuentasPorCobrar\\CD_CuentaPorCobrar.cs",
               "ViewState": "AgIAABIBAAAAAAAAAAAgwDsBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:08:48.705Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:08:48.705Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 121,
+              "DocumentIndex": 124,
               "Title": "CD_Ingreso.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Movimientos\\CD_Ingreso.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Movimientos\\CD_Ingreso.cs",
@@ -2274,12 +2207,11 @@
               "RelativeToolTip": "CapaDatos\\Movimientos\\CD_Ingreso.cs",
               "ViewState": "AgIAAC4BAAAAAAAAAAAmwF0BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T18:53:37.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T18:53:37.144Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 120,
+              "DocumentIndex": 123,
               "Title": "CN_Ingreso.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Movimientos\\CN_Ingreso.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Movimientos\\CN_Ingreso.cs",
@@ -2287,12 +2219,11 @@
               "RelativeToolTip": "CapaNegocio\\Movimientos\\CN_Ingreso.cs",
               "ViewState": "AgIAAAoBAAAAAAAAAAAmwDYBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T18:56:16.989Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T18:56:16.989Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 122,
+              "DocumentIndex": 125,
               "Title": "AbonoPendienteIngreso.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Movimientos\\AbonoPendienteIngreso.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Movimientos\\AbonoPendienteIngreso.cs",
@@ -2300,12 +2231,11 @@
               "RelativeToolTip": "CapaEntidad\\Movimientos\\AbonoPendienteIngreso.cs",
               "ViewState": "AgIAAB8AAAAAAAAAAAAAwEIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T18:53:13.979Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T18:53:13.979Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 123,
+              "DocumentIndex": 126,
               "Title": "FacturaContadoPendiente.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Movimientos\\FacturaContadoPendiente.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Movimientos\\FacturaContadoPendiente.cs",
@@ -2313,12 +2243,11 @@
               "RelativeToolTip": "CapaEntidad\\Movimientos\\FacturaContadoPendiente.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAAwCoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T17:10:48.417Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T17:10:48.417Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 124,
+              "DocumentIndex": 127,
               "Title": "Ingreso.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Movimientos\\Ingreso.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Movimientos\\Ingreso.cs",
@@ -2326,12 +2255,11 @@
               "RelativeToolTip": "CapaEntidad\\Movimientos\\Ingreso.cs",
               "ViewState": "AgIAAF0AAAAAAAAAAAAuwHkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T17:49:48.889Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T17:49:48.889Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 125,
+              "DocumentIndex": 128,
               "Title": "CN_Factura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Facturacion\\CN_Factura.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Facturacion\\CN_Factura.cs",
@@ -2339,12 +2267,11 @@
               "RelativeToolTip": "CapaNegocio\\Facturacion\\CN_Factura.cs",
               "ViewState": "AgIAACcBAAAAAAAAAAAmwEcBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T01:28:17.136Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T01:28:17.136Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 126,
+              "DocumentIndex": 129,
               "Title": "CD_Factura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Facturacion\\CD_Factura.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Facturacion\\CD_Factura.cs",
@@ -2352,12 +2279,11 @@
               "RelativeToolTip": "CapaDatos\\Facturacion\\CD_Factura.cs",
               "ViewState": "AgIAAFwBAAAAAAAAAAAqwHoBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T01:22:50.37Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T01:22:50.37Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 127,
+              "DocumentIndex": 130,
               "Title": "NotasCredito.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\NotasCredito.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Facturacion\\NotasCredito.cshtml",
@@ -2365,12 +2291,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Facturacion\\NotasCredito.cshtml",
               "ViewState": "AgIAAHICAAAAAAAAAAAswIsCAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T14:23:15.544Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:23:15.544Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 129,
+              "DocumentIndex": 132,
               "Title": "CD_NotaCredito.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Facturacion\\CD_NotaCredito.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Facturacion\\CD_NotaCredito.cs",
@@ -2378,12 +2303,11 @@
               "RelativeToolTip": "CapaDatos\\Facturacion\\CD_NotaCredito.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:19:39.293Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:19:39.293Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 128,
+              "DocumentIndex": 131,
               "Title": "CN_NotaCredito.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Facturacion\\CN_NotaCredito.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Facturacion\\CN_NotaCredito.cs",
@@ -2391,12 +2315,11 @@
               "RelativeToolTip": "CapaNegocio\\Facturacion\\CN_NotaCredito.cs",
               "ViewState": "AgIAAPIAAAAAAAAAAAAmwBIBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:20:39.301Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:20:39.301Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 131,
+              "DocumentIndex": 134,
               "Title": "CN_AbonoCuentaPorCobrar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\CuentasPorCobrar\\CN_AbonoCuentaPorCobrar.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\CuentasPorCobrar\\CN_AbonoCuentaPorCobrar.cs",
@@ -2404,12 +2327,11 @@
               "RelativeToolTip": "CapaNegocio\\CuentasPorCobrar\\CN_AbonoCuentaPorCobrar.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAOIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:11:38.182Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:11:38.182Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 130,
+              "DocumentIndex": 133,
               "Title": "NotaCredito.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Facturacion\\NotaCredito.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Facturacion\\NotaCredito.cs",
@@ -2417,12 +2339,11 @@
               "RelativeToolTip": "CapaEntidad\\Facturacion\\NotaCredito.cs",
               "ViewState": "AgIAAGgAAAAAAAAAAAAqwH0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:08:25.041Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:08:25.041Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 132,
+              "DocumentIndex": 135,
               "Title": "CN_CuentaPorCobrar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\CuentasPorCobrar\\CN_CuentaPorCobrar.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\CuentasPorCobrar\\CN_CuentaPorCobrar.cs",
@@ -2430,12 +2351,11 @@
               "RelativeToolTip": "CapaNegocio\\CuentasPorCobrar\\CN_CuentaPorCobrar.cs",
               "ViewState": "AgIAAPAAAAAAAAAAAAAmwAcBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:10:11.625Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:10:11.625Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 133,
+              "DocumentIndex": 136,
               "Title": "CD_AbonoCuentaPorCobrar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\CuentasPorCobrar\\CD_AbonoCuentaPorCobrar.cs",
               "RelativeDocumentMoniker": "CapaDatos\\CuentasPorCobrar\\CD_AbonoCuentaPorCobrar.cs",
@@ -2443,12 +2363,11 @@
               "RelativeToolTip": "CapaDatos\\CuentasPorCobrar\\CD_AbonoCuentaPorCobrar.cs",
               "ViewState": "AgIAAN4AAAAAAAAAAAA8wPkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:09:02.841Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:09:02.841Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 134,
+              "DocumentIndex": 137,
               "Title": "AbonoCuentaPorCobrar.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\CuentasPorCobrar\\AbonoCuentaPorCobrar.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\CuentasPorCobrar\\AbonoCuentaPorCobrar.cs",
@@ -2456,12 +2375,11 @@
               "RelativeToolTip": "CapaEntidad\\CuentasPorCobrar\\AbonoCuentaPorCobrar.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAHAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:07:51.981Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:07:51.981Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 135,
+              "DocumentIndex": 138,
               "Title": "CD_DetalleFactura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Facturacion\\CD_DetalleFactura.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Facturacion\\CD_DetalleFactura.cs",
@@ -2469,12 +2387,11 @@
               "RelativeToolTip": "CapaDatos\\Facturacion\\CD_DetalleFactura.cs",
               "ViewState": "AgIAAN8AAAAAAAAAAAAmwP8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T01:27:00.88Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T01:27:00.88Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 136,
+              "DocumentIndex": 139,
               "Title": "DetalleFactura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Facturacion\\DetalleFactura.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Facturacion\\DetalleFactura.cs",
@@ -2482,12 +2399,11 @@
               "RelativeToolTip": "CapaEntidad\\Facturacion\\DetalleFactura.cs",
               "ViewState": "AgIAAG0AAAAAAAAAAAA+wH0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T01:22:08.374Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T01:22:08.374Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 137,
+              "DocumentIndex": 140,
               "Title": "Factura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Facturacion\\Factura.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Facturacion\\Factura.cs",
@@ -2495,12 +2411,11 @@
               "RelativeToolTip": "CapaEntidad\\Facturacion\\Factura.cs",
               "ViewState": "AgIAAEYAAAAAAAAAAAAmwE8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T01:14:32.157Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T01:14:32.157Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 138,
+              "DocumentIndex": 141,
               "Title": "CN_DetalleAsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Contabilidad\\CN_DetalleAsientoContable.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Contabilidad\\CN_DetalleAsientoContable.cs",
@@ -2508,12 +2423,11 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_DetalleAsientoContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAOgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:28:43.385Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:28:43.385Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 139,
+              "DocumentIndex": 142,
               "Title": "CD_DetalleAsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Contabilidad\\CD_DetalleAsientoContable.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Contabilidad\\CD_DetalleAsientoContable.cs",
@@ -2521,12 +2435,11 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_DetalleAsientoContable.cs",
               "ViewState": "AgIAAPgAAAAAAAAAAAAmwBUBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:26:46.776Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:26:46.776Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 140,
+              "DocumentIndex": 143,
               "Title": "DetalleAsientoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Contabilidad\\DetalleAsientoContable.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Contabilidad\\DetalleAsientoContable.cs",
@@ -2534,12 +2447,11 @@
               "RelativeToolTip": "CapaEntidad\\Contabilidad\\DetalleAsientoContable.cs",
               "ViewState": "AgIAAD0AAAAAAAAAAAAmwFoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:23:59.68Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:23:59.68Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 142,
+              "DocumentIndex": 145,
               "Title": "CN_Producto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Inventario\\CN_Producto.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Inventario\\CN_Producto.cs",
@@ -2547,12 +2459,11 @@
               "RelativeToolTip": "CapaNegocio\\Inventario\\CN_Producto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:06:39.78Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:06:39.78Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 141,
+              "DocumentIndex": 144,
               "Title": "CD_Producto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Inventario\\CD_Producto.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Inventario\\CD_Producto.cs",
@@ -2560,12 +2471,11 @@
               "RelativeToolTip": "CapaDatos\\Inventario\\CD_Producto.cs",
               "ViewState": "AgIAAPUAAAAAAAAAAAAmwBUBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:05:57.766Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:05:57.766Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 143,
+              "DocumentIndex": 146,
               "Title": "Impuestos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Catalogos\\Impuestos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Catalogos\\Impuestos.cshtml",
@@ -2573,12 +2483,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Catalogos\\Impuestos.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T00:11:42.927Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:11:42.927Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 144,
+              "DocumentIndex": 147,
               "Title": "Producto.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Inventario\\Producto.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Inventario\\Producto.cs",
@@ -2586,12 +2495,11 @@
               "RelativeToolTip": "CapaEntidad\\Inventario\\Producto.cs",
               "ViewState": "AgIAADIAAAAAAAAAAAAqwEcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:05:18.983Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:05:18.983Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 145,
+              "DocumentIndex": 148,
               "Title": "CN_ConfiguracionCuentaContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Contabilidad\\CN_ConfiguracionCuentaContable.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Contabilidad\\CN_ConfiguracionCuentaContable.cs",
@@ -2599,12 +2507,11 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_ConfiguracionCuentaContable.cs",
               "ViewState": "AgIAAJ0AAAAAAAAAAAAmwL0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:43:18.191Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:43:18.191Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 146,
+              "DocumentIndex": 149,
               "Title": "ConfiguracionCuentaContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Contabilidad\\ConfiguracionCuentaContable.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Contabilidad\\ConfiguracionCuentaContable.cs",
@@ -2612,12 +2519,11 @@
               "RelativeToolTip": "CapaEntidad\\Contabilidad\\ConfiguracionCuentaContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:42:26.659Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:42:26.659Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 147,
+              "DocumentIndex": 150,
               "Title": "CN_CuentaContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Contabilidad\\CN_CuentaContable.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Contabilidad\\CN_CuentaContable.cs",
@@ -2625,12 +2531,11 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_CuentaContable.cs",
               "ViewState": "AgIAALYAAAAAAAAAAAAmwNYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:37:09.674Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:37:09.674Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 148,
+              "DocumentIndex": 151,
               "Title": "CuentaContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Contabilidad\\CuentaContable.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Contabilidad\\CuentaContable.cs",
@@ -2638,12 +2543,11 @@
               "RelativeToolTip": "CapaEntidad\\Contabilidad\\CuentaContable.cs",
               "ViewState": "AgIAACEAAAAAAAAAAAAiwDwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:35:16.392Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:35:16.392Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 149,
+              "DocumentIndex": 152,
               "Title": "PeriodosContables.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarPeriodoContable\\PeriodosContables.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarPeriodoContable\\PeriodosContables.cshtml",
@@ -2651,12 +2555,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarPeriodoContable\\PeriodosContables.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T23:25:40.962Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:25:40.962Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 150,
+              "DocumentIndex": 153,
               "Title": "CN_PeriodoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Contabilidad\\CN_PeriodoContable.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Contabilidad\\CN_PeriodoContable.cs",
@@ -2664,12 +2567,11 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_PeriodoContable.cs",
               "ViewState": "AgIAAIYAAAAAAAAAAAAmwKYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:22:15.035Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:22:15.035Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 151,
+              "DocumentIndex": 154,
               "Title": "CD_PeriodoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Contabilidad\\CD_PeriodoContable.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Contabilidad\\CD_PeriodoContable.cs",
@@ -2677,12 +2579,11 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_PeriodoContable.cs",
               "ViewState": "AgIAAA8BAAAAAAAAAAAiwDQBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:19:46.764Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:19:46.764Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 152,
+              "DocumentIndex": 155,
               "Title": "PeriodoContable.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Contabilidad\\PeriodoContable.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Contabilidad\\PeriodoContable.cs",
@@ -2690,12 +2591,11 @@
               "RelativeToolTip": "CapaEntidad\\Contabilidad\\PeriodoContable.cs",
               "ViewState": "AgIAACgAAAAAAAAAAAAwwEEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:18:30.418Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:18:30.418Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 153,
+              "DocumentIndex": 156,
               "Title": "Proveedores.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Proveedor\\Proveedores.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Proveedor\\Proveedores.cshtml",
@@ -2703,12 +2603,11 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Proveedor\\Proveedores.cshtml",
               "ViewState": "AgIAAN0EAAAAAAAAAAAmwP4EAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T21:29:28.356Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:29:28.356Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 154,
+              "DocumentIndex": 157,
               "Title": "CN_CorreoProveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Proveedores\\CN_CorreoProveedor.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Proveedores\\CN_CorreoProveedor.cs",
@@ -2716,12 +2615,11 @@
               "RelativeToolTip": "CapaNegocio\\Proveedores\\CN_CorreoProveedor.cs",
               "ViewState": "AgIAAJMAAAAAAAAAAAAmwLMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T20:48:49.612Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T20:48:49.612Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 155,
+              "DocumentIndex": 158,
               "Title": "CD_CorreoProveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Proveedores\\CD_CorreoProveedor.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Proveedores\\CD_CorreoProveedor.cs",
@@ -2729,12 +2627,11 @@
               "RelativeToolTip": "CapaDatos\\Proveedores\\CD_CorreoProveedor.cs",
               "ViewState": "AgIAAK4AAAAAAAAAAAAmwM4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:22:58.181Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:22:58.181Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 156,
+              "DocumentIndex": 159,
               "Title": "CorreoProveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Proveedores\\CorreoProveedor.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Proveedores\\CorreoProveedor.cs",
@@ -2742,12 +2639,11 @@
               "RelativeToolTip": "CapaEntidad\\Proveedores\\CorreoProveedor.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:21:19.735Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:21:19.735Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 157,
+              "DocumentIndex": 160,
               "Title": "CN_TelefonoProveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Proveedores\\CN_TelefonoProveedor.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Proveedores\\CN_TelefonoProveedor.cs",
@@ -2755,12 +2651,11 @@
               "RelativeToolTip": "CapaNegocio\\Proveedores\\CN_TelefonoProveedor.cs",
               "ViewState": "AgIAAHYAAAAAAAAAAAAmwJYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:14:51.078Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:14:51.078Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 158,
+              "DocumentIndex": 161,
               "Title": "CD_TelefonoProveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Proveedores\\CD_TelefonoProveedor.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Proveedores\\CD_TelefonoProveedor.cs",
@@ -2768,12 +2663,11 @@
               "RelativeToolTip": "CapaDatos\\Proveedores\\CD_TelefonoProveedor.cs",
               "ViewState": "AgIAAK4AAAAAAAAAAAAmwM4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:11:23.13Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:11:23.13Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 159,
+              "DocumentIndex": 162,
               "Title": "TelefonoProveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Proveedores\\TelefonoProveedor.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Proveedores\\TelefonoProveedor.cs",
@@ -2781,12 +2675,11 @@
               "RelativeToolTip": "CapaEntidad\\Proveedores\\TelefonoProveedor.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:06:50.484Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:06:50.484Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 160,
+              "DocumentIndex": 163,
               "Title": "CN_Proveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Proveedores\\CN_Proveedor.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Proveedores\\CN_Proveedor.cs",
@@ -2794,12 +2687,11 @@
               "RelativeToolTip": "CapaNegocio\\Proveedores\\CN_Proveedor.cs",
               "ViewState": "AgIAAIcAAAAAAAAAAAAmwKcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:02:19.334Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:02:19.334Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 161,
+              "DocumentIndex": 164,
               "Title": "CD_Proveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Proveedores\\CD_Proveedor.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Proveedores\\CD_Proveedor.cs",
@@ -2807,12 +2699,11 @@
               "RelativeToolTip": "CapaDatos\\Proveedores\\CD_Proveedor.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAOMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:01:07.231Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:01:07.231Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 162,
+              "DocumentIndex": 165,
               "Title": "Proveedor.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Proveedores\\Proveedor.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Proveedores\\Proveedor.cs",
@@ -2820,12 +2711,11 @@
               "RelativeToolTip": "CapaEntidad\\Proveedores\\Proveedor.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAmwCUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T20:59:23.473Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T20:59:23.473Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 163,
+              "DocumentIndex": 166,
               "Title": "CD_Empleado.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Personas\\CD_Empleado.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Personas\\CD_Empleado.cs",
@@ -2833,12 +2723,11 @@
               "RelativeToolTip": "CapaDatos\\Personas\\CD_Empleado.cs",
               "ViewState": "AgIAAOIAAAAAAAAAAAAmwAIBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T20:03:56.84Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T20:03:56.84Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 164,
+              "DocumentIndex": 167,
               "Title": "Empleado.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Personas\\Empleado.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Personas\\Empleado.cs",
@@ -2846,12 +2735,11 @@
               "RelativeToolTip": "CapaEntidad\\Personas\\Empleado.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAYwDwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T20:02:20.276Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T20:02:20.276Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 167,
+              "DocumentIndex": 170,
               "Title": "Correo.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Personas\\Correo.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Personas\\Correo.cs",
@@ -2859,12 +2747,11 @@
               "RelativeToolTip": "CapaEntidad\\Personas\\Correo.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:35:13.757Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:35:13.757Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 166,
+              "DocumentIndex": 169,
               "Title": "CD_Correo.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Personas\\CD_Correo.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Personas\\CD_Correo.cs",
@@ -2872,12 +2759,11 @@
               "RelativeToolTip": "CapaDatos\\Personas\\CD_Correo.cs",
               "ViewState": "AgIAALEAAAAAAAAAAAAswNIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:36:42.15Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:36:42.15Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 165,
+              "DocumentIndex": 168,
               "Title": "CN_Correo.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Personas\\CN_Correo.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Personas\\CN_Correo.cs",
@@ -2885,12 +2771,11 @@
               "RelativeToolTip": "CapaNegocio\\Personas\\CN_Correo.cs",
               "ViewState": "AgIAAIgAAAAAAAAAAAAswKkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:37:37.596Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:37:37.596Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 168,
+              "DocumentIndex": 171,
               "Title": "CD_Telefono.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaDatos\\Personas\\CD_Telefono.cs",
               "RelativeDocumentMoniker": "CapaDatos\\Personas\\CD_Telefono.cs",
@@ -2898,12 +2783,11 @@
               "RelativeToolTip": "CapaDatos\\Personas\\CD_Telefono.cs",
               "ViewState": "AgIAALEAAAAAAAAAAAAswNIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:31:03.591Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:31:03.591Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 169,
+              "DocumentIndex": 172,
               "Title": "Telefono.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Personas\\Telefono.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Personas\\Telefono.cs",
@@ -2911,8 +2795,7 @@
               "RelativeToolTip": "CapaEntidad\\Personas\\Telefono.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAuwB4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:29:21.355Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:29:21.355Z"
             }
           ]
         }

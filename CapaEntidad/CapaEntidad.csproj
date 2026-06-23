@@ -74,6 +74,7 @@
     <Compile Include="CuentasPorPagar\CuentaPorPagar.cs" />
     <Compile Include="Facturacion\DetalleFactura.cs" />
     <Compile Include="Facturacion\Factura.cs" />
+    <Compile Include="Facturacion\FacturaCorreoCaja.cs" />
     <Compile Include="Facturacion\NotaCredito.cs" />
     <Compile Include="Inventario\Producto.cs" />
     <Compile Include="Movimientos\AbonoPendienteIngreso.cs" />

@@ -1459,54 +1459,86 @@ function guardarContactoClienteCaja() {
     });
         }
 
-        function enviarFacturaPorCorreoCaja() {
-            if (ultimaFacturaCaja == null) {
-                mostrarMensajeSistema("No hay factura para enviar.", "error", "#mensajeOperacion");
-                return;
+function enviarFacturaPorCorreoCaja() {
+    if (ultimaFacturaCaja == null) {
+        mostrarMensajeSistema("No hay factura para enviar.", "error", "#mensajeOperacion");
+        return;
+    }
+
+    var factura = ultimaFacturaCaja;
+
+    if (!factura.Correo || factura.Correo === "") {
+        mostrarMensajeSistema("El cliente no tiene correo registrado.", "advertencia", "#mensajeOperacion");
+        return;
+    }
+
+    var detalles = [];
+
+    $.each(factura.Productos || [], function (i, item) {
+        var cantidad = parseFloat(item.Cantidad || 0);
+        var precio = parseFloat(item.PrecioUnitario || 0);
+        var totalLinea = cantidad * precio;
+
+        detalles.push({
+            CodigoProducto: item.CodigoProducto || "",
+            NombreProducto: item.NombreProducto || "",
+            Cantidad: formatearNumeroCaja(cantidad),
+            Precio: "₡" + formatearNumeroCaja(precio),
+            TotalLinea: "₡" + formatearNumeroCaja(totalLinea)
+        });
+    });
+
+    var obj = {
+        CorreoDestino: factura.Correo,
+        NumeroFactura: factura.NumeroFactura,
+        Cliente: factura.Cliente,
+        Fecha: factura.Fecha,
+        Cajero: factura.Cajero,
+        Subtotal: factura.Subtotal,
+        Impuesto: factura.Impuesto,
+        Descuento: factura.Descuento,
+        Total: factura.Total,
+        Detalles: detalles
+    };
+
+    $("#btnEnviarCorreoFacturaCaja").prop("disabled", true).text("Enviando...");
+
+    $.ajax({
+        url: '@Url.Action("EnviarFacturaCorreoCaja", "Facturacion")',
+        type: "POST",
+        data: JSON.stringify({ obj: obj }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (respuesta) {
+            if (respuesta.resultado) {
+                mostrarMensajeSistema(respuesta.mensaje || "Factura enviada correctamente.", "exito", "#mensajeOperacion");
+
+                $("#mensajeEnvioCorreoCaja")
+                    .removeClass("alert-info alert-warning alert-danger")
+                    .addClass("alert-info")
+                    .text(respuesta.mensaje || "Factura enviada correctamente al correo del cliente.");
+            } else {
+                mostrarMensajeSistema(respuesta.mensaje || "No se pudo enviar la factura.", "error", "#mensajeOperacion");
+
+                $("#mensajeEnvioCorreoCaja")
+                    .removeClass("alert-info alert-warning alert-danger")
+                    .addClass("alert-danger")
+                    .text(respuesta.mensaje || "No se pudo enviar la factura.");
             }
+        },
+        error: function () {
+            mostrarMensajeSistema("Error al enviar la factura por correo.", "error", "#mensajeOperacion");
 
-            var factura = ultimaFacturaCaja;
-
-            if (!factura.Correo || factura.Correo === "") {
-                mostrarMensajeSistema("El cliente no tiene correo registrado.", "advertencia", "#mensajeOperacion");
-                return;
-            }
-
-            var detalle = "";
-
-            $.each(factura.Productos || [], function (i, item) {
-                var cantidad = parseFloat(item.Cantidad || 0);
-                var precio = parseFloat(item.PrecioUnitario || 0);
-                var totalLinea = cantidad * precio;
-
-                detalle += "- " + (item.NombreProducto || "") +
-                    " | Cantidad: " + formatearNumeroCaja(cantidad) +
-                    " | Precio: ₡" + formatearNumeroCaja(precio) +
-                    " | Total: ₡" + formatearNumeroCaja(totalLinea) + "\n";
-            });
-
-            var asunto = "Factura " + factura.NumeroFactura + " - Abastecedor Las Graditas";
-
-            var cuerpo =
-                "Estimado cliente,\n\n" +
-                "Se adjunta el detalle de su factura:\n\n" +
-                "Número de factura: " + factura.NumeroFactura + "\n" +
-                "Fecha: " + factura.Fecha + "\n" +
-                "Cliente: " + factura.Cliente + "\n\n" +
-                "Detalle:\n" +
-                detalle + "\n" +
-                "Subtotal: " + factura.Subtotal + "\n" +
-                "IVA: " + factura.Impuesto + "\n" +
-                "Descuento: " + factura.Descuento + "\n" +
-                "Total: " + factura.Total + "\n\n" +
-                "Gracias por su compra.";
-
-            var url =
-                "mailto:" + encodeURIComponent(factura.Correo) +
-                "?subject=" + encodeURIComponent(asunto) +
-                "&body=" + encodeURIComponent(cuerpo);
-
-            window.location.href = url;
+            $("#mensajeEnvioCorreoCaja")
+                .removeClass("alert-info alert-warning alert-danger")
+                .addClass("alert-danger")
+                .text("Error al enviar la factura por correo.");
+        },
+        complete: function () {
+            $("#btnEnviarCorreoFacturaCaja").prop("disabled", false).text("Enviar por correo");
         }
+    });
+}
+
     </script>
 }

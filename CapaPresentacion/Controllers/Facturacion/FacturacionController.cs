@@ -6,6 +6,8 @@ using CapaNegocio.Inventario;
 using CapaNegocio.personas;
 using CapaPresentacion.Filtros;
 using System.Linq;
+using System.Text;
+using System.Web;
 using System.Web.Mvc;
 
 
@@ -644,5 +646,74 @@ namespace CapaPresentacion.Controllers.Facturacion
                 mensaje = "Contacto registrado correctamente."
             }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult EnviarFacturaCorreoCaja(FacturaCorreoCaja obj)
+        {
+            string mensaje = string.Empty;
+
+            if (obj == null)
+            {
+                return Json(new
+                {
+                    resultado = false,
+                    mensaje = "No se recibió la información de la factura."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            if (string.IsNullOrWhiteSpace(obj.CorreoDestino))
+            {
+                return Json(new
+                {
+                    resultado = false,
+                    mensaje = "El cliente no tiene correo registrado."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            StringBuilder detalleHtml = new StringBuilder();
+
+            foreach (var item in obj.Detalles)
+            {
+                detalleHtml.Append("<tr>");
+                detalleHtml.Append("<td style='border:1px solid #ccc; padding:6px;'>");
+                detalleHtml.Append(HttpUtility.HtmlEncode(item.CodigoProducto + " - " + item.NombreProducto));
+                detalleHtml.Append("</td>");
+
+                detalleHtml.Append("<td style='border:1px solid #ccc; padding:6px; text-align:right;'>");
+                detalleHtml.Append(HttpUtility.HtmlEncode(item.Cantidad));
+                detalleHtml.Append("</td>");
+
+                detalleHtml.Append("<td style='border:1px solid #ccc; padding:6px; text-align:right;'>");
+                detalleHtml.Append(HttpUtility.HtmlEncode(item.Precio));
+                detalleHtml.Append("</td>");
+
+                detalleHtml.Append("<td style='border:1px solid #ccc; padding:6px; text-align:right;'>");
+                detalleHtml.Append(HttpUtility.HtmlEncode(item.TotalLinea));
+                detalleHtml.Append("</td>");
+                detalleHtml.Append("</tr>");
+            }
+
+            bool resultado = new CN_CorreoFactura().EnviarFactura(
+                obj.CorreoDestino,
+                obj.NumeroFactura,
+                obj.Cliente,
+                obj.Fecha,
+                obj.Cajero,
+                detalleHtml.ToString(),
+                obj.Subtotal,
+                obj.Impuesto,
+                obj.Descuento,
+                obj.Total,
+                out mensaje
+            );
+
+            return Json(new
+            {
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+
     }
 }
