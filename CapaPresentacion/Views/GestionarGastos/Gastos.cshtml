@@ -315,7 +315,7 @@
                     pintarTablaGastos();
                 },
                 error: function () {
-                    alert("Error al cargar los gastos.");
+                    mostrarMensajeSistema("Error al cargar los gastos.", "error");
                 }
             });
         }
@@ -338,7 +338,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de gasto.");
+                    mostrarMensajeSistema("Error al cargar los tipos de gasto.", "error");
                 }
             });
         }
@@ -364,7 +364,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar las cuentas contables.");
+                    mostrarMensajeSistema("Error al cargar las cuentas contables.", "error");
                 }
             });
         }
@@ -413,10 +413,10 @@
                     abrirModalGasto(item);
                 });
 
-                var botonInactivar = $("<button>", {
+                var botonEstado = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarGasto(item.NumeroGasto);
                 });
@@ -425,7 +425,7 @@
                 acciones.append(botonEditar);
 
                 if (item.Activo) {
-                    acciones.append(botonInactivar);
+                    acciones.append(botonEstado);
                 }
 
                 var fila = $("<tr>");
@@ -668,8 +668,12 @@
                         $("#txtNumeroGastoInterno").val(numeroGasto);
                         $("#txtNumeroGasto").val(numeroGasto);
 
-                        $("#mensajeExitoGasto").text(respuesta.mensaje || "Gasto guardado correctamente.").show();
+                        $("#FormModalGasto").modal("hide");
 
+                        cargarGastos();
+                        cargarAbonosCuentaPorPagar();
+
+                        mostrarMensajeSistema(respuesta.mensaje || "Gasto guardado correctamente.", "exito");
                         cargarGastos();
                         cargarAbonosCuentaPorPagar();
                     } else {
@@ -683,10 +687,18 @@
         }
 
         function inactivarGasto(numeroGasto) {
-            if (!confirm("¿Desea inactivar este gasto?")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este gasto"),
+                function () {
+                    ejecutarInactivarGasto(numeroGasto);
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
 
+        function ejecutarInactivarGasto(numeroGasto) {
             $.ajax({
                 url: '@Url.Action("InactivarGasto", "GestionarGastos")',
                 type: "POST",
@@ -696,12 +708,13 @@
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         cargarGastos();
+                        mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Gasto"), "exito");
                     } else {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el gasto.", "error");
                     }
                 },
                 error: function () {
-                    alert("Error al inactivar el gasto.");
+                    mostrarMensajeSistema("Error al procesar el gasto.", "error");
                 }
             });
         }
