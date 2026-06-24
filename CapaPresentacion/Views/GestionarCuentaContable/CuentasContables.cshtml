@@ -839,7 +839,12 @@
 
                 $("#cboCuentaPadre").val(json.CodigoCuentaPadre || "0");
 
-                $("#grupoActivo").show();
+                if (window.esAdministradorSistema === true) {
+                    $("#grupoActivo").show();
+                } else {
+                    $("#grupoActivo").hide();
+                    $("#cboActivo").val("true");
+                }
                 $("#mensajeLlavePrimaria").show();
 
                 $("#tituloModal").text("Editar cuenta contable");
