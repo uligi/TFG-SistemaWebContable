@@ -430,6 +430,10 @@
                 var mesNombre = item.MesNombre || obtenerNombreMes(mes);
                 var estado = item.Estado || "";
 
+                if (!esAdministradorPresupuesto() && item.Activo === false) {
+                    return;
+                }
+
                 var texto = (anio + " " + mes + " " + mesNombre + " " + estado).toLowerCase();
 
                 if (texto.indexOf(filtro) === -1) {
@@ -696,6 +700,9 @@
             }
 
             $.each(listaDetalles, function (i, item) {
+                if (!esAdministradorPresupuesto() && item.Activo === false) {
+                    return;
+                }
                 var activo = item.Activo
                     ? '<span class="badge badge-info">Sí</span>'
                     : '<span class="badge badge-secondary">No</span>';
@@ -1126,13 +1133,20 @@
                             if (respuesta.resultado) {
                                 cargarPresupuestos();
 
+                                var accion = obtenerTextoInactivarPresupuesto().toLowerCase();
+
+                                if (!esAdministradorPresupuesto()) {
+                                    $("#FormModalPresupuesto").modal("hide");
+                                    mostrarMensajeSistema(respuesta.mensaje || "Presupuesto " + accion + " correctamente.", "exito");
+                                    return;
+                                }
+
                                 $("#cboEstadoPresupuesto").val("Inactivo");
                                 $("#cboActivoPresupuesto").val("false");
                                 aplicarBloqueoPorEstadoPresupuesto();
 
-                                var accion = obtenerTextoInactivarPresupuesto().toLowerCase();
                                 mostrarMensajeSistema(respuesta.mensaje || "Presupuesto " + accion + " correctamente.", "exito");
-                            } else {
+                            }else {
                                 mostrarMensajeSistema(respuesta.mensaje || "No se pudo completar la acción.", "error");
                             }
                         },
