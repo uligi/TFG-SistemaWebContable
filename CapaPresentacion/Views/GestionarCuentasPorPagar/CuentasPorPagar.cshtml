@@ -364,6 +364,12 @@
         $(document).ready(function () {
             cargarCuentasPorPagar();
 
+            if (window.esAdministradorSistema !== true) {
+                $("#cboFiltroEstado option[value='Anulada']").remove();
+                $("#cboFiltroEstadoCredito option[value='Anulada']").remove();
+                $("#cboFiltroEstadoCredito option[value='Inactiva']").remove();
+            }
+
             $("#txtBuscarCuenta, #cboFiltroEstado, #cboFiltroEstadoCredito").on("keyup change", function () {
                 pintarTablaCuentas();
             });
@@ -456,6 +462,11 @@
             }
 
             $.each(listaCuentas, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var proveedor = item.ProveedorNombre || "";
                 var identificacion = item.IdentificacionProveedor || "";
                 var numeroDocumento = item.NumeroDocumento || "";
