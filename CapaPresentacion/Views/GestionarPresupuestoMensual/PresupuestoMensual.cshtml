@@ -473,7 +473,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoInactivarPresupuesto()
                 }).on("click", function () {
                     inactivarPresupuesto(anio, mes);
                 });
@@ -626,7 +626,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar las cuentas contables.");
+                    mostrarMensajeSistema("Error al cargar las cuentas contables.", "error");
                 }
             });
         }
@@ -688,7 +688,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger mr-1",
-                    text: "Inactivar"
+                    text: obtenerTextoInactivarPresupuesto()
                 }).on("click", function () {
                     inactivarDetalle(item.Anio, item.Mes, item.CodigoCuenta, item.TipoMovimiento);
                 });
@@ -696,7 +696,7 @@
                 var botonActivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-success",
-                    text: "Activar"
+                    text: obtenerTextoActivarPresupuesto()
                 }).on("click", function () {
                     activarDetalle(item.Anio, item.Mes, item.CodigoCuenta, item.TipoMovimiento);
                 });
@@ -891,72 +891,153 @@
             $("#lblUtilidadReal").text(formatearNumero(item.UtilidadReal || 0));
         }
 
+
         function inactivarDetalle(anio, mes, codigoCuenta, tipoMovimiento) {
-            if (!confirm("¿Desea inactivar este detalle de presupuesto?")) {
+            mostrarConfirmacionSistema(
+                obtenerTituloInactivarPresupuesto("detalle"),
+                obtenerMensajeInactivarPresupuesto("detalle"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarDetallePresupuestoMensual", "GestionarPresupuestoMensual")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            anio: anio,
+                            mes: mes,
+                            codigoCuenta: codigoCuenta,
+                            tipoMovimiento: tipoMovimiento
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarDetallesYResumen();
+
+                                var accion = obtenerTextoInactivarPresupuesto().toLowerCase();
+                                mostrarMensajeSistema(respuesta.mensaje || "Detalle de presupuesto " + accion + " correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo completar la acción.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el detalle.", "error");
+                        }
+                    });
+                },
+                obtenerTextoInactivarPresupuesto(),
+                "btn-danger"
+            );
+        }
+
+
+        function activarDetalle(anio, mes, codigoCuenta, tipoMovimiento) {
+            mostrarConfirmacionSistema(
+                obtenerTituloActivarPresupuesto("detalle"),
+                obtenerMensajeActivarPresupuesto("detalle"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("ActivarDetallePresupuestoMensual", "GestionarPresupuestoMensual")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            anio: anio,
+                            mes: mes,
+                            codigoCuenta: codigoCuenta,
+                            tipoMovimiento: tipoMovimiento
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarDetallesYResumen();
+
+                                var accion = obtenerTextoActivarPresupuesto().toLowerCase();
+                                mostrarMensajeSistema(respuesta.mensaje || "Detalle de presupuesto " + accion + " correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo completar la acción.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el detalle.", "error");
+                        }
+                    });
+                },
+                obtenerTextoActivarPresupuesto(),
+                "btn-success"
+            );
+        }
+        function cerrarPresupuesto(anio, mes) {
+            if (anio === 0 || mes === 0 || isNaN(anio) || isNaN(mes)) {
+                mostrarMensajeSistema("Debe seleccionar un presupuesto válido.", "advertencia");
                 return;
             }
 
-            $.ajax({
-                url: '@Url.Action("InactivarDetallePresupuestoMensual", "GestionarPresupuestoMensual")',
-                type: "POST",
-                data: JSON.stringify({
-                    anio: anio,
-                    mes: mes,
-                    codigoCuenta: codigoCuenta,
-                    tipoMovimiento: tipoMovimiento
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarDetallesYResumen();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                "Cerrar presupuesto",
+                "¿Desea cerrar este presupuesto mensual?",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("CerrarPresupuestoMensual", "GestionarPresupuestoMensual")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            anio: anio,
+                            mes: mes
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarPresupuestos();
+                                $("#cboEstadoPresupuesto").val("Cerrado");
+                                mostrarMensajeSistema(respuesta.mensaje || "Presupuesto cerrado correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo cerrar el presupuesto.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al cerrar el presupuesto.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el detalle.");
-                }
-            });
+                "Cerrar",
+                "btn-warning"
+            );
         }
 
-        function activarDetalle(anio, mes, codigoCuenta, tipoMovimiento) {
-            $.ajax({
-                url: '@Url.Action("ActivarDetallePresupuestoMensual", "GestionarPresupuestoMensual")',
-                type: "POST",
-                data: JSON.stringify({
-                    anio: anio,
-                    mes: mes,
-                    codigoCuenta: codigoCuenta,
-                    tipoMovimiento: tipoMovimiento
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarDetallesYResumen();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+        function reabrirPresupuesto(anio, mes) {
+            if (anio === 0 || mes === 0 || isNaN(anio) || isNaN(mes)) {
+                mostrarMensajeSistema("Debe seleccionar un presupuesto válido.", "advertencia");
+                return;
+            }
+
+            mostrarConfirmacionSistema(
+                "Reabrir presupuesto",
+                "¿Desea reabrir este presupuesto mensual?",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("ReabrirPresupuestoMensual", "GestionarPresupuestoMensual")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            anio: anio,
+                            mes: mes
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarPresupuestos();
+                                $("#cboEstadoPresupuesto").val("Abierto");
+                                mostrarMensajeSistema(respuesta.mensaje || "Presupuesto reabierto correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo reabrir el presupuesto.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al reabrir el presupuesto.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al activar el detalle.");
-                }
-            });
-        }
-
-        function cerrarPresupuestoActual() {
-            var anio = parseInt($("#txtAnioSeleccionado").val());
-            var mes = parseInt($("#txtMesSeleccionado").val());
-
-            cerrarPresupuesto(anio, mes);
-        }
-
-        function reabrirPresupuestoActual() {
-            var anio = parseInt($("#txtAnioSeleccionado").val());
-            var mes = parseInt($("#txtMesSeleccionado").val());
-
-            reabrirPresupuesto(anio, mes);
+                "Reabrir",
+                "btn-info"
+            );
         }
 
         function cerrarPresupuesto(anio, mes) {
@@ -1022,30 +1103,37 @@
         }
 
         function inactivarPresupuesto(anio, mes) {
-            if (!confirm("¿Desea inactivar este presupuesto mensual?")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloInactivarPresupuesto("presupuesto"),
+                obtenerMensajeInactivarPresupuesto("presupuesto"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarPresupuestoMensual", "GestionarPresupuestoMensual")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            anio: anio,
+                            mes: mes
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarPresupuestos();
 
-            $.ajax({
-                url: '@Url.Action("InactivarPresupuestoMensual", "GestionarPresupuestoMensual")',
-                type: "POST",
-                data: JSON.stringify({
-                    anio: anio,
-                    mes: mes
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarPresupuestos();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+                                var accion = obtenerTextoInactivarPresupuesto().toLowerCase();
+                                mostrarMensajeSistema(respuesta.mensaje || "Presupuesto " + accion + " correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo completar la acción.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el presupuesto.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el presupuesto.");
-                }
-            });
+                obtenerTextoInactivarPresupuesto(),
+                "btn-danger"
+            );
         }
 
         function obtenerBadgeEstadoPresupuesto(estado) {
@@ -1192,5 +1280,58 @@
 
             return numero.toFixed(2);
         }
+
+        function esAdministradorPresupuesto() {
+            return window.esAdministradorSistema === true;
+        }
+
+        function obtenerTextoInactivarPresupuesto() {
+            return esAdministradorPresupuesto() ? "Inactivar" : "Eliminar";
+        }
+
+        function obtenerTextoActivarPresupuesto() {
+            return esAdministradorPresupuesto() ? "Activar" : "Restaurar";
+        }
+
+        function obtenerTituloInactivarPresupuesto(tipo) {
+            var accion = obtenerTextoInactivarPresupuesto();
+
+            if (tipo === "detalle") {
+                return accion + " detalle";
+            }
+
+            return accion + " presupuesto";
+        }
+
+        function obtenerTituloActivarPresupuesto(tipo) {
+            var accion = obtenerTextoActivarPresupuesto();
+
+            if (tipo === "detalle") {
+                return accion + " detalle";
+            }
+
+            return accion + " presupuesto";
+        }
+
+        function obtenerMensajeInactivarPresupuesto(tipo) {
+            var accion = obtenerTextoInactivarPresupuesto().toLowerCase();
+
+            if (tipo === "detalle") {
+                return "¿Desea " + accion + " este detalle de presupuesto?";
+            }
+
+            return "¿Desea " + accion + " este presupuesto mensual?";
+        }
+
+        function obtenerMensajeActivarPresupuesto(tipo) {
+            var accion = obtenerTextoActivarPresupuesto().toLowerCase();
+
+            if (tipo === "detalle") {
+                return "¿Desea " + accion + " este detalle de presupuesto?";
+            }
+
+            return "¿Desea " + accion + " este presupuesto mensual?";
+        }
+
     </script>
 }

@@ -584,24 +584,6 @@
                                     </li>
                                 }
 
-                                @if (puedeVer("PRODUCTOS"))
-                                {
-                                    <li class="sidenav-item @activo("Producto", "Productos")">
-                                        <a href="@Url.Action("Productos", "Producto")" class="sidenav-link">
-                                            <div>Productos</div>
-                                        </a>
-                                    </li>
-                                }
-
-                                @if (puedeVer("CLIENTES"))
-                                {
-                                    <li class="sidenav-item @activo("Persona", "Clientes")">
-                                        <a href="@Url.Action("Clientes", "Persona")" class="sidenav-link">
-                                            <div>Clientes</div>
-                                        </a>
-                                    </li>
-                                }
-
                                 @if (puedeVer("NOTAS_CREDITO"))
                                 {
                                     <li class="sidenav-item @activo("Facturacion", "NotasCredito")">
