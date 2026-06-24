@@ -1376,6 +1376,8 @@
                 $("#mensajeErrorPresupuesto")
                     .text("Este presupuesto se encuentra cerrado o inactivo. No permite modificaciones.")
                     .show();
+            } else {
+                $("#mensajeErrorPresupuesto").hide().text("");
             }
         }
 
