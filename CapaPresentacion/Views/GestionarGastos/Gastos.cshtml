@@ -265,6 +265,10 @@
             cargarTiposGasto();
             cargarCuentasContables();
 
+            if (window.esAdministradorSistema !== true) {
+                $("#cboFiltroActivo option[value='false']").remove();
+            }
+
             $("#txtBuscarGasto, #cboFiltroActivo").on("keyup change", function () {
                 pintarTablaGastos();
             });
@@ -382,6 +386,11 @@
             }
 
             $.each(listaGastos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var numero = item.NumeroGasto || "";
                 var descripcion = item.Descripcion || "";
                 var proveedor = item.ProveedorNombre || "";

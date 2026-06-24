@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\views\\gestionarcuentacontable\\cuentascontables.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\gestionarcuentacontable\\cuentascontables.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\views\\gestionaringresos\\ingresos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\gestionaringresos\\ingresos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\views\\producto\\productos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\producto\\productos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\ul13m\\documents\\github\\tfg-sistemawebcontable\\capapresentacion\\views\\gestionarcuentacontable\\cuentascontables.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\gestionarcuentacontable\\cuentascontables.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\views\\gestionarpresupuestomensual\\presupuestomensual.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -27,7 +31,7 @@
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\facturacion\\facturas.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\ul13m\\documents\\github\\tfg-sistemawebcontable\\capapresentacion\\views\\facturacion\\caja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\views\\facturacion\\caja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\facturacion\\caja.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
@@ -61,10 +65,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\views\\gestionargastos\\gastos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\gestionargastos\\gastos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\views\\gestionaringresos\\ingresos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\views\\gestionaringresos\\ingresos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{379C4767-C2C1-45F1-8E48-DA62C04F35C7}|CapaPresentacion\\CapaPresentacion.csproj|C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\capapresentacion\\scripts\\js\\sistema-global.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
@@ -718,25 +718,12 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "PresupuestoMensual.cshtml",
-              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
-              "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
-              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
-              "RelativeToolTip": "CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
-              "ViewState": "AgIAAFsEAAAAAAAAAAAnwHwEAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-09T17:57:05.561Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Productos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Producto\\Productos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Producto\\Productos.cshtml",
-              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Producto\\Productos.cshtml",
-              "RelativeToolTip": "CapaPresentacion\\Views\\Producto\\Productos.cshtml",
+              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Producto\\Productos.cshtml*",
+              "RelativeToolTip": "CapaPresentacion\\Views\\Producto\\Productos.cshtml*",
               "ViewState": "AgIAADABAAAAAAAAAAAMwEYBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-06-08T00:09:23.924Z",
@@ -744,7 +731,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "CuentasContables.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarCuentaContable\\CuentasContables.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarCuentaContable\\CuentasContables.cshtml",
@@ -757,7 +744,33 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Ingresos.cshtml",
+              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
+              "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
+              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
+              "RelativeToolTip": "CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
+              "ViewState": "AgIAAHQBAAAAAAAAAAAMwIsBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-08T18:58:16.67Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "PresupuestoMensual.cshtml",
+              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
+              "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
+              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
+              "RelativeToolTip": "CapaPresentacion\\Views\\GestionarPresupuestoMensual\\PresupuestoMensual.cshtml",
+              "ViewState": "AgIAAFsEAAAAAAAAAAAnwHwEAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-09T17:57:05.561Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Shared\\_Layout.cshtml",
@@ -770,7 +783,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "_LayoutMantenimientos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Shared\\_LayoutMantenimientos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Shared\\_LayoutMantenimientos.cshtml",
@@ -783,7 +796,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Facturas.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Facturas.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Facturacion\\Facturas.cshtml",
@@ -796,7 +809,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Web.config",
               "RelativeDocumentMoniker": "CapaPresentacion\\Web.config",
@@ -809,7 +822,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Caja.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Facturacion\\Caja.cshtml",
@@ -822,7 +835,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "FacturacionController.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
               "RelativeDocumentMoniker": "CapaPresentacion\\Controllers\\Facturacion\\FacturacionController.cs",
@@ -835,7 +848,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "CN_CorreoFactura.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaNegocio\\Facturacion\\CN_CorreoFactura.cs",
               "RelativeDocumentMoniker": "CapaNegocio\\Facturacion\\CN_CorreoFactura.cs",
@@ -848,7 +861,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "FacturaCorreoCaja.cs",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaEntidad\\Facturacion\\FacturaCorreoCaja.cs",
               "RelativeDocumentMoniker": "CapaEntidad\\Facturacion\\FacturaCorreoCaja.cs",
@@ -861,7 +874,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "Clientes.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\Persona\\Clientes.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\Persona\\Clientes.cshtml",
@@ -874,7 +887,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "CuentasPorCobrar.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarCuentasPorCobrar\\CuentasPorCobrar.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarCuentasPorCobrar\\CuentasPorCobrar.cshtml",
@@ -887,7 +900,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "CuentasPorPagar.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarCuentasPorPagar\\CuentasPorPagar.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarCuentasPorPagar\\CuentasPorPagar.cshtml",
@@ -900,7 +913,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "Gastos.cshtml",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarGastos\\Gastos.cshtml",
               "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarGastos\\Gastos.cshtml",
@@ -913,19 +926,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Ingresos.cshtml",
-              "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
-              "RelativeDocumentMoniker": "CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
-              "ToolTip": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
-              "RelativeToolTip": "CapaPresentacion\\Views\\GestionarIngresos\\Ingresos.cshtml",
-              "ViewState": "AgIAAOECAAAAAAAAAAAMwKwCAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T18:58:16.67Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 16,
               "Title": "sistema-global.js",
               "DocumentMoniker": "C:\\Users\\ul13m\\Documents\\GitHub\\TFG-SistemaWebContable\\CapaPresentacion\\Scripts\\js\\sistema-global.js",
@@ -934,8 +934,7 @@
               "RelativeToolTip": "CapaPresentacion\\Scripts\\js\\sistema-global.js",
               "ViewState": "AgIAAGoAAAAAAAAAAAAmwJQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-06-23T19:31:49.291Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T19:31:49.291Z"
             },
             {
               "$type": "Document",
@@ -947,8 +946,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorPagarController.cs",
               "ViewState": "AgIAAFwAAAAAAAAAAAAowIYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:33:10.628Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:33:10.628Z"
             },
             {
               "$type": "Document",
@@ -960,8 +958,7 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_AsientoAutomatico.cs",
               "ViewState": "AgIAABsCAAAAAAAAAAAkwDcCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T13:51:13.206Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T13:51:13.206Z"
             },
             {
               "$type": "Document",
@@ -973,8 +970,7 @@
               "RelativeToolTip": "CapaEntidad\\CuentasPorPagar\\AbonoCuentaPorPagar.cs",
               "ViewState": "AgIAAEwAAAAAAAAAAAAQwHIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T21:29:36.086Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T21:29:36.086Z"
             },
             {
               "$type": "Document",
@@ -986,8 +982,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentasPorCobrarController.cs",
               "ViewState": "AgIAAJoAAAAAAAAAAAAgwKoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T14:11:58.965Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:11:58.965Z"
             },
             {
               "$type": "Document",
@@ -999,8 +994,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarGastosController.cs",
               "ViewState": "AgIAAJMAAAAAAAAAAAAwwJwAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T22:02:04.962Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T22:02:04.962Z"
             },
             {
               "$type": "Document",
@@ -1012,8 +1006,7 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_ReferenciaAsientoContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T14:11:07.043Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T14:11:07.043Z"
             },
             {
               "$type": "Document",
@@ -1025,8 +1018,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarIngresosController.cs",
               "ViewState": "AgIAAJ8AAAAAAAAAAAAMwMIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T18:56:58.514Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T18:56:58.514Z"
             },
             {
               "$type": "Document",
@@ -1038,8 +1030,7 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_ReferenciaAsientoContable.cs",
               "ViewState": "AgIAAEEAAAAAAAAAAAAowGgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T14:12:25.831Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T14:12:25.831Z"
             },
             {
               "$type": "Document",
@@ -1051,8 +1042,7 @@
               "RelativeToolTip": "CapaEntidad\\Contabilidad\\ReferenciaAsientoContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T14:10:12.609Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T14:10:12.609Z"
             },
             {
               "$type": "Document",
@@ -1064,8 +1054,7 @@
               "RelativeToolTip": "CapaNegocio\\Contabilidad\\CN_AsientoContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAO4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:27:26.861Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:27:26.861Z"
             },
             {
               "$type": "Document",
@@ -1077,8 +1066,7 @@
               "RelativeToolTip": "CapaEntidad\\Contabilidad\\AsientoContable.cs",
               "ViewState": "AgIAAE4AAAAAAAAAAAA8wGMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:23:18.772Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:23:18.772Z"
             },
             {
               "$type": "Document",
@@ -1090,8 +1078,7 @@
               "RelativeToolTip": "CapaNegocio\\Consultas\\CN_Consultas.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFEBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:48:14.773Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:48:14.773Z"
             },
             {
               "$type": "Document",
@@ -1103,8 +1090,7 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_ConfiguracionCuentaContable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:42:52.618Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:42:52.618Z"
             },
             {
               "$type": "Document",
@@ -1116,8 +1102,7 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_AsientoContable.cs",
               "ViewState": "AgIAABEBAAAAAAAAAAAmwDEBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:24:38.591Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:24:38.591Z"
             },
             {
               "$type": "Document",
@@ -1129,8 +1114,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarAsientoContable\\AsientosContables.cshtml",
               "ViewState": "AgIAAHMDAAAAAAAAAABhwHcEAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T00:58:20.002Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:58:20.002Z"
             },
             {
               "$type": "Document",
@@ -1142,8 +1126,7 @@
               "RelativeToolTip": "CapaNegocio\\Presupuesto\\CN_DetallePresupuestoMensual.cs",
               "ViewState": "AgIAAMAAAAAAAAAAAAAuwOMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:55:11.136Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:55:11.136Z"
             },
             {
               "$type": "Document",
@@ -1155,8 +1138,7 @@
               "RelativeToolTip": "CapaNegocio\\Movimientos\\CN_Gasto.cs",
               "ViewState": "AgIAAAEBAAAAAAAAAAAmwC8BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T22:10:43.757Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T22:10:43.757Z"
             },
             {
               "$type": "Document",
@@ -1168,8 +1150,7 @@
               "RelativeToolTip": "CapaNegocio\\Facturacion\\CN_DetalleFactura.cs",
               "ViewState": "AgIAAMkAAAAAAAAAAAAmwOkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T01:30:04.757Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T01:30:04.757Z"
             },
             {
               "$type": "Document",
@@ -1181,8 +1162,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarAsientoContableController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:57:01.724Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:57:01.724Z"
             },
             {
               "$type": "Document",
@@ -1194,8 +1174,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Persona\\Empleados.cshtml",
               "ViewState": "AgIAAFcGAAAAAAAAAAAcwG4GAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T19:24:33.203Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:24:33.203Z"
             },
             {
               "$type": "Document",
@@ -1207,8 +1186,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Cuentas\\GestionarCuentaContableController.cs",
               "ViewState": "AgIAADEAAAAAAAAAAAAYwFMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:38:30.522Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:38:30.522Z"
             },
             {
               "$type": "Document",
@@ -1220,8 +1198,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\ConfiguracionCuentaContable\\ConfiguracionCuentaContable.cshtml",
               "ViewState": "AgIAADwAAAAAAAAAAAAYwGcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T23:44:26.108Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:44:26.108Z"
             },
             {
               "$type": "Document",
@@ -1233,8 +1210,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAH8CAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-18T20:32:56.38Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T20:32:56.38Z"
             },
             {
               "$type": "Document",
@@ -1246,8 +1222,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Home\\Mantenimientos.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-18T20:32:59.781Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T20:32:59.781Z"
             },
             {
               "$type": "Document",
@@ -1259,8 +1234,7 @@
               "RelativeToolTip": "CapaDatos\\Contabilidad\\CD_CuentaContable.cs",
               "ViewState": "AgIAABQBAAAAAAAAAAAmwC4BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:36:05.134Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:36:05.134Z"
             },
             {
               "$type": "Document",
@@ -1272,8 +1246,7 @@
               "RelativeToolTip": "CapaNegocio\\Personas\\CN_Telefono.cs",
               "ViewState": "AgIAAGsAAAAAAAAAAAAmwJUAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:31:45.028Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:31:45.028Z"
             },
             {
               "$type": "Document",
@@ -1285,8 +1258,7 @@
               "RelativeToolTip": "CapaNegocio\\Personas\\CN_Empleado.cs",
               "ViewState": "AgIAAIYAAAAAAAAAAAAiwAwBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:56:24.828Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:56:24.828Z"
             },
             {
               "$type": "Document",
@@ -1298,8 +1270,7 @@
               "RelativeToolTip": "CapaNegocio\\Personas\\CN_Cliente.cs",
               "ViewState": "AgIAAEQAAAAAAAAAAAAmwLYAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T18:46:41.507Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T18:46:41.507Z"
             },
             {
               "$type": "Document",
@@ -1311,8 +1282,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Ubicacion\\Provincia.cshtml",
               "ViewState": "AgIAALcAAAAAAAAAAAAAAMkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-18T17:32:27.177Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T17:32:27.177Z"
             },
             {
               "$type": "Document",
@@ -1324,8 +1294,7 @@
               "RelativeToolTip": "CapaDatos\\Ubicacion\\CD_Provincia.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAxwAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T03:28:46.017Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T03:28:46.017Z"
             },
             {
               "$type": "Document",
@@ -1337,8 +1306,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Ubicacion\\Canton.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-18T03:28:52.019Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T03:28:52.019Z"
             },
             {
               "$type": "Document",
@@ -1350,8 +1318,7 @@
               "RelativeToolTip": "CapaEntidad\\Ubicacion\\Provincia.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T17:22:02.487Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T17:22:02.487Z"
             },
             {
               "$type": "Document",
@@ -1363,8 +1330,7 @@
               "RelativeToolTip": "CapaNegocio\\Ubicacion\\CN_Provincia.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T17:25:28.079Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T17:25:28.079Z"
             },
             {
               "$type": "Document",
@@ -1376,8 +1342,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\UbicacionController.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:57:57.15Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:57:57.15Z"
             },
             {
               "$type": "Document",
@@ -1389,8 +1354,7 @@
               "RelativeToolTip": "CapaPresentacion\\App_Start\\BundleConfig.cs",
               "ViewState": "AgIAABMAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T03:31:34.007Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T03:31:34.007Z"
             },
             {
               "$type": "Document",
@@ -1402,8 +1366,7 @@
               "RelativeToolTip": "CapaDatos\\Conexion\\Conexion.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T02:44:39.899Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T02:44:39.899Z"
             },
             {
               "$type": "Document",
@@ -1415,8 +1378,7 @@
               "RelativeToolTip": "CapaNegocio\\Ubicacion\\CN_Canton.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T00:40:29.55Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T00:40:29.55Z"
             },
             {
               "$type": "Document",
@@ -1428,8 +1390,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\PersonaController.cs",
               "ViewState": "AgIAAHsAAAAAAAAAAAAswPsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:32:22.288Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:32:22.288Z"
             },
             {
               "$type": "Document",
@@ -1441,8 +1402,7 @@
               "RelativeToolTip": "CapaPresentacion\\App_Start\\RouteConfig.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T16:20:12.575Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T16:20:12.575Z"
             },
             {
               "$type": "Document",
@@ -1454,8 +1414,7 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\HistorialCambio.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-11T00:11:21.215Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-11T00:11:21.215Z"
             },
             {
               "$type": "Document",
@@ -1467,8 +1426,7 @@
               "RelativeToolTip": "CapaNegocio\\Recursos\\CN_Recursos.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAB4AAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T19:54:17.859Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T19:54:17.859Z"
             },
             {
               "$type": "Document",
@@ -1480,8 +1438,7 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\ModuloSistema.cs",
               "ViewState": "AgIAAA4AAAAAAAAAAAA3wCwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:07:48.217Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:07:48.217Z"
             },
             {
               "$type": "Document",
@@ -1493,8 +1450,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Seguridad\\Rol.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T17:43:58.022Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:43:58.022Z"
             },
             {
               "$type": "Document",
@@ -1506,8 +1462,7 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\HistorialCambioConsulta.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAIwAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:08:56.697Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:08:56.697Z"
             },
             {
               "$type": "Document",
@@ -1519,8 +1474,7 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\PermisoRolModulo.cs",
               "ViewState": "AgIAADEAAAAAAAAAAAAqwFkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:08:11.287Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:08:11.287Z"
             },
             {
               "$type": "Document",
@@ -1532,8 +1486,7 @@
               "RelativeToolTip": "CapaNegocio\\Seguridad\\CN_Rol.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAFMAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T17:42:25.355Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:42:25.355Z"
             },
             {
               "$type": "Document",
@@ -1545,8 +1498,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Seguridad\\RolPermiso.cshtml",
               "ViewState": "AgIAAE4AAAAAAAAAAAAMwGYAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T17:46:58.908Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:46:58.908Z"
             },
             {
               "$type": "Document",
@@ -1558,8 +1510,7 @@
               "RelativeToolTip": "CapaDatos\\Seguridad\\CD_Seguridad.cs",
               "ViewState": "AgIAAD8AAAAAAAAAAAAYwDsAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:11:07.34Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:11:07.34Z"
             },
             {
               "$type": "Document",
@@ -1571,8 +1522,7 @@
               "RelativeToolTip": "CapaDatos\\Catalogos\\CD_Impuesto.cs",
               "ViewState": "AgIAAHkAAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-11T00:01:45.4Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-11T00:01:45.4Z"
             },
             {
               "$type": "Document",
@@ -1584,8 +1534,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Reportes\\Reportes.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAQwAcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-09T18:17:36.843Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:17:36.843Z"
             },
             {
               "$type": "Document",
@@ -1597,8 +1546,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Seguridad\\HistorialCambios.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T17:16:05.87Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:16:05.87Z"
             },
             {
               "$type": "Document",
@@ -1610,8 +1558,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Persona\\Telefono.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T17:57:09.631Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T17:57:09.631Z"
             },
             {
               "$type": "Document",
@@ -1623,8 +1570,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\SeguridadController.cs",
               "ViewState": "AgIAADcAAAAAAAAAAAAkwFYAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:57:26.898Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:57:26.898Z"
             },
             {
               "$type": "Document",
@@ -1636,8 +1582,7 @@
               "RelativeToolTip": "CapaNegocio\\Seguridad\\CN_Seguridad.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:12:10.527Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:12:10.527Z"
             },
             {
               "$type": "Document",
@@ -1649,8 +1594,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\HomeController.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAYwDkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:14:54.29Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:14:54.29Z"
             },
             {
               "$type": "Document",
@@ -1662,8 +1606,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\CatalogosController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0CAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:48:55.57Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:48:55.57Z"
             },
             {
               "$type": "Document",
@@ -1675,8 +1618,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Acceso\\CambiarClave.cshtml",
               "ViewState": "AgIAAGQAAAAAAAAAAAAYwI8AAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T16:19:36.079Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T16:19:36.079Z"
             },
             {
               "$type": "Document",
@@ -1688,8 +1630,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Acceso\\InicioSesion.cshtml",
               "ViewState": "AgIAAHIBAAAAAAAAAAAnwIkBAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T16:18:32.983Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T16:18:32.983Z"
             },
             {
               "$type": "Document",
@@ -1701,8 +1642,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Acceso\\AccesoController.cs",
               "ViewState": "AgIAAD8AAAAAAAAAAAAAAEwAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T14:43:06.673Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T14:43:06.673Z"
             },
             {
               "$type": "Document",
@@ -1714,8 +1654,7 @@
               "RelativeToolTip": "CapaEntidad\\Seguridad\\UsuarioSesion.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAAwBEAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:08:34.604Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:08:34.604Z"
             },
             {
               "$type": "Document",
@@ -1727,8 +1666,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Reportes\\ReportesController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:16:32.977Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:16:32.977Z"
             },
             {
               "$type": "Document",
@@ -1740,8 +1678,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\ProveedorController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T21:26:39.73Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T21:26:39.73Z"
             },
             {
               "$type": "Document",
@@ -1753,8 +1690,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Mantenimientos\\ProductoController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T00:07:42.664Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T00:07:42.664Z"
             },
             {
               "$type": "Document",
@@ -1766,8 +1702,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarPresupuestoMensualController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T17:14:42.199Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T17:14:42.199Z"
             },
             {
               "$type": "Document",
@@ -1779,8 +1714,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\GestionarPeriodoContableController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:22:54.479Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:22:54.479Z"
             },
             {
               "$type": "Document",
@@ -1792,8 +1726,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\ConsultasController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:50:07.451Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:50:07.451Z"
             },
             {
               "$type": "Document",
@@ -1805,8 +1738,7 @@
               "RelativeToolTip": "CapaPresentacion\\Controllers\\Contabilidad\\ConfiguracionCuentaContableController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T23:35:09.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:35:09.099Z"
             },
             {
               "$type": "Document",
@@ -1818,8 +1750,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Home\\SinPermiso.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-10T15:15:30.994Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:15:30.994Z"
             },
             {
               "$type": "Document",
@@ -1831,8 +1762,7 @@
               "RelativeToolTip": "CapaPresentacion\\Filtros\\PermisoAuthorizeAttribute.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T15:14:13.289Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T15:14:13.289Z"
             },
             {
               "$type": "Document",
@@ -1844,8 +1774,7 @@
               "RelativeToolTip": "CapaPresentacion\\Global.asax.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T14:46:25.217Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T14:46:25.217Z"
             },
             {
               "$type": "Document",
@@ -1857,8 +1786,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Web.config",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2026-06-10T14:46:14.265Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T14:46:14.265Z"
             },
             {
               "$type": "Document",
@@ -1870,8 +1798,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Consultas\\Consultas.cshtml",
               "ViewState": "AgIAAN4FAAAAAAAAAAAcwAoGAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-09T18:50:55.278Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:50:55.278Z"
             },
             {
               "$type": "Document",
@@ -1883,8 +1810,7 @@
               "RelativeToolTip": "CapaDatos\\Consultas\\CD_Consultas.cs",
               "ViewState": "AgIAAHMBAAAAAAAAAAAqwJ4BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:46:49.581Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:46:49.581Z"
             },
             {
               "$type": "Document",
@@ -1896,8 +1822,7 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaMovimientoContable.cs",
               "ViewState": "AgIAABkAAAAAAAAAAAAqwEQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:45:24.239Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:45:24.239Z"
             },
             {
               "$type": "Document",
@@ -1909,8 +1834,7 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaProveedor.cs",
               "ViewState": "AgIAACAAAAAAAAAAAAAqwEsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:45:02.062Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:45:02.062Z"
             },
             {
               "$type": "Document",
@@ -1922,8 +1846,7 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaCliente.cs",
               "ViewState": "AgIAACgAAAAAAAAAAAAqwFMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:44:39.248Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:44:39.248Z"
             },
             {
               "$type": "Document",
@@ -1935,8 +1858,7 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaProducto.cs",
               "ViewState": "AgIAAD0AAAAAAAAAAAAqwGgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:44:18.478Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:44:18.478Z"
             },
             {
               "$type": "Document",
@@ -1948,8 +1870,7 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaCuentaPorPagar.cs",
               "ViewState": "AgIAAHgAAAAAAAAAAAAqwKMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:43:55.529Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:43:55.529Z"
             },
             {
               "$type": "Document",
@@ -1961,8 +1882,7 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaCuentaPorCobrar.cs",
               "ViewState": "AgIAAHYAAAAAAAAAAAAqwKEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:43:31.939Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:43:31.939Z"
             },
             {
               "$type": "Document",
@@ -1974,8 +1894,7 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaDetalleFactura.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAqwFQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:43:09.564Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:43:09.564Z"
             },
             {
               "$type": "Document",
@@ -1987,8 +1906,7 @@
               "RelativeToolTip": "CapaEntidad\\Consultas\\ConsultaFactura.cs",
               "ViewState": "AgIAAE4AAAAAAAAAAAA8wHkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:42:45.744Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:42:45.744Z"
             },
             {
               "$type": "Document",
@@ -2000,8 +1918,7 @@
               "RelativeToolTip": "CapaNegocio\\Reportes\\CN_Reportes.cs",
               "ViewState": "AgIAAFoAAAAAAAAAAAAqwHwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:15:58.604Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:15:58.604Z"
             },
             {
               "$type": "Document",
@@ -2013,8 +1930,7 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteFlujoDiario.cs",
               "ViewState": "AgIAAD0AAAAAAAAAAAAqwGIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:14:05.762Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:14:05.762Z"
             },
             {
               "$type": "Document",
@@ -2026,8 +1942,7 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteClienteMasVenta.cs",
               "ViewState": "AgIAAEcAAAAAAAAAAAAqwHIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:13:45.048Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:13:45.048Z"
             },
             {
               "$type": "Document",
@@ -2039,8 +1954,7 @@
               "RelativeToolTip": "CapaDatos\\Reportes\\CD_Reportes.cs",
               "ViewState": "AgIAADwBAAAAAAAAAAAowGYBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:04:16.653Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:04:16.653Z"
             },
             {
               "$type": "Document",
@@ -2052,8 +1966,7 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteProductoMasVendido.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAqwGcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:13:17.968Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:13:17.968Z"
             },
             {
               "$type": "Document",
@@ -2065,8 +1978,7 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteCuentaPorPagar.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAMYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:11:59.495Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:11:59.495Z"
             },
             {
               "$type": "Document",
@@ -2078,8 +1990,7 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteCuentaPorCobrar.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAMQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:11:25.399Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:11:25.399Z"
             },
             {
               "$type": "Document",
@@ -2091,8 +2002,7 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteGasto.cs",
               "ViewState": "AgIAAFYAAAAAAAAAAAAmwIIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:10:28.68Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:10:28.68Z"
             },
             {
               "$type": "Document",
@@ -2104,8 +2014,7 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteIngreso.cs",
               "ViewState": "AgIAACMAAAAAAAAAAAAmwE8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:09:22.772Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:09:22.772Z"
             },
             {
               "$type": "Document",
@@ -2117,8 +2026,7 @@
               "RelativeToolTip": "CapaEntidad\\Reportes\\ReporteResumenFinanciero.cs",
               "ViewState": "AgIAAGkAAAAAAAAAAAA6wJUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T18:09:01.263Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T18:09:01.263Z"
             },
             {
               "$type": "Document",
@@ -2394,8 +2302,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\Facturacion\\NotasCredito.cshtml",
               "ViewState": "AgIAAHICAAAAAAAAAAAswIsCAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T14:23:15.544Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T14:23:15.544Z"
             },
             {
               "$type": "Document",
@@ -2659,8 +2566,7 @@
               "RelativeToolTip": "CapaPresentacion\\Views\\GestionarPeriodoContable\\PeriodosContables.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T23:25:40.962Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T23:25:40.962Z"
             },
             {
               "$type": "Document",
