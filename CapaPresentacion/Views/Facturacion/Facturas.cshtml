@@ -998,7 +998,7 @@
                     pintarDetalles();
                 },
                 error: function () {
-                    alert("Error al cargar los detalles de la factura.");
+                    mostrarMensajeSistema("Error al cargar los detalles de la factura.", "error");
                 }
             });
         }
@@ -1065,7 +1065,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarDetalleFactura(item.NumeroFactura, item.CodigoProducto);
                 });
@@ -1232,8 +1232,8 @@
 
         function inactivarDetalleFactura(numeroFactura, codigoProducto) {
             mostrarConfirmacionSistema(
-                "Inactivar detalle",
-                "¿Desea inactivar este detalle de factura?",
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este detalle de factura"),
                 function () {
                     $.ajax({
                         url: '@Url.Action("InactivarDetalleFactura", "Facturacion")',
@@ -1249,17 +1249,17 @@
                                 limpiarDetalle();
                                 cargarDetallesFactura(numeroFactura);
                                 cargarFacturas();
-                                mostrarMensajeSistema("Detalle de factura inactivado correctamente.", "exito");
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Detalle de factura"), "exito");
                             } else {
-                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el detalle de factura.", "error");
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el detalle de factura.", "error");
                             }
                         },
                         error: function () {
-                            mostrarMensajeSistema("Error al inactivar el detalle de factura.", "error");
+                            mostrarMensajeSistema("Error al procesar el detalle de factura.", "error");
                         }
                     });
                 },
-                "Inactivar",
+                obtenerTextoAccionEstado(true),
                 "btn-danger"
             );
         }
