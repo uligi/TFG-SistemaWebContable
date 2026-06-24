@@ -156,7 +156,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar las naturalezas contables.");
+                    mostrarMensajeSistema("Error al cargar las naturalezas contables.", "error");
                 }
             });
         }
@@ -171,6 +171,11 @@
             tbody.empty();
 
             $.each(listaNaturalezas, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var naturaleza = item.Naturaleza || "";
                 var descripcion = item.Descripcion || "";
                 var descripcionMostrar = descripcion === "" ? "-" : descripcion;
@@ -190,7 +195,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarNaturaleza(item.IdNaturalezaCuentaContable);
                 });
@@ -298,6 +303,7 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarNaturalezas();
+                        mostrarMensajeSistema("Naturaleza contable guardada correctamente.", "exito");
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -309,27 +315,32 @@
         }
 
         function inactivarNaturaleza(idNaturalezaCuentaContable) {
-            if (!confirm("¿Desea inactivar esta naturaleza?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarNaturalezaCuentaContable", "Catalogos")',
-                type: "POST",
-                data: JSON.stringify({ idNaturalezaCuentaContable: idNaturalezaCuentaContable }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarNaturalezas();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "esta naturaleza contable"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarNaturalezaCuentaContable", "Catalogos")',
+                        type: "POST",
+                        data: JSON.stringify({ idNaturalezaCuentaContable: idNaturalezaCuentaContable }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarNaturalezas();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Naturaleza contable"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar la naturaleza contable.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar la naturaleza contable.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar la naturaleza contable.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function mostrarError(mensaje, idCampo) {
