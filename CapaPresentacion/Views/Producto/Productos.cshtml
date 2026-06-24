@@ -472,7 +472,13 @@
                 $("#txtStockActual").val(formatearNumero(json.StockActual));
                 $("#cboActivo").val(json.Activo ? "true" : "false");
 
-                $("#grupoActivo").show();
+                if (window.esAdministradorSistema === true) {
+                    $("#grupoActivo").show();
+                } else {
+                    $("#grupoActivo").hide();
+                    $("#cboActivo").val("true");
+                }
+
                 $("#tituloModal").text("Editar producto");
             }
 
