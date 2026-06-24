@@ -389,7 +389,7 @@
                     pintarTablaAsientos();
                 },
                 error: function () {
-                    alert("Error al cargar los asientos contables.");
+                    mostrarMensajeSistema("Error al cargar los asientos contables.", "error");
                 }
             });
         }
@@ -404,6 +404,11 @@
             tbody.empty();
 
             $.each(listaAsientos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var numeroAsiento = item.NumeroAsiento || "";
                 var periodo = obtenerNombreMes(item.Mes) + " " + item.Anio;
                 var fecha = formatearFechaTexto(item.FechaAsiento);
@@ -442,7 +447,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger mb-1",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarAsiento(item.NumeroAsiento);
                 });
@@ -501,7 +506,7 @@
                     pintarComboPeriodos();
                 },
                 error: function () {
-                    alert("Error al cargar los períodos contables.");
+                    mostrarMensajeSistema("Error al cargar los períodos contables.", "error");
                 }
             });
         }
@@ -533,7 +538,7 @@
                     pintarComboCuentas();
                 },
                 error: function () {
-                    alert("Error al cargar las cuentas contables.");
+                    mostrarMensajeSistema("Error al cargar las cuentas contables.", "error");
                 }
             });
         }
@@ -583,7 +588,12 @@
                 $("#txtConcepto").val(json.Concepto || "");
 
                 $("#cboActivoAsiento").val(json.Activo ? "true" : "false");
-                $("#grupoActivoAsiento").show();
+                if (window.esAdministradorSistema === true) {
+                    $("#grupoActivoAsiento").show();
+                } else {
+                    $("#grupoActivoAsiento").hide();
+                    $("#cboActivoAsiento").val("true");
+                }
 
                 $("#tituloModalAsiento").text("Editar asiento contable");
 
@@ -660,7 +670,12 @@
                         if (obj.NumeroAsiento === "") {
                             $("#txtNumeroAsiento").val(respuesta.numeroAsiento || "");
                             $("#txtNumeroAsientoVisible").val(respuesta.numeroAsiento || "");
-                            $("#grupoActivoAsiento").show();
+                            if (window.esAdministradorSistema === true) {
+                                $("#grupoActivoAsiento").show();
+                            } else {
+                                $("#grupoActivoAsiento").hide();
+                                $("#cboActivoAsiento").val("true");
+                            }
                             $("#tituloModalAsiento").text("Editar asiento contable");
                             $("#mensajeExitoAsiento").text("Asiento guardado correctamente. Ya puede agregar líneas.").show();
                         } else {
@@ -702,6 +717,11 @@
             var totalHaber = 0;
 
             $.each(listaDetalles, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 if (item.Activo) {
                     totalDebe += parseFloat(item.Debe || 0);
                     totalHaber += parseFloat(item.Haber || 0);
@@ -724,7 +744,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarDetalle(item.NumeroAsiento, item.NumeroLinea);
                 });
@@ -835,7 +855,12 @@
             $("#txtHaber").val(formatearNumero(item.Haber));
             $("#txtDescripcionLinea").val(item.DescripcionLinea || "");
             $("#cboActivoDetalle").val(item.Activo ? "true" : "false");
-            $("#grupoActivoDetalle").show();
+            if (window.esAdministradorSistema === true) {
+                $("#grupoActivoDetalle").show();
+            } else {
+                $("#grupoActivoDetalle").hide();
+                $("#cboActivoDetalle").val("true");
+            }
         }
 
         function limpiarFormularioDetalle() {
@@ -850,32 +875,37 @@
         }
 
         function inactivarDetalle(numeroAsiento, numeroLinea) {
-            if (!confirm("¿Desea inactivar esta línea del asiento?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarDetalleAsientoContable", "GestionarAsientoContable")',
-                type: "POST",
-                data: JSON.stringify({
-                    numeroAsiento: numeroAsiento,
-                    numeroLinea: numeroLinea
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        limpiarFormularioDetalle();
-                        cargarDetallesAsiento(numeroAsiento);
-                        cargarAsientos();
-                    } else {
-                        $("#mensajeErrorDetalle").text(respuesta.mensaje).show();
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "esta línea del asiento"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarDetalleAsientoContable", "GestionarAsientoContable")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            numeroAsiento: numeroAsiento,
+                            numeroLinea: numeroLinea
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                limpiarFormularioDetalle();
+                                cargarDetallesAsiento(numeroAsiento);
+                                cargarAsientos();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Línea del asiento"), "exito");
+                            } else {
+                                $("#mensajeErrorDetalle").text(respuesta.mensaje || "No se pudo procesar la línea.").show();
+                            }
+                        },
+                        error: function () {
+                            $("#mensajeErrorDetalle").text("Error al procesar la línea.").show();
+                        }
+                    });
                 },
-                error: function () {
-                    $("#mensajeErrorDetalle").text("Error al inactivar la línea.").show();
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function validarCuadreAsiento() {
@@ -898,9 +928,9 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeSistema(respuesta.mensaje || "El asiento contable se encuentra cuadrado.", "exito");
                     } else {
-                        alert(respuesta.mensaje);
+                        mostrarMensajeSistema(respuesta.mensaje || "El asiento contable no se encuentra cuadrado.", "error");
                     }
 
                     cargarAsientos();
@@ -910,7 +940,7 @@
                     }
                 },
                 error: function () {
-                    alert("Error al validar el cuadre del asiento.");
+                    mostrarMensajeSistema("Error al validar el cuadre del asiento.", "error");
                 }
             });
         }
@@ -945,31 +975,37 @@
         }
 
         function inactivarAsiento(numeroAsiento) {
-            if (!confirm("¿Desea inactivar este asiento contable? También se inactivarán sus líneas.")) {
-                return;
-            }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este asiento contable") + " También se procesarán sus líneas.",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarAsientoContable", "GestionarAsientoContable")',
+                        type: "POST",
+                        data: JSON.stringify({ numeroAsiento: numeroAsiento }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarAsientos();
 
-            $.ajax({
-                url: '@Url.Action("InactivarAsientoContable", "GestionarAsientoContable")',
-                type: "POST",
-                data: JSON.stringify({ numeroAsiento: numeroAsiento }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarAsientos();
+                                if ($("#txtNumeroAsiento").val().trim() === numeroAsiento) {
+                                    $("#FormModalAsiento").modal("hide");
+                                }
 
-                        if ($("#txtNumeroAsiento").val().trim() === numeroAsiento) {
-                            $("#FormModalAsiento").modal("hide");
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Asiento contable"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el asiento contable.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el asiento contable.", "error");
                         }
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el asiento contable.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function obtenerPeriodoSeleccionado() {
