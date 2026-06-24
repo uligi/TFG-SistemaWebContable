@@ -374,6 +374,10 @@
             cargarPresupuestos();
             cargarCuentasContables();
 
+            if (window.esAdministradorSistema !== true) {
+                $("#cboFiltroEstado option[value='Inactivo']").remove();
+            }
+
             $("#txtBuscarPresupuesto, #cboFiltroEstado").on("keyup change", function () {
                 pintarTablaPresupuestos();
             });
