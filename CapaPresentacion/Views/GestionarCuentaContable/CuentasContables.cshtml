@@ -430,13 +430,24 @@
                 }
             }
         }
+        function debeMostrarCuenta(cuenta) {
+            if (cuenta.CodigoCuenta === "0") {
+                return false;
+            }
+
+            if (window.esAdministradorSistema !== true && cuenta.Activo === false) {
+                return false;
+            }
+
+            return true;
+        }
 
         function pintarArbolCuentas() {
             var contenedor = $("#arbolCuentas");
             contenedor.empty();
 
             var cuentas = $.grep(listaCuentas, function (item) {
-                return item.CodigoCuenta !== "0";
+                return debeMostrarCuenta(item);
             });
 
             if (cuentas.length === 0) {
@@ -609,7 +620,7 @@
             tbody.empty();
 
             $.each(listaCuentas, function (i, item) {
-                if (item.CodigoCuenta === "0") {
+                if (!debeMostrarCuenta(item)) {
                     return true;
                 }
 
