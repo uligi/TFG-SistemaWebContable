@@ -487,6 +487,13 @@
             limpiarErrores();
             limpiarFormularioIngreso();
 
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivoIngreso").closest(".form-group").show();
+            } else {
+                $("#cboActivoIngreso").closest(".form-group").hide();
+                $("#cboActivoIngreso").val("true");
+            }
+
             $("#tituloModalIngreso").text("Nuevo ingreso");
             $("#txtFechaIngreso").val(convertirDateAInput(new Date()));
             $("#cboOrigenIngreso").val("Manual");
@@ -505,6 +512,13 @@
                 $("#cboOrigenIngreso").val(json.OrigenIngreso || "Manual");
                 $("#txtMonto").val(formatearNumero(json.Monto));
                 $("#cboActivoIngreso").val(json.Activo ? "true" : "false");
+
+                if (window.esAdministradorSistema === true) {
+                    $("#cboActivoIngreso").closest(".form-group").show();
+                } else {
+                    $("#cboActivoIngreso").closest(".form-group").hide();
+                    $("#cboActivoIngreso").val("true");
+                }
 
                 $("#txtIdentificacionCliente").val(json.IdentificacionCliente || "");
                 $("#txtNumeroFactura").val(json.NumeroFactura || "");
@@ -764,6 +778,8 @@
                         $("#txtNumeroIngreso").val(numeroIngreso);
 
                         $("#mensajeExitoIngreso").text(respuesta.mensaje || "Ingreso guardado correctamente.").show();
+
+                        mostrarMensajeSistema(respuesta.mensaje || "Ingreso guardado correctamente.", "exito");
 
                         cargarIngresos();
 
