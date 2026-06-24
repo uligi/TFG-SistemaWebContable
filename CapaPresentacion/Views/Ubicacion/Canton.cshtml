@@ -14,6 +14,11 @@
     .input-error-suave {
         border-color: #d9534f !important;
     }
+
+    .codigo-ubicacion {
+        font-family: Consolas, monospace;
+        font-weight: bold;
+    }
 </style>
 
 <h4 class="font-weight-bold py-3 mb-0">Mantenimiento de Cantones</h4>
@@ -35,10 +40,8 @@
         <h6 class="mb-0">Lista de cantones</h6>
 
         <div>
-            <input type="file" id="archivoCsvCanton" accept=".csv" style="display:none;" />
-
-            <button type="button" class="btn btn-secondary btn-sm" onclick="$('#archivoCsvCanton').click();">
-                Cargar CSV
+            <button type="button" class="btn btn-outline-secondary btn-sm mr-1" onclick="abrirModalCsv()">
+                <i class="fas fa-file-csv mr-1"></i> Cargar CSV
             </button>
 
             <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(null)">
@@ -66,6 +69,7 @@
     </div>
 </div>
 
+<!-- Modal Cantón -->
 <div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -99,7 +103,7 @@
                     <input type="text" id="txtNombre" class="form-control" maxlength="45" autocomplete="off" />
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="grupoActivo">
                     <label for="cboActivo">Estado</label>
                     <select id="cboActivo" class="form-control">
                         <option value="true">Activo</option>
@@ -124,6 +128,68 @@
     </div>
 </div>
 
+<!-- Modal CSV -->
+<div class="modal fade" id="ModalCsv" tabindex="-1" role="dialog" aria-labelledby="tituloModalCsv" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title" id="tituloModalCsv">Cargar cantones desde CSV</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="alert alert-danger" id="mensajeErrorCsv" style="display:none;"></div>
+                <div class="alert alert-success" id="mensajeExitoCsv" style="display:none;"></div>
+
+                <div class="form-group">
+                    <label for="archivoCsvCanton">Archivo CSV</label>
+                    <input type="file" id="archivoCsvCanton" class="form-control-file" accept=".csv" />
+
+                    <small class="form-text text-muted">
+                        El archivo debe tener las columnas: CodigoCanton, CodigoProvincia, Nombre.
+                    </small>
+
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-outline-info btn-sm" onclick="descargarPlantillaCanton()">
+                            <i class="fas fa-download mr-1"></i> Descargar plantilla CSV
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-light border rounded p-3">
+                    <strong>Ejemplo:</strong>
+                    <pre class="mb-0 mt-2">CodigoCanton,CodigoProvincia,Nombre
+1,1,San José
+2,1,Escazú
+3,1,Desamparados
+1,2,Alajuela
+2,2,San Ramón</pre>
+                </div>
+
+                <div id="detalleCsv" class="mt-3" style="display:none;">
+                    <strong>Detalle de errores:</strong>
+                    <ul id="listaErroresCsv" class="mb-0 mt-2 text-danger"></ul>
+                </div>
+
+            </div>
+
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="cargarCsvCanton()">
+                    <i class="fas fa-upload mr-1"></i> Cargar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         var listaCantones = [];
@@ -132,10 +198,6 @@
         $(document).ready(function () {
             cargarProvinciasActivas();
             cargarCantones();
-
-            $("#archivoCsvCanton").on("change", function () {
-                cargarCsvCanton();
-            });
 
             $("#txtCodigoCanton").on("input", function () {
                 var valor = $(this).val();
@@ -181,47 +243,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los cantones.");
-                }
-            });
-        }
-
-        function cargarCsvCanton() {
-            var archivo = $("#archivoCsvCanton")[0].files[0];
-
-            if (archivo == null) {
-                alert("Debe seleccionar un archivo CSV.");
-                return;
-            }
-
-            var formData = new FormData();
-            formData.append("archivo", archivo);
-
-            $.ajax({
-                url: '@Url.Action("CargarCsvCantones", "Ubicacion")',
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        var mensaje = "Insertados: " + respuesta.data.insertados + "\nErrores: " + respuesta.data.errores;
-
-                        if (respuesta.data.detalleErrores && respuesta.data.detalleErrores.length > 0) {
-                            mensaje += "\n\nDetalle:\n" + respuesta.data.detalleErrores.join("\n");
-                        }
-
-                        alert(mensaje);
-                        cargarCantones();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
-
-                    $("#archivoCsvCanton").val("");
-                },
-                error: function () {
-                    alert("Error al cargar el archivo CSV.");
-                    $("#archivoCsvCanton").val("");
+                    mostrarMensajeSistema("Error al cargar los cantones.", "error");
                 }
             });
         }
@@ -245,7 +267,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar las provincias.");
+                    mostrarMensajeSistema("Error al cargar las provincias.", "error");
                 }
             });
         }
@@ -260,6 +282,11 @@
             tbody.empty();
 
             $.each(listaCantones, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var codigo = item.CodigoCanton || 0;
                 var nombre = item.Nombre || "";
                 var provincia = item.ProvinciaNombre || "";
@@ -279,7 +306,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarCanton(item.CodigoCanton);
                 });
@@ -292,7 +319,7 @@
                 }
 
                 var fila = $("<tr>");
-                fila.append($("<td>").text(codigo));
+                fila.append($("<td>", { class: "codigo-ubicacion", text: codigo }));
                 fila.append($("<td>").text(nombre));
                 fila.append($("<td>").text(provincia));
                 fila.append($("<td>").html(estado));
@@ -324,6 +351,9 @@
             $("#cboProvincia").val(0);
             $("#txtNombre").val("");
             $("#cboActivo").val("true");
+
+            aplicarVisibilidadActivoCanton();
+
             $("#tituloModal").text("Nuevo cantón");
 
             if (json != null) {
@@ -333,10 +363,22 @@
                 $("#cboProvincia").val(json.CodigoProvincia);
                 $("#txtNombre").val(json.Nombre || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
+
+                aplicarVisibilidadActivoCanton();
+
                 $("#tituloModal").text("Editar cantón");
             }
 
             $("#FormModal").modal("show");
+        }
+
+        function aplicarVisibilidadActivoCanton() {
+            if (window.esAdministradorSistema === true) {
+                $("#grupoActivo").show();
+            } else {
+                $("#grupoActivo").hide();
+                $("#cboActivo").val("true");
+            }
         }
 
         function guardarCanton() {
@@ -348,6 +390,10 @@
                 Nombre: $("#txtNombre").val().trim(),
                 Activo: $("#cboActivo").val() === "true"
             };
+
+            if (window.esAdministradorSistema !== true) {
+                obj.Activo = true;
+            }
 
             if (isNaN(obj.CodigoCanton) || obj.CodigoCanton <= 0) {
                 mostrarError("Debe ingresar un código de cantón válido.", "txtCodigoCanton");
@@ -384,8 +430,9 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarCantones();
+                        mostrarMensajeSistema("Cantón guardado correctamente.", "exito");
                     } else {
-                        $("#mensajeError").text(respuesta.mensaje).show();
+                        $("#mensajeError").text(respuesta.mensaje || "No se pudo guardar el cantón.").show();
                     }
                 },
                 error: function () {
@@ -395,25 +442,102 @@
         }
 
         function inactivarCanton(codigoCanton) {
-            if (!confirm("¿Desea inactivar este cantón?")) {
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este cantón"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarCanton", "Ubicacion")',
+                        type: "POST",
+                        data: JSON.stringify({ codigoCanton: codigoCanton }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarCantones();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Cantón"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el cantón.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el cantón.", "error");
+                        }
+                    });
+                },
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
+        }
+
+        function abrirModalCsv() {
+            $("#archivoCsvCanton").val("");
+            $("#mensajeErrorCsv").hide().text("");
+            $("#mensajeExitoCsv").hide().text("");
+            $("#detalleCsv").hide();
+            $("#listaErroresCsv").empty();
+
+            $("#ModalCsv").modal("show");
+        }
+
+        function cargarCsvCanton() {
+            $("#mensajeErrorCsv").hide().text("");
+            $("#mensajeExitoCsv").hide().text("");
+            $("#detalleCsv").hide();
+            $("#listaErroresCsv").empty();
+
+            var archivo = $("#archivoCsvCanton")[0].files[0];
+
+            if (archivo == null) {
+                $("#mensajeErrorCsv").text("Debe seleccionar un archivo CSV.").show();
                 return;
             }
 
+            var extension = archivo.name.split(".").pop().toLowerCase();
+
+            if (extension !== "csv") {
+                $("#mensajeErrorCsv").text("El archivo debe tener formato CSV.").show();
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("archivo", archivo);
+
             $.ajax({
-                url: '@Url.Action("InactivarCanton", "Ubicacion")',
+                url: '@Url.Action("CargarCsvCantones", "Ubicacion")',
                 type: "POST",
-                data: JSON.stringify({ codigoCanton: codigoCanton }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function (respuesta) {
                     if (respuesta.resultado) {
+                        var data = respuesta.data || {};
+                        var insertados = data.insertados || 0;
+                        var errores = data.errores || 0;
+                        var detalleErrores = data.detalleErrores || [];
+
+                        $("#mensajeExitoCsv")
+                            .text("Carga finalizada. Insertados: " + insertados + ". Errores: " + errores + ".")
+                            .show();
+
+                        if (detalleErrores.length > 0) {
+                            $.each(detalleErrores, function (i, error) {
+                                $("#listaErroresCsv").append($("<li>").text(error));
+                            });
+
+                            $("#detalleCsv").show();
+                        }
+
                         cargarCantones();
                     } else {
-                        alert(respuesta.mensaje);
+                        $("#mensajeErrorCsv").text(respuesta.mensaje || "No se pudo cargar el archivo CSV.").show();
                     }
+
+                    $("#archivoCsvCanton").val("");
                 },
                 error: function () {
-                    alert("Error al inactivar el cantón.");
+                    $("#mensajeErrorCsv").text("Error al cargar el archivo CSV.").show();
+                    $("#archivoCsvCanton").val("");
                 }
             });
         }
@@ -462,6 +586,32 @@
 
         function validarTextoUbicacion(valor) {
             return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,#\-_/&()]+$/.test(valor);
+        }
+
+        function descargarArchivoCsv(nombreArchivo, contenido) {
+            var blob = new Blob([contenido], { type: "text/csv;charset=utf-8;" });
+            var url = URL.createObjectURL(blob);
+
+            var enlace = document.createElement("a");
+            enlace.href = url;
+            enlace.download = nombreArchivo;
+
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+
+            URL.revokeObjectURL(url);
+        }
+
+        function descargarPlantillaCanton() {
+            var contenido = "CodigoCanton,CodigoProvincia,Nombre\n" +
+                "1,1,San José\n" +
+                "2,1,Escazú\n" +
+                "3,1,Desamparados\n" +
+                "1,2,Alajuela\n" +
+                "2,2,San Ramón\n";
+
+            descargarArchivoCsv("plantilla_cantones.csv", contenido);
         }
     </script>
 }
