@@ -566,6 +566,12 @@
             $("#txtSaldoActual").val("");
             $("#cboEstadoCuenta").val("Pendiente");
             $("#cboActivoCuenta").val("true");
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivoCuenta").closest(".form-group").show();
+            } else {
+                $("#cboActivoCuenta").closest(".form-group").hide();
+                $("#cboActivoCuenta").val("true");
+            }
             $("#lblEstadoCreditoModal").html(obtenerBadgeEstadoCredito("Pendiente", 30));
 
             $("#txtSaldoActual").prop("readonly", true);
@@ -589,7 +595,12 @@
                 $("#txtSaldoActual").val(formatearNumero(json.SaldoActual));
                 $("#cboEstadoCuenta").val(json.Estado || "Pendiente");
                 $("#cboActivoCuenta").val(json.Activo ? "true" : "false");
-
+                if (window.esAdministradorSistema === true) {
+                    $("#cboActivoCuenta").closest(".form-group").show();
+                } else {
+                    $("#cboActivoCuenta").closest(".form-group").hide();
+                    $("#cboActivoCuenta").val("true");
+                }
                 $("#lblEstadoCreditoModal").html(obtenerBadgeEstadoCredito(json.EstadoCredito || "", json.DiasRestantes));
 
                 bloquearAbonos(false);
@@ -966,6 +977,12 @@
             $("#txtMontoAbono").val(formatearNumero(item.MontoAbono));
             $("#txtObservacion").val(item.Observacion || "");
             $("#cboActivoAbono").val(item.Activo ? "true" : "false");
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivoAbono").closest(".form-group").show();
+            } else {
+                $("#cboActivoAbono").closest(".form-group").hide();
+                $("#cboActivoAbono").val("true");
+            }
         }
 
         function limpiarAbono() {
@@ -974,6 +991,12 @@
             $("#txtMontoAbono").val("");
             $("#txtObservacion").val("");
             $("#cboActivoAbono").val("true");
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivoAbono").closest(".form-group").show();
+            } else {
+                $("#cboActivoAbono").closest(".form-group").hide();
+                $("#cboActivoAbono").val("true");
+            }
         }
 
         function bloquearAbonos(bloquear) {
