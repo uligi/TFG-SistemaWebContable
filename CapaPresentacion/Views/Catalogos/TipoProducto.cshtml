@@ -156,7 +156,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de producto.");
+                    mostrarMensajeSistema("Error al cargar los tipos de producto.", "error");
                 }
             });
         }
@@ -171,6 +171,12 @@
             tbody.empty();
 
             $.each(listaTipoProductos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
+
                 var nombre = item.Nombre || "";
                 var descripcion = item.Descripcion || "";
                 var descripcionMostrar = descripcion === "" ? "-" : descripcion;
@@ -190,7 +196,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarTipoProducto(item.IdTipoProducto);
                 });
@@ -298,6 +304,7 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarTipoProductos();
+                        mostrarMensajeSistema("Tipo de producto guardado correctamente.", "exito");
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -309,27 +316,32 @@
         }
 
         function inactivarTipoProducto(idTipoProducto) {
-            if (!confirm("¿Desea inactivar este tipo de producto?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarTipoProducto", "Catalogos")',
-                type: "POST",
-                data: JSON.stringify({ idTipoProducto: idTipoProducto }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarTipoProductos();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este tipo de producto"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarTipoProducto", "Catalogos")',
+                        type: "POST",
+                        data: JSON.stringify({ idTipoProducto: idTipoProducto }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarTipoProductos();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Tipo de producto"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el tipo de producto.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el tipo de producto.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el tipo de producto.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function mostrarError(mensaje, idCampo) {
