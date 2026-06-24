@@ -191,7 +191,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los descuentos.");
+                    mostrarMensajeSistema("Error al cargar los descuentos.", "error");
                 }
             });
         }
@@ -206,6 +206,10 @@
             tbody.empty();
 
             $.each(listaDescuentos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
                 var nombre = item.Nombre || "";
                 var porcentaje = parseFloat(item.Porcentaje || 0).toFixed(2);
                 var requiereAutorizacion = item.RequiereAutorizacion
@@ -230,7 +234,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarDescuento(item.IdDescuento);
                 });
@@ -359,6 +363,7 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarDescuentos();
+                        mostrarMensajeSistema("Descuento guardado correctamente.", "exito");
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -370,27 +375,32 @@
         }
 
         function inactivarDescuento(idDescuento) {
-            if (!confirm("¿Desea inactivar este descuento?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarDescuento", "Catalogos")',
-                type: "POST",
-                data: JSON.stringify({ idDescuento: idDescuento }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarDescuentos();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este descuento"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarDescuento", "Catalogos")',
+                        type: "POST",
+                        data: JSON.stringify({ idDescuento: idDescuento }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarDescuentos();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Descuento"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el descuento.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el descuento.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el descuento.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function mostrarError(mensaje, idCampo) {
