@@ -515,7 +515,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los clientes.");
+                    mostrarMensajeSistema("Error al cargar los clientes.", "error");
                 }
             });
         }
@@ -530,6 +530,11 @@
             tbody.empty();
 
             $.each(listaClientes, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var codigoCliente = item.CodigoCliente || "";
                 var identificacion = item.Identificacion || "";
 
@@ -622,7 +627,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar las provincias.");
+                    mostrarMensajeSistema("Error al cargar las provincias.", "error");
                 }
             });
         }
@@ -651,7 +656,7 @@
                     }
                 },
                 error: function () {
-                    alert("Error al cargar los cantones.");
+                    mostrarMensajeSistema("Error al cargar los cantones.", "error");
                 }
             });
         }
@@ -680,7 +685,7 @@
                     }
                 },
                 error: function () {
-                    alert("Error al cargar los distritos.");
+                    mostrarMensajeSistema("Error al cargar los distritos.", "error");
                 }
             });
         }
@@ -706,7 +711,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de teléfono.");
+                    mostrarMensajeSistema("Error al cargar los tipos de teléfono.", "error");
                 }
             });
         }
@@ -732,7 +737,7 @@
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de correo.");
+                    mostrarMensajeSistema("Error al cargar los tipos de correo.", "error");
                 }
             });
         }
@@ -950,7 +955,11 @@
                         $("#txtIdentificacion").prop("disabled", true);
 
                         cargarClientes();
-                        alert("Cliente guardado correctamente. Ya puede agregar teléfonos y correos.");
+
+                        mostrarMensajeSistema(
+                            "Cliente guardado correctamente. Ya puede agregar teléfonos y correos.",
+                            "exito"
+                        );
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -962,27 +971,32 @@
         }
 
         function inactivarCliente(identificacion) {
-            if (!confirm("¿Desea inactivar este cliente?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarCliente", "Persona")',
-                type: "POST",
-                data: JSON.stringify({ identificacion: identificacion }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarClientes();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                "Inactivar cliente",
+                "¿Desea inactivar este cliente?",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarCliente", "Persona")',
+                        type: "POST",
+                        data: JSON.stringify({ identificacion: identificacion }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarClientes();
+                                mostrarMensajeSistema("Cliente inactivado correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el cliente.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al inactivar el cliente.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el cliente.");
-                }
-            });
+                "Inactivar",
+                "btn-danger"
+            );
         }
 
         function cargarTelefonosCliente(identificacion) {
@@ -1006,6 +1020,11 @@
             tbody.empty();
 
             $.each(listaTelefonosCliente, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var principal = item.EsPrincipal
                     ? '<span class="badge badge-primary">Sí</span>'
                     : '<span class="badge badge-light">No</span>';
@@ -1168,6 +1187,11 @@
             tbody.empty();
 
             $.each(listaCorreosCliente, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+
+                }
                 var principal = item.EsPrincipal
                     ? '<span class="badge badge-primary">Sí</span>'
                     : '<span class="badge badge-light">No</span>';
