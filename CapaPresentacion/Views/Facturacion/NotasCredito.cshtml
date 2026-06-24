@@ -317,6 +317,10 @@
             cargarNotasCredito();
             cargarEmpleados();
 
+            if (window.esAdministradorSistema !== true) {
+                $("#cboFiltroEstado option[value='Anulada']").remove();
+            }
+
             $("#txtBuscarNota, #cboFiltroEstado").on("keyup change", function () {
                 pintarTablaNotasCredito();
             });
@@ -459,7 +463,7 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
                     pintarTablaNotasCredito();
                 },
                 error: function () {
-                    alert("Error al cargar las notas de crédito.");
+                    mostrarMensajeSistema("Error al cargar las notas de crédito.", "error");
                 }
             });
         }
@@ -488,7 +492,7 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
                     });
                 },
                 error: function () {
-                    alert("Error al cargar los empleados.");
+                    mostrarMensajeSistema("Error al cargar los empleados.", "error");
                 }
             });
         }
@@ -506,6 +510,11 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
             }
 
             $.each(listaNotasCredito, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var numeroNota = item.NumeroNotaCredito || "";
                 var numeroFactura = item.NumeroFactura || "";
                 var cliente = item.ClienteNombre || "";
@@ -579,6 +588,7 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
             $("#txtFechaNotaCredito").val(convertirDateAInput(new Date()));
             $("#cboEstadoNota").val("Aplicada");
             $("#cboActivoNota").val("true");
+            aplicarVisibilidadEstadoNota();
             $("#txtNumeroNotaCredito").val("Se generará automáticamente");
 
             $("#txtSubtotal").prop("readonly", false);
@@ -607,6 +617,7 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
                 $("#txtMotivo").val(json.Motivo || "");
                 $("#cboEstadoNota").val(json.Estado || "Aplicada");
                 $("#cboActivoNota").val(json.Activo ? "true" : "false");
+                aplicarVisibilidadEstadoNota();
 
                 $("#txtSubtotal").prop("readonly", true);
                 $("#txtTotalImpuesto").prop("readonly", true);
@@ -617,47 +628,60 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
             $("#FormModalNota").modal("show");
         }
 
-       function buscarFacturasNotaCredito() {
-    var identificacionCliente = $("#txtIdentificacionCliente").val().trim();
-    var filtro = $("#txtBuscarFactura").val().trim().toLowerCase();
+        function aplicarVisibilidadEstadoNota() {
+            if (window.esAdministradorSistema === true) {
+                $("#cboEstadoNota").closest(".form-group").show();
+                $("#cboActivoNota").closest(".form-group").show();
+            } else {
+                $("#cboEstadoNota").closest(".form-group").hide();
+                $("#cboActivoNota").closest(".form-group").hide();
 
-    if (identificacionCliente === "") {
-        mostrarErrorNota("Primero debe seleccionar un cliente.", "txtBuscarCliente");
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("ListarFacturasPorCliente", "Facturacion")',
-        type: "GET",
-        data: { identificacionCliente: identificacionCliente },
-        dataType: "json",
-        success: function (respuesta) {
-            listaFacturas = respuesta.data || [];
-
-            if (filtro !== "") {
-                listaFacturas = listaFacturas.filter(function (item) {
-                    var numeroFactura = item.NumeroFactura || "";
-                    var estado = item.Estado || "";
-
-                    var texto = (numeroFactura + " " + estado).toLowerCase();
-
-                    return texto.indexOf(filtro) !== -1;
-                });
+                $("#cboEstadoNota").val("Aplicada");
+                $("#cboActivoNota").val("true");
             }
-
-            listaFacturas = listaFacturas.filter(function (item) {
-                return item.Activo === true &&
-                    item.Estado === "Emitida" &&
-                    parseFloat(item.TotalFactura || 0) > 0;
-            });
-
-            pintarResultadosFactura();
-        },
-        error: function () {
-            $("#mensajeErrorNota").text("Error al buscar facturas del cliente.").show();
         }
-    });
-}
+
+       function buscarFacturasNotaCredito() {
+                var identificacionCliente = $("#txtIdentificacionCliente").val().trim();
+                var filtro = $("#txtBuscarFactura").val().trim().toLowerCase();
+
+                if (identificacionCliente === "") {
+                    mostrarErrorNota("Primero debe seleccionar un cliente.", "txtBuscarCliente");
+                    return;
+                }
+
+            $.ajax({
+                url: '@Url.Action("ListarFacturasPorCliente", "Facturacion")',
+                type: "GET",
+                data: { identificacionCliente: identificacionCliente },
+                dataType: "json",
+                success: function (respuesta) {
+                    listaFacturas = respuesta.data || [];
+
+                    if (filtro !== "") {
+                        listaFacturas = listaFacturas.filter(function (item) {
+                            var numeroFactura = item.NumeroFactura || "";
+                            var estado = item.Estado || "";
+
+                            var texto = (numeroFactura + " " + estado).toLowerCase();
+
+                            return texto.indexOf(filtro) !== -1;
+                        });
+                    }
+
+                    listaFacturas = listaFacturas.filter(function (item) {
+                        return item.Activo === true &&
+                            item.Estado === "Emitida" &&
+                            parseFloat(item.TotalFactura || 0) > 0;
+                    });
+
+                    pintarResultadosFactura();
+                },
+                error: function () {
+                    $("#mensajeErrorNota").text("Error al buscar facturas del cliente.").show();
+                }
+            });
+        }
 
         function pintarResultadosFactura() {
             var tbody = $("#tbodyResultadosFactura");
@@ -724,6 +748,11 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
                 Activo: $("#cboActivoNota").val() === "true"
             };
 
+            if (window.esAdministradorSistema !== true) {
+                obj.Estado = "Aplicada";
+                obj.Activo = true;
+            }
+
             if (isNaN(obj.Subtotal)) obj.Subtotal = 0;
             if (isNaN(obj.TotalImpuesto)) obj.TotalImpuesto = 0;
             if (isNaN(obj.TotalNotaCredito)) obj.TotalNotaCredito = 0;
@@ -788,6 +817,8 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
 
                         $("#mensajeExitoNota").text(respuesta.mensaje || "Nota de crédito guardada correctamente.").show();
 
+                        mostrarMensajeSistema(respuesta.mensaje || "Nota de crédito guardada correctamente.", "exito");
+
                         cargarNotasCredito();
                     } else {
                         $("#mensajeErrorNota").text(respuesta.mensaje).show();
@@ -800,27 +831,32 @@ function seleccionarClienteNotaCredito(identificacion, nombre) {
         }
 
         function inactivarNotaCredito(numeroNotaCredito) {
-            if (!confirm("¿Desea anular esta nota de crédito? Si afectó una cuenta por cobrar, el saldo será revertido.")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarNotaCredito", "Facturacion")',
-                type: "POST",
-                data: JSON.stringify({ numeroNotaCredito: numeroNotaCredito }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarNotasCredito();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                "Anular nota de crédito",
+                "¿Desea anular esta nota de crédito? Si afectó una cuenta por cobrar, el saldo será revertido.",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarNotaCredito", "Facturacion")',
+                        type: "POST",
+                        data: JSON.stringify({ numeroNotaCredito: numeroNotaCredito }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarNotasCredito();
+                                mostrarMensajeSistema(respuesta.mensaje || "Nota de crédito anulada correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo anular la nota de crédito.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al anular la nota de crédito.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al anular la nota de crédito.");
-                }
-            });
+                "Anular",
+                "btn-danger"
+            );
         }
 
         function limpiarFormularioNota() {
