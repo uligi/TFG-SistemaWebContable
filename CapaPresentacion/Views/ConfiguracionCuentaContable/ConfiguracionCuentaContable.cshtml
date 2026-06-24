@@ -237,7 +237,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar las configuraciones contables.");
+                    mostrarMensajeSistema("Error al cargar las configuraciones contables.", "error");
                 }
             });
         }
@@ -252,7 +252,7 @@
                     pintarComboCuentas();
                 },
                 error: function () {
-                    alert("Error al cargar las cuentas contables.");
+                    mostrarMensajeSistema("Error al cargar las cuentas contables.", "error");
                 }
             });
         }
@@ -287,6 +287,11 @@
             tbody.empty();
 
             $.each(listaConfiguraciones, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var codigoOperacion = item.CodigoOperacion || "";
                 var nombreOperacion = item.NombreOperacion || "";
                 var descripcion = item.Descripcion || "";
@@ -318,7 +323,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarConfiguracion(item.CodigoOperacion);
                 });
@@ -383,6 +388,7 @@
             $("#cboActivo").val("true");
 
             $("#grupoActivo").hide();
+            aplicarVisibilidadActivoConfiguracion();
             $("#mensajeLlavePrimaria").hide();
 
             $("#tituloModal").text("Nueva configuración contable");
@@ -398,13 +404,22 @@
                 $("#cboCuentaContable").val(json.CodigoCuenta || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
 
-                $("#grupoActivo").show();
+                aplicarVisibilidadActivoConfiguracion();
                 $("#mensajeLlavePrimaria").show();
 
                 $("#tituloModal").text("Editar configuración contable");
             }
 
             $("#FormModal").modal("show");
+        }
+
+        function aplicarVisibilidadActivoConfiguracion() {
+            if (window.esAdministradorSistema === true) {
+                $("#grupoActivo").show();
+            } else {
+                $("#grupoActivo").hide();
+                $("#cboActivo").val("true");
+            }
         }
 
         function guardarConfiguracion() {
@@ -417,6 +432,10 @@
                 CodigoCuenta: $("#cboCuentaContable").val(),
                 Activo: $("#cboActivo").val() === "true"
             };
+
+            if (window.esAdministradorSistema !== true) {
+                obj.Activo = true;
+            }
 
             if (obj.CodigoOperacion === "") {
                 mostrarError("Debe ingresar el código de operación.", "txtCodigoOperacion");
@@ -483,6 +502,7 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarConfiguraciones();
+                        mostrarMensajeSistema("Configuración contable guardada correctamente.", "exito");
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -494,27 +514,32 @@
         }
 
         function inactivarConfiguracion(codigoOperacion) {
-            if (!confirm("¿Desea inactivar esta configuración contable?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarConfiguracionCuentaContable", "ConfiguracionCuentaContable")',
-                type: "POST",
-                data: JSON.stringify({ codigoOperacion: codigoOperacion }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarConfiguraciones();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "esta configuración contable"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarConfiguracionCuentaContable", "ConfiguracionCuentaContable")',
+                        type: "POST",
+                        data: JSON.stringify({ codigoOperacion: codigoOperacion }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarConfiguraciones();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Configuración contable"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar la configuración contable.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar la configuración contable.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar la configuración contable.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function mostrarError(mensaje, idCampo) {
