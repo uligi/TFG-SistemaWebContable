@@ -618,6 +618,11 @@
             }
 
             $.each(listaFacturas, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var numero = item.NumeroFactura || "";
                 var cliente = item.ClienteNombre || "";
                 var empleado = item.EmpleadoNombre || "";
@@ -1014,6 +1019,11 @@
             }
 
             $.each(listaDetalles, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var cantidad = parseFloat(item.Cantidad || 0);
                 var precio = parseFloat(item.PrecioUnitario || 0);
                 var porcentajeImpuesto = parseFloat(item.PorcentajeImpuesto || 0);
