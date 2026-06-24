@@ -229,7 +229,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los períodos contables.");
+                    mostrarMensajeSistema("Error al cargar los períodos contables.", "error");
                 }
             });
         }
@@ -244,6 +244,11 @@
             tbody.empty();
 
             $.each(listaPeriodos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var anio = item.Anio || 0;
                 var mes = item.Mes || 0;
                 var nombreMes = obtenerNombreMes(mes);
@@ -276,7 +281,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger mb-1",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarPeriodo(item.Anio, item.Mes);
                 });
@@ -355,7 +360,12 @@
                 $("#cboEstado").val(json.Estado || "Abierto");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
 
-                $("#grupoActivo").show();
+                if (window.esAdministradorSistema === true) {
+                    $("#grupoActivo").show();
+                } else {
+                    $("#grupoActivo").hide();
+                    $("#cboActivo").val("true");
+                }
                 $("#mensajeLlavePrimaria").show();
 
                 $("#tituloModal").text("Editar período contable");
@@ -424,6 +434,7 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarPeriodos();
+                        mostrarMensajeSistema("Período contable guardado correctamente.", "exito");
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -435,57 +446,67 @@
         }
 
         function cerrarPeriodo(anio, mes) {
-            if (!confirm("¿Desea cerrar este período contable? Después de cerrarlo no debería registrar movimientos nuevos en él.")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("CerrarPeriodoContable", "GestionarPeriodoContable")',
-                type: "POST",
-                data: JSON.stringify({
-                    anio: anio,
-                    mes: mes
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarPeriodos();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                "Cerrar período contable",
+                "¿Desea cerrar este período contable? Después de cerrarlo no debería registrar movimientos nuevos en él.",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("CerrarPeriodoContable", "GestionarPeriodoContable")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            anio: anio,
+                            mes: mes
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarPeriodos();
+                                mostrarMensajeSistema("Período contable cerrado correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo cerrar el período contable.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al cerrar el período contable.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al cerrar el período contable.");
-                }
-            });
+                "Cerrar",
+                "btn-warning"
+            );
         }
 
         function inactivarPeriodo(anio, mes) {
-            if (!confirm("¿Desea inactivar este período contable?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarPeriodoContable", "GestionarPeriodoContable")',
-                type: "POST",
-                data: JSON.stringify({
-                    anio: anio,
-                    mes: mes
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarPeriodos();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este período contable"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarPeriodoContable", "GestionarPeriodoContable")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            anio: anio,
+                            mes: mes
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarPeriodos();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Período contable"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el período contable.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el período contable.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el período contable.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function autocompletarFechasPeriodo() {
