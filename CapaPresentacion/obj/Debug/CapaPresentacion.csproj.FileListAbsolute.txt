@@ -72,8 +72,6 @@ C:\Users\ul13m\source\repos\test1\CapaPresentacion\bin\CapaDatos.dll
 C:\Users\ul13m\source\repos\test1\CapaPresentacion\bin\CapaEntidad.pdb
 C:\Users\ul13m\source\repos\test1\CapaPresentacion\bin\CapaNegocio.pdb
 C:\Users\ul13m\source\repos\test1\CapaPresentacion\bin\CapaDatos.pdb
-C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\obj\Debug\CapaPresentacion.csproj.AssemblyReference.cache
-C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\obj\Debug\CapaPresentacion.csproj.CoreCompileInputs.cache
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\bin\CapaPresentacion.dll.config
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\bin\CapaPresentacion.dll
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\bin\CapaPresentacion.pdb
@@ -143,6 +141,8 @@ C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\bin\es\S
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\bin\es\System.Web.WebPages.Deployment.resources.dll
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\bin\es\System.Web.WebPages.Razor.resources.dll
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\bin\es\System.Web.Optimization.resources.dll
+C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\obj\Debug\CapaPresentacion.csproj.AssemblyReference.cache
+C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\obj\Debug\CapaPresentacion.csproj.CoreCompileInputs.cache
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\obj\Debug\CapaPres.61CA7C38.Up2Date
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\obj\Debug\CapaPresentacion.dll
 C:\Users\ul13m\Documents\GitHub\TFG-SistemaWebContable\CapaPresentacion\obj\Debug\CapaPresentacion.pdb
