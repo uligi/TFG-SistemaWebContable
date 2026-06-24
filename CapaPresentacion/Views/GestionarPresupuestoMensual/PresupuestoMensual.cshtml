@@ -177,7 +177,7 @@
                 </div>
 
                 <div class="text-right mb-3">
-                    <button type="button" class="btn btn-primary" onclick="guardarPresupuesto()">
+                    <button type="button" class="btn btn-primary" id="btnGuardarPresupuesto" onclick="guardarPresupuesto()">
                         Guardar encabezado
                     </button>
                 </div>
@@ -287,11 +287,11 @@
                         </div>
 
                         <div class="text-right mb-3">
-                            <button type="button" class="btn btn-secondary" onclick="limpiarDetalle()">
+                            <button type="button" class="btn btn-secondary" id="btnLimpiarDetalle" onclick="limpiarDetalle()">
                                 Limpiar detalle
                             </button>
 
-                            <button type="button" class="btn btn-primary" onclick="guardarDetalle()">
+                            <button type="button" class="btn btn-primary" id="btnGuardarDetalle" onclick="guardarDetalle()">
                                 Guardar detalle
                             </button>
                         </div>
@@ -546,6 +546,7 @@
             }
 
             $("#FormModalPresupuesto").modal("show");
+            aplicarBloqueoPorEstadoPresupuesto();
         }
 
         function guardarPresupuesto() {
@@ -1034,6 +1035,7 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarPresupuestos();
+                                aplicarBloqueoPorEstadoPresupuesto();
 
                                 $("#cboEstadoPresupuesto").val("Cerrado");
 
@@ -1080,6 +1082,7 @@
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         cargarPresupuestos();
+                        aplicarBloqueoPorEstadoPresupuesto();
 
                         $("#cboEstadoPresupuesto").val("Abierto");
 
@@ -1121,6 +1124,7 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarPresupuestos();
+                                aplicarBloqueoPorEstadoPresupuesto();
 
                                 var accion = obtenerTextoInactivarPresupuesto().toLowerCase();
                                 mostrarMensajeSistema(respuesta.mensaje || "Presupuesto " + accion + " correctamente.", "exito");
@@ -1333,6 +1337,31 @@
             }
 
             return "¿Desea " + accion + " este presupuesto mensual?";
+        }
+
+        function aplicarBloqueoPorEstadoPresupuesto() {
+            var estado = $("#cboEstadoPresupuesto").val();
+            var activo = $("#cboActivoPresupuesto").val() === "true";
+
+            var bloquear = estado === "Cerrado" || estado === "Inactivo" || activo === false;
+
+            $("#cboEstadoPresupuesto").prop("disabled", bloquear);
+            $("#cboActivoPresupuesto").prop("disabled", bloquear);
+
+            $("#cboCuentaContable").prop("disabled", bloquear);
+            $("#cboTipoMovimiento").prop("disabled", bloquear);
+            $("#txtMontoPresupuestado").prop("readonly", bloquear);
+            $("#cboActivoDetalle").prop("disabled", bloquear);
+
+            $("#btnGuardarPresupuesto").prop("disabled", bloquear);
+            $("#btnGuardarDetalle").prop("disabled", bloquear);
+            $("#btnLimpiarDetalle").prop("disabled", bloquear);
+
+            if (bloquear) {
+                $("#mensajeErrorPresupuesto")
+                    .text("Este presupuesto se encuentra cerrado o inactivo. No permite modificaciones.")
+                    .show();
+            }
         }
 
     </script>
