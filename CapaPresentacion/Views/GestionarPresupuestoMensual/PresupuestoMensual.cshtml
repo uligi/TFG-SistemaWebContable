@@ -347,11 +347,11 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="cerrarPresupuestoActual()">
+                <button type="button" class="btn btn-warning" id="btnCerrarPresupuesto" onclick="cerrarPresupuestoActual()">
                     Cerrar presupuesto
                 </button>
 
-                <button type="button" class="btn btn-info" onclick="reabrirPresupuestoActual()">
+                <button type="button" class="btn btn-info" id="btnReabrirPresupuesto" onclick="reabrirPresupuestoActual()">
                     Reabrir presupuesto
                 </button>
 
@@ -1035,9 +1035,9 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarPresupuestos();
-                                aplicarBloqueoPorEstadoPresupuesto();
 
                                 $("#cboEstadoPresupuesto").val("Cerrado");
+                                aplicarBloqueoPorEstadoPresupuesto();
 
                                 mostrarMensajeSistema(
                                     respuesta.mensaje || "Presupuesto cerrado correctamente.",
@@ -1082,9 +1082,10 @@
                 success: function (respuesta) {
                     if (respuesta.resultado) {
                         cargarPresupuestos();
-                        aplicarBloqueoPorEstadoPresupuesto();
 
                         $("#cboEstadoPresupuesto").val("Abierto");
+                        $("#cboActivoPresupuesto").val("true");
+                        aplicarBloqueoPorEstadoPresupuesto();
 
                         mostrarMensajeSistema(
                             respuesta.mensaje || "Presupuesto reabierto correctamente.",
@@ -1124,6 +1125,9 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarPresupuestos();
+
+                                $("#cboEstadoPresupuesto").val("Inactivo");
+                                $("#cboActivoPresupuesto").val("false");
                                 aplicarBloqueoPorEstadoPresupuesto();
 
                                 var accion = obtenerTextoInactivarPresupuesto().toLowerCase();
@@ -1356,6 +1360,17 @@
             $("#btnGuardarPresupuesto").prop("disabled", bloquear);
             $("#btnGuardarDetalle").prop("disabled", bloquear);
             $("#btnLimpiarDetalle").prop("disabled", bloquear);
+
+            $("#btnCerrarPresupuesto").hide();
+            $("#btnReabrirPresupuesto").hide();
+
+            if (estado === "Abierto" && activo === true) {
+                $("#btnCerrarPresupuesto").show();
+            }
+
+            if (estado === "Cerrado" && activo === true) {
+                $("#btnReabrirPresupuesto").show();
+            }
 
             if (bloquear) {
                 $("#mensajeErrorPresupuesto")
