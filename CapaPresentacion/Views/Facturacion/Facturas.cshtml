@@ -657,7 +657,7 @@
 
                 var botonAnular = $("<button>", {
                     type: "button",
-                    class: "btn btn-sm btn-outline-danger",
+                    class: "btn btn-sm btn-outline-danger mr-1",
                     text: "Anular"
                 }).on("click", function () {
                     inactivarFactura(item.NumeroFactura);
@@ -1221,32 +1221,37 @@
         }
 
         function inactivarDetalleFactura(numeroFactura, codigoProducto) {
-            if (!confirm("¿Desea inactivar este detalle de factura?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarDetalleFactura", "Facturacion")',
-                type: "POST",
-                data: JSON.stringify({
-                    numeroFactura: numeroFactura,
-                    codigoProducto: codigoProducto
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        limpiarDetalle();
-                        cargarDetallesFactura(numeroFactura);
-                        cargarFacturas();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                "Inactivar detalle",
+                "¿Desea inactivar este detalle de factura?",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarDetalleFactura", "Facturacion")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            numeroFactura: numeroFactura,
+                            codigoProducto: codigoProducto
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                limpiarDetalle();
+                                cargarDetallesFactura(numeroFactura);
+                                cargarFacturas();
+                                mostrarMensajeSistema("Detalle de factura inactivado correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el detalle de factura.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al inactivar el detalle de factura.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el detalle de factura.");
-                }
-            });
+                "Inactivar",
+                "btn-danger"
+            );
         }
 
         function emitirFactura() {
@@ -1270,52 +1275,62 @@
         }
 
         function emitirFacturaDesdeTabla(numeroFactura) {
-            if (!confirm("¿Desea emitir esta factura?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("EmitirFactura", "Facturacion")',
-                type: "POST",
-                data: JSON.stringify({ numeroFactura: numeroFactura }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    alert(respuesta.mensaje);
-
-                    if (respuesta.resultado) {
-                        $("#FormModal").modal("hide");
-                        cargarFacturas();
-                    }
+            mostrarConfirmacionSistema(
+                "Emitir factura",
+                "¿Desea emitir esta factura?",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("EmitirFactura", "Facturacion")',
+                        type: "POST",
+                        data: JSON.stringify({ numeroFactura: numeroFactura }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                $("#FormModal").modal("hide");
+                                cargarFacturas();
+                                mostrarMensajeSistema(respuesta.mensaje || "Factura emitida correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo emitir la factura.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al emitir la factura.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al emitir la factura.");
-                }
-            });
+                "Emitir",
+                "btn-success"
+            );
         }
 
         function inactivarFactura(numeroFactura) {
-            if (!confirm("¿Desea anular esta factura?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarFactura", "Facturacion")',
-                type: "POST",
-                data: JSON.stringify({ numeroFactura: numeroFactura }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarFacturas();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                "Anular factura",
+                "¿Desea anular esta factura?",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarFactura", "Facturacion")',
+                        type: "POST",
+                        data: JSON.stringify({ numeroFactura: numeroFactura }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarFacturas();
+                                mostrarMensajeSistema(respuesta.mensaje || "Factura anulada correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo anular la factura.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al anular la factura.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al anular la factura.");
-                }
-            });
+                "Anular",
+                "btn-danger"
+            );
         }
 
         function formatearFecha(valor) {
@@ -1598,124 +1613,124 @@ function cargarContactoCorreoFactura(factura, detalles) {
         }
 
         function guardarCorreoClienteFactura() {
-    $("#mensajeErrorCorreoFactura").hide().text("");
-    $("#mensajeExitoCorreoFactura").hide().text("");
+            $("#mensajeErrorCorreoFactura").hide().text("");
+            $("#mensajeExitoCorreoFactura").hide().text("");
 
-    if (facturaCorreoActual == null) {
-        $("#mensajeErrorCorreoFactura").text("No hay factura seleccionada.").show();
-        return;
-    }
-
-    var correo = $("#txtCorreoDestinoFactura").val().trim();
-    var telefono = $("#txtTelefonoFacturaCorreo").val().trim();
-
-    if (correo === "") {
-        $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo.").show();
-        return;
-    }
-
-    if (!validarCorreoFactura(correo)) {
-        $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo válido.").show();
-        return;
-    }
-
-    $.ajax({
-        url: '@Url.Action("RegistrarContactoClienteCaja", "Facturacion")',
-        type: "POST",
-        data: JSON.stringify({
-            identificacion: facturaCorreoActual.IdentificacionCliente,
-            telefono: telefono,
-            correo: correo
-        }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                facturaCorreoActual.Correo = correo;
-
-                $("#mensajeSinCorreoFactura").hide();
-                $("#mensajeExitoCorreoFactura").text(respuesta.mensaje || "Correo guardado correctamente.").show();
-            } else {
-                $("#mensajeErrorCorreoFactura").text(respuesta.mensaje || "No se pudo guardar el correo.").show();
+            if (facturaCorreoActual == null) {
+                $("#mensajeErrorCorreoFactura").text("No hay factura seleccionada.").show();
+                return;
             }
-        },
-        error: function () {
-            $("#mensajeErrorCorreoFactura").text("Error al guardar el correo del cliente.").show();
-        }
-    });
+
+            var correo = $("#txtCorreoDestinoFactura").val().trim();
+            var telefono = $("#txtTelefonoFacturaCorreo").val().trim();
+
+            if (correo === "") {
+                $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo.").show();
+                return;
+            }
+
+            if (!validarCorreoFactura(correo)) {
+                $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo válido.").show();
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("RegistrarContactoClienteCaja", "Facturacion")',
+                type: "POST",
+                data: JSON.stringify({
+                    identificacion: facturaCorreoActual.IdentificacionCliente,
+                    telefono: "",
+                    correo: correo
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        facturaCorreoActual.Correo = correo;
+
+                        $("#mensajeSinCorreoFactura").hide();
+                        $("#mensajeExitoCorreoFactura").text(respuesta.mensaje || "Correo guardado correctamente.").show();
+                    } else {
+                        $("#mensajeErrorCorreoFactura").text(respuesta.mensaje || "No se pudo guardar el correo.").show();
+                    }
+                },
+                error: function () {
+                    $("#mensajeErrorCorreoFactura").text("Error al guardar el correo del cliente.").show();
+                }
+            });
         }
 
         function enviarCorreoFacturaNormal() {
-    $("#mensajeErrorCorreoFactura").hide().text("");
-    $("#mensajeExitoCorreoFactura").hide().text("");
+            $("#mensajeErrorCorreoFactura").hide().text("");
+            $("#mensajeExitoCorreoFactura").hide().text("");
 
-    if (facturaCorreoActual == null) {
-        $("#mensajeErrorCorreoFactura").text("No hay factura seleccionada.").show();
-        return;
-    }
-
-    var correo = $("#txtCorreoDestinoFactura").val().trim();
-
-    if (correo === "") {
-        $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo destino.").show();
-        return;
-    }
-
-    if (!validarCorreoFactura(correo)) {
-        $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo válido.").show();
-        return;
-    }
-
-    facturaCorreoActual.Correo = correo;
-
-    var detalles = [];
-
-    $.each(facturaCorreoActual.Productos || [], function (i, item) {
-        detalles.push({
-            CodigoProducto: item.CodigoProducto || "",
-            NombreProducto: item.NombreProducto || "",
-            Cantidad: parseFloat(item.Cantidad || 0).toFixed(2),
-            Precio: "₡" + parseFloat(item.PrecioUnitario || 0).toFixed(2),
-            TotalLinea: "₡" + parseFloat(item.TotalLinea || 0).toFixed(2)
-        });
-    });
-
-    var obj = {
-        CorreoDestino: facturaCorreoActual.Correo,
-        NumeroFactura: facturaCorreoActual.NumeroFactura,
-        Cliente: facturaCorreoActual.Cliente,
-        Fecha: facturaCorreoActual.Fecha,
-        Cajero: facturaCorreoActual.Cajero,
-        Subtotal: facturaCorreoActual.Subtotal,
-        Impuesto: facturaCorreoActual.Impuesto,
-        Descuento: facturaCorreoActual.Descuento,
-        Total: facturaCorreoActual.Total,
-        Detalles: detalles
-    };
-
-    $("#btnEnviarCorreoFacturaNormal").prop("disabled", true).text("Enviando...");
-
-    $.ajax({
-        url: '@Url.Action("EnviarFacturaCorreoCaja", "Facturacion")',
-        type: "POST",
-        data: JSON.stringify({ obj: obj }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (respuesta) {
-            if (respuesta.resultado) {
-                $("#mensajeExitoCorreoFactura").text(respuesta.mensaje || "Factura enviada correctamente.").show();
-                mostrarMensajeSistema(respuesta.mensaje || "Factura enviada correctamente.", "exito");
-            } else {
-                $("#mensajeErrorCorreoFactura").text(respuesta.mensaje || "No se pudo enviar la factura.").show();
+            if (facturaCorreoActual == null) {
+                $("#mensajeErrorCorreoFactura").text("No hay factura seleccionada.").show();
+                return;
             }
-        },
-        error: function () {
-            $("#mensajeErrorCorreoFactura").text("Error al enviar la factura por correo.").show();
-        },
-        complete: function () {
-            $("#btnEnviarCorreoFacturaNormal").prop("disabled", false).text("Enviar factura");
-        }
-    });
+
+            var correo = $("#txtCorreoDestinoFactura").val().trim();
+
+            if (correo === "") {
+                $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo destino.").show();
+                return;
+            }
+
+            if (!validarCorreoFactura(correo)) {
+                $("#mensajeErrorCorreoFactura").text("Debe ingresar un correo válido.").show();
+                return;
+            }
+
+        facturaCorreoActual.Correo = correo;
+
+        var detalles = [];
+
+        $.each(facturaCorreoActual.Productos || [], function (i, item) {
+            detalles.push({
+                CodigoProducto: item.CodigoProducto || "",
+                NombreProducto: item.NombreProducto || "",
+                Cantidad: parseFloat(item.Cantidad || 0).toFixed(2),
+                Precio: "₡" + parseFloat(item.PrecioUnitario || 0).toFixed(2),
+                TotalLinea: "₡" + parseFloat(item.TotalLinea || 0).toFixed(2)
+            });
+        });
+
+        var obj = {
+            CorreoDestino: facturaCorreoActual.Correo,
+            NumeroFactura: facturaCorreoActual.NumeroFactura,
+            Cliente: facturaCorreoActual.Cliente,
+            Fecha: facturaCorreoActual.Fecha,
+            Cajero: facturaCorreoActual.Cajero,
+            Subtotal: facturaCorreoActual.Subtotal,
+            Impuesto: facturaCorreoActual.Impuesto,
+            Descuento: facturaCorreoActual.Descuento,
+            Total: facturaCorreoActual.Total,
+            Detalles: detalles
+        };
+
+        $("#btnEnviarCorreoFacturaNormal").prop("disabled", true).text("Enviando...");
+
+        $.ajax({
+            url: '@Url.Action("EnviarFacturaCorreoCaja", "Facturacion")',
+            type: "POST",
+            data: JSON.stringify({ obj: obj }),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (respuesta) {
+                if (respuesta.resultado) {
+                    $("#mensajeExitoCorreoFactura").text(respuesta.mensaje || "Factura enviada correctamente.").show();
+                    mostrarMensajeSistema(respuesta.mensaje || "Factura enviada correctamente.", "exito");
+                } else {
+                    $("#mensajeErrorCorreoFactura").text(respuesta.mensaje || "No se pudo enviar la factura.").show();
+                }
+            },
+            error: function () {
+                $("#mensajeErrorCorreoFactura").text("Error al enviar la factura por correo.").show();
+            },
+            complete: function () {
+                $("#btnEnviarCorreoFacturaNormal").prop("disabled", false).text("Enviar factura");
+            }
+        });
         }
 
         function validarCorreoFactura(valor) {
