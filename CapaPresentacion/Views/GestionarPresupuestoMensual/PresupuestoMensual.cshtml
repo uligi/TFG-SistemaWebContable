@@ -986,10 +986,18 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarPresupuestos();
+
                                 $("#cboEstadoPresupuesto").val("Cerrado");
-                                mostrarMensajeSistema(respuesta.mensaje || "Presupuesto cerrado correctamente.", "exito");
+
+                                mostrarMensajeSistema(
+                                    respuesta.mensaje || "Presupuesto cerrado correctamente.",
+                                    "exito"
+                                );
                             } else {
-                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo cerrar el presupuesto.", "error");
+                                mostrarMensajeSistema(
+                                    respuesta.mensaje || "No se pudo cerrar el presupuesto.",
+                                    "error"
+                                );
                             }
                         },
                         error: function () {
@@ -1002,43 +1010,51 @@
             );
         }
 
-        function reabrirPresupuesto(anio, mes) {
-            if (anio === 0 || mes === 0 || isNaN(anio) || isNaN(mes)) {
-                mostrarMensajeSistema("Debe seleccionar un presupuesto válido.", "advertencia");
-                return;
-            }
+function reabrirPresupuesto(anio, mes) {
+    if (anio === 0 || mes === 0 || isNaN(anio) || isNaN(mes)) {
+        mostrarMensajeSistema("Debe seleccionar un presupuesto válido.", "advertencia");
+        return;
+    }
 
-            mostrarConfirmacionSistema(
-                "Reabrir presupuesto",
-                "¿Desea reabrir este presupuesto mensual?",
-                function () {
-                    $.ajax({
-                        url: '@Url.Action("ReabrirPresupuestoMensual", "GestionarPresupuestoMensual")',
-                        type: "POST",
-                        data: JSON.stringify({
-                            anio: anio,
-                            mes: mes
-                        }),
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function (respuesta) {
-                            if (respuesta.resultado) {
-                                cargarPresupuestos();
-                                $("#cboEstadoPresupuesto").val("Abierto");
-                                mostrarMensajeSistema(respuesta.mensaje || "Presupuesto reabierto correctamente.", "exito");
-                            } else {
-                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo reabrir el presupuesto.", "error");
-                            }
-                        },
-                        error: function () {
-                            mostrarMensajeSistema("Error al reabrir el presupuesto.", "error");
-                        }
-                    });
+    mostrarConfirmacionSistema(
+        "Reabrir presupuesto",
+        "¿Desea reabrir este presupuesto mensual?",
+        function () {
+            $.ajax({
+                url: '@Url.Action("ReabrirPresupuestoMensual", "GestionarPresupuestoMensual")',
+                type: "POST",
+                data: JSON.stringify({
+                    anio: anio,
+                    mes: mes
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (respuesta) {
+                    if (respuesta.resultado) {
+                        cargarPresupuestos();
+
+                        $("#cboEstadoPresupuesto").val("Abierto");
+
+                        mostrarMensajeSistema(
+                            respuesta.mensaje || "Presupuesto reabierto correctamente.",
+                            "exito"
+                        );
+                    } else {
+                        mostrarMensajeSistema(
+                            respuesta.mensaje || "No se pudo reabrir el presupuesto.",
+                            "error"
+                        );
+                    }
                 },
-                "Reabrir",
-                "btn-info"
-            );
-        }
+                error: function () {
+                    mostrarMensajeSistema("Error al reabrir el presupuesto.", "error");
+                }
+            });
+        },
+        "Reabrir",
+        "btn-info"
+    );
+}
 
         function cerrarPresupuesto(anio, mes) {
             if (anio === 0 || mes === 0 || isNaN(anio) || isNaN(mes)) {
