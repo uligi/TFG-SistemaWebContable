@@ -585,8 +585,14 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
-                        $("#mensajeExitoPresupuesto").text(respuesta.mensaje || "Presupuesto guardado correctamente.").show();
-                        mostrarMensajeSistema(respuesta.mensaje || "Presupuesto guardado correctamente.", "exito");
+                        $("#mensajeExitoPresupuesto")
+                            .text(respuesta.mensaje || "Presupuesto guardado correctamente.")
+                            .show();
+
+                        mostrarMensajeSistema(
+                            respuesta.mensaje || "Presupuesto guardado correctamente.",
+                            "exito"
+                        );
 
                         $("#txtAnioSeleccionado").val(obj.Anio);
                         $("#txtMesSeleccionado").val(obj.Mes);
@@ -597,12 +603,21 @@
                         cargarPresupuestos();
                         cargarDetallesYResumen();
                     } else {
-                        $("#mensajeErrorPresupuesto").text(respuesta.mensaje || "No se pudo guardar el presupuesto mensual.").show();
-                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo guardar el presupuesto mensual.", "error");
+                        $("#mensajeErrorPresupuesto")
+                            .text(respuesta.mensaje || "No se pudo guardar el presupuesto mensual.")
+                            .show();
+
+                        mostrarMensajeSistema(
+                            respuesta.mensaje || "No se pudo guardar el presupuesto mensual.",
+                            "error"
+                        );
                     }
                 },
                 error: function () {
-                    $("#mensajeErrorPresupuesto").text("Error al guardar el presupuesto mensual.").show();
+                    $("#mensajeErrorPresupuesto")
+                        .text("Error al guardar el presupuesto mensual.")
+                        .show();
+
                     mostrarMensajeSistema("Error al guardar el presupuesto mensual.", "error");
                 }
             });
@@ -770,18 +785,33 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (respuesta) {
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
-                        $("#mensajeExitoPresupuesto").text(respuesta.mensaje || "Detalle guardado correctamente.").show();
-                        mostrarMensajeSistema(respuesta.mensaje || "Detalle guardado correctamente.", "exito");
+                        $("#mensajeExitoPresupuesto")
+                            .text(respuesta.mensaje || "Detalle guardado correctamente.")
+                            .show();
+
+                        mostrarMensajeSistema(
+                            respuesta.mensaje || "Detalle guardado correctamente.",
+                            "exito"
+                        );
 
                         limpiarDetalle();
                         cargarDetallesYResumen();
                     } else {
-                        $("#mensajeErrorPresupuesto").text(respuesta.mensaje || "No se pudo guardar el detalle del presupuesto.").show();
-                        mostrarMensajeSistema(respuesta.mensaje || "No se pudo guardar el detalle del presupuesto.", "error");
+                        $("#mensajeErrorPresupuesto")
+                            .text(respuesta.mensaje || "No se pudo guardar el detalle del presupuesto.")
+                            .show();
+
+                        mostrarMensajeSistema(
+                            respuesta.mensaje || "No se pudo guardar el detalle del presupuesto.",
+                            "error"
+                        );
                     }
                 },
                 error: function () {
-                    $("#mensajeErrorPresupuesto").text("Error al guardar el detalle del presupuesto.").show();
+                    $("#mensajeErrorPresupuesto")
+                        .text("Error al guardar el detalle del presupuesto.")
+                        .show();
+
                     mostrarMensajeSistema("Error al guardar el detalle del presupuesto.", "error");
                 }
             });
