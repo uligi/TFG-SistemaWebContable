@@ -1131,30 +1131,35 @@
         function inactivarTelefonoCliente(numeroTelefono) {
             var identificacion = $("#txtIdentificacion").val().trim();
 
-            if (!confirm("¿Desea inactivar este teléfono?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarTelefono", "Persona")',
-                type: "POST",
-                data: JSON.stringify({
-                    identificacion: identificacion,
-                    numeroTelefono: numeroTelefono
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarTelefonosCliente(identificacion);
-                    } else {
-                        $("#mensajeErrorTelefono").text(respuesta.mensaje).show();
-                    }
+            mostrarConfirmacionSistema(
+                "Inactivar teléfono",
+                "¿Desea inactivar este teléfono?",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarTelefono", "Persona")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            identificacion: identificacion,
+                            numeroTelefono: numeroTelefono
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarTelefonosCliente(identificacion);
+                                mostrarMensajeSistema("Teléfono inactivado correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el teléfono.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al inactivar el teléfono.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    $("#mensajeErrorTelefono").text("Error al inactivar el teléfono.").show();
-                }
-            });
+                "Inactivar",
+                "btn-danger"
+            );
         }
 
         function limpiarFormularioTelefono() {
@@ -1298,30 +1303,35 @@
         function inactivarCorreoCliente(direccionCorreo) {
             var identificacion = $("#txtIdentificacion").val().trim();
 
-            if (!confirm("¿Desea inactivar este correo?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarCorreo", "Persona")',
-                type: "POST",
-                data: JSON.stringify({
-                    identificacion: identificacion,
-                    direccionCorreo: direccionCorreo
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarCorreosCliente(identificacion);
-                    } else {
-                        $("#mensajeErrorCorreo").text(respuesta.mensaje).show();
-                    }
+            mostrarConfirmacionSistema(
+                "Inactivar correo",
+                "¿Desea inactivar este correo?",
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarCorreo", "Persona")',
+                        type: "POST",
+                        data: JSON.stringify({
+                            identificacion: identificacion,
+                            direccionCorreo: direccionCorreo
+                        }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarCorreosCliente(identificacion);
+                                mostrarMensajeSistema("Correo inactivado correctamente.", "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el correo.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al inactivar el correo.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    $("#mensajeErrorCorreo").text("Error al inactivar el correo.").show();
-                }
-            });
+                "Inactivar",
+                "btn-danger"
+            );
         }
 
         function limpiarFormularioCorreo() {
