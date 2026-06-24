@@ -1,6 +1,6 @@
 ﻿@{
-    ViewBag.Title = "Gastos";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+        ViewBag.Title = "Gastos";
+        Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
@@ -395,10 +395,17 @@
                 var descripcion = item.Descripcion || "";
                 var proveedor = item.ProveedorNombre || "";
                 var documento = item.NumeroDocumento || "";
-                var cuenta = (item.CodigoCuenta || "") + " " + (item.NombreCuenta || "");
                 var comprobante = item.NumeroComprobante || "";
 
-                var texto = (numero + " " + descripcion + " " + proveedor + " " + documento + " " + cuenta + " " + comprobante).toLowerCase();
+                var texto = (
+                    numero + " " +
+                    descripcion + " " +
+                    proveedor + " " +
+                    documento + " " +
+                    (item.CodigoCuenta || "") + " " +
+                    (item.NombreCuenta || "") + " " +
+                    comprobante
+                ).toLowerCase();
 
                 if (texto.indexOf(filtro) === -1) {
                     return;
@@ -411,8 +418,6 @@
                 var activo = item.Activo
                     ? '<span class="badge badge-info">Sí</span>'
                     : '<span class="badge badge-secondary">No</span>';
-
-                var comprobanteTexto = obtenerTextoComprobante(item);
 
                 var botonEditar = $("<button>", {
                     type: "button",
@@ -442,14 +447,17 @@
                 fila.append($("<td>").text(formatearFecha(item.FechaGasto)));
                 fila.append($("<td>").text(descripcion));
                 fila.append($("<td>").text(item.TipoGastoNombre || ""));
-                fila.append($("<td>").html('<span class="codigo-cuenta">' + (item.CodigoCuenta || "") + '</span><br/><span class="texto-tabla-secundario">' + (item.NombreCuenta || "") + '</span>'));
+                fila.append($("<td>").html(
+                    '<span class="codigo-cuenta">' + (item.CodigoCuenta || "") + '</span><br/>' +
+                    '<span class="texto-tabla-secundario">' + (item.NombreCuenta || "") + '</span>'
+                ));
                 fila.append($("<td>").text((item.IdentificacionProveedor || "") + " - " + proveedor));
                 fila.append($("<td>").html(
                     '<span class="codigo-documento">' + (item.NumeroDocumento || "") + '</span><br/>' +
                     '<span class="texto-tabla-secundario">Abono #' + (item.NumeroAbonoCuentaPorPagar || 0) + '</span>'
                 ));
                 fila.append($("<td>").text(formatearNumero(item.Monto)));
-                fila.append($("<td>").html(comprobanteTexto));
+                fila.append($("<td>").html(obtenerTextoComprobante(item)));
                 fila.append($("<td>").html(activo));
                 fila.append(acciones);
 
@@ -484,6 +492,8 @@
 
             $("#tituloModalGasto").text("Nuevo gasto");
             $("#txtFechaGasto").val(convertirDateAInput(new Date()));
+            aplicarVisibilidadActivoGasto();
+
             cargarAbonosCuentaPorPagar();
 
             if (json != null) {
@@ -510,6 +520,8 @@
                 $("#txtRutaComprobante").val(json.RutaComprobante || "");
                 $("#cboActivoGasto").val(json.Activo ? "true" : "false");
 
+                aplicarVisibilidadActivoGasto();
+
                 $("#lblReferenciaSeleccionada").text(
                     "Proveedor: " + (json.IdentificacionProveedor || "") +
                     " - " + (json.ProveedorNombre || "") +
@@ -519,6 +531,15 @@
             }
 
             $("#FormModalGasto").modal("show");
+        }
+
+        function aplicarVisibilidadActivoGasto() {
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivoGasto").closest(".form-group").show();
+            } else {
+                $("#cboActivoGasto").closest(".form-group").hide();
+                $("#cboActivoGasto").val("true");
+            }
         }
 
         function cargarAbonosCuentaPorPagar() {
@@ -623,6 +644,10 @@
             if (isNaN(obj.Monto)) obj.Monto = 0;
             if (isNaN(obj.NumeroAbonoCuentaPorPagar)) obj.NumeroAbonoCuentaPorPagar = 0;
 
+            if (window.esAdministradorSistema !== true) {
+                obj.Activo = true;
+            }
+
             if (obj.FechaGasto === "") {
                 mostrarErrorGasto("Debe ingresar la fecha del gasto.", "txtFechaGasto");
                 return;
@@ -683,9 +708,8 @@
                         cargarAbonosCuentaPorPagar();
 
                         mostrarMensajeSistema(respuesta.mensaje || "Gasto guardado correctamente.", "exito");
-
                     } else {
-                        $("#mensajeErrorGasto").text(respuesta.mensaje).show();
+                        $("#mensajeErrorGasto").text(respuesta.mensaje || "No se pudo guardar el gasto.").show();
                     }
                 },
                 error: function () {
@@ -751,6 +775,8 @@
             $("#cboActivoGasto").val("true");
 
             $("#lblReferenciaSeleccionada").text("Ningún abono seleccionado.");
+
+            aplicarVisibilidadActivoGasto();
         }
 
         function mostrarErrorGasto(mensaje, idCampo) {
