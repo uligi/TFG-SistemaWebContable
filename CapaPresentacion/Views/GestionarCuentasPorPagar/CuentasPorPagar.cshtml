@@ -822,6 +822,11 @@
             }
 
             $.each(listaAbonos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+
+                }
                 var activo = item.Activo
                     ? '<span class="badge badge-info">Sí</span>'
                     : '<span class="badge badge-secondary">No</span>';
