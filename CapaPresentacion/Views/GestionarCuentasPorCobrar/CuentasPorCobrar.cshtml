@@ -385,6 +385,13 @@
         $(document).ready(function () {
             cargarCuentasPorCobrar();
 
+            if (window.esAdministradorSistema !== true) {
+                $("#cboFiltroEstado option[value='Anulada']").remove();
+                $("#cboFiltroEstadoCredito option[value='Anulada']").remove();
+                $("#cboFiltroEstadoCredito option[value='Inactiva']").remove();
+            }
+
+
             $("#txtBuscarCuenta, #cboFiltroEstado, #cboFiltroEstadoCredito").on("keyup change", function () {
                 pintarTablaCuentas();
             });
@@ -452,6 +459,11 @@
             }
 
             $.each(listaCuentas, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var cliente = item.ClienteNombre || "";
                 var identificacion = item.IdentificacionCliente || "";
                 var numeroFactura = item.NumeroFactura || "";
@@ -796,6 +808,11 @@
             }
 
             $.each(listaAbonos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var activo = item.Activo
                     ? '<span class="badge badge-info">Sí</span>'
                     : '<span class="badge badge-secondary">No</span>';
