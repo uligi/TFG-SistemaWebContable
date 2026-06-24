@@ -140,7 +140,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de teléfono.");
+                    mostrarMensajeSistema("Error al cargar los tipos de teléfono.", "error");
                 }
             });
         }
@@ -155,6 +155,11 @@
             tbody.empty();
 
             $.each(listaTipoTelefonos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var nombre = item.Nombre || "";
 
                 var estado = item.Activo
@@ -172,7 +177,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarTipoTelefono(item.IdTipoTelefono);
                 });
@@ -260,6 +265,7 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarTipoTelefonos();
+                        mostrarMensajeSistema("Tipo de teléfono guardado correctamente.", "exito");
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -271,27 +277,32 @@
         }
 
         function inactivarTipoTelefono(idTipoTelefono) {
-            if (!confirm("¿Desea inactivar este tipo de teléfono?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarTipoTelefono", "Catalogos")',
-                type: "POST",
-                data: JSON.stringify({ idTipoTelefono: idTipoTelefono }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarTipoTelefonos();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este tipo de teléfono"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarTipoTelefono", "Catalogos")',
+                        type: "POST",
+                        data: JSON.stringify({ idTipoTelefono: idTipoTelefono }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarTipoTelefonos();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Tipo de teléfono"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el tipo de teléfono.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el tipo de teléfono.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el tipo de teléfono.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function mostrarError(mensaje, idCampo) {
