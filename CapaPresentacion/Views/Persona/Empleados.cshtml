@@ -653,7 +653,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger mb-1",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarEmpleado(item.Identificacion);
                 });
@@ -1120,8 +1120,8 @@
 
         function inactivarEmpleado(identificacion) {
             mostrarConfirmacionSistema(
-                "Inactivar empleado",
-                "¿Desea inactivar este empleado?",
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este empleado"),
                 function () {
                     $.ajax({
                         url: '@Url.Action("InactivarEmpleado", "Persona")',
@@ -1132,17 +1132,17 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarEmpleados();
-                                mostrarMensajeSistema("Empleado inactivado correctamente.", "exito");
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Empleado"), "exito");
                             } else {
-                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el empleado.", "error");
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el empleado.", "error");
                             }
                         },
                         error: function () {
-                            mostrarMensajeSistema("Error al inactivar el empleado.", "error");
+                            mostrarMensajeSistema("Error al procesar el empleado.", "error");
                         }
                     });
                 },
-                "Inactivar",
+                obtenerTextoAccionEstado(true),
                 "btn-danger"
             );
         }
@@ -1241,7 +1241,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarTelefonoEmpleado(item.NumeroTelefono);
                 });
@@ -1327,8 +1327,8 @@
             var identificacion = $("#txtIdentificacion").val().trim();
 
             mostrarConfirmacionSistema(
-                "Inactivar teléfono",
-                "¿Desea inactivar este teléfono?",
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este teléfono"),
                 function () {
                     $.ajax({
                         url: '@Url.Action("InactivarTelefono", "Persona")',
@@ -1342,7 +1342,7 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarTelefonosEmpleado(identificacion);
-                                mostrarMensajeSistema("Teléfono inactivado correctamente.", "exito");
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Teléfono"));
                             } else {
                                 mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el teléfono.", "error");
                             }
@@ -1411,7 +1411,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarCorreoEmpleado(item.DireccionCorreo);
                 });
@@ -1497,8 +1497,8 @@
             var identificacion = $("#txtIdentificacion").val().trim();
 
             mostrarConfirmacionSistema(
-                "Inactivar correo",
-                "¿Desea inactivar este correo?",
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este correo"),
                 function () {
                     $.ajax({
                         url: '@Url.Action("InactivarCorreo", "Persona")',
@@ -1512,7 +1512,7 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarCorreosEmpleado(identificacion);
-                                mostrarMensajeSistema("Correo inactivado correctamente.", "exito");
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Correo"));
                             } else {
                                 mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el correo.", "error");
                             }
