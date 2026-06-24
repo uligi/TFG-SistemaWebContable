@@ -134,6 +134,12 @@
                     <small class="form-text text-muted">
                         El archivo debe tener las columnas: CodigoProvincia, Nombre.
                     </small>
+
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-outline-info btn-sm" onclick="descargarPlantillaProvincia()">
+                            <i class="fas fa-download mr-1"></i> Descargar plantilla CSV
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-light border rounded p-3">
@@ -210,7 +216,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar las provincias.");
+                    mostrarMensajeSistema("Error al cargar las provincias.", "error");
                 }
             });
         }
@@ -225,6 +231,10 @@
             tbody.empty();
 
             $.each(listaProvincias, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
 
                 var codigo = item.CodigoProvincia || 0;
                 var nombre = item.Nombre || "";
@@ -244,9 +254,9 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
-                    inactivarCanton(item.CodigoCanton);
+                    inactivarProvincia(item.CodigoProvincia);
                 });
 
                 var acciones = $("<td class='text-center'>");
@@ -285,6 +295,7 @@
 
             $("#txtNombre").val("");
             $("#cboActivo").val("true");
+            aplicarVisibilidadActivoProvincia();
 
             $("#tituloModal").text("Nueva provincia");
 
@@ -294,11 +305,21 @@
 
                 $("#txtNombre").val(json.Nombre || "");
                 $("#cboActivo").val(json.Activo ? "true" : "false");
+                aplicarVisibilidadActivoProvincia();
 
                 $("#tituloModal").text("Editar provincia");
             }
 
             $("#FormModal").modal("show");
+        }
+
+        function aplicarVisibilidadActivoProvincia() {
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivo").closest(".form-group").show();
+            } else {
+                $("#cboActivo").closest(".form-group").hide();
+                $("#cboActivo").val("true");
+            }
         }
 
         function guardarProvincia() {
@@ -310,6 +331,10 @@
                 Nombre: $("#txtNombre").val().trim(),
                 Activo: $("#cboActivo").val() === "true"
             };
+
+            if (window.esAdministradorSistema !== true) {
+                obj.Activo = true;
+            }
 
             if (isNaN(obj.CodigoProvincia) || obj.CodigoProvincia <= 0) {
                 mostrarError("Debe ingresar un código de provincia válido.", "txtCodigoProvincia");
@@ -341,6 +366,8 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarProvincias();
+                        mostrarMensajeSistema("Provincia guardada correctamente.", "exito");
+
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -352,27 +379,32 @@
         }
 
         function inactivarProvincia(codigoProvincia) {
-            if (!confirm("¿Desea inactivar esta provincia?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarProvincia", "Ubicacion")',
-                type: "POST",
-                data: JSON.stringify({ codigoProvincia: codigoProvincia }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarProvincias();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "esta provincia"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarProvincia", "Ubicacion")',
+                        type: "POST",
+                        data: JSON.stringify({ codigoProvincia: codigoProvincia }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarProvincias();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Provincia"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar la provincia.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar la provincia.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar la provincia.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function abrirModalCsv() {
@@ -463,6 +495,34 @@
         function validarTextoUbicacion(texto) {
             var regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s\.\-]+$/;
             return regex.test(texto);
+        }
+
+        function descargarArchivoCsv(nombreArchivo, contenido) {
+            var blob = new Blob([contenido], { type: "text/csv;charset=utf-8;" });
+            var url = URL.createObjectURL(blob);
+
+            var enlace = document.createElement("a");
+            enlace.href = url;
+            enlace.download = nombreArchivo;
+
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+
+            URL.revokeObjectURL(url);
+        }
+
+        function descargarPlantillaProvincia() {
+            var contenido = "CodigoProvincia,Nombre\n" +
+                "1,San José\n" +
+                "2,Alajuela\n" +
+                "3,Cartago\n" +
+                "4,Heredia\n" +
+                "5,Guanacaste\n" +
+                "6,Puntarenas\n" +
+                "7,Limón\n";
+
+            descargarArchivoCsv("plantilla_provincias.csv", contenido);
         }
 
     </script>
