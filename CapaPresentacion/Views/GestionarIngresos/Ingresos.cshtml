@@ -393,6 +393,11 @@
             }
 
             $.each(listaIngresos, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var numero = item.NumeroIngreso || "";
                 var descripcion = item.Descripcion || "";
                 var tipo = item.TipoIngresoNombre || "";
