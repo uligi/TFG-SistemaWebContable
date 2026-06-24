@@ -1022,17 +1022,17 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarTelefonosProveedor(identificacionProveedor);
-                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Teléfono"));
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Teléfono"), "exito");
                             } else {
-                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el teléfono.", "error");
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el teléfono.", "error");
                             }
                         },
                         error: function () {
-                            mostrarMensajeSistema("Error al inactivar el teléfono.", "error");
+                            mostrarMensajeSistema("Error al procesar el teléfono.", "error");
                         }
                     });
                 },
-                "Inactivar",
+                obtenerTextoAccionEstado(true),
                 "btn-danger"
             );
         }
@@ -1194,17 +1194,17 @@
                         success: function (respuesta) {
                             if (respuesta.resultado) {
                                 cargarCorreosProveedor(identificacionProveedor);
-                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Correo"));
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Correo"), "exito");
                             } else {
-                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo inactivar el correo.", "error");
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el correo.", "error");
                             }
                         },
                         error: function () {
-                            mostrarMensajeSistema("Error al inactivar el correo.", "error");
+                            mostrarMensajeSistema("Error al procesar el correo.", "error");
                         }
                     });
                 },
-                "Inactivar",
+                obtenerTextoAccionEstado(true),
                 "btn-danger"
             );
         }
