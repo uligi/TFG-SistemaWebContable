@@ -157,7 +157,7 @@
                     pintarTabla();
                 },
                 error: function () {
-                    alert("Error al cargar los tipos de factura.");
+                    mostrarMensajeSistema("Error al cargar los tipos de factura.", "error");
                 }
             });
         }
@@ -172,6 +172,11 @@
             tbody.empty();
 
             $.each(listaTipoFacturas, function (i, item) {
+
+                if (window.esAdministradorSistema !== true && item.Activo === false) {
+                    return;
+                }
+
                 var nombre = item.Tipo_Factura || "";
                 var descripcion = item.Descripcion || "";
 
@@ -192,7 +197,7 @@
                 var botonInactivar = $("<button>", {
                     type: "button",
                     class: "btn btn-sm btn-outline-danger",
-                    text: "Inactivar"
+                    text: obtenerTextoAccionEstado(true)
                 }).on("click", function () {
                     inactivarTipoFactura(item.IdTipoFactura);
                 });
@@ -295,6 +300,7 @@
                     if (respuesta.resultado != 0 && respuesta.resultado !== false) {
                         $("#FormModal").modal("hide");
                         cargarTipoFacturas();
+                        mostrarMensajeSistema("Tipo de factura guardado correctamente.", "exito");
                     } else {
                         $("#mensajeError").text(respuesta.mensaje).show();
                     }
@@ -306,27 +312,32 @@
         }
 
         function inactivarTipoFactura(idTipoFactura) {
-            if (!confirm("¿Desea inactivar este tipo de factura?")) {
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("InactivarTipoFactura", "Catalogos")',
-                type: "POST",
-                data: JSON.stringify({ idTipoFactura: idTipoFactura }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (respuesta) {
-                    if (respuesta.resultado) {
-                        cargarTipoFacturas();
-                    } else {
-                        alert(respuesta.mensaje);
-                    }
+            mostrarConfirmacionSistema(
+                obtenerTituloAccionEstado(true),
+                obtenerMensajeAccionEstado(true, "este tipo de factura"),
+                function () {
+                    $.ajax({
+                        url: '@Url.Action("InactivarTipoFactura", "Catalogos")',
+                        type: "POST",
+                        data: JSON.stringify({ idTipoFactura: idTipoFactura }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (respuesta) {
+                            if (respuesta.resultado) {
+                                cargarTipoFacturas();
+                                mostrarMensajeSistema(obtenerMensajeExitoEstado(true, "Tipo de factura"), "exito");
+                            } else {
+                                mostrarMensajeSistema(respuesta.mensaje || "No se pudo procesar el tipo de factura.", "error");
+                            }
+                        },
+                        error: function () {
+                            mostrarMensajeSistema("Error al procesar el tipo de factura.", "error");
+                        }
+                    });
                 },
-                error: function () {
-                    alert("Error al inactivar el tipo de factura.");
-                }
-            });
+                obtenerTextoAccionEstado(true),
+                "btn-danger"
+            );
         }
 
         function mostrarError(mensaje, idCampo) {
