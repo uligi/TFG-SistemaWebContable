@@ -407,7 +407,7 @@
                     pintarTablaPresupuestos();
                 },
                 error: function () {
-                    alert("Error al cargar los presupuestos mensuales.");
+                    mostrarMensajeSistema("Error al cargar los presupuestos mensuales.", "error");
                 }
             });
         }
@@ -676,7 +676,11 @@
                     pintarDetalles();
                 },
                 error: function () {
-                    $("#mensajeErrorPresupuesto").text("Error al cargar los detalles del presupuesto.").show();
+                    $("#mensajeErrorPresupuesto")
+                        .text("Error al cargar los detalles del presupuesto.")
+                        .show();
+
+                    mostrarMensajeSistema("Error al cargar los detalles del presupuesto.", "error");
                 }
             });
         }
@@ -859,7 +863,11 @@
                     pintarResumen(listaResumen);
                 },
                 error: function () {
-                    $("#mensajeErrorPresupuesto").text("Error al cargar el resumen presupuesto vs real.").show();
+                    $("#mensajeErrorPresupuesto")
+                        .text("Error al cargar el resumen presupuesto vs real.")
+                        .show();
+
+                    mostrarMensajeSistema("Error al cargar el resumen presupuesto vs real.", "error");
                 }
             });
         }
@@ -909,7 +917,11 @@
                     actualizarResumenGeneral(respuesta.data);
                 },
                 error: function () {
-                    $("#mensajeErrorPresupuesto").text("Error al cargar el resumen general.").show();
+                    $("#mensajeErrorPresupuesto")
+                        .text("Error al cargar el resumen general.")
+                        .show();
+
+                    mostrarMensajeSistema("Error al cargar el resumen general.", "error");
                 }
             });
         }
