@@ -570,6 +570,13 @@
             $("#txtSaldoActual").val("");
             $("#cboEstadoCuenta").val("Pendiente");
             $("#cboActivoCuenta").val("true");
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivoCuenta").closest(".form-group").show();
+            } else {
+                $("#cboActivoCuenta").closest(".form-group").hide();
+                $("#cboActivoCuenta").val("true");
+            }
+
             $("#lblEstadoCreditoModal").html(obtenerBadgeEstadoCredito("Pendiente", 30));
 
             $("#txtNumeroDocumento").prop("readonly", false);
@@ -594,6 +601,13 @@
                 $("#txtSaldoActual").val(formatearNumero(json.SaldoActual));
                 $("#cboEstadoCuenta").val(json.Estado || "Pendiente");
                 $("#cboActivoCuenta").val(json.Activo ? "true" : "false");
+
+                if (window.esAdministradorSistema === true) {
+                    $("#cboActivoCuenta").closest(".form-group").show();
+                } else {
+                    $("#cboActivoCuenta").closest(".form-group").hide();
+                    $("#cboActivoCuenta").val("true");
+                }
 
                 $("#lblEstadoCreditoModal").html(obtenerBadgeEstadoCredito(json.EstadoCredito || "", json.DiasRestantes));
 
@@ -930,6 +944,13 @@
 
                         limpiarAbono();
                         cargarCuentasPorPagar();
+
+                        if (window.esAdministradorSistema !== true) {
+                            $("#cboFiltroEstado option[value='Anulada']").remove();
+                            $("#cboFiltroEstadoCredito option[value='Anulada']").remove();
+                            $("#cboFiltroEstadoCredito option[value='Inactiva']").remove();
+                        }
+
                         refrescarCuentaActual(obj.IdentificacionProveedor, obj.NumeroDocumento);
                     } else {
                         $("#mensajeErrorCuenta").text(respuesta.mensaje).show();
@@ -972,6 +993,13 @@
             $("#txtMontoAbono").val(formatearNumero(item.MontoAbono));
             $("#txtObservacion").val(item.Observacion || "");
             $("#cboActivoAbono").val(item.Activo ? "true" : "false");
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivoAbono").closest(".form-group").show();
+            } else {
+                $("#cboActivoAbono").closest(".form-group").hide();
+                $("#cboActivoAbono").val("true");
+            }
+
         }
 
         function limpiarAbono() {
@@ -980,6 +1008,13 @@
             $("#txtMontoAbono").val("");
             $("#txtObservacion").val("");
             $("#cboActivoAbono").val("true");
+            if (window.esAdministradorSistema === true) {
+                $("#cboActivoAbono").closest(".form-group").show();
+            } else {
+                $("#cboActivoAbono").closest(".form-group").hide();
+                $("#cboActivoAbono").val("true");
+            }
+
         }
 
         function bloquearAbonos(bloquear) {
