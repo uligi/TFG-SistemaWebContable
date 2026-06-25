@@ -585,11 +585,12 @@
                     if (respuesta.resultado) {
                         var data = respuesta.data || {};
                         var insertados = data.insertados || 0;
+                        var actualizados = data.actualizados || 0;
                         var errores = data.errores || 0;
                         var detalleErrores = data.detalleErrores || [];
 
                         $("#mensajeExitoCsv")
-                            .text("Carga finalizada. Insertados: " + insertados + ". Errores: " + errores + ".")
+                            .text("Carga finalizada. Insertados: " + insertados + ". Actualizados: " + actualizados + ". Errores: " + errores + ".")
                             .show();
 
                         if (detalleErrores.length > 0) {

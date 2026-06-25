@@ -218,21 +218,186 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         [HttpPost]
         public JsonResult CargarCsvDistritos(HttpPostedFileBase archivo)
         {
-            string mensaje = string.Empty;
+            int insertados = 0;
+            int actualizados = 0;
+            int errores = 0;
+            List<string> detalleErrores = new List<string>();
 
-            if (archivo == null || archivo.ContentLength == 0)
+            try
             {
-                return Json(new { resultado = false, mensaje = "Debe seleccionar un archivo CSV." });
-            }
+                if (archivo == null || archivo.ContentLength == 0)
+                {
+                    return Json(new
+                    {
+                        resultado = false,
+                        mensaje = "Debe seleccionar un archivo CSV."
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
-            if (!archivo.FileName.ToLower().EndsWith(".csv"))
+                string extension = Path.GetExtension(archivo.FileName).ToLower();
+
+                if (extension != ".csv")
+                {
+                    return Json(new
+                    {
+                        resultado = false,
+                        mensaje = "El archivo debe tener formato CSV."
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                List<Distrito> listaDistritos = new CN_Distrito().Listar();
+                List<Canton> listaCantones = new CN_Canton().Listar();
+
+                using (var reader = new StreamReader(archivo.InputStream, System.Text.Encoding.UTF8, true))
+                {
+                    int numeroLinea = 0;
+
+                    while (!reader.EndOfStream)
+                    {
+                        string linea = reader.ReadLine();
+                        numeroLinea++;
+
+                        if (string.IsNullOrWhiteSpace(linea))
+                        {
+                            continue;
+                        }
+
+                        linea = linea.Trim();
+
+                        if (numeroLinea == 1)
+                        {
+                            linea = linea.Replace("\uFEFF", "");
+
+                            string encabezado = linea.Replace(" ", "").ToLower();
+
+                            if (encabezado != "codigodistrito,nombre,codigocanton")
+                            {
+                                return Json(new
+                                {
+                                    resultado = false,
+                                    mensaje = "El encabezado del CSV debe ser: CodigoDistrito,Nombre,CodigoCanton"
+                                }, JsonRequestBehavior.AllowGet);
+                            }
+
+                            continue;
+                        }
+
+                        string[] columnas = linea.Split(',');
+
+                        if (columnas.Length < 3)
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": formato inválido. Debe tener CodigoDistrito, Nombre, CodigoCanton.");
+                            continue;
+                        }
+
+                        string textoCodigoDistrito = columnas[0].Trim().Replace("\uFEFF", "");
+                        string nombre = columnas[1].Trim();
+                        string textoCodigoCanton = columnas[2].Trim();
+
+                        int codigoDistrito;
+                        int codigoCanton;
+
+                        if (!int.TryParse(textoCodigoDistrito, out codigoDistrito) || codigoDistrito <= 0)
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": CodigoDistrito inválido.");
+                            continue;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(nombre))
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": el nombre del distrito es obligatorio.");
+                            continue;
+                        }
+
+                        if (nombre.Length > 45)
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": el nombre del distrito no puede superar los 45 caracteres.");
+                            continue;
+                        }
+
+                        if (!int.TryParse(textoCodigoCanton, out codigoCanton) || codigoCanton <= 0)
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": CodigoCanton inválido.");
+                            continue;
+                        }
+
+                        bool existeCanton = listaCantones.Any(c => c.CodigoCanton == codigoCanton && c.Activo);
+
+                        if (!existeCanton)
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": CodigoCanton inválido o inactivo.");
+                            continue;
+                        }
+
+                        Distrito obj = new Distrito
+                        {
+                            CodigoDistrito = codigoDistrito,
+                            CodigoCanton = codigoCanton,
+                            Nombre = nombre,
+                            Activo = true
+                        };
+
+                        string mensaje = string.Empty;
+
+                        bool existeDistrito = listaDistritos.Any(d => d.CodigoDistrito == codigoDistrito);
+
+                        if (existeDistrito)
+                        {
+                            int resultadoEditar = new CN_Distrito().Editar(obj, out mensaje);
+
+                            if (resultadoEditar > 0)
+                            {
+                                actualizados++;
+                            }
+                            else
+                            {
+                                errores++;
+                                detalleErrores.Add("Línea " + numeroLinea + ": " + mensaje);
+                            }
+                        }
+                        else
+                        {
+                            int resultadoRegistrar = new CN_Distrito().Registrar(obj, out mensaje);
+
+                            if (resultadoRegistrar > 0)
+                            {
+                                insertados++;
+                            }
+                            else
+                            {
+                                errores++;
+                                detalleErrores.Add("Línea " + numeroLinea + ": " + mensaje);
+                            }
+                        }
+                    }
+                }
+
+                return Json(new
+                {
+                    resultado = true,
+                    data = new
+                    {
+                        insertados = insertados,
+                        actualizados = actualizados,
+                        errores = errores,
+                        detalleErrores = detalleErrores
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
             {
-                return Json(new { resultado = false, mensaje = "El archivo debe tener formato CSV." });
+                return Json(new
+                {
+                    resultado = false,
+                    mensaje = "Error al procesar el archivo CSV: " + ex.Message
+                }, JsonRequestBehavior.AllowGet);
             }
-
-            var resultado = new CN_Distrito().CargarCsv(archivo.InputStream, out mensaje);
-
-            return Json(new { resultado = true, mensaje = mensaje, data = resultado });
         }
     }
 }

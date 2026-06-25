@@ -4,6 +4,7 @@ using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace CapaNegocio.Ubicacion
@@ -111,18 +112,23 @@ namespace CapaNegocio.Ubicacion
             Mensaje = string.Empty;
 
             int insertados = 0;
+            int actualizados = 0;
             int errores = 0;
             List<string> detalleErrores = new List<string>();
 
             try
             {
+                List<Distrito> distritosExistentes = Listar();
+
                 using (TextFieldParser parser = new TextFieldParser(archivo, Encoding.UTF8))
                 {
                     parser.TextFieldType = FieldType.Delimited;
                     parser.SetDelimiters(",");
                     parser.HasFieldsEnclosedInQuotes = true;
+                    parser.TrimWhiteSpace = true;
 
                     bool primeraFila = true;
+                    bool tieneColumnaActivo = false;
                     int numeroLinea = 0;
 
                     while (!parser.EndOfData)
@@ -130,57 +136,146 @@ namespace CapaNegocio.Ubicacion
                         string[] campos = parser.ReadFields();
                         numeroLinea++;
 
-                        if (primeraFila)
+                        if (campos == null || campos.Length == 0 || campos.All(c => string.IsNullOrWhiteSpace(c)))
                         {
-                            primeraFila = false;
                             continue;
                         }
 
-                        if (campos == null || campos.Length < 3)
+                        if (primeraFila)
+                        {
+                            primeraFila = false;
+
+                            string encabezado = string.Join(",", campos)
+                                .Replace("\uFEFF", "")
+                                .Replace(" ", "")
+                                .Trim()
+                                .ToLower();
+
+                            if (encabezado == "codigodistrito,nombre,codigocanton")
+                            {
+                                tieneColumnaActivo = false;
+                                continue;
+                            }
+
+                            if (encabezado == "codigodistrito,nombre,codigocanton,activo")
+                            {
+                                tieneColumnaActivo = true;
+                                continue;
+                            }
+
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": encabezado inválido. Debe ser CodigoDistrito,Nombre,CodigoCanton o CodigoDistrito,Nombre,CodigoCanton,Activo.");
+                            continue;
+                        }
+
+                        if (campos.Length < 3)
                         {
                             errores++;
-                            detalleErrores.Add("Línea " + numeroLinea + ": formato inválido. Debe tener CodigoDistrito, CodigoCanton y Nombre.");
+                            detalleErrores.Add("Línea " + numeroLinea + ": formato inválido. Debe tener CodigoDistrito, Nombre y CodigoCanton.");
                             continue;
                         }
 
                         int codigoDistrito;
                         int codigoCanton;
 
-                        if (!int.TryParse(campos[0].Trim(), out codigoDistrito))
+                        string textoCodigoDistrito = (campos[0] ?? string.Empty).Replace("\uFEFF", "").Trim();
+                        string nombre = (campos[1] ?? string.Empty).Trim();
+                        string textoCodigoCanton = (campos[2] ?? string.Empty).Trim();
+
+                        if (!int.TryParse(textoCodigoDistrito, out codigoDistrito) || codigoDistrito <= 0)
                         {
                             errores++;
                             detalleErrores.Add("Línea " + numeroLinea + ": CodigoDistrito inválido.");
                             continue;
                         }
 
-                        if (!int.TryParse(campos[1].Trim(), out codigoCanton))
+                        if (string.IsNullOrWhiteSpace(nombre))
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": el nombre del distrito es obligatorio.");
+                            continue;
+                        }
+
+                        if (nombre.Length > 45)
+                        {
+                            errores++;
+                            detalleErrores.Add("Línea " + numeroLinea + ": el nombre del distrito no puede superar los 45 caracteres.");
+                            continue;
+                        }
+
+                        if (!int.TryParse(textoCodigoCanton, out codigoCanton) || codigoCanton <= 0)
                         {
                             errores++;
                             detalleErrores.Add("Línea " + numeroLinea + ": CodigoCanton inválido.");
                             continue;
                         }
 
-                        string nombre = campos[2].Trim();
+                        Distrito distritoExistente = distritosExistentes
+                            .FirstOrDefault(d => d.CodigoDistrito == codigoDistrito);
+
+                        bool activo = distritoExistente != null ? distritoExistente.Activo : true;
+
+                        if (tieneColumnaActivo && campos.Length >= 4)
+                        {
+                            string textoActivo = (campos[3] ?? string.Empty).Trim().ToLower();
+
+                            if (textoActivo == "true" || textoActivo == "1" || textoActivo == "si" || textoActivo == "sí" || textoActivo == "activo")
+                            {
+                                activo = true;
+                            }
+                            else if (textoActivo == "false" || textoActivo == "0" || textoActivo == "no" || textoActivo == "inactivo")
+                            {
+                                activo = false;
+                            }
+                            else
+                            {
+                                errores++;
+                                detalleErrores.Add("Línea " + numeroLinea + ": Activo inválido. Use true/false, 1/0, sí/no o activo/inactivo.");
+                                continue;
+                            }
+                        }
 
                         Distrito obj = new Distrito()
                         {
                             CodigoDistrito = codigoDistrito,
                             CodigoCanton = codigoCanton,
                             Nombre = nombre,
-                            Activo = true
+                            Activo = activo
                         };
 
                         string mensajeRegistro;
-                        int resultado = Registrar(obj, out mensajeRegistro);
 
-                        if (resultado > 0)
+                        if (distritoExistente == null)
                         {
-                            insertados++;
+                            int resultado = Registrar(obj, out mensajeRegistro);
+
+                            if (resultado > 0)
+                            {
+                                insertados++;
+                                distritosExistentes.Add(obj);
+                            }
+                            else
+                            {
+                                errores++;
+                                detalleErrores.Add("Línea " + numeroLinea + ": " + mensajeRegistro);
+                            }
                         }
                         else
                         {
-                            errores++;
-                            detalleErrores.Add("Línea " + numeroLinea + ": " + mensajeRegistro);
+                            bool resultado = Editar(obj, out mensajeRegistro);
+
+                            if (resultado)
+                            {
+                                actualizados++;
+                                distritoExistente.CodigoCanton = obj.CodigoCanton;
+                                distritoExistente.Nombre = obj.Nombre;
+                                distritoExistente.Activo = obj.Activo;
+                            }
+                            else
+                            {
+                                errores++;
+                                detalleErrores.Add("Línea " + numeroLinea + ": " + mensajeRegistro);
+                            }
                         }
                     }
                 }
@@ -190,11 +285,14 @@ namespace CapaNegocio.Ubicacion
             catch (Exception ex)
             {
                 Mensaje = ex.Message;
+                errores++;
+                detalleErrores.Add("Error general: " + ex.Message);
             }
 
             return new
             {
                 insertados = insertados,
+                actualizados = actualizados,
                 errores = errores,
                 detalleErrores = detalleErrores
             };
