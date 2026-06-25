@@ -3,6 +3,7 @@ using CapaNegocio.Ubicacion;
 using CapaPresentacion.Filtros;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web;
@@ -349,9 +350,9 @@ namespace CapaPresentacion.Controllers.Mantenimientos
 
                         if (existeDistrito)
                         {
-                            int resultadoEditar = new CN_Distrito().Editar(obj, out mensaje);
+                            bool resultadoEditar = new CN_Distrito().Editar(obj, out mensaje);
 
-                            if (resultadoEditar > 0)
+                            if (resultadoEditar)
                             {
                                 actualizados++;
                             }
