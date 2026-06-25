@@ -201,11 +201,17 @@
                 <div class="bloque-importacion">
                     <strong>Formato requerido del CSV:</strong>
                     <div class="texto-tabla-secundario mt-2">
-                        NombreProducto, TipoProducto, Impuesto, Descripcion, PrecioVenta, StockActual
+                        CodigoProducto, NombreProducto, IdTipoProducto, IdImpuesto, Descripcion, PrecioVenta, StockActual, Activo
                     </div>
 
                     <div class="mt-2">
-                        <code>Arroz 80%, Abarrotes, IVA 13%, Bolsa de arroz, 1200.00, 25</code>
+                        <code>,Arroz 80%,1,1,Bolsa de arroz 1kg,1200.00,25,true</code>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-outline-info btn-sm" onclick="descargarPlantillaProductos()">
+                            <i class="fas fa-download mr-1"></i> Descargar plantilla CSV
+                        </button>
                     </div>
                 </div>
 
@@ -416,7 +422,6 @@
                 }
             });
         }
-
         function cargarImpuestos() {
             $.ajax({
                 url: '@Url.Action("ListarImpuestos", "Catalogos")',
@@ -436,11 +441,35 @@
                             })
                         );
                     });
+
+                    if ($("#txtCodigoProducto").val().trim() === "") {
+                        seleccionarImpuestoIvaPorDefecto();
+                    }
                 },
                 error: function () {
                     mostrarMensajeSistema("Error al cargar los impuestos.", "error");
                 }
             });
+        }
+
+        function seleccionarImpuestoIvaPorDefecto() {
+            var opcionIva = null;
+
+            $("#cboImpuesto option").each(function () {
+                var texto = ($(this).text() || "").toLowerCase();
+
+                if (
+                    texto.includes("iva") ||
+                    texto.includes("13")
+                ) {
+                    opcionIva = $(this).val();
+                    return false;
+                }
+            });
+
+            if (opcionIva != null && opcionIva !== "0") {
+                $("#cboImpuesto").val(opcionIva);
+            }
         }
 
         function abrirModal(json) {
@@ -452,6 +481,7 @@
             $("#txtNombreProducto").val("");
             $("#cboTipoProducto").val("0");
             $("#cboImpuesto").val("0");
+            seleccionarImpuestoIvaPorDefecto();
             $("#txtDescripcion").val("");
             $("#txtPrecioVenta").val("0.00");
             $("#txtStockActual").val("0.00");
@@ -632,7 +662,13 @@
                 contentType: false,
                 success: function (respuesta) {
                     if (respuesta.resultado) {
-                        $("#mensajeExitoImportacion").text(respuesta.mensaje).show();
+                        var registrados = respuesta.registrados || 0;
+                        var actualizados = respuesta.actualizados || 0;
+                        var errores = respuesta.errores || 0;
+
+                        $("#mensajeExitoImportacion")
+                            .text("Importación finalizada. Registrados: " + registrados + ". Actualizados: " + actualizados + ". Errores: " + errores + ".")
+                            .show();
 
                         if (respuesta.detalle && respuesta.detalle.length > 0) {
                             $.each(respuesta.detalle, function (i, item) {
@@ -734,6 +770,34 @@
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
+        }
+
+        function descargarArchivoCsv(nombreArchivo, contenido) {
+            var blob = new Blob([contenido], { type: "text/csv;charset=utf-8;" });
+            var url = URL.createObjectURL(blob);
+
+            var enlace = document.createElement("a");
+            enlace.href = url;
+            enlace.download = nombreArchivo;
+
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+
+            URL.revokeObjectURL(url);
+        }
+
+        function descargarPlantillaProductos() {
+            var contenido = "\uFEFFCodigoProducto,NombreProducto,IdTipoProducto,IdImpuesto,Descripcion,PrecioVenta,StockActual,Activo\n" +
+                ",Arroz 80%,1,1,Bolsa de arroz 1kg,1200.00,25,true\n" +
+                ",Frijoles rojos,1,1,Bolsa de frijoles 900g,1450.00,18,true\n" +
+                ",Café molido,1,1,Café molido 250g,2300.00,12,true\n" +
+                ",Azúcar blanco,1,1,Bolsa de azúcar 1kg,1100.00,20,true\n" +
+                "PROD-2026-000001,Arroz 80% actualizado,1,1,Bolsa de arroz actualizada,1250.00,30,true\n";
+
+            descargarArchivoCsv("plantilla_productos.csv", contenido);
+
+
         }
     </script>
 }

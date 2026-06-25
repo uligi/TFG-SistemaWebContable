@@ -140,6 +140,7 @@ namespace CapaPresentacion.Controllers.Mantenimientos
         public JsonResult ImportarProductosCsv(HttpPostedFileBase archivoCsv)
         {
             int registrados = 0;
+            int actualizados = 0;
             int errores = 0;
             List<string> mensajes = new List<string>();
 
@@ -171,7 +172,9 @@ namespace CapaPresentacion.Controllers.Mantenimientos
 
                 var impuestos = new CN_Impuesto().ListarActivos();
 
-                using (var reader = new StreamReader(archivoCsv.InputStream, Encoding.UTF8))
+                var productosExistentes = new CN_Producto().Listar();
+
+                using (var reader = new StreamReader(archivoCsv.InputStream, Encoding.UTF8, true))
                 {
                     int linea = 0;
 
@@ -185,27 +188,43 @@ namespace CapaPresentacion.Controllers.Mantenimientos
                             continue;
                         }
 
-                        // Saltar encabezado
+                        string[] columnas = SepararCsv(fila);
+
                         if (linea == 1)
                         {
+                            string encabezado = string.Join(",", columnas)
+                                .Replace("\uFEFF", "")
+                                .Replace(" ", "")
+                                .Trim()
+                                .ToLower();
+
+                            if (encabezado != "codigoproducto,nombreproducto,idtipoproducto,idimpuesto,descripcion,precioventa,stockactual,activo")
+                            {
+                                return Json(new
+                                {
+                                    resultado = false,
+                                    mensaje = "El encabezado del CSV debe ser: CodigoProducto,NombreProducto,IdTipoProducto,IdImpuesto,Descripcion,PrecioVenta,StockActual,Activo"
+                                });
+                            }
+
                             continue;
                         }
 
-                        string[] columnas = SepararCsv(fila);
-
-                        if (columnas.Length < 6)
+                        if (columnas.Length < 8)
                         {
                             errores++;
                             mensajes.Add("Línea " + linea + ": la fila no tiene todas las columnas requeridas.");
                             continue;
                         }
 
-                        string nombreProducto = columnas[0].Trim();
-                        string tipoProductoNombre = columnas[1].Trim();
-                        string impuestoNombre = columnas[2].Trim();
-                        string descripcion = columnas[3].Trim();
-                        string precioTexto = columnas[4].Trim();
-                        string stockTexto = columnas[5].Trim();
+                        string codigoProducto = columnas[0].Trim().Replace("\uFEFF", "");
+                        string nombreProducto = columnas[1].Trim();
+                        string tipoProductoTexto = columnas[2].Trim();
+                        string impuestoTexto = columnas[3].Trim();
+                        string descripcion = columnas[4].Trim();
+                        string precioTexto = columnas[5].Trim();
+                        string stockTexto = columnas[6].Trim();
+                        string activoTexto = columnas[7].Trim().ToLower();
 
                         if (string.IsNullOrWhiteSpace(nombreProducto))
                         {
@@ -214,84 +233,131 @@ namespace CapaPresentacion.Controllers.Mantenimientos
                             continue;
                         }
 
-                        var tipoProducto = tiposProducto.FirstOrDefault(x =>
-                            x.Nombre.Trim().Equals(tipoProductoNombre, StringComparison.OrdinalIgnoreCase)
-                        );
+                        int idTipoProducto;
+                        int idImpuesto;
 
-                        if (tipoProducto == null)
+                        if (!int.TryParse(tipoProductoTexto, out idTipoProducto) || idTipoProducto <= 0)
                         {
                             errores++;
-                            mensajes.Add("Línea " + linea + ": el tipo de producto '" + tipoProductoNombre + "' no existe o está inactivo.");
+                            mensajes.Add("Línea " + linea + ": IdTipoProducto inválido.");
                             continue;
                         }
 
-                        var impuesto = impuestos.FirstOrDefault(x =>
-                            x.Nombre.Trim().Equals(impuestoNombre, StringComparison.OrdinalIgnoreCase)
-                        );
-
-                        if (impuesto == null)
+                        if (!tiposProducto.Any(x => x.IdTipoProducto == idTipoProducto))
                         {
                             errores++;
-                            mensajes.Add("Línea " + linea + ": el impuesto '" + impuestoNombre + "' no existe o está inactivo.");
+                            mensajes.Add("Línea " + linea + ": IdTipoProducto no existe o está inactivo.");
+                            continue;
+                        }
+
+                        if (!int.TryParse(impuestoTexto, out idImpuesto) || idImpuesto <= 0)
+                        {
+                            errores++;
+                            mensajes.Add("Línea " + linea + ": IdImpuesto inválido.");
+                            continue;
+                        }
+
+                        if (!impuestos.Any(x => x.IdImpuesto == idImpuesto))
+                        {
+                            errores++;
+                            mensajes.Add("Línea " + linea + ": IdImpuesto no existe o está inactivo.");
                             continue;
                         }
 
                         decimal precioVenta;
                         decimal stockActual;
 
-                        if (!decimal.TryParse(precioTexto, NumberStyles.Any, CultureInfo.InvariantCulture, out precioVenta))
-                        {
-                            precioTexto = precioTexto.Replace(",", ".");
+                        precioTexto = precioTexto.Replace(",", ".");
+                        stockTexto = stockTexto.Replace(",", ".");
 
-                            if (!decimal.TryParse(precioTexto, NumberStyles.Any, CultureInfo.InvariantCulture, out precioVenta))
-                            {
-                                errores++;
-                                mensajes.Add("Línea " + linea + ": el precio de venta no es válido.");
-                                continue;
-                            }
+                        if (!decimal.TryParse(precioTexto, NumberStyles.Any, CultureInfo.InvariantCulture, out precioVenta) || precioVenta < 0)
+                        {
+                            errores++;
+                            mensajes.Add("Línea " + linea + ": el precio de venta no es válido.");
+                            continue;
                         }
 
-                        if (!decimal.TryParse(stockTexto, NumberStyles.Any, CultureInfo.InvariantCulture, out stockActual))
+                        if (!decimal.TryParse(stockTexto, NumberStyles.Any, CultureInfo.InvariantCulture, out stockActual) || stockActual < 0)
                         {
-                            stockTexto = stockTexto.Replace(",", ".");
-
-                            if (!decimal.TryParse(stockTexto, NumberStyles.Any, CultureInfo.InvariantCulture, out stockActual))
-                            {
-                                errores++;
-                                mensajes.Add("Línea " + linea + ": el stock actual no es válido.");
-                                continue;
-                            }
+                            errores++;
+                            mensajes.Add("Línea " + linea + ": el stock actual no es válido.");
+                            continue;
                         }
 
-                        Producto obj = new Producto()
+                        bool activo;
+
+                        if (activoTexto == "true" || activoTexto == "1" || activoTexto == "si" || activoTexto == "sí" || activoTexto == "activo")
                         {
-                            CodigoProducto = "",
-                            NombreProducto = nombreProducto,
-                            IdTipoProducto = tipoProducto.IdTipoProducto,
-                            IdImpuesto = impuesto.IdImpuesto,
-                            Descripcion = descripcion,
-                            PrecioVenta = precioVenta,
-                            StockActual = stockActual,
-                            Activo = true
-                        };
-
-                        string mensajeRegistro;
-                        string codigoProductoGenerado;
-
-                        int resultado = new CN_Producto().Registrar(
-                            obj,
-                            out mensajeRegistro,
-                            out codigoProductoGenerado
-                        );
-
-                        if (resultado > 0)
+                            activo = true;
+                        }
+                        else if (activoTexto == "false" || activoTexto == "0" || activoTexto == "no" || activoTexto == "inactivo")
                         {
-                            registrados++;
+                            activo = false;
                         }
                         else
                         {
                             errores++;
-                            mensajes.Add("Línea " + linea + ": " + mensajeRegistro);
+                            mensajes.Add("Línea " + linea + ": Activo inválido. Use true/false, 1/0, sí/no o activo/inactivo.");
+                            continue;
+                        }
+
+                        Producto obj = new Producto()
+                        {
+                            CodigoProducto = codigoProducto,
+                            NombreProducto = nombreProducto,
+                            IdTipoProducto = idTipoProducto,
+                            IdImpuesto = idImpuesto,
+                            Descripcion = descripcion,
+                            PrecioVenta = precioVenta,
+                            StockActual = stockActual,
+                            Activo = activo
+                        };
+
+                        string mensajeRegistro;
+
+                        if (string.IsNullOrWhiteSpace(codigoProducto))
+                        {
+                            string codigoProductoGenerado;
+
+                            int resultado = new CN_Producto().Registrar(
+                                obj,
+                                out mensajeRegistro,
+                                out codigoProductoGenerado
+                            );
+
+                            if (resultado > 0)
+                            {
+                                registrados++;
+                            }
+                            else
+                            {
+                                errores++;
+                                mensajes.Add("Línea " + linea + ": " + mensajeRegistro);
+                            }
+                        }
+                        else
+                        {
+                            bool existeProducto = productosExistentes
+                                .Any(p => p.CodigoProducto.Equals(codigoProducto, StringComparison.OrdinalIgnoreCase));
+
+                            if (!existeProducto)
+                            {
+                                errores++;
+                                mensajes.Add("Línea " + linea + ": el producto con código '" + codigoProducto + "' no existe. Para crear un producto nuevo deje CodigoProducto vacío.");
+                                continue;
+                            }
+
+                            bool resultado = new CN_Producto().Editar(obj, out mensajeRegistro);
+
+                            if (resultado)
+                            {
+                                actualizados++;
+                            }
+                            else
+                            {
+                                errores++;
+                                mensajes.Add("Línea " + linea + ": " + mensajeRegistro);
+                            }
                         }
                     }
                 }
@@ -299,10 +365,11 @@ namespace CapaPresentacion.Controllers.Mantenimientos
                 return Json(new
                 {
                     resultado = true,
-                    mensaje = "Importación finalizada. Registrados: " + registrados + ". Errores: " + errores + ".",
+                    mensaje = "Importación finalizada. Registrados: " + registrados + ". Actualizados: " + actualizados + ". Errores: " + errores + ".",
                     registrados = registrados,
+                    actualizados = actualizados,
                     errores = errores,
-                    detalle = mensajes.Take(20).ToList()
+                    detalle = mensajes.Take(30).ToList()
                 });
             }
             catch (Exception ex)
@@ -314,7 +381,6 @@ namespace CapaPresentacion.Controllers.Mantenimientos
                 });
             }
         }
-
         private string[] SepararCsv(string fila)
         {
             List<string> columnas = new List<string>();
